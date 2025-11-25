@@ -32,7 +32,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
 
   const benefits = [
     'Exclusive Rights to Our Leads',
-    'AI-powered demand forecasting',
+    'Demand forecasting',
     'Automated lead generation',
     'Priority job routing',
   ];
@@ -45,13 +45,13 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
       className="relative overflow-hidden"
     >
       <Card className="glass-card border-2 border-primary/20 hover:border-primary/40 transition-all duration-300">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-muted/50 to-secondary/5" />
         
         <CardContent className="relative p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="inline-flex">
-                <Badge className="px-4 py-2 text-sm bg-gradient-to-r from-primary to-secondary border-0">
+                <Badge className="px-4 py-2 text-sm bg-primary border-0">
                   <Lightning className="w-4 h-4 mr-2" weight="fill" />
                   Limited Territories Available
                 </Badge>
@@ -60,10 +60,10 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
               <div className="space-y-4">
                 <h2 className="text-4xl font-bold tracking-tight">
                   Own Your Territory
-                  <span className="block text-2xl text-primary font-mono mt-2">$45/month</span>
+                  <span className="block text-2xl text-primary font-mono mt-2">$124.99/month</span>
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Secure exclusive rights to service entire zip codes. Build a sustainable business with AI-powered intelligence and guaranteed lead flow.
+                  Secure exclusive rights to service entire zip codes. Build a sustainable business with intelligent platform features and guaranteed lead flow.
                 </p>
               </div>
 
@@ -90,7 +90,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
                 <Button 
                   size="lg" 
                   onClick={onExplore}
-                  className="w-full sm:w-auto px-8 py-6 text-lg bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
+                  className="w-full sm:w-auto px-8 py-6 text-lg"
                 >
                   <MapTrifold className="w-5 h-5 mr-2" weight="fill" />
                   Explore Territories

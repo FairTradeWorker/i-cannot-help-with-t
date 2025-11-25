@@ -54,7 +54,12 @@ export function TerritoryMiniMap({ onStateClick, className = '', compact = false
         <svg
           viewBox="0 0 959 593"
           className="w-full h-auto"
-          style={{ maxHeight: compact ? '120px' : '200px' }}
+          style={{ 
+            maxHeight: compact ? '150px' : '200px',
+            aspectRatio: '1 / 1',
+            objectFit: 'cover'
+          }}
+          preserveAspectRatio="xMidYMid slice"
         >
           <g>
             {US_STATES.map((state) => {
@@ -77,13 +82,13 @@ export function TerritoryMiniMap({ onStateClick, className = '', compact = false
                       }}
                       className={`cursor-pointer transition-all ${
                         isClaimed
-                          ? 'fill-blue-500 stroke-blue-700 hover:fill-blue-600'
-                          : 'fill-gray-300 stroke-gray-500 hover:fill-gray-400'
+                          ? 'fill-primary/60 stroke-primary hover:fill-primary/80'
+                          : 'fill-muted stroke-border hover:fill-muted/70'
                       }`}
                       strokeWidth="2"
                       onClick={() => handleStateClick(state.abbreviation)}
                       style={{
-                        filter: isClaimed ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))' : 'none',
+                        filter: isClaimed ? 'drop-shadow(0 0 8px rgba(0, 0, 0, 0.3))' : 'none',
                       }}
                     />
                   </TooltipTrigger>
@@ -92,7 +97,7 @@ export function TerritoryMiniMap({ onStateClick, className = '', compact = false
                       <div className="font-semibold">{state.name}</div>
                       {isClaimed && (
                         <>
-                          <div className="text-blue-500">✓ Claimed Territory</div>
+                          <div className="text-primary">✓ Claimed Territory</div>
                           <div className="text-muted-foreground">
                             {territoryCount} {territoryCount === 1 ? 'ZIP' : 'ZIPs'}
                           </div>
@@ -116,7 +121,7 @@ export function TerritoryMiniMap({ onStateClick, className = '', compact = false
             {Array.from(claimedStates).slice(0, 5).map((state) => (
               <span
                 key={state}
-                className="px-2 py-1 text-xs rounded-md bg-blue-500/20 text-blue-600 font-medium"
+                className="px-2 py-1 text-xs rounded-md bg-primary/20 text-primary font-medium"
               >
                 {state}
               </span>

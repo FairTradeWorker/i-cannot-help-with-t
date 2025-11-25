@@ -113,7 +113,7 @@ function App() {
     completedJobs: 24127,
     totalRevenue: 12450000,
     averageJobValue: 2850,
-    aiAccuracy: 94.5,
+    platformAccuracy: 94.5,
     topStates: [
       { state: 'California', jobs: 5234 },
       { state: 'Texas', jobs: 4123 },
@@ -136,7 +136,7 @@ function App() {
       { month: 'May', revenue: 1150000 },
       { month: 'Jun', revenue: 1200000 },
     ],
-    aiLearningMetrics: {
+    learningMetrics: {
       totalPredictions: 10523,
       averageAccuracy: 94.5,
       improvementRate: 12.3,
@@ -371,9 +371,9 @@ function App() {
                 >
                   <motion.div
                     animate={{ 
-                      rotate: activeTab === 'intelligence' ? [0, 180, 360] : 0 
+                      scale: activeTab === 'intelligence' ? [1, 1.1, 1] : 1 
                     }}
-                    transition={{ duration: 0.6 }}
+                    transition={{ duration: 0.4, repeat: activeTab === 'intelligence' ? Infinity : 0, repeatDelay: 2 }}
                   >
                     <Lightning className="w-5 h-5 mr-2" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
                   </motion.div>
@@ -619,7 +619,7 @@ function App() {
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('territories', 'overview')}>
                           <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700">
+                            <div className="p-3 rounded-xl bg-primary">
                               <MapTrifold className="w-7 h-7 text-white" weight="fill" />
                             </div>
                             <div>
@@ -628,12 +628,12 @@ function App() {
                             </div>
                           </div>
                           <p className="text-sm font-semibold">Territories</p>
-                          <p className="text-xs text-muted-foreground">First 10 FREE • Then $500 each</p>
+                          <p className="text-xs text-muted-foreground">First 10 FREE • Then $124.99 each</p>
                         </Card>
 
                         <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('browse-jobs')}>
                           <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-accent to-red-700">
+                            <div className="p-3 rounded-xl bg-accent">
                               <Briefcase className="w-7 h-7 text-white" weight="fill" />
                             </div>
                             <div>
@@ -647,7 +647,7 @@ function App() {
 
                         <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('contractor', 'dashboard')}>
                           <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-secondary to-black">
+                            <div className="p-3 rounded-xl bg-secondary">
                               <Hammer className="w-7 h-7 text-white" weight="fill" />
                             </div>
                             <div>
@@ -661,7 +661,7 @@ function App() {
 
                         <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('intelligence')}>
                           <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-blue-700">
+                            <div className="p-3 rounded-xl bg-primary">
                               <Brain className="w-7 h-7 text-white" weight="fill" />
                             </div>
                             <div>
@@ -669,14 +669,14 @@ function App() {
                               <p className="text-2xl font-bold">94.5%</p>
                             </div>
                           </div>
-                          <p className="text-sm font-semibold">AI Intelligence</p>
+                          <p className="text-sm font-semibold">Platform Intelligence</p>
                           <p className="text-xs text-muted-foreground">Self-learning platform</p>
                         </Card>
                       </div>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
                       
-                      <Card className="glass-card p-8 bg-gradient-to-br from-primary/5 to-blue-50 border-2 border-primary/20">
+                      <Card className="glass-card p-8 border-2 border-primary/20">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                           <div>
                             <h3 className="text-2xl font-bold mb-4">Zero Fees for Contractors</h3>
@@ -780,12 +780,12 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-accent">
+                <div className="p-2 rounded-lg bg-primary">
                   <Brain className="w-6 h-6 text-white" weight="fill" />
                 </div>
                 <h2 className="text-2xl font-bold">Admin Dashboard - Intelligence & Learning</h2>
               </div>
-              <p className="text-muted-foreground">Platform analytics, learning metrics, and AI performance</p>
+              <p className="text-muted-foreground">Platform analytics, learning metrics, and performance</p>
             </div>
             
             <div className="space-y-8">

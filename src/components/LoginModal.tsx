@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { EnvelopeSimple, Lock, Eye, EyeSlash, UserCircle, Hammer, HardHat, House, Sparkle } from '@phosphor-icons/react';
+import { EnvelopeSimple, Lock, Eye, EyeSlash, UserCircle, Hammer, HardHat, House, MapTrifold } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,14 +35,14 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
       label: 'Homeowner',
       icon: House,
       description: 'Post jobs and hire contractors',
-      color: 'from-primary to-blue-600',
+      color: 'from-primary to-black',
     },
     {
       id: 'contractor' as const,
       label: 'Contractor',
       icon: Hammer,
       description: 'Find work and grow your business',
-      color: 'from-accent to-red-600',
+      color: 'from-accent to-black',
     },
     {
       id: 'subcontractor' as const,
@@ -55,7 +55,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
 
   if (showSplash) {
     return (
-      <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -66,7 +66,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
-            className="mx-auto w-32 h-32 rounded-3xl bg-gradient-to-br from-primary via-accent to-secondary flex items-center justify-center mb-8 shadow-2xl"
+            className="mx-auto w-32 h-32 rounded-3xl bg-primary flex items-center justify-center mb-8 shadow-2xl"
           >
             <House className="w-20 h-20 text-white" weight="fill" />
           </motion.div>
@@ -75,7 +75,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-5xl font-bold mb-3 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent"
+            className="text-5xl font-bold mb-3"
           >
             ServiceHub
           </motion.h1>
@@ -100,7 +100,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
               className="px-8 py-6 text-lg shadow-xl"
             >
               Get Started
-              <Sparkle className="w-5 h-5 ml-2" weight="fill" />
+              <MapTrifold className="w-5 h-5 ml-2" weight="fill" />
             </Button>
           </motion.div>
           
@@ -131,20 +131,27 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-white via-blue-50 to-red-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-background z-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="w-full max-w-5xl my-8"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:col-span-2 flex flex-col justify-center p-8 bg-gradient-to-br from-primary to-secondary rounded-2xl text-white shadow-2xl"
+            className="lg:col-span-2 flex flex-col justify-center p-8 bg-primary rounded-l-2xl text-white shadow-2xl"
           >
+            <Tabs defaultValue={isLogin ? 'login' : 'signup'} onValueChange={(v) => setIsLogin(v === 'login')} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/10">
+                <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-primary">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary">Sign Up</TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             <div className="mb-8">
               <motion.div
                 initial={{ scale: 0 }}
@@ -163,7 +170,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Sparkle className="w-4 h-4 text-white" weight="fill" />
+                  <MapTrifold className="w-4 h-4 text-white" weight="fill" />
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Instant Connections</h4>
@@ -172,7 +179,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Sparkle className="w-4 h-4 text-white" weight="fill" />
+                  <Lock className="w-4 h-4 text-white" weight="fill" />
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Secure Payments</h4>
@@ -181,7 +188,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Sparkle className="w-4 h-4 text-white" weight="fill" />
+                  <MapTrifold className="w-4 h-4 text-white" weight="fill" />
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Territory Ownership</h4>
@@ -191,227 +198,104 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
             </div>
           </motion.div>
 
-          <Card className="lg:col-span-3 glass-card border-2 shadow-2xl">
+          <Card className="lg:col-span-3 glass-card border-2 shadow-2xl rounded-l-none rounded-r-2xl border-l-0">
             <CardHeader className="text-center space-y-2 pb-4">
-              <h2 className="text-3xl font-bold">Sign In</h2>
+              <h2 className="text-3xl font-bold">{isLogin ? 'Sign In' : 'Create Account'}</h2>
               <p className="text-sm text-muted-foreground">
                 Choose your role and continue to your dashboard
               </p>
             </CardHeader>
-
-            <CardContent className="space-y-6">
-              <Tabs value={isLogin ? 'login' : 'signup'} onValueChange={(v) => setIsLogin(v === 'login')}>
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="login" className="text-base">Sign In</TabsTrigger>
-                  <TabsTrigger value="signup" className="text-base">Sign Up</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="login" className="space-y-5 mt-0">
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="space-y-3">
-                      <Label className="text-base">Select Your Role</Label>
-                      <div className="grid grid-cols-1 gap-3">
-                        {roles.map((role) => {
-                          const Icon = role.icon;
-                          return (
-                            <motion.div
-                              key={role.id}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <button
-                                type="button"
-                                onClick={() => setSelectedRole(role.id)}
-                                className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
-                                  selectedRole === role.id
-                                    ? 'border-primary bg-primary/5 shadow-lg'
-                                    : 'border-border hover:border-primary/50 hover:shadow-md'
-                                }`}
-                              >
-                                <div className="flex items-center gap-4">
-                                  <div className={`p-3 rounded-lg bg-gradient-to-br ${role.color}`}>
-                                    <Icon
-                                      className="w-7 h-7 text-white"
-                                      weight="fill"
-                                    />
-                                  </div>
-                                  <div className="flex-1">
-                                    <p className="font-semibold text-base">{role.label}</p>
-                                    <p className="text-sm text-muted-foreground">{role.description}</p>
-                                  </div>
-                                  {selectedRole === role.id && (
-                                    <motion.div
-                                      initial={{ scale: 0 }}
-                                      animate={{ scale: 1 }}
-                                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                                    >
-                                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                      </svg>
-                                    </motion.div>
-                                  )}
-                                </div>
-                              </button>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-sm font-medium">
+                      Email
+                    </Label>
+                    <div className="relative">
+                      <EnvelopeSimple className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-10"
+                        required
+                      />
                     </div>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-base">Email Address</Label>
-                      <div className="relative">
-                        <EnvelopeSimple className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="you@example.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="pl-10 h-12 text-base"
-                          required
-                        />
-                      </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="text-sm font-medium">
+                      Password
+                    </Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-10 pr-10"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showPassword ? (
+                          <EyeSlash className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
+                      </button>
                     </div>
+                  </div>
+                </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="text-base">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
-                        <Input
-                          id="password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="••••••••"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="pl-10 pr-10 h-12 text-base"
-                          required
-                        />
-                        <button
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">I am a...</Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {roles.map((role) => {
+                      const Icon = role.icon;
+                      return (
+                        <motion.button
+                          key={role.id}
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground transition-colors"
+                          onClick={() => setSelectedRole(role.id)}
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
+                            selectedRole === role.id
+                              ? 'border-primary bg-primary/5 shadow-md'
+                              : 'border-border bg-card hover:border-primary/50'
+                          }`}
                         >
-                          {showPassword ? (
-                            <EyeSlash className="w-5 h-5" />
-                          ) : (
-                            <Eye className="w-5 h-5" />
-                          )}
-                        </button>
-                      </div>
-                    </div>
+                          <div
+                            className={`w-12 h-12 rounded-lg bg-gradient-to-br ${role.color} flex items-center justify-center`}
+                          >
+                            <Icon className="w-6 h-6 text-white" weight="fill" />
+                          </div>
+                          <span className="text-sm font-medium text-center">
+                            {role.label}
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-                    <Button type="submit" className="w-full h-12 text-base" size="lg">
-                      Sign In to Dashboard
-                    </Button>
-                  </form>
-                </TabsContent>
-
-                <TabsContent value="signup" className="space-y-5 mt-0">
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="space-y-3">
-                      <Label className="text-base">Select Your Role</Label>
-                      <div className="grid grid-cols-1 gap-3">
-                        {roles.map((role) => {
-                          const Icon = role.icon;
-                          return (
-                            <motion.div
-                              key={role.id}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <button
-                                type="button"
-                                onClick={() => setSelectedRole(role.id)}
-                                className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
-                                  selectedRole === role.id
-                                    ? 'border-primary bg-primary/5 shadow-lg'
-                                    : 'border-border hover:border-primary/50 hover:shadow-md'
-                                }`}
-                              >
-                                <div className="flex items-center gap-4">
-                                  <div className={`p-3 rounded-lg bg-gradient-to-br ${role.color}`}>
-                                    <Icon
-                                      className="w-7 h-7 text-white"
-                                      weight="fill"
-                                    />
-                                  </div>
-                                  <div className="flex-1">
-                                    <p className="font-semibold text-base">{role.label}</p>
-                                    <p className="text-sm text-muted-foreground">{role.description}</p>
-                                  </div>
-                                  {selectedRole === role.id && (
-                                    <motion.div
-                                      initial={{ scale: 0 }}
-                                      animate={{ scale: 1 }}
-                                      className="w-6 h-6 rounded-full bg-primary flex items-center justify-center"
-                                    >
-                                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                      </svg>
-                                    </motion.div>
-                                  )}
-                                </div>
-                              </button>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email" className="text-base">Email Address</Label>
-                      <div className="relative">
-                        <EnvelopeSimple className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
-                        <Input
-                          id="signup-email"
-                          type="email"
-                          placeholder="you@example.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="pl-10 h-12 text-base"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password" className="text-base">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
-                        <Input
-                          id="signup-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="••••••••"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="pl-10 pr-10 h-12 text-base"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {showPassword ? (
-                            <EyeSlash className="w-5 h-5" />
-                          ) : (
-                            <Eye className="w-5 h-5" />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-
-                    <Button type="submit" className="w-full h-12 text-base" size="lg">
-                      Create Account
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-
-              <div className="text-center text-xs text-muted-foreground pt-4 border-t">
-                By continuing, you agree to our Terms of Service and Privacy Policy
-              </div>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full shadow-xl"
+                >
+                  {isLogin ? 'Sign In' : 'Create Account'}
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </div>

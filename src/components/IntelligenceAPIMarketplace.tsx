@@ -27,15 +27,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
-const INTELLIGENCE_PLANS = [
+const CONTRACTOR_PLANS = [
   {
-    name: 'Starter',
-    price: 5000,
+    name: 'Basic',
+    price: 29,
     period: 'month',
-    calls: '10,000',
-    description: 'Perfect for getting started with market intelligence',
+    calls: '1,000',
+    description: 'Perfect for independent contractors starting out',
     features: [
-      { text: '10,000 API calls/month', included: true },
+      { text: '1,000 API calls/month', included: true },
       { text: 'Basic demand forecasting', included: true },
       { text: 'Market pricing data', included: true },
       { text: '24-hour data refresh', included: true },
@@ -47,14 +47,14 @@ const INTELLIGENCE_PLANS = [
   },
   {
     name: 'Professional',
-    price: 25000,
+    price: 124.99,
     period: 'month',
-    calls: '100,000',
+    calls: '10,000',
     popular: true,
     description: 'Advanced intelligence for growing businesses',
     features: [
-      { text: '100,000 API calls/month', included: true },
-      { text: 'Everything in Starter', included: true },
+      { text: '10,000 API calls/month', included: true },
+      { text: 'Everything in Basic', included: true },
       { text: 'Advanced forecasting (90-day)', included: true },
       { text: 'Real-time labor availability', included: true },
       { text: 'Hourly data refresh', included: true },
@@ -64,37 +64,71 @@ const INTELLIGENCE_PLANS = [
     ],
   },
   {
-    name: 'Enterprise',
-    price: 100000,
+    name: 'Business',
+    price: 499,
     period: 'month',
-    calls: 'Unlimited',
-    description: 'Complete intelligence solution for large organizations',
+    calls: '50,000',
+    description: 'Complete solution for established businesses',
     features: [
-      { text: 'Unlimited API calls', included: true },
+      { text: '50,000 API calls/month', included: true },
       { text: 'Everything in Professional', included: true },
       { text: 'Custom data models', included: true },
       { text: 'Real-time streaming data', included: true },
       { text: 'Dedicated support team', included: true },
       { text: 'Custom integrations', included: true },
       { text: 'White-glove onboarding', included: true },
-      { text: '99.99% uptime SLA', included: true },
+      { text: '99.99% uptime SLA', included: false },
     ],
   },
   {
-    name: 'Custom',
+    name: 'Enterprise',
     price: null,
-    period: 'quote',
-    calls: 'Custom',
-    description: 'Tailored solutions for unique requirements',
+    period: 'custom',
+    calls: 'Unlimited',
+    description: 'Tailored solutions for large organizations',
     features: [
-      { text: 'Everything in Enterprise', included: true },
+      { text: 'Unlimited API calls', included: true },
+      { text: 'Everything in Business', included: true },
       { text: 'White-label options', included: true },
       { text: 'On-premise deployment', included: true },
       { text: 'Custom SLAs', included: true },
       { text: 'Direct database access', included: true },
-      { text: 'Custom analytics', included: true },
       { text: 'Dedicated infrastructure', included: true },
-      { text: 'Priority feature development', included: true },
+      { text: '99.99% uptime SLA', included: true },
+    ],
+  },
+];
+
+const HOMEOWNER_PLANS = [
+  {
+    name: 'Free',
+    price: 0,
+    period: 'forever',
+    description: 'Basic access to post jobs and hire contractors',
+    features: [
+      { text: 'Post unlimited jobs', included: true },
+      { text: 'Browse contractors', included: true },
+      { text: 'Basic messaging', included: true },
+      { text: 'Standard response time', included: true },
+      { text: 'Priority support', included: false },
+      { text: 'Priority placement', included: false },
+      { text: 'Advanced analytics', included: false },
+    ],
+  },
+  {
+    name: 'Premium',
+    price: 19.99,
+    period: 'month',
+    popular: true,
+    description: 'Get your jobs done faster with priority access',
+    features: [
+      { text: 'Everything in Free', included: true },
+      { text: 'Priority job placement', included: true },
+      { text: 'Faster contractor responses', included: true },
+      { text: 'Priority support', included: true },
+      { text: 'Advanced analytics', included: true },
+      { text: 'Unlimited photo uploads', included: true },
+      { text: 'Project management tools', included: true },
     ],
   },
 ];
@@ -235,6 +269,7 @@ const API_ENDPOINTS = [
 export function IntelligenceAPIMarketplace() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [selectedEndpoint, setSelectedEndpoint] = useState(0);
+  const [userType, setUserType] = useState<'contractor' | 'homeowner'>('contractor');
 
   const handleGetStarted = (planName: string) => {
     setSelectedPlan(planName);
@@ -242,6 +277,14 @@ export function IntelligenceAPIMarketplace() {
       description: 'You\'ll receive an API key and onboarding materials shortly.',
     });
   };
+  
+  const handleContactSales = () => {
+    toast.success('Sales team will contact you shortly', {
+      description: 'Our enterprise team will reach out within 24 hours.',
+    });
+  };
+
+  const currentPlans = userType === 'contractor' ? CONTRACTOR_PLANS : HOMEOWNER_PLANS;
 
   return (
     <div className="space-y-12">
@@ -250,13 +293,13 @@ export function IntelligenceAPIMarketplace() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center space-y-4"
       >
-        <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent mb-4">
+        <div className="inline-flex p-4 rounded-2xl bg-primary mb-4">
           <Brain className="w-12 h-12 text-white" weight="bold" />
         </div>
         <h1 className="text-5xl font-bold tracking-tight">Intelligence API</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           Enterprise-grade market intelligence for non-competing businesses. 
-          Leverage our AI-powered forecasting, pricing, and risk assessment APIs.
+          Leverage our forecasting, pricing, and risk assessment APIs.
         </p>
         
         <div className="flex items-center justify-center gap-4 pt-4">
@@ -274,16 +317,16 @@ export function IntelligenceAPIMarketplace() {
           </Badge>
         </div>
       </motion.div>
-
-      <Tabs defaultValue="pricing" className="space-y-8">
+      
+      <Tabs defaultValue="contractor" className="space-y-8" onValueChange={(v) => setUserType(v as 'contractor' | 'homeowner')}>
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-          <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
-          <TabsTrigger value="docs">API Documentation</TabsTrigger>
+          <TabsTrigger value="contractor">Contractors</TabsTrigger>
+          <TabsTrigger value="homeowner">Homeowners</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pricing" className="space-y-8">
+        <TabsContent value="contractor" className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            {INTELLIGENCE_PLANS.map((plan, index) => (
+            {CONTRACTOR_PLANS.map((plan, index) => (
               <motion.div
                 key={plan.name}
                 initial={{ opacity: 0, y: 20 }}
@@ -295,7 +338,7 @@ export function IntelligenceAPIMarketplace() {
                 }`}>
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-primary to-accent text-white px-4 py-1">
+                      <Badge className="bg-primary text-white px-4 py-1">
                         Most Popular
                       </Badge>
                     </div>
@@ -307,15 +350,18 @@ export function IntelligenceAPIMarketplace() {
                       {plan.description}
                     </CardDescription>
                     <div className="pt-4">
-                      {plan.price ? (
+                      {plan.price !== null ? (
                         <>
                           <div className="text-4xl font-bold">
-                            ${(plan.price / 1000).toFixed(0)}K
+                            ${plan.price}
                           </div>
                           <div className="text-sm text-muted-foreground">per {plan.period}</div>
                         </>
                       ) : (
-                        <div className="text-4xl font-bold">Custom</div>
+                        <>
+                          <div className="text-4xl font-bold">Custom</div>
+                          <div className="text-sm text-muted-foreground">Contact sales</div>
+                        </>
                       )}
                       <div className="text-sm font-medium text-primary mt-2">
                         {plan.calls} API calls
@@ -344,9 +390,9 @@ export function IntelligenceAPIMarketplace() {
                     <Button 
                       className="w-full" 
                       variant={plan.popular ? 'default' : 'outline'}
-                      onClick={() => handleGetStarted(plan.name)}
+                      onClick={() => plan.price !== null ? handleGetStarted(plan.name) : handleContactSales()}
                     >
-                      {plan.price ? 'Get Started' : 'Contact Sales'}
+                      {plan.price !== null ? 'Get Started' : 'Contact Sales'}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </CardFooter>
@@ -389,98 +435,112 @@ export function IntelligenceAPIMarketplace() {
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="docs" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Authentication</CardTitle>
-              <CardDescription>All API requests require authentication</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label className="font-semibold">API Keys with IP Whitelisting</Label>
-                <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                  <code>{`curl -H "X-API-Key: sk_live_..." \\
-     -H "Content-Type: application/json" \\
-     https://api.servicehub.com/v1/intelligence/...`}</code>
-                </pre>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="font-semibold">OAuth 2.0 for User-Level Access</Label>
-                <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-                  <code>{`curl -H "Authorization: Bearer eyJhbG..." \\
-     https://api.servicehub.com/v1/intelligence/...`}</code>
-                </pre>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 space-y-3">
-              <h3 className="font-semibold text-lg">Available Endpoints</h3>
-              <div className="space-y-2">
-                {API_ENDPOINTS.map((endpoint, index) => {
-                  const Icon = endpoint.icon;
-                  return (
-                    <Button
-                      key={index}
-                      variant={selectedEndpoint === index ? 'default' : 'outline'}
-                      className="w-full justify-start"
-                      onClick={() => setSelectedEndpoint(index)}
-                    >
-                      <Icon className="w-4 h-4 mr-2" />
-                      {endpoint.name}
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <CardTitle className="flex items-center gap-2">
-                        {(() => {
-                          const Icon = API_ENDPOINTS[selectedEndpoint].icon;
-                          return <Icon className="w-6 h-6 text-primary" />;
-                        })()}
-                        {API_ENDPOINTS[selectedEndpoint].name}
-                      </CardTitle>
-                      <CardDescription>
-                        {API_ENDPOINTS[selectedEndpoint].description}
-                      </CardDescription>
+        
+        <TabsContent value="homeowner" className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {HOMEOWNER_PLANS.map((plan, index) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className={`relative h-full flex flex-col ${
+                  plan.popular ? 'border-primary shadow-lg shadow-primary/20 scale-105' : ''
+                }`}>
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-primary text-white px-4 py-1">
+                        Most Popular
+                      </Badge>
                     </div>
-                    <Badge variant="secondary">
-                      {API_ENDPOINTS[selectedEndpoint].method}
-                    </Badge>
-                  </div>
-                  <code className="text-xs text-muted-foreground block mt-2">
-                    {API_ENDPOINTS[selectedEndpoint].path}
-                  </code>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="font-semibold">Request Example</Label>
-                    <pre className="bg-muted p-4 rounded-lg text-xs overflow-x-auto">
-                      <code>{API_ENDPOINTS[selectedEndpoint].example.request}</code>
-                    </pre>
-                  </div>
+                  )}
                   
-                  <div className="space-y-2">
-                    <Label className="font-semibold">Response Example</Label>
-                    <pre className="bg-muted p-4 rounded-lg text-xs overflow-x-auto">
-                      <code>{API_ENDPOINTS[selectedEndpoint].example.response}</code>
-                    </pre>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                    <CardDescription className="text-sm min-h-[40px]">
+                      {plan.description}
+                    </CardDescription>
+                    <div className="pt-4">
+                      {plan.price > 0 ? (
+                        <>
+                          <div className="text-4xl font-bold">
+                            ${plan.price}
+                          </div>
+                          <div className="text-sm text-muted-foreground">per {plan.period}</div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-4xl font-bold">Free</div>
+                          <div className="text-sm text-muted-foreground">{plan.period}</div>
+                        </>
+                      )}
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent className="flex-1 space-y-3">
+                    {plan.features.map((feature, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        {feature.included ? (
+                          <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" weight="bold" />
+                        ) : (
+                          <X className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                        )}
+                        <span className={`text-sm ${
+                          !feature.included ? 'text-muted-foreground' : ''
+                        }`}>
+                          {feature.text}
+                        </span>
+                      </div>
+                    ))}
+                  </CardContent>
+                  
+                  <CardFooter>
+                    <Button 
+                      className="w-full" 
+                      variant={plan.popular ? 'default' : 'outline'}
+                      onClick={() => handleGetStarted(plan.name)}
+                    >
+                      {plan.price > 0 ? 'Get Started' : 'Sign Up Free'}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </TabsContent>
       </Tabs>
+      
+      <Card className="bg-muted/20 border-primary/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Code className="w-6 h-6 text-primary" />
+            API Endpoints Available
+          </CardTitle>
+          <CardDescription>
+            Access powerful intelligence endpoints across all paid plans
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {API_ENDPOINTS.slice(0, 6).map((endpoint) => {
+              const Icon = endpoint.icon;
+              return (
+                <div key={endpoint.name} className="flex items-start gap-3 p-3 rounded-lg bg-card border border-border">
+                  <Icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-sm">{endpoint.name}</h4>
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {endpoint.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

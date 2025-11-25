@@ -143,7 +143,7 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
           transition={{ delay: 0.2, duration: 0.5 }}
           className="text-center"
         >
-          <h1 className="text-3xl font-bold mb-1 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold mb-1">
             Territory Dominance Engine
           </h1>
           <p className="text-sm text-muted-foreground">Real-time territory intelligence & market saturation analysis</p>

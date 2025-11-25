@@ -92,10 +92,10 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
         <div>
           <h2 className="text-3xl font-bold">Intelligence API</h2>
           <p className="text-muted-foreground mt-1">
-            Access 50+ AI-powered endpoints for home services intelligence
+            Access 50+ endpoints for home services intelligence
           </p>
         </div>
-        <Badge className="bg-gradient-to-r from-primary to-accent text-white px-4 py-2">
+        <Badge className="bg-primary text-white px-4 py-2">
           <Lightning className="w-4 h-4 mr-2" weight="fill" />
           Self-Learning Platform
         </Badge>
@@ -147,8 +147,8 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="free">Free - 100 calls/month</SelectItem>
-                    <SelectItem value="professional">Professional - 10K calls/month ($199/mo)</SelectItem>
-                    <SelectItem value="enterprise">Enterprise - Unlimited ($1,299/mo)</SelectItem>
+                    <SelectItem value="professional">Professional - 10K calls/month ($124.99/mo)</SelectItem>
+                    <SelectItem value="enterprise">Enterprise - Unlimited (Custom)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

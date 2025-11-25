@@ -329,18 +329,18 @@ export interface Analytics {
   completedJobs: number;
   totalRevenue: number;
   averageJobValue: number;
-  aiAccuracy: number;
+  platformAccuracy: number;
   topStates: { state: string; jobs: number }[];
   topServices: { service: string; count: number }[];
   revenueByMonth: { month: string; revenue: number }[];
-  aiLearningMetrics: {
+  learningMetrics: {
     totalPredictions: number;
     averageAccuracy: number;
     improvementRate: number;
   };
 }
 
-export interface AILearningMetrics {
+export interface LearningMetrics {
   jobId: string;
   predictionId: string;
   predictedCost: { min: number; max: number };
