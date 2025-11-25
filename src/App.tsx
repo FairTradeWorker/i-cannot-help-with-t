@@ -56,7 +56,6 @@ import { JobBrowser } from '@/components/JobBrowser';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { QuickJobPost } from '@/components/QuickJobPost';
 import { VideoJobCreator } from '@/components/VideoJobCreator';
-import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
