@@ -256,9 +256,9 @@ function App() {
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
-        <div className="w-full px-4">
-          <div className="flex items-center justify-between h-16 py-2 max-w-[1920px] mx-auto gap-4">
-            <nav className="flex items-center gap-2">
+        <div className="w-full px-6">
+          <div className="flex items-center justify-center h-16 py-2 max-w-[1920px] mx-auto gap-6">
+            <nav className="flex items-center gap-3">
               <motion.div 
                 whileHover={{ scale: 1.02 }} 
                 whileTap={{ scale: 0.96 }}
@@ -346,19 +346,18 @@ function App() {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              className="absolute left-1/2 -translate-x-1/2"
             >
               <Button
                 size="lg"
                 onClick={() => handleNavClick('homeowner', 'post-job')}
-                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-8"
+                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-8 mx-4"
               >
                 <Plus className="w-5 h-5 mr-2" weight="bold" />
                 Post a Job
               </Button>
             </motion.div>
 
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-3">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
@@ -472,7 +471,7 @@ function App() {
               </motion.div>
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 ml-auto">
               <motion.div 
                 whileHover={{ scale: 1.02 }} 
                 whileTap={{ scale: 0.96 }}
