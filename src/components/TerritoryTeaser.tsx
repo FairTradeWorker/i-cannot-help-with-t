@@ -31,7 +31,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
   ];
 
   const benefits = [
-    'Exclusive territory rights',
+    'Exclusive Rights to Our Leads',
     'AI-powered demand forecasting',
     'Automated lead generation',
     'Priority job routing',
@@ -60,6 +60,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
               <div className="space-y-4">
                 <h2 className="text-4xl font-bold tracking-tight">
                   Own Your Territory
+                  <span className="block text-2xl text-primary font-mono mt-2">$45/month</span>
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
                   Secure exclusive rights to service entire zip codes. Build a sustainable business with AI-powered intelligence and guaranteed lead flow.
@@ -134,12 +135,12 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-3">
                     <div className="p-2 rounded-lg bg-accent">
-                      <Lightning className="w-5 h-5 text-white" weight="fill" />
+                      <CurrencyDollar className="w-5 h-5 text-white" weight="fill" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="font-semibold">Early Adopter Bonus</h4>
+                      <h4 className="font-semibold">Simple Monthly Pricing</h4>
                       <p className="text-sm text-muted-foreground">
-                        Claim your territory now and get 3 months of premium intelligence API access free
+                        Just $45/month to own exclusive lead rights in your territory. No hidden fees.
                       </p>
                     </div>
                   </div>

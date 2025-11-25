@@ -37,8 +37,8 @@ import {
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LegalConsentModal } from '@/components/LegalConsentModal';
 import { LegalFooter } from '@/components/LegalFooter';
+import { LoginModal } from '@/components/LoginModal';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
@@ -62,13 +62,13 @@ import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral' | 'intelligence';
+type MainTab = 'home' | 'territories' | 'browse-jobs' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral';
 type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showLegalConsent, setShowLegalConsent] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [activeTab, setActiveTab] = useState<MainTab>('home');
   const [activeSubTab, setActiveSubTab] = useState<SubTab | null>(null);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
@@ -145,7 +145,7 @@ function App() {
     const user = await dataStore.getCurrentUser();
     
     if (!user) {
-      setShowLegalConsent(true);
+      setShowLogin(true);
     } else {
       setCurrentUser(user);
     }
@@ -153,28 +153,32 @@ function App() {
     setLoading(false);
   };
 
-  const handleLegalAccept = async (consents: any) => {
+  const handleLogin = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
     const newUser: UserType = {
       id: 'user-' + Date.now(),
-      role: 'homeowner',
-      email: 'user@example.com',
-      name: 'Guest User',
+      role: role,
+      email: email,
+      name: email.split('@')[0],
       createdAt: new Date(),
-      legalConsents: {
-        ...consents,
-        acceptedAt: new Date(),
-        ipAddress: '127.0.0.1',
-        userAgent: navigator.userAgent,
-      },
     };
     
     await dataStore.saveUser(newUser);
     setCurrentUser(newUser);
-    setShowLegalConsent(false);
+    setShowLogin(false);
   };
 
-  const handleLegalDecline = () => {
-    setShowLegalConsent(false);
+  const handleSignUp = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
+    const newUser: UserType = {
+      id: 'user-' + Date.now(),
+      role: role,
+      email: email,
+      name: email.split('@')[0],
+      createdAt: new Date(),
+    };
+    
+    await dataStore.saveUser(newUser);
+    setCurrentUser(newUser);
+    setShowLogin(false);
   };
 
   const handleNavClick = (tab: MainTab, subTab?: SubTab) => {
@@ -199,7 +203,7 @@ function App() {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    setShowLegalConsent(true);
+    setShowLogin(true);
     setActiveTab('home');
     setActiveSubTab(null);
   };
@@ -224,12 +228,11 @@ function App() {
     );
   }
 
-  if (showLegalConsent) {
+  if (showLogin) {
     return (
-      <LegalConsentModal
-        userType="homeowner"
-        onAccept={handleLegalAccept}
-        onDecline={handleLegalDecline}
+      <LoginModal
+        onLogin={handleLogin}
+        onSignUp={handleSignUp}
       />
     );
   }
@@ -244,156 +247,139 @@ function App() {
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <nav className="flex items-center gap-3 flex-1">
-              <Button
-                variant={activeTab === 'home' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('home')}
-                className="glass-hover"
-              >
-                <House className="w-5 h-5 mr-2" weight={activeTab === 'home' ? 'fill' : 'regular'} />
-                Home
-              </Button>
+            <nav className="flex items-center gap-2 flex-1">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'home' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('home')}
+                  className="glass-hover"
+                >
+                  <motion.div
+                    animate={{ 
+                      rotate: activeTab === 'home' ? [0, -5, 5, 0] : 0 
+                    }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <House className="w-5 h-5 mr-2" weight={activeTab === 'home' ? 'fill' : 'regular'} />
+                  </motion.div>
+                  Home
+                </Button>
+              </motion.div>
 
-              <Button
-                variant={activeTab === 'territories' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('territories')}
-                className="glass-hover"
-              >
-                <MapTrifold className="w-5 h-5 mr-2" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
-                Territories
-              </Button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'territories' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('territories')}
+                  className="glass-hover"
+                >
+                  <motion.div
+                    animate={{ 
+                      scale: activeTab === 'territories' ? [1, 1.1, 1] : 1 
+                    }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <MapTrifold className="w-5 h-5 mr-2" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
+                  </motion.div>
+                  Territories
+                </Button>
+              </motion.div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={activeTab === 'contractor' ? 'default' : 'ghost'} className="glass-hover">
-                    <Hammer className="w-5 h-5 mr-2" weight="regular" />
-                    Contractor
-                    <CaretDown className="w-4 h-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
-                    <ChartBar className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'jobs')}>
-                    <Briefcase className="w-4 h-4 mr-2" />
-                    Browse Jobs
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'earnings')}>
-                    <CurrencyDollar className="w-4 h-4 mr-2" />
-                    Earnings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'ai')}>
-                    <Brain className="w-4 h-4 mr-2" />
-                    AI Intelligence
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'browse-jobs' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('browse-jobs')}
+                  className="glass-hover"
+                >
+                  <motion.div
+                    animate={{ 
+                      y: activeTab === 'browse-jobs' ? [0, -2, 0] : 0 
+                    }}
+                    transition={{ duration: 0.4, repeat: activeTab === 'browse-jobs' ? Infinity : 0, repeatDelay: 2 }}
+                  >
+                    <CurrencyDollar className="w-5 h-5 mr-2" weight={activeTab === 'browse-jobs' ? 'fill' : 'regular'} />
+                  </motion.div>
+                  Browse Jobs
+                </Button>
+              </motion.div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={activeTab === 'subcontractor' ? 'default' : 'ghost'} className="glass-hover">
-                    <HardHat className="w-5 h-5 mr-2" weight="regular" />
-                    Subcontractor
-                    <CaretDown className="w-4 h-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'dashboard')}>
-                    <ChartBar className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'browse')}>
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Location Browse
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'jobs')}>
-                    <Briefcase className="w-4 h-4 mr-2" />
-                    All Jobs
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'earnings')}>
-                    <CurrencyDollar className="w-4 h-4 mr-2" />
-                    Earnings
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('contractor', 'dashboard')}
+                  className="glass-hover"
+                >
+                  <Hammer className="w-5 h-5 mr-2" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
+                  Contractor
+                </Button>
+              </motion.div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={activeTab === 'partners' ? 'default' : 'ghost'} className="glass-hover">
-                    <Handshake className="w-5 h-5 mr-2" weight="regular" />
-                    Partners
-                    <CaretDown className="w-4 h-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'materials')}>
-                    <Package className="w-4 h-4 mr-2" />
-                    Materials Vendors
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'insurance')}>
-                    <Shield className="w-4 h-4 mr-2" />
-                    Insurance
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'ai')}>
-                    <ChartBar className="w-4 h-4 mr-2" />
-                    Technology
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
-                    <Bank className="w-4 h-4 mr-2" />
-                    Private Equity
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'real_estate')}>
-                    <Buildings className="w-4 h-4 mr-2" />
-                    Real Estate
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'contact')}>
-                    <Question className="w-4 h-4 mr-2" />
-                    Partner With Us
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('subcontractor', 'dashboard')}
+                  className="glass-hover"
+                >
+                  <HardHat className="w-5 h-5 mr-2" weight={activeTab === 'subcontractor' ? 'fill' : 'regular'} />
+                  Subcontractor
+                </Button>
+              </motion.div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={activeTab === 'referral' ? 'default' : 'ghost'} className="glass-hover">
-                    <Gift className="w-5 h-5 mr-2" weight="regular" />
-                    Referral
-                    <CaretDown className="w-4 h-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('referral', 'program')}>
-                    <Gift className="w-4 h-4 mr-2" />
-                    Referral Program
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('referral', 'my_referrals')}>
-                    <UserCircle className="w-4 h-4 mr-2" />
-                    My Referrals
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('intelligence')}
+                  className="glass-hover"
+                >
+                  <motion.div
+                    animate={{ 
+                      rotate: activeTab === 'intelligence' ? [0, 180, 360] : 0 
+                    }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Lightning className="w-5 h-5 mr-2" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
+                  </motion.div>
+                  API
+                </Button>
+              </motion.div>
 
-              <Button
-                variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('intelligence')}
-                className="glass-hover"
-              >
-                <Lightning className="w-5 h-5 mr-2" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
-                Intelligence API
-              </Button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'messages' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('messages')}
+                  className="glass-hover relative"
+                >
+                  <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+                  Messages
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: [0, 1.2, 1] }}
+                    transition={{ duration: 0.4 }}
+                    className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"
+                  />
+                </Button>
+              </motion.div>
 
-              <Button
-                variant={activeTab === 'messages' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('messages')}
-                className="glass-hover"
-              >
-                <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
-                Messages
-              </Button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'partners' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('partners')}
+                  className="glass-hover"
+                >
+                  <Handshake className="w-5 h-5 mr-2" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
+                  Partners
+                </Button>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={activeTab === 'referral' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('referral')}
+                  className="glass-hover"
+                >
+                  <Gift className="w-5 h-5 mr-2" weight={activeTab === 'referral' ? 'fill' : 'regular'} />
+                  Referral
+                </Button>
+              </motion.div>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -530,25 +516,13 @@ function App() {
               {!showProfile && !showVideoCreator && (
                 <>
                   {activeTab === 'home' && (
-                    <div className="space-y-8">
-                      <TerritoryTeaser onExplore={() => handleNavClick('territories')} />
+                    <div className="space-y-6">
                       <QuickJobPost onCreateJob={handleCreateJob} />
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      >
-                        <JobBrowser />
-                      </motion.div>
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      >
-                        <APIMarketplaceSection />
-                      </motion.div>
+                      <TerritoryTeaser onExplore={() => handleNavClick('territories')} />
+                      <APIMarketplaceSection />
                     </div>
                   )}
+                  {activeTab === 'browse-jobs' && <JobBrowser />}
                   {activeTab === 'territories' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'subcontractor' && activeSubTab === 'browse' && <LocationJobBrowser userId={currentUser?.id} />}
