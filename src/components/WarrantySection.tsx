@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, CheckCircle, Clock, Hammer, House, Lightning, Phone, Wrench } from '@phosphor-icons/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,8 +6,28 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import { WarrantyUpsell } from '@/components/WarrantyUpsell';
+import { PaymentModal } from '@/components/PaymentModal';
+import type { WarrantyQuote } from '@/lib/WarrantyEngine';
 
-export function WarrantySection() {
+interface WarrantySectionProps {
+  /** Job total to calculate warranty pricing. Defaults to $10,000 for demo purposes */
+  jobTotal?: number;
+}
+
+export function WarrantySection({ jobTotal = 10000 }: WarrantySectionProps) {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedWarrantyQuote, setSelectedWarrantyQuote] = useState<WarrantyQuote | null>(null);
+
+  const handleAddWarranty = (quote: WarrantyQuote) => {
+    setSelectedWarrantyQuote(quote);
+  };
+
+  const handleOpenFinancing = (amount: number, quote: WarrantyQuote) => {
+    setSelectedWarrantyQuote(quote);
+    setShowPaymentModal(true);
+  };
+
   const warrantyTiers = [
     {
       name: 'Extended Warranty',
@@ -87,6 +108,13 @@ export function WarrantySection() {
           Every job includes a basic 1-year warranty. Upgrade to extended coverage for complete peace of mind.
         </p>
       </motion.div>
+
+      {/* Scaling Warranty Engine - Auto-calculates based on job total */}
+      <WarrantyUpsell
+        jobTotal={jobTotal}
+        onAddWarranty={handleAddWarranty}
+        onOpenFinancing={handleOpenFinancing}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {warrantyTiers.map((tier, index) => (
@@ -309,6 +337,20 @@ export function WarrantySection() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Payment Modal for Financing */}
+      <PaymentModal
+        open={showPaymentModal}
+        onOpenChange={setShowPaymentModal}
+        amount={selectedWarrantyQuote?.price || 0}
+        jobTitle={selectedWarrantyQuote ? `${selectedWarrantyQuote.tier.name} Warranty` : 'Warranty'}
+        onPaymentComplete={() => {
+          setShowPaymentModal(false);
+          toast.success('Warranty purchase complete!', {
+            description: `Your ${selectedWarrantyQuote?.tier.name} warranty is now active.`,
+          });
+        }}
+      />
     </div>
   );
 }
