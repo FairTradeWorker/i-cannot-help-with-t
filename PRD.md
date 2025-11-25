@@ -16,6 +16,13 @@ A revolutionary 3-tier marketplace platform where homeowners upload 60-second vi
 
 ## Essential Features
 
+### Enhanced Home Dashboard
+- **Functionality**: Comprehensive home screen featuring Quick Job Post, Territory MiniMap with improved contrast (darker states for better visibility), four stat cards showing key metrics (850+ territories, 2.8K+ jobs, 3.5K+ contractors, 94.5% AI accuracy), Territory Teaser section, Zero Fees explanation card with payment breakdown visualization, and API Marketplace preview
+- **Purpose**: Provide immediate access to core platform features, showcase platform statistics, explain value proposition to contractors (zero fees), and encourage territory investment
+- **Trigger**: User lands on Home tab (default view after login)
+- **Progression**: Home loads → see quick job post options → view territory minimap with high contrast → review platform stats in cards → explore zero fees benefit → check API marketplace
+- **Success criteria**: All stat cards clickable and navigate to relevant sections, territory minimap states clearly visible with darker colors, zero fees card explains 8% operator fee model clearly, payment breakdown shows $10K job split accurately
+
 ### Service Categories (60 Total)
 The platform supports 60 comprehensive service categories organized into 7 major groups:
 
@@ -82,11 +89,11 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: Route optimized in <5s, displays total distance/duration/fuel cost, reorders stops for efficiency, shows visual map with numbered stops, provides turn-by-turn leg details, calculates estimated route cost including time value
 
 ### Top Navigation System
-- **Functionality**: Persistent top navigation bar with main tabs: Home (job posting), Territories (map & claiming), Contractor, Subcontractor, Partners, Referral, Intelligence API, Messages, and user profile with payment access
-- **Purpose**: Provide easy access to all platform features with clear organization and hierarchy
-- **Trigger**: Always visible at top of screen, dropdowns appear on click
-- **Progression**: Click nav item → dropdown opens (if applicable) → select option → navigate to section → content loads
-- **Success criteria**: All sections accessible from navigation, dropdowns work smoothly, active state clearly indicated
+- **Functionality**: Persistent top navigation bar with improved spacing (moved down slightly with padding) and reorganized layout. Main tabs include: Home, Territories, Browse Jobs, Contractor (with dropdown showing Dashboard/My Jobs/Route Planner), Subcontractor (with dropdown showing Dashboard/Browse Local Jobs), API, Partners (with dropdown showing Overview/Materials/Insurance/Technology/Private Equity/Real Estate), and Referral (with dropdown showing Program Info/My Referrals). Messages button positioned on far right side before notifications. Dropdown menus show caret icon to indicate expandable items.
+- **Purpose**: Provide easy access to all platform features with clear organization, hierarchy, and visual indicators for dropdown menus. Messages prominently placed for quick access.
+- **Trigger**: Always visible at top of screen with increased padding, dropdowns appear on click
+- **Progression**: Click nav item → dropdown opens (if applicable, indicated by caret icon) → select option → navigate to section → content loads
+- **Success criteria**: All sections accessible from navigation, dropdowns work smoothly with clear visual indicators, active state clearly indicated, Messages always visible on far right, navigation feels spacious with better vertical spacing
 
 ### Territory Map with Claiming
 - **Functionality**: Comprehensive territory map with list/map view toggle, search by zip/city/county/state, territory claiming with dynamic pricing (First 10 FREE, then $500 each), ROI calculations, claimed territory tracking with KV persistence
@@ -124,11 +131,11 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: Messages saved per conversation, real-time updates, unread indicators work, both parties can communicate
 
 ### Payment Management with Finance Options
-- **Functionality**: Multiple payment options including full payment, 3-month installments, and 12-month 0% financing with clear breakdowns, processing fees, and commission details
-- **Purpose**: Provide flexible payment options for homeowners, increase affordability, track payment history
-- **Trigger**: Job completion or homeowner selects Payment from navigation
-- **Progression**: Payment screen loads → review options → select payment method → see breakdown → confirm → process payment → receive confirmation
-- **Success criteria**: All payment methods work, installment tracking accurate, payment history maintained, finance approval process clear
+- **Functionality**: Comprehensive payment system with full payment, 3-month installments (2% fee), and 12-month 0% financing options. Displays clear payment breakdowns, processing fees, operator commission split (8%), escrow protection, multiple payment methods (credit card, bank transfer, digital wallet), and secure PCI-compliant payment processing with Stripe integration.
+- **Purpose**: Provide flexible payment options for homeowners, increase affordability through financing, track payment history, ensure secure transactions with escrow protection
+- **Trigger**: Job completion, clicking payment button in navigation, or homeowner selects Payment from navigation
+- **Progression**: Payment screen loads → select payment plan (full/3mo/12mo) → choose payment method (card/bank/wallet) → enter payment details → review summary showing job amount, territory fee (8%), contractor amount → confirm → process payment → receive confirmation → update balance
+- **Success criteria**: All payment methods work correctly, installment tracking accurate, payment history maintained, finance approval process clear, escrow protection displayed, territory fee breakdown shown, secure SSL encryption confirmed
 
 ### Partner Dashboard
 - **Functionality**: Partnership management with revenue tracking, commission breakdowns, active partnership list, payout requests, partnership creation, and technology integration options (learning metrics accessible via Partners > Technology)
@@ -171,11 +178,11 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: Score above 80% indicates proper classification, all 6 factors properly configured, contractors acknowledge 1099 status and tax responsibilities
 
 ### User Roles & Authentication
-- **Functionality**: Role selection (contractor/homeowner/territory owner), profile management, demo data initialization, legal consent tracking
-- **Purpose**: Enable distinct experiences for different user types with appropriate permissions, features, and legal agreements
-- **Trigger**: App launch, role selection screen
-- **Progression**: App load → role selection → legal consent modal → accept agreements → profile load → role-specific dashboard
-- **Success criteria**: Users can switch between roles (with new consent flows), profiles persist, appropriate features visible per role, all legal consents recorded
+- **Functionality**: Enhanced splash screen with animated ServiceHub logo, platform statistics, and smooth transition to role selection (contractor/homeowner/territory owner). Improved login modal with side-by-side layout featuring benefits panel and larger role selection cards. Profile management includes legal consent tracking and demo data initialization.
+- **Purpose**: Enable distinct experiences for different user types with appropriate permissions, features, and legal agreements. Create professional first impression with engaging splash screen.
+- **Trigger**: App launch, shows animated splash screen first, then transitions to role selection screen
+- **Progression**: App loads → animated splash screen displays with logo, tagline, and stats → "Get Started" button → transitions to login/signup screen with role selection → user selects role from three large cards (Homeowner/Contractor/Subcontractor) → enters credentials → legal consent modal → accepts agreements → profile loads → role-specific dashboard
+- **Success criteria**: Users can switch between roles (with new consent flows), profiles persist, appropriate features visible per role, all legal consents recorded, splash screen animation smooth, role cards clearly differentiated with icons and descriptions
 
 ### Video-Based Job Creation (Homeowners)
 - **Functionality**: Upload video, system analyzes damage, generates scope, creates job posting automatically
@@ -282,19 +289,21 @@ The design should feel modern, fluid, and professional - like browsing a high-en
 
 ## Color Selection
 
-**Triadic** color scheme with professional blue (trust/intelligence), vibrant green (success/cost), and warm orange (warnings/urgency) to clearly differentiate information types and guide user attention to critical data points.
+**Custom palette** with professional blue (trust/intelligence), vibrant red (action/alerts), and deep black (contrast/professionalism) on a pure white base to clearly differentiate information types and guide user attention to critical data points.
 
-- **Primary Color**: Deep professional blue `oklch(0.45 0.15 250)` - communicates trust, intelligence, and technology expertise
-- **Secondary Colors**: Clean slate gray `oklch(0.60 0.02 250)` for supporting UI elements and neutral backgrounds
-- **Accent Color**: Vibrant success green `oklch(0.65 0.19 145)` for positive indicators like cost estimates and approvals
-- **Warning Color**: Warm orange `oklch(0.68 0.17 45)` for alerts, risks, and urgent items
+- **Primary Color**: Professional blue `oklch(0.45 0.22 264)` - communicates trust, intelligence, and technology expertise
+- **Secondary Colors**: Deep black `oklch(0.15 0 0)` for strong contrast and professional appearance
+- **Accent Color**: Vibrant red `oklch(0.55 0.22 25)` for calls-to-action, alerts, and urgent items
+- **Background**: Pure white `oklch(1 0 0)` - always kept white for a clean, professional appearance
 - **Foreground/Background Pairings**:
-  - Background (Pure White `oklch(1 0 0)`): Dark text `oklch(0.20 0.01 250)` - Ratio 15.8:1 ✓
-  - Card (White `oklch(1 0 0)`): Dark text `oklch(0.20 0.01 250)` - Ratio 15.8:1 ✓
-  - Primary (Deep Blue `oklch(0.45 0.15 250)`): White text `oklch(1 0 0)` - Ratio 8.2:1 ✓
-  - Secondary (Slate `oklch(0.60 0.02 250)`): White text `oklch(1 0 0)` - Ratio 4.7:1 ✓
-  - Accent (Green `oklch(0.65 0.19 145)`): White text `oklch(1 0 0)` - Ratio 5.1:1 ✓
-  - Muted (Light Gray `oklch(0.96 0 0)`): Dark muted text `oklch(0.50 0.01 250)` - Ratio 5.9:1 ✓
+  - Background (Pure White `oklch(1 0 0)`): Dark text `oklch(0.15 0 0)` - Ratio 18.5:1 ✓
+  - Card (White `oklch(1 0 0)`): Dark text `oklch(0.15 0 0)` - Ratio 18.5:1 ✓
+  - Primary (Professional Blue `oklch(0.45 0.22 264)`): White text `oklch(1 0 0)` - Ratio 7.8:1 ✓
+  - Secondary (Deep Black `oklch(0.15 0 0)`): White text `oklch(1 0 0)` - Ratio 18.5:1 ✓
+  - Accent (Vibrant Red `oklch(0.55 0.22 25)`): White text `oklch(1 0 0)` - Ratio 5.2:1 ✓
+  - Muted (Light Gray `oklch(0.96 0 0)`): Dark muted text `oklch(0.50 0 0)` - Ratio 5.9:1 ✓
+
+**Note**: Dark mode is intentionally not implemented. The platform maintains a consistent white background theme for all users.
 
 ## Font Selection
 

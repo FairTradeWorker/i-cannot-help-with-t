@@ -26,8 +26,12 @@ import {
   Brain,
   CurrencyDollar,
   MapPin,
+  Users,
+  CheckCircle,
+  ArrowRight,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,7 +43,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LegalFooter } from '@/components/LegalFooter';
 import { LoginModal } from '@/components/LoginModal';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
@@ -59,13 +62,14 @@ import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearnin
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { PaymentModal } from '@/components/PaymentModal';
+import { PaymentScreen } from '@/components/PaymentScreen';
 import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'browse-jobs' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral';
+type MainTab = 'home' | 'territories' | 'browse-jobs' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral' | 'payment';
 type SubTab = 'overview' | 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings';
 
 function App() {
@@ -246,11 +250,11 @@ function App() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-        className="sticky top-0 z-50 glass-card border-b border-border/50"
+        className="sticky top-0 z-50 glass-card border-b border-border/50 pt-2"
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <nav className="flex items-center gap-2 flex-1">
+          <div className="flex items-center justify-between h-18 py-2">
+            <nav className="flex items-center gap-3 flex-1">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant={activeTab === 'home' ? 'default' : 'ghost'}
@@ -305,27 +309,59 @@ function App() {
                 </Button>
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant={activeTab === 'contractor' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('contractor', 'dashboard')}
-                  className="glass-hover"
-                >
-                  <Hammer className="w-5 h-5 mr-2" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
-                  Contractor
-                </Button>
-              </motion.div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                      className="glass-hover"
+                    >
+                      <Hammer className="w-5 h-5 mr-2" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
+                      Contractor
+                      <CaretDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </motion.div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'jobs')}>
+                    <Package className="w-4 h-4 mr-2" />
+                    My Jobs
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Route Planner
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('subcontractor', 'dashboard')}
-                  className="glass-hover"
-                >
-                  <HardHat className="w-5 h-5 mr-2" weight={activeTab === 'subcontractor' ? 'fill' : 'regular'} />
-                  Subcontractor
-                </Button>
-              </motion.div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
+                      className="glass-hover"
+                    >
+                      <HardHat className="w-5 h-5 mr-2" weight={activeTab === 'subcontractor' ? 'fill' : 'regular'} />
+                      Subcontractor
+                      <CaretDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </motion.div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'dashboard')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'browse')}>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Browse Local Jobs
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
@@ -345,6 +381,74 @@ function App() {
                 </Button>
               </motion.div>
 
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant={activeTab === 'partners' ? 'default' : 'ghost'}
+                      className="glass-hover"
+                    >
+                      <Handshake className="w-5 h-5 mr-2" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
+                      Partners
+                      <CaretDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </motion.div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', undefined)}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Overview
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'materials')}>
+                    <Package className="w-4 h-4 mr-2" />
+                    Materials Vendors
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'insurance')}>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Insurance
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'ai')}>
+                    <Brain className="w-4 h-4 mr-2" />
+                    Technology
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
+                    <Bank className="w-4 h-4 mr-2" />
+                    Private Equity
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'real_estate')}>
+                    <Buildings className="w-4 h-4 mr-2" />
+                    Real Estate
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant={activeTab === 'referral' ? 'default' : 'ghost'}
+                      className="glass-hover"
+                    >
+                      <Gift className="w-5 h-5 mr-2" weight={activeTab === 'referral' ? 'fill' : 'regular'} />
+                      Referral
+                      <CaretDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </motion.div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('referral', 'program')}>
+                    <Gift className="w-4 h-4 mr-2" />
+                    Program Info
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('referral', 'my_referrals')}>
+                    <Users className="w-4 h-4 mr-2" />
+                    My Referrals
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </nav>
+
+            <div className="flex items-center gap-3">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant={activeTab === 'messages' ? 'default' : 'ghost'}
@@ -362,37 +466,7 @@ function App() {
                 </Button>
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant={activeTab === 'partners' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('partners')}
-                  className="glass-hover"
-                >
-                  <Handshake className="w-5 h-5 mr-2" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
-                  Partners
-                </Button>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant={activeTab === 'referral' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('referral')}
-                  className="glass-hover"
-                >
-                  <Gift className="w-5 h-5 mr-2" weight={activeTab === 'referral' ? 'fill' : 'regular'} />
-                  Referral
-                </Button>
-              </motion.div>
-            </nav>
-
-            <div className="flex items-center gap-2">
-              <motion.div 
-                whileHover={{ scale: 1.05, y: -2 }} 
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                <ThemeToggle />
-              </motion.div>
+              <div className="h-8 w-px bg-border mx-2"></div>
 
               <motion.div 
                 whileHover={{ scale: 1.05, y: -2 }} 
@@ -434,12 +508,13 @@ function App() {
                 variant="ghost"
                 size="icon"
                 onClick={() => {
-                  setActiveTab('home');
+                  setActiveTab('payment');
                   setActiveSubTab(null);
                   setShowAdminPanel(false);
                   setShowProfile(false);
                 }}
                 className="glass-hover"
+                title="Make a Payment"
               >
                 <CreditCard className="w-5 h-5" />
               </Button>
@@ -526,8 +601,12 @@ function App() {
               )}
               {!showProfile && !showVideoCreator && (
                 <>
+                  {activeTab === 'payment' && <PaymentScreen onPaymentComplete={() => {
+                    setActiveTab('home');
+                    toast.success('Payment completed successfully!');
+                  }} />}
                   {activeTab === 'home' && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2">
                           <QuickJobPost onCreateJob={handleCreateJob} />
@@ -536,7 +615,113 @@ function App() {
                           <TerritoryMiniMap onStateClick={(stateCode) => handleNavClick('territories', 'overview')} />
                         </div>
                       </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('territories', 'overview')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700">
+                              <MapTrifold className="w-7 h-7 text-white" weight="fill" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Available</p>
+                              <p className="text-2xl font-bold">850+</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">Territories</p>
+                          <p className="text-xs text-muted-foreground">First 10 FREE • Then $500 each</p>
+                        </Card>
+
+                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('browse-jobs')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-accent to-red-700">
+                              <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Active</p>
+                              <p className="text-2xl font-bold">2.8K+</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">Jobs Available</p>
+                          <p className="text-xs text-muted-foreground">Browse opportunities now</p>
+                        </Card>
+
+                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-secondary to-black">
+                              <Hammer className="w-7 h-7 text-white" weight="fill" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Network</p>
+                              <p className="text-2xl font-bold">3.5K+</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">Contractors</p>
+                          <p className="text-xs text-muted-foreground">Join our network</p>
+                        </Card>
+
+                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('intelligence')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-blue-700">
+                              <Brain className="w-7 h-7 text-white" weight="fill" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Accuracy</p>
+                              <p className="text-2xl font-bold">94.5%</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">AI Intelligence</p>
+                          <p className="text-xs text-muted-foreground">Self-learning platform</p>
+                        </Card>
+                      </div>
+
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
+                      
+                      <Card className="glass-card p-8 bg-gradient-to-br from-primary/5 to-blue-50 border-2 border-primary/20">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                          <div>
+                            <h3 className="text-2xl font-bold mb-4">Zero Fees for Contractors</h3>
+                            <p className="text-muted-foreground mb-6">
+                              Unlike other platforms, we don't charge contractors any fees. Territory operators fund the platform through 8% revenue share, so you keep 100% of your earnings.
+                            </p>
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-3">
+                                <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" weight="fill" />
+                                <p className="text-sm">No platform fees ever</p>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" weight="fill" />
+                                <p className="text-sm">Keep 100% of your earnings</p>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" weight="fill" />
+                                <p className="text-sm">Instant payouts available</p>
+                              </div>
+                            </div>
+                            <Button size="lg" className="mt-6" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                              Join as Contractor
+                              <ArrowRight className="w-5 h-5 ml-2" />
+                            </Button>
+                          </div>
+                          <div className="bg-white rounded-2xl p-6 shadow-2xl">
+                            <h4 className="font-bold mb-4 text-center">Payment Breakdown</h4>
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                                <span className="text-sm">Job Payment</span>
+                                <span className="font-bold">$10,000</span>
+                              </div>
+                              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                <span className="text-sm">Territory Fee (8%)</span>
+                                <span className="font-bold text-blue-600">-$800</span>
+                              </div>
+                              <div className="flex items-center justify-between p-3 bg-accent/10 rounded-lg">
+                                <span className="text-sm font-semibold">You Receive</span>
+                                <span className="font-bold text-accent text-lg">$9,200</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+
                       <APIMarketplaceSection />
                     </div>
                   )}

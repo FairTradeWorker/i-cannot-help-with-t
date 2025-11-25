@@ -77,13 +77,13 @@ export function TerritoryMiniMap({ onStateClick, className = '', compact = false
                       }}
                       className={`cursor-pointer transition-all ${
                         isClaimed
-                          ? 'fill-emerald-500/80 stroke-emerald-400 hover:fill-emerald-400'
-                          : 'fill-muted/30 stroke-border hover:fill-muted/50'
+                          ? 'fill-blue-500 stroke-blue-700 hover:fill-blue-600'
+                          : 'fill-gray-300 stroke-gray-500 hover:fill-gray-400'
                       }`}
-                      strokeWidth="1"
+                      strokeWidth="2"
                       onClick={() => handleStateClick(state.abbreviation)}
                       style={{
-                        filter: isClaimed ? 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.6))' : 'none',
+                        filter: isClaimed ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))' : 'none',
                       }}
                     />
                   </TooltipTrigger>
@@ -92,7 +92,7 @@ export function TerritoryMiniMap({ onStateClick, className = '', compact = false
                       <div className="font-semibold">{state.name}</div>
                       {isClaimed && (
                         <>
-                          <div className="text-emerald-500">✓ Claimed Territory</div>
+                          <div className="text-blue-500">✓ Claimed Territory</div>
                           <div className="text-muted-foreground">
                             {territoryCount} {territoryCount === 1 ? 'ZIP' : 'ZIPs'}
                           </div>
@@ -116,7 +116,7 @@ export function TerritoryMiniMap({ onStateClick, className = '', compact = false
             {Array.from(claimedStates).slice(0, 5).map((state) => (
               <span
                 key={state}
-                className="px-2 py-1 text-xs rounded-md bg-emerald-500/20 text-emerald-600 font-medium"
+                className="px-2 py-1 text-xs rounded-md bg-blue-500/20 text-blue-600 font-medium"
               >
                 {state}
               </span>
