@@ -91,7 +91,7 @@ const PRICING_TIERS = [
   },
   {
     name: 'Professional',
-    price: 259,
+    price: 199,
     popular: true,
     description: 'For growing businesses',
     apis: 'All APIs included',
@@ -99,7 +99,7 @@ const PRICING_TIERS = [
   },
   {
     name: 'Enterprise',
-    price: 859,
+    price: 599,
     description: 'For large organizations',
     apis: 'Unlimited access',
     features: ['Unlimited API calls', 'Dedicated support', 'Custom SLA', 'White-glove onboarding']

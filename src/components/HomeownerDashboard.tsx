@@ -106,23 +106,19 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full max-w-2xl grid-cols-3 mb-8">
-            <TabsTrigger value="profile">
-              <UserCircle className="w-4 h-4 mr-2" />
-              Profile
-            </TabsTrigger>
             <TabsTrigger value="my-jobs">
               <Package className="w-4 h-4 mr-2" />
-              Job Status
+              My Projects
             </TabsTrigger>
             <TabsTrigger value="post-job">
               <Briefcase className="w-4 h-4 mr-2" />
               Post a Job
             </TabsTrigger>
+            <TabsTrigger value="profile">
+              <UserCircle className="w-4 h-4 mr-2" />
+              Profile & Settings
+            </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="profile">
-            <UserProfile user={user} />
-          </TabsContent>
 
           <TabsContent value="my-jobs">
             {myJobs.length === 0 ? (
@@ -206,51 +202,16 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
             )}
           </TabsContent>
 
-          <TabsContent value="active">
-            {activeJobs.length === 0 ? (
-              <Card className="p-8 text-center">
-                <Clock className="w-16 h-16 text-muted-foreground mx-auto mb-4" weight="duotone" />
-                <h4 className="text-lg font-semibold mb-2">No Active Projects</h4>
-                <p className="text-muted-foreground">Start a new project to see it here</p>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {activeJobs.map(job => (
-                  <Card 
-                    key={job.id} 
-                    className="p-6 hover:border-primary/50 transition-colors cursor-pointer"
-                    onClick={() => setSelectedJob(job)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="text-xl font-bold">{job.title}</h3>
-                          <Badge>{job.status.replace('_', ' ')}</Badge>
-                        </div>
-                        <p className="text-muted-foreground mb-4">{job.description}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
-                          <span>{job.bids.length} bids received</span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-accent font-mono">
-                          ${job.estimatedCost.min.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
           <TabsContent value="post-job">
             <QuickJobPost onCreateJob={(type) => {
               if (type === 'video') {
                 setShowNewJob(true);
               }
             }} />
+          </TabsContent>
+
+          <TabsContent value="profile">
+            <UserProfile user={user} />
           </TabsContent>
         </Tabs>
       </div>

@@ -24,7 +24,7 @@ export function WarrantySection() {
     },
     {
       name: 'Extended Warranty',
-      price: 299,
+      price: 249,
       duration: '3 Years',
       description: 'Comprehensive coverage for peace of mind',
       features: [

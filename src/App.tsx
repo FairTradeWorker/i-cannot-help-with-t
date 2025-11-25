@@ -256,7 +256,7 @@ function App() {
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
-        <div className="w-full px-6">
+        <div className="w-full px-6 pt-2">
           <div className="flex items-center justify-between h-16 py-2 max-w-[1920px] mx-auto">
             <nav className="flex items-center gap-2">
               <motion.div 
@@ -315,28 +315,28 @@ function App() {
                     transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                   >
                     <Button
-                      variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
+                      variant={activeTab === 'contractor' ? 'default' : 'ghost'}
                       className="button-interactive"
                       size="sm"
                     >
-                      <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
-                      Homeowner
+                      <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
+                      Contractor
                       <CaretDown className="w-3 h-3 ml-1" />
                     </Button>
                   </motion.div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'profile')}>
-                    <UserCircle className="w-4 h-4 mr-2" />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'my-jobs')}>
-                    <Package className="w-4 h-4 mr-2" />
-                    Job Status
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'post-job')}>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
                     <Briefcase className="w-4 h-4 mr-2" />
-                    Post a Job
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'jobs')}>
+                    <Package className="w-4 h-4 mr-2" />
+                    My Jobs
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Route Planner
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -368,47 +368,31 @@ function App() {
                     transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                   >
                     <Button
-                      variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                      variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
                       className="button-interactive"
                       size="sm"
                     >
-                      <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
-                      Contractor
+                      <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
+                      Homeowner
                       <CaretDown className="w-3 h-3 ml-1" />
                     </Button>
                   </motion.div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
-                    <Briefcase className="w-4 h-4 mr-2" />
-                    Dashboard
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'profile')}>
+                    <UserCircle className="w-4 h-4 mr-2" />
+                    Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'jobs')}>
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'my-jobs')}>
                     <Package className="w-4 h-4 mr-2" />
-                    My Jobs
+                    Job Status
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Route Planner
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'post-job')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Post a Job
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              >
-                <Button
-                  variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('intelligence')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <Lightning className="w-4 h-4 mr-1.5" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
-                  API
-                </Button>
-              </motion.div>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -483,10 +467,9 @@ function App() {
                   variant={activeTab === 'messages' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('messages')}
                   className="button-interactive relative"
-                  size="sm"
+                  size="icon"
                 >
-                  <ChatCircle className="w-4 h-4 mr-1.5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
-                  Messages
+                  <ChatCircle className="w-4 h-4" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
                   <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
                 </Button>
               </motion.div>
@@ -647,7 +630,7 @@ function App() {
                     <div className="space-y-8">
                       <QuickJobPost onCreateJob={handleCreateJob} />
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-primary">
@@ -704,24 +687,6 @@ function App() {
                             <span className="text-muted-foreground">Zero platform fees</span>
                           </div>
                         </Card>
-
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('intelligence')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-primary">
-                              <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
-                            </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Starting at</p>
-                              <p className="text-2xl font-bold">$99</p>
-                            </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">API Access</p>
-                          <p className="text-xs text-muted-foreground mb-2">Intelligence & pricing endpoints</p>
-                          <div className="flex items-center gap-1 mt-2 text-xs">
-                            <Lightning className="w-3 h-3 text-primary" weight="fill" />
-                            <span className="text-muted-foreground">Real-time data</span>
-                          </div>
-                        </Card>
                       </div>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
@@ -732,7 +697,7 @@ function App() {
                             <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
                             <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
                             <p className="text-muted-foreground mb-6">
-                              Unlike other platforms that charge 15-30% fees, ServiceHub contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
+                              Unlike other platforms that charge 15-30% fees, ServiceHub contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $10 platform fee per job.
                             </p>
                             <div className="space-y-3">
                               <div className="flex items-center gap-3">
@@ -785,7 +750,7 @@ function App() {
                                   <span className="text-sm font-semibold">Platform Fee</span>
                                   <p className="text-xs text-muted-foreground">One-time charge</p>
                                 </div>
-                                <span className="font-bold text-blue-600">$20</span>
+                                <span className="font-bold text-blue-600">$10</span>
                               </div>
                               <div className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg border-2 border-secondary/30">
                                 <div>
