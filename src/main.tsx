@@ -7,13 +7,24 @@ import "./index.css"
 
 const resizeObserverErrorHandler = (e: ErrorEvent) => {
   if (e.message === 'ResizeObserver loop completed with undelivered notifications.' || 
-      e.message.includes('ResizeObserver loop limit exceeded')) {
+      e.message.includes('ResizeObserver loop limit exceeded') ||
+      e.message.includes('ResizeObserver')) {
     e.stopImmediatePropagation();
+    e.preventDefault();
     return;
   }
 };
 
 window.addEventListener('error', resizeObserverErrorHandler);
+
+const originalConsoleError = console.error;
+console.error = (...args: any[]) => {
+  const message = args[0]?.toString() || '';
+  if (message.includes('ResizeObserver')) {
+    return;
+  }
+  originalConsoleError.apply(console, args);
+};
 
 function ErrorFallback({ error }: { error: Error }) {
   return (
