@@ -64,26 +64,27 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
               onHoverEnd={() => setHoveredCard(null)}
             >
               <Card 
-                className={`relative overflow-hidden cursor-pointer transition-all duration-200 ${
+                className={`relative overflow-hidden cursor-pointer transition-all duration-133 ${
                   hoveredCard === option.id ? 'shadow-lg shadow-primary/20 border-primary/40' : 'shadow-sm'
                 }`}
                 onClick={() => onCreateJob(option.id as 'video' | 'photo' | 'text')}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${option.gradient} opacity-5`} />
                 
-                <CardContent className="relative p-4 text-center space-y-2">
+                <CardContent className="relative p-5 text-center space-y-2">
                   <motion.div 
-                    className={`mx-auto w-12 h-12 rounded-lg bg-gradient-to-br ${option.gradient} flex items-center justify-center`}
+                    className={`mx-auto w-14 h-14 rounded-lg bg-gradient-to-br ${option.gradient} flex items-center justify-center`}
                     animate={{ 
-                      rotate: hoveredCard === option.id ? [0, -5, 5, 0] : 0 
+                      rotate: hoveredCard === option.id ? [0, -5, 5, 0] : 0,
+                      scale: hoveredCard === option.id ? 1.05 : 1
                     }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ duration: 0.177 }}
                   >
-                    <Icon className="w-6 h-6 text-white" weight="bold" />
+                    <Icon className="w-7 h-7 text-white" weight="bold" />
                   </motion.div>
                   
                   <div>
-                    <p className="text-sm font-semibold">{option.title.replace(' Job Post', '')}</p>
+                    <p className="text-base font-semibold">{option.title.replace(' Job Post', '')}</p>
                   </div>
                 </CardContent>
 
@@ -91,7 +92,7 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
                   className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${option.gradient}`}
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: hoveredCard === option.id ? 1 : 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.133 }}
                 />
               </Card>
             </motion.div>
