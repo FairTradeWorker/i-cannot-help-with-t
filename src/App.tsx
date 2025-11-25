@@ -1,38 +1,103 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   House, 
-  MagnifyingGlass, 
   User, 
-  Heart, 
   ChatCircle,
   Sparkle,
-  Plus,
-  Hammer,
   BellRinging,
-  ShoppingCart
+  Handshake,
+  ChartBar,
+  Gift,
+  CreditCard,
+  MapTrifold,
+  CaretDown,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { LegalConsentModal } from '@/components/LegalConsentModal';
 import { LegalFooter } from '@/components/LegalFooter';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
-import { FloatingActionButton } from '@/components/FloatingActionButton';
+import { TerritoryBrowser } from '@/components/TerritoryBrowser';
+import { ReferralSystem } from '@/components/ReferralSystem';
+import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
-import type { User as UserType } from '@/lib/types';
+import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type NavTab = 'browse' | 'services' | 'messages' | 'profile';
+type MainTab = 'home' | 'territory' | 'messages' | 'profile';
+type HomeownerSubTab = 'browse' | 'payment';
+type PartnerSubTab = 'overview';
+type AdminSubTab = 'analytics';
+type ReferralSubTab = 'program';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showLegalConsent, setShowLegalConsent] = useState(false);
-  const [activeTab, setActiveTab] = useState<NavTab>('browse');
-  const { scrollY } = useScroll();
-  const headerOpacity = useTransform(scrollY, [0, 100], [1, 0.95]);
-  const headerBlur = useTransform(scrollY, [0, 100], [20, 30]);
+  const [activeTab, setActiveTab] = useState<MainTab>('home');
+  const [homeownerSubTab, setHomeownerSubTab] = useState<HomeownerSubTab>('browse');
+  const [showPayment, setShowPayment] = useState(false);
+
+  const mockReferrals: Referral[] = [
+    {
+      id: 'ref-1',
+      referrerId: currentUser?.id || '',
+      refereeId: 'user-123',
+      status: 'rewarded',
+      reward: 50,
+      createdAt: new Date('2024-01-15'),
+      completedAt: new Date('2024-01-20'),
+    },
+    {
+      id: 'ref-2',
+      referrerId: currentUser?.id || '',
+      refereeId: 'user-456',
+      status: 'completed',
+      reward: 50,
+      createdAt: new Date('2024-02-01'),
+    },
+  ];
+
+  const mockAnalytics: Analytics = {
+    totalUsers: 15420,
+    totalContractors: 3542,
+    totalHomeowners: 11878,
+    totalJobs: 28934,
+    completedJobs: 24127,
+    totalRevenue: 12450000,
+    averageJobValue: 2850,
+    topStates: [
+      { state: 'California', jobs: 5234 },
+      { state: 'Texas', jobs: 4123 },
+      { state: 'Florida', jobs: 3892 },
+      { state: 'New York', jobs: 3456 },
+      { state: 'Illinois', jobs: 2934 },
+    ],
+    topServices: [
+      { service: 'Roofing', count: 6234 },
+      { service: 'HVAC', count: 5123 },
+      { service: 'Plumbing', count: 4892 },
+      { service: 'Electrical', count: 4234 },
+      { service: 'Landscaping', count: 3823 },
+    ],
+    revenueByMonth: [
+      { month: 'Jan', revenue: 980000 },
+      { month: 'Feb', revenue: 1050000 },
+      { month: 'Mar', revenue: 1120000 },
+      { month: 'Apr', revenue: 1080000 },
+      { month: 'May', revenue: 1150000 },
+      { month: 'Jun', revenue: 1200000 },
+    ],
+  };
 
   useEffect(() => {
     initialize();
@@ -104,34 +169,133 @@ function App() {
     );
   }
 
-  const navItems = [
-    { id: 'browse' as NavTab, icon: House, label: 'Browse' },
-    { id: 'services' as NavTab, icon: Sparkle, label: 'Services' },
-    { id: 'messages' as NavTab, icon: ChatCircle, label: 'Messages' },
-    { id: 'profile' as NavTab, icon: User, label: 'Profile' },
-  ];
-
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen flex flex-col">
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", damping: 20 }}
-        style={{ opacity: headerOpacity }}
-        className="fixed top-0 left-0 right-0 z-50 glass"
+        className="sticky top-0 z-50 glass border-b border-border"
       >
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => setActiveTab('home')}
             >
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                 <Sparkle className="w-6 h-6 text-white" weight="fill" />
               </div>
               <h1 className="text-xl font-bold">ServiceHub</h1>
             </motion.div>
+
+            <nav className="hidden md:flex items-center gap-2">
+              <Button
+                variant={activeTab === 'home' ? 'default' : 'ghost'}
+                onClick={() => setActiveTab('home')}
+              >
+                <House className="w-5 h-5 mr-2" weight={activeTab === 'home' ? 'fill' : 'regular'} />
+                Home
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost">
+                    <User className="w-5 h-5 mr-2" weight="regular" />
+                    Homeowner
+                    <CaretDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => {
+                    setActiveTab('home');
+                    setHomeownerSubTab('browse');
+                  }}>
+                    Browse Services
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => {
+                    setActiveTab('home');
+                    setHomeownerSubTab('payment');
+                  }}>
+                    Payment
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant={activeTab === 'territory' ? 'default' : 'ghost'}
+                onClick={() => setActiveTab('territory')}
+              >
+                <MapTrifold className="w-5 h-5 mr-2" weight={activeTab === 'territory' ? 'fill' : 'regular'} />
+                Territory
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost">
+                    <Handshake className="w-5 h-5 mr-2" weight="regular" />
+                    Partner
+                    <CaretDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>
+                    Partner Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Finance
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost">
+                    <ChartBar className="w-5 h-5 mr-2" weight="regular" />
+                    Admin
+                    <CaretDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setActiveTab('home')}>
+                    <ChartBar className="w-4 h-4 mr-2" />
+                    Analytics
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    User Management
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost">
+                    <Gift className="w-5 h-5 mr-2" weight="regular" />
+                    Referral
+                    <CaretDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setActiveTab('home')}>
+                    Referral Program
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    My Referrals
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant={activeTab === 'messages' ? 'default' : 'ghost'}
+                onClick={() => setActiveTab('messages')}
+              >
+                <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+                Messages
+              </Button>
+            </nav>
 
             <div className="flex items-center gap-2">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -140,25 +304,20 @@ function App() {
                   <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
                 </Button>
               </motion.div>
-              
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="icon">
-                  <Heart className="w-5 h-5" />
-                </Button>
-              </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button className="rounded-full">
-                  <Plus className="w-5 h-5 mr-2" weight="bold" />
-                  Post Job
-                </Button>
-              </motion.div>
+              <Button
+                variant={activeTab === 'profile' ? 'default' : 'outline'}
+                size="icon"
+                onClick={() => setActiveTab('profile')}
+              >
+                <User className="w-5 h-5" weight={activeTab === 'profile' ? 'fill' : 'regular'} />
+              </Button>
             </div>
           </div>
         </div>
       </motion.header>
 
-      <main className="pt-24 pb-8 px-4">
+      <main className="flex-1 py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -168,60 +327,31 @@ function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {activeTab === 'browse' && <MarketplaceBrowse />}
-              {activeTab === 'services' && <MarketplaceBrowse featured />}
+              {activeTab === 'home' && homeownerSubTab === 'browse' && <MarketplaceBrowse />}
+              {activeTab === 'home' && homeownerSubTab === 'payment' && (
+                <div className="space-y-6">
+                  <h2 className="text-3xl font-bold">Payment Management</h2>
+                  <p className="text-muted-foreground">Manage your payments and finance options</p>
+                </div>
+              )}
+              {activeTab === 'territory' && <TerritoryBrowser />}
               {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
               {activeTab === 'profile' && <UserProfile user={currentUser} />}
             </motion.div>
           </AnimatePresence>
-        </div>
-      </main>
 
-      <motion.nav
-        initial={{ y: 100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", damping: 20, delay: 0.2 }}
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50"
-      >
-        <div className="glass rounded-full px-4 py-3 shadow-2xl">
-          <div className="flex items-center gap-2">
-            {navItems.map((item, index) => {
-              const isActive = activeTab === item.id;
-              return (
-                <motion.button
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`relative px-6 py-3 rounded-full transition-all duration-300 ${
-                    isActive 
-                      ? 'bg-primary text-primary-foreground shadow-lg' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <item.icon 
-                    className="w-6 h-6" 
-                    weight={isActive ? 'fill' : 'regular'} 
-                  />
-                  
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-primary rounded-full -z-10"
-                      transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                    />
-                  )}
-                </motion.button>
-              );
-            })}
+          {/* Demo sections that can be accessed via navigation */}
+          <div className="mt-12 space-y-12">
+            <div id="analytics-section">
+              <AnalyticsDashboard analytics={mockAnalytics} />
+            </div>
+
+            <div id="referral-section" className="mt-12">
+              <ReferralSystem userId={currentUser?.id || ''} referrals={mockReferrals} />
+            </div>
           </div>
         </div>
-      </motion.nav>
-
-      <FloatingActionButton onAction={(action) => console.log('Action:', action)} />
+      </main>
 
       <LegalFooter />
     </div>

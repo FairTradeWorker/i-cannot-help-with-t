@@ -1,18 +1,65 @@
 # AI-Powered Home Services Marketplace
 
-A modern, glass-morphic marketplace connecting users with qualified service professionals through AI-powered job analysis, intelligent matching, transparent browsing, and seamless transactions - designed with a unified marketplace experience rather than two-sided platform dynamics.
+A modern, comprehensive marketplace platform connecting homeowners with qualified contractors through AI-powered job analysis, intelligent matching, transparent browsing, seamless transactions, and advanced management tools - featuring top navigation, comprehensive 50-state database, integrated chat, payment management with finance options, partner programs, admin analytics, and referral system.
 
 **Experience Qualities**:
-1. **Modern & Fluid** - Glassmorphism design, smooth animations, center navigation create an immersive, contemporary browsing experience
-2. **Effortless** - Browse services marketplace-style, AI-powered suggestions, one-click actions eliminate friction at every step
-3. **Transparent** - Clear pricing, verified professionals, real-time availability, and honest reviews build marketplace trust
+1. **Modern & Fluid** - Glassmorphism design, smooth animations, top navigation create an immersive, professional browsing experience
+2. **Effortless** - Browse services marketplace-style, AI-powered suggestions, integrated chat, flexible payment options eliminate friction at every step
+3. **Transparent** - Clear pricing, verified professionals, real-time availability, honest reviews, and comprehensive state-by-state data build marketplace trust
 
-**Complexity Level**: Light Application (multiple features with basic state)
-- Unified marketplace browsing interface, service professional profiles, job posting system, basic messaging, AI-powered recommendations, glassmorphism UI with extensive animations
+**Complexity Level**: Complex Application (advanced functionality, comprehensive features)
+- Full marketplace platform with multi-role support (homeowner, contractor, partner, admin), comprehensive state database with interactive map, integrated chat system, payment management with multiple finance options, partner dashboard, admin analytics, referral program, and territory management
 
 ## Essential Features
 
-### Legal Compliance & Consent Management
+### Top Navigation System
+- **Functionality**: Persistent top navigation bar with dropdown menus for Homeowner (Browse, Payment), Partner (Dashboard, Finance), Admin (Analytics, User Management), and Referral (Program, My Referrals) sections
+- **Purpose**: Provide easy access to all platform features with clear organization and hierarchy
+- **Trigger**: Always visible at top of screen, dropdowns appear on click
+- **Progression**: Click nav item → dropdown opens (if applicable) → select option → navigate to section → content loads
+- **Success criteria**: All sections accessible from navigation, dropdowns work smoothly, active state clearly indicated
+
+### 50-State Territory Database & Interactive Map
+- **Functionality**: Comprehensive database of all 50 US states with interactive SVG map, clickable states showing detailed information including active contractors, total jobs, ratings, top services, licensing authority, and website
+- **Purpose**: Allow users to explore contractor availability and services across all states, understand regional differences, access licensing information
+- **Trigger**: User navigates to Territory section
+- **Progression**: Territory page loads → map displays all states → user clicks state or selects from list → state details appear → can view licensing info → access state website
+- **Success criteria**: All 50 states clickable, data accurate, licensing links work, smooth map interactions, list/map view toggle
+
+### Integrated Chat System
+- **Functionality**: Real-time messaging between homeowners and contractors with conversation list, message history, read receipts, online status indicators, and message timestamps
+- **Purpose**: Centralize communication, provide clear conversation history, enable quick responses
+- **Trigger**: User clicks Messages in navigation or initiates chat from job
+- **Progression**: Open messages → see conversation list → select conversation → view history → type message → send → recipient receives → read receipts update
+- **Success criteria**: Messages saved per conversation, real-time updates, unread indicators work, both parties can communicate
+
+### Payment Management with Finance Options
+- **Functionality**: Multiple payment options including full payment, 3-month installments, and 12-month 0% financing with clear breakdowns, processing fees, and commission details
+- **Purpose**: Provide flexible payment options for homeowners, increase affordability, track payment history
+- **Trigger**: Job completion or homeowner selects Payment from navigation
+- **Progression**: Payment screen loads → review options → select payment method → see breakdown → confirm → process payment → receive confirmation
+- **Success criteria**: All payment methods work, installment tracking accurate, payment history maintained, finance approval process clear
+
+### Partner Dashboard
+- **Functionality**: Partnership management with revenue tracking, commission breakdowns, active partnership list, payout requests, and partnership creation
+- **Purpose**: Enable partnership programs, track partner revenue, manage commissions
+- **Trigger**: Partner user accesses Partner dropdown → Dashboard
+- **Progression**: Dashboard loads → view stats → see active partnerships → check commission breakdown → request payout → access finance options
+- **Success criteria**: Revenue accurately tracked, commissions calculated correctly, payout requests processed, partnership data displayed
+
+### Admin Analytics Dashboard
+- **Functionality**: Comprehensive platform analytics including total users, contractors, homeowners, jobs, revenue, completion rates, top states, top services, revenue by month with visual charts and trends
+- **Purpose**: Give administrators insight into platform performance, identify growth opportunities, track key metrics
+- **Trigger**: Admin user accesses Admin dropdown → Analytics
+- **Progression**: Analytics loads → view overview stats → check state rankings → review service popularity → analyze revenue trends → export data
+- **Success criteria**: All metrics accurate, charts display correctly, trends calculated properly, data refreshes regularly
+
+### Referral Program
+- **Functionality**: User referral system with unique referral codes/links, email invitations, referral tracking, reward status, earnings dashboard, and program explanation
+- **Purpose**: Encourage user growth through referrals, reward existing users, track referral success
+- **Trigger**: User accesses Referral dropdown → Program
+- **Progression**: Referral page loads → copy code/link → send invitations → track referrals → view pending/completed rewards → see earnings → withdraw rewards
+- **Success criteria**: Unique codes generated, referral tracking works, rewards calculated correctly, invitation system functional
 - **Functionality**: Comprehensive legal agreement system with role-specific terms, independent contractor status acknowledgment, territory ownership risk disclosures, GDPR/CCPA consent management
 - **Purpose**: Protect platform from liability, ensure contractor classification compliance, meet consumer protection laws, satisfy data privacy regulations
 - **Trigger**: First-time user registration, before accessing platform features

@@ -1,6 +1,10 @@
-export type UserRole = 'homeowner' | 'contractor' | 'territory_owner';
+export type UserRole = 'homeowner' | 'contractor' | 'territory_owner' | 'partner' | 'admin';
 
 export type JobStatus = 'draft' | 'posted' | 'bidding' | 'assigned' | 'in_progress' | 'completed' | 'disputed';
+
+export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'refunded';
+
+export type FinanceOption = 'full_payment' | 'installments' | 'financing';
 
 export type UrgencyLevel = 'normal' | 'urgent' | 'emergency';
 
@@ -268,4 +272,45 @@ export interface Territory {
     totalRevenue: number;
   };
   purchasedAt: Date;
+}
+
+export interface Payment {
+  id: string;
+  jobId: string;
+  homeownerId: string;
+  contractorId: string;
+  amount: number;
+  status: PaymentStatus;
+  financeOption: FinanceOption;
+  installmentPlan?: {
+    totalInstallments: number;
+    paidInstallments: number;
+    installmentAmount: number;
+    nextDueDate: Date;
+  };
+  createdAt: Date;
+  completedAt?: Date;
+}
+
+export interface Referral {
+  id: string;
+  referrerId: string;
+  refereeId: string;
+  status: 'pending' | 'completed' | 'rewarded';
+  reward: number;
+  createdAt: Date;
+  completedAt?: Date;
+}
+
+export interface Analytics {
+  totalUsers: number;
+  totalContractors: number;
+  totalHomeowners: number;
+  totalJobs: number;
+  completedJobs: number;
+  totalRevenue: number;
+  averageJobValue: number;
+  topStates: { state: string; jobs: number }[];
+  topServices: { service: string; count: number }[];
+  revenueByMonth: { month: string; revenue: number }[];
 }
