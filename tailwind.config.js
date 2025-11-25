@@ -91,6 +91,10 @@ const defaultTheme = {
         overlay: "var(--color-bg-overlay)",
       },
       "focus-ring": "var(--color-focus-ring)",
+      'tool-blue': '#0ea5e9',
+      success: '#10b981',
+      warning: '#facc15',
+      danger: '#ef4444',
     },
     borderRadius: {
       sm: "var(--radius-sm)",

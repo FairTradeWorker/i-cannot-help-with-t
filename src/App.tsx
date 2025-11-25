@@ -39,6 +39,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LegalFooter } from '@/components/LegalFooter';
 import { LoginModal } from '@/components/LoginModal';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
@@ -385,6 +386,14 @@ function App() {
             </nav>
 
             <div className="flex items-center gap-2">
+              <motion.div 
+                whileHover={{ scale: 1.05, y: -2 }} 
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <ThemeToggle />
+              </motion.div>
+
               <motion.div 
                 whileHover={{ scale: 1.05, y: -2 }} 
                 whileTap={{ scale: 0.95 }}

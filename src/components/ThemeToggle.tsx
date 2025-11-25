@@ -1,34 +1,47 @@
-import { useEffect, useState } from 'react';
-import { Sun, Moon } from '@phosphor-icons/react';
+import { useState, useEffect } from 'react'
+import { Sun, Moon } from '@phosphor-icons/react'
+import { Button } from '@/components/ui/button'
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setThemeState] = useState<'light' | 'dark'>('light')
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initialTheme = savedTheme || 'dark';
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-  }, []);
+    const stored = localStorage.getItem('theme')
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const initialTheme = (stored as 'light' | 'dark') || (prefersDark ? 'dark' : 'light')
+    
+    setThemeState(initialTheme)
+    applyTheme(initialTheme)
+  }, [])
+
+  const applyTheme = (newTheme: 'light' | 'dark') => {
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-  };
+    const newTheme = theme === 'dark' ? 'light' : 'dark'
+    setThemeState(newTheme)
+    localStorage.setItem('theme', newTheme)
+    applyTheme(newTheme)
+  }
 
   return (
-    <button
+    <Button
       onClick={toggleTheme}
-      className="p-3 bg-card border-2 border-border rounded-full hover:scale-110 active:scale-95 transition-all duration-200"
-      aria-label="Toggle theme"
+      variant="ghost"
+      size="icon"
+      className="glass-hover relative"
+      aria-label="Toggle dark/light mode"
     >
       {theme === 'dark' ? (
-        <Sun className="w-5 h-5" weight="bold" />
+        <Sun className="w-5 h-5" weight="fill" />
       ) : (
-        <Moon className="w-5 h-5" weight="bold" />
+        <Moon className="w-5 h-5" weight="fill" />
       )}
-    </button>
-  );
+    </Button>
+  )
 }
