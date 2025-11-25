@@ -339,8 +339,6 @@ function App() {
                     onClick={() => {
                       setShowAdminPanel(!showAdminPanel);
                       setShowProfile(false);
-                      setActiveTab('home');
-                      setActiveSubTab('analytics');
                     }}
                     className="glass-hover"
                   >
@@ -378,8 +376,7 @@ function App() {
               transition={{ duration: 0.3 }}
             >
               {showProfile && <UserProfile user={currentUser} />}
-              {showAdminPanel && <AnalyticsDashboard analytics={mockAnalytics} />}
-              {!showProfile && !showAdminPanel && (
+              {!showProfile && (
                 <>
                   {activeTab === 'home' && !activeSubTab && (
                     <div className="space-y-8">
@@ -414,6 +411,20 @@ function App() {
       </main>
 
       <LegalFooter />
+
+      {showAdminPanel && currentUser?.role === 'admin' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3 }}
+          className="border-t border-border/50"
+        >
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            <AnalyticsDashboard analytics={mockAnalytics} />
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
