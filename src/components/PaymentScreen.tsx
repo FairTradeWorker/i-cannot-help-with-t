@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   CreditCard,
   Money,
@@ -31,6 +32,7 @@ import {
   User,
   Phone,
   House,
+  Question,
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -57,10 +59,10 @@ export function PaymentScreen({
   const [selectedWarranty, setSelectedWarranty] = useState<'none' | 'extended' | 'premium'>('none');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const operatorMonthlyFee = 45;
-  const warrantyPrices = { none: 0, extended: 299, premium: 599 };
+  const operatorFee = 20;
+  const warrantyPrices = { none: 0, extended: 299, premium: 499 };
   const warrantyPrice = warrantyPrices[selectedWarranty];
-  const totalAmount = amount + warrantyPrice;
+  const totalAmount = amount + warrantyPrice + operatorFee;
 
   const financeOptions = [
     {
@@ -471,7 +473,7 @@ export function PaymentScreen({
                   <Badge variant={selectedWarranty === 'premium' ? 'default' : 'outline'}>Best Value</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mb-2">5-year full coverage with 24/7 support</p>
-                <div className="text-sm font-bold">+$599</div>
+                <div className="text-sm font-bold">+$499</div>
               </div>
             </div>
           </Card>
@@ -498,6 +500,25 @@ export function PaymentScreen({
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Job Amount</span>
                   <span className="font-semibold">${amount.toLocaleString()}</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Platform Fee</span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-3 h-3 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">One-time platform fee that supports ServiceHub operations</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  <span className="text-sm font-semibold text-accent">
+                    +${operatorFee.toLocaleString()}
+                  </span>
                 </div>
 
                 {warrantyPrice > 0 && (
@@ -550,14 +571,14 @@ export function PaymentScreen({
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-2 text-xs">
                   <h4 className="font-semibold text-sm flex items-center gap-2">
                     <MapPin className="w-4 h-4" weight="fill" />
-                    Territory Operator Fee
+                    Platform Fee Breakdown
                   </h4>
                   <p className="text-muted-foreground">
-                    Territory operators pay ${operatorMonthlyFee}/month to maintain exclusive lead rights in their area. This fee supports the platform.
+                    A one-time ${operatorFee} platform fee per job helps maintain ServiceHub infrastructure, secure payments, and support services. Territory operators separately pay $45/month for exclusive lead rights in their area.
                   </p>
                   <div className="flex justify-between items-center pt-2 border-t border-primary/20">
-                    <span className="font-medium">Monthly Platform Fee:</span>
-                    <span className="font-bold text-primary">${operatorMonthlyFee}/mo</span>
+                    <span className="font-medium">Your Platform Fee:</span>
+                    <span className="font-bold text-primary">${operatorFee} one-time</span>
                   </div>
                 </div>
 
@@ -622,24 +643,53 @@ export function PaymentScreen({
       </div>
 
       <Card className="glass-card p-6">
-        <h3 className="text-lg font-bold mb-4">Frequently Asked Questions</h3>
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <Question className="w-5 h-5 text-primary" weight="fill" />
+          Frequently Asked Questions
+        </h3>
         <Separator className="mb-4" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-sm mb-2">When will work begin?</h4>
-            <p className="text-sm text-muted-foreground">Work typically begins within 3-5 business days of payment confirmation.</p>
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-primary" />
+              When will work begin?
+            </h4>
+            <p className="text-sm text-muted-foreground">Work typically begins within 3-5 business days of payment confirmation. Your contractor will contact you within 24 hours to schedule.</p>
           </div>
           <div>
-            <h4 className="font-semibold text-sm mb-2">What is the escrow process?</h4>
-            <p className="text-sm text-muted-foreground">Funds are held securely until the job is completed to your satisfaction.</p>
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-primary" />
+              What is the escrow process?
+            </h4>
+            <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
           </div>
           <div>
-            <h4 className="font-semibold text-sm mb-2">Can I get a refund?</h4>
-            <p className="text-sm text-muted-foreground">Refunds are available if work hasn't started or through our dispute resolution process.</p>
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <ArrowRight className="w-4 h-4 text-primary" />
+              Can I get a refund?
+            </h4>
+            <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
           </div>
           <div>
-            <h4 className="font-semibold text-sm mb-2">What are the financing terms?</h4>
-            <p className="text-sm text-muted-foreground">0% APR financing available for qualified customers on 12-month plans.</p>
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-primary" />
+              What are the financing terms?
+            </h4>
+            <p className="text-sm text-muted-foreground">0% APR financing available for qualified customers on 12-month plans. 3-month plans include a 2% processing fee. No hidden charges.</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-primary" />
+              What does the $20 platform fee cover?
+            </h4>
+            <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-primary" />
+              Are contractors verified?
+            </h4>
+            <p className="text-sm text-muted-foreground">All contractors are background checked, licensed, and insured. We verify credentials and maintain quality standards through regular reviews.</p>
           </div>
         </div>
       </Card>

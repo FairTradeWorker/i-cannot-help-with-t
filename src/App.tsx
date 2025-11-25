@@ -33,6 +33,7 @@ import {
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -683,7 +684,7 @@ function App() {
                       <QuickJobPost onCreateJob={handleCreateJob} />
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('territories', 'overview')}>
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-primary">
                               <MapTrifold className="w-7 h-7 text-white" weight="fill" />
@@ -693,11 +694,17 @@ function App() {
                               <p className="text-2xl font-bold">850+</p>
                             </div>
                           </div>
-                          <p className="text-sm font-semibold">Territories</p>
-                          <p className="text-xs text-muted-foreground">$45/month • Exclusive lead rights</p>
+                          <p className="text-sm font-semibold mb-1">Territories</p>
+                          <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            <Badge variant="outline" className="text-[10px]">CA</Badge>
+                            <Badge variant="outline" className="text-[10px]">TX</Badge>
+                            <Badge variant="outline" className="text-[10px]">FL</Badge>
+                            <Badge variant="outline" className="text-[10px]">+47 states</Badge>
+                          </div>
                         </Card>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('browse-jobs')}>
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('browse-jobs')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-accent">
                               <Briefcase className="w-7 h-7 text-white" weight="fill" />
@@ -707,11 +714,16 @@ function App() {
                               <p className="text-2xl font-bold">2.8K+</p>
                             </div>
                           </div>
-                          <p className="text-sm font-semibold">Jobs Available</p>
-                          <p className="text-xs text-muted-foreground">Browse opportunities now</p>
+                          <p className="text-sm font-semibold mb-1">Jobs Available</p>
+                          <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
+                            <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
+                            <Badge variant="secondary" className="text-[10px]">+12</Badge>
+                          </div>
                         </Card>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('contractor', 'dashboard')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-secondary">
                               <Hammer className="w-7 h-7 text-white" weight="fill" />
@@ -721,11 +733,15 @@ function App() {
                               <p className="text-2xl font-bold">3.5K+</p>
                             </div>
                           </div>
-                          <p className="text-sm font-semibold">Contractors</p>
-                          <p className="text-xs text-muted-foreground">Join our network</p>
+                          <p className="text-sm font-semibold mb-1">Verified Contractors</p>
+                          <p className="text-xs text-muted-foreground mb-2">Join our professional network</p>
+                          <div className="flex items-center gap-1 mt-2 text-xs">
+                            <CheckCircle className="w-3 h-3 text-secondary" weight="fill" />
+                            <span className="text-muted-foreground">Zero platform fees</span>
+                          </div>
                         </Card>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('intelligence')}>
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('intelligence')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-primary">
                               <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
@@ -735,8 +751,12 @@ function App() {
                               <p className="text-2xl font-bold">$99</p>
                             </div>
                           </div>
-                          <p className="text-sm font-semibold">API Access</p>
-                          <p className="text-xs text-muted-foreground">Intelligence endpoints</p>
+                          <p className="text-sm font-semibold mb-1">API Access</p>
+                          <p className="text-xs text-muted-foreground mb-2">Intelligence & pricing endpoints</p>
+                          <div className="flex items-center gap-1 mt-2 text-xs">
+                            <Lightning className="w-3 h-3 text-primary" weight="fill" />
+                            <span className="text-muted-foreground">Real-time data</span>
+                          </div>
                         </Card>
                       </div>
 
@@ -745,22 +765,39 @@ function App() {
                       <Card className="glass-card p-8 border-2 border-primary/20">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                           <div>
-                            <h3 className="text-2xl font-bold mb-4">Zero Fees for Contractors</h3>
+                            <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
+                            <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
                             <p className="text-muted-foreground mb-6">
-                              Unlike other platforms, we don't charge contractors any fees. Territory operators fund the platform through 8% revenue share, so you keep 100% of your earnings.
+                              Unlike other platforms that charge 15-30% fees, ServiceHub contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
                             </p>
                             <div className="space-y-3">
                               <div className="flex items-center gap-3">
                                 <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
-                                <p className="text-sm">No platform fees ever</p>
+                                <div>
+                                  <p className="text-sm font-semibold">No platform fees for contractors</p>
+                                  <p className="text-xs text-muted-foreground">Never lose a percentage of your earnings</p>
+                                </div>
                               </div>
                               <div className="flex items-center gap-3">
                                 <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
-                                <p className="text-sm">Keep 100% of your earnings</p>
+                                <div>
+                                  <p className="text-sm font-semibold">Keep 100% of job payments</p>
+                                  <p className="text-xs text-muted-foreground">Full payment released upon completion</p>
+                                </div>
                               </div>
                               <div className="flex items-center gap-3">
                                 <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
-                                <p className="text-sm">Instant payouts available</p>
+                                <div>
+                                  <p className="text-sm font-semibold">Instant payouts available</p>
+                                  <p className="text-xs text-muted-foreground">Get paid immediately after job approval</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                                <div>
+                                  <p className="text-sm font-semibold">Secure escrow protection</p>
+                                  <p className="text-xs text-muted-foreground">Funds guaranteed before starting work</p>
+                                </div>
                               </div>
                             </div>
                             <Button size="lg" className="mt-6" onClick={() => handleNavClick('contractor', 'dashboard')}>
@@ -768,21 +805,36 @@ function App() {
                               <ArrowRight className="w-5 h-5 ml-2" />
                             </Button>
                           </div>
-                          <div className="bg-white rounded-2xl p-6 shadow-2xl">
-                            <h4 className="font-bold mb-4 text-center">Payment Breakdown</h4>
+                          <div className="bg-white rounded-2xl p-6 shadow-2xl border-2 border-muted">
+                            <h4 className="font-bold mb-2 text-center">$10,000 Job Payment Example</h4>
+                            <p className="text-xs text-muted-foreground text-center mb-4">How the money flows</p>
                             <div className="space-y-3">
                               <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                                <span className="text-sm">Job Payment</span>
+                                <div>
+                                  <span className="text-sm font-semibold">Job Payment</span>
+                                  <p className="text-xs text-muted-foreground">From homeowner</p>
+                                </div>
                                 <span className="font-bold">$10,000</span>
                               </div>
-                              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                                <span className="text-sm">Territory Fee (8%)</span>
-                                <span className="font-bold text-blue-600">-$800</span>
+                              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <div>
+                                  <span className="text-sm font-semibold">Platform Fee</span>
+                                  <p className="text-xs text-muted-foreground">One-time charge</p>
+                                </div>
+                                <span className="font-bold text-blue-600">$20</span>
                               </div>
-                              <div className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg">
-                                <span className="text-sm font-semibold">You Receive</span>
-                                <span className="font-bold text-secondary text-lg">$9,200</span>
+                              <div className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg border-2 border-secondary/30">
+                                <div>
+                                  <span className="text-sm font-semibold">Contractor Receives</span>
+                                  <p className="text-xs text-muted-foreground">100% of job amount</p>
+                                </div>
+                                <span className="font-bold text-secondary text-lg">$10,000</span>
                               </div>
+                            </div>
+                            <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                              <p className="text-xs text-muted-foreground">
+                                <span className="font-semibold text-foreground">Territory operators</span> separately pay $45/month for exclusive lead rights in their area. This monthly fee funds platform operations.
+                              </p>
                             </div>
                           </div>
                         </div>

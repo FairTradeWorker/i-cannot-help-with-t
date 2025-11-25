@@ -39,7 +39,7 @@ export function WarrantySection() {
     },
     {
       name: 'Premium Warranty',
-      price: 599,
+      price: 499,
       duration: '5 Years',
       description: 'Maximum protection for your investment',
       features: [
