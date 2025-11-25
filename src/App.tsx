@@ -647,7 +647,14 @@ function App() {
                   {activeTab === 'home' && (
                     <div className="space-y-8">
                       <QuickJobPost onCreateJob={handleCreateJob} />
-                      <QuickJobPost onCreateJob={handleCreateJob} />
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <motion.div
+                          whileHover={{ y: -8 }}
+                          whileTap={{ scale: 0.96 }}
+                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                        >
+                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('territories', 'overview')}>
                             <div className="flex items-center gap-4 mb-3">
                               <div className="p-3 rounded-xl bg-primary">
                                 <MapTrifold className="w-7 h-7 text-white" weight="fill" />
