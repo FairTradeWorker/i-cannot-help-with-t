@@ -36,6 +36,7 @@ import { MessagesView } from '@/components/MessagesView';
 import { TerritoryBrowser } from '@/components/TerritoryBrowser';
 import { ReferralSystem } from '@/components/ReferralSystem';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
+import { AILearningDashboard } from '@/components/AILearningDashboard';
 import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
@@ -418,10 +419,23 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="border-t border-border/50"
+          className="border-t-2 border-primary/20 bg-gradient-to-b from-background to-muted/20"
         >
           <div className="max-w-7xl mx-auto px-4 py-8">
-            <AnalyticsDashboard analytics={mockAnalytics} />
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
+                  <ChartBar className="w-6 h-6 text-white" weight="fill" />
+                </div>
+                <h2 className="text-2xl font-bold">Admin Dashboard</h2>
+              </div>
+              <p className="text-muted-foreground">Platform analytics and AI learning metrics</p>
+            </div>
+            
+            <div className="space-y-8">
+              <AnalyticsDashboard analytics={mockAnalytics} />
+              <AILearningDashboard />
+            </div>
           </div>
         </motion.div>
       )}

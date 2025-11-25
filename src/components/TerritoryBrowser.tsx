@@ -17,6 +17,7 @@ import {
   TrendUp,
   Globe
 } from '@phosphor-icons/react';
+import usMapImage from '@/assets/images/AdobeStock_1578095938.png';
 
 export function TerritoryBrowser() {
   const [selectedState, setSelectedState] = useState<StateData | null>(null);
@@ -111,11 +112,17 @@ export function TerritoryBrowser() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="glass-card p-6">
-            <USMap
-              onStateClick={handleStateClick}
-              selectedState={selectedState?.abbreviation}
+          <Card className="glass-card p-6 relative overflow-hidden">
+            <div 
+              className="absolute inset-0 opacity-5 bg-cover bg-center"
+              style={{ backgroundImage: `url(${usMapImage})` }}
             />
+            <div className="relative z-10">
+              <USMap
+                onStateClick={handleStateClick}
+                selectedState={selectedState?.abbreviation}
+              />
+            </div>
           </Card>
         </motion.div>
       ) : (
