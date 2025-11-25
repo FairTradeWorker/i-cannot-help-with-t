@@ -9,6 +9,9 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { analyzeVideoFrames, analyzeJobFromVideo, type JobScope } from '@/lib/ai-service';
 import { PricingSuggester } from './PricingSuggester';
+import { InstantFinancingModal, FinanceAndBookButton } from './InstantFinancingModal';
+import { toast } from 'sonner';
+import type { FinancingApplication } from '@/lib/types';
 
 type AnalysisStage = 'idle' | 'extracting' | 'analyzing-vision' | 'generating-scope' | 'complete' | 'error';
 
@@ -24,8 +27,24 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
   const [error, setError] = useState<string>('');
   const [videoPreview, setVideoPreview] = useState<string>('');
   const [progress, setProgress] = useState(0);
+  const [showFinancingModal, setShowFinancingModal] = useState(false);
+  const [financingApproved, setFinancingApproved] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFinancingApproved = (application: FinancingApplication) => {
+    setFinancingApproved(true);
+    toast.success('Financing approved! Your contractor has been booked.', {
+      description: `Monthly payment: $${application.monthlyPayment}/mo`,
+    });
+    onJobCreated?.();
+  };
+
+  const handleFinancingDeclined = () => {
+    toast.error('Financing not approved', {
+      description: 'You can still get contractor bids with other payment options.',
+    });
+  };
 
   const extractFrameFromVideo = async (videoFile: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -320,10 +339,25 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
                     </Badge>
                   )}
                 </div>
-                <Button size="lg" className="font-semibold">
-                  Get Contractor Bids
-                </Button>
+                <div className="flex items-center gap-3">
+                  <Button size="lg" variant="outline" className="font-semibold">
+                    Get Contractor Bids
+                  </Button>
+                  <FinanceAndBookButton
+                    jobTotal={scope.estimatedCost.max}
+                    onClick={() => setShowFinancingModal(true)}
+                  />
+                </div>
               </div>
+
+              {financingApproved && (
+                <div className="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-700 dark:text-green-400">
+                    <CheckCircle className="w-5 h-5" weight="fill" />
+                    <span className="font-semibold">Financing approved! Your contractor has been booked.</span>
+                  </div>
+                </div>
+              )}
             </Card>
           </TabsContent>
 
@@ -331,6 +365,19 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
             <PricingSuggester jobScope={scope} />
           </TabsContent>
         </Tabs>
+      )}
+
+      {scope && (
+        <InstantFinancingModal
+          open={showFinancingModal}
+          onOpenChange={setShowFinancingModal}
+          jobId={`job-${Date.now()}`}
+          jobTitle={scope.jobTitle}
+          jobTotal={scope.estimatedCost.max}
+          homeownerId={homeownerId || 'demo-user'}
+          onFinancingApproved={handleFinancingApproved}
+          onFinancingDeclined={handleFinancingDeclined}
+        />
       )}
     </div>
   );

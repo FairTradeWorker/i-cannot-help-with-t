@@ -310,6 +310,41 @@ export interface Payment {
   completedAt?: Date;
 }
 
+export type FinancingStatus = 'pending' | 'approved' | 'declined' | 'completed';
+
+export interface FinancingApplication {
+  id: string;
+  jobId: string;
+  homeownerId: string;
+  contractorId?: string;
+  amount: number;
+  monthlyPayment: number;
+  term: number;
+  apr: number;
+  status: FinancingStatus;
+  hearthApplicationId?: string;
+  warrantyBundled: boolean;
+  warrantyAmount?: number;
+  referralCredit?: number;
+  createdAt: Date;
+  approvedAt?: Date;
+  completedAt?: Date;
+}
+
+export interface FinancingWebhookPayload {
+  eventType: 'application.approved' | 'application.declined' | 'application.completed';
+  applicationId: string;
+  hearthApplicationId: string;
+  jobId: string;
+  amount: number;
+  monthlyPayment: number;
+  term: number;
+  apr: number;
+  homeownerId: string;
+  contractorId?: string;
+  timestamp: string;
+}
+
 export interface Referral {
   id: string;
   referrerId: string;
