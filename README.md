@@ -32,15 +32,35 @@ An intelligent platform that analyzes home repair videos using AI vision, genera
 - **Performance Metrics** - Tracks accuracy trends over time
 - **Learning Dashboard** - Visualizes system performance and improvement
 
+### 🗺️ Route Optimization for Contractors
+- **Smart Route Planning** - Optimizes daily routes for visiting multiple job sites
+- **Cost Savings** - Calculates fuel costs and time estimates
+- **Flexible Options** - Avoid tolls, highways, or ferries based on preferences
+- **Visual Maps** - Interactive route visualization with numbered stops
+- **Turn-by-Turn** - Detailed directions for each route segment
+- **API Integration** - Powered by Trueway Routing API for accurate directions
+
 ## Technology Stack
 
 - **Frontend**: React 19 with TypeScript
 - **UI Components**: shadcn/ui v4 (40+ pre-configured components)
 - **Styling**: Tailwind CSS v4 with custom theme
 - **AI**: Spark Runtime LLM API (GPT-4o with vision capabilities)
+- **Routing**: Trueway Routing API (OpenAPI 3.0.1 integration)
 - **State Management**: React hooks + Spark KV persistence
 - **Icons**: Phosphor Icons
 - **Build Tool**: Vite
+
+## Setup
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Copy `.env.example` to `.env` and add your Trueway API key:
+   ```
+   VITE_TRUEWAY_API_KEY=your_api_key_here
+   ```
+4. Get your API key from [API.market](https://api.market/) (Trueway Routing API)
+5. Start the development server: `npm run dev`
 
 ## How It Works
 
@@ -53,13 +73,24 @@ User uploads video
   → Display results with confidence score
 ```
 
-### 2. AI Analysis Process
+### 2. Route Optimization Flow
+```
+Contractor views active jobs
+  → Select jobs to visit
+  → Configure route options (avoid tolls/highways/ferries)
+  → System calls Trueway Routing API
+  → Optimizes stop order for efficiency
+  → Display map with route + turn-by-turn directions
+  → Show total distance/duration/fuel cost
+```
+
+### 3. AI Analysis Process
 The system uses a multi-stage AI pipeline:
 1. **Vision Analysis** - GPT-4o vision model examines video frames
 2. **Scope Generation** - Expert construction estimator persona creates detailed scope
 3. **Pricing Strategy** - Pricing strategist optimizes contractor bid
 
-### 3. Learning Loop
+### 4. Learning Loop
 ```
 Prediction made 
   → User provides feedback
@@ -76,9 +107,12 @@ src/
 │   ├── VideoUploader.tsx       # Main video upload & analysis UI
 │   ├── PricingSuggester.tsx    # Pricing optimization interface
 │   ├── LearningDashboard.tsx   # Performance metrics & history
+│   ├── RouteOptimizer.tsx      # Route planning with job selection
+│   ├── RouteMap.tsx            # Visual route map display
 │   └── ui/                     # shadcn components (40+)
 ├── lib/
 │   ├── ai-service.ts           # Core AI logic & learning database
+│   ├── routing-api.ts          # Trueway API integration & helpers
 │   └── utils.ts                # Utility functions
 ├── App.tsx                     # Main app with tab navigation
 └── index.css                   # Tailwind theme configuration
@@ -92,6 +126,14 @@ src/
 - `suggestOptimalPricing()` - Calculate optimal pricing strategy
 - `recordPredictionOutcome()` - Store feedback for learning
 - `LearningDatabase` class - Persistent learning storage using Spark KV
+
+### Routing Service (`src/lib/routing-api.ts`)
+- `findDrivingRoute()` - Optimize route for multiple stops
+- `findDrivingPath()` - Find path from origin to destination
+- `optimizeJobRoute()` - Optimize contractor's daily job route
+- `formatDistance()` / `formatDuration()` - Display helpers
+- `calculateFuelCost()` - Estimate fuel expenses
+- Route types matching OpenAPI 3.0.1 spec
 
 ### Video Uploader (`src/components/VideoUploader.tsx`)
 - File validation and preview
@@ -112,6 +154,14 @@ src/
 - Average accuracy metrics
 - Prediction type breakdown
 - Recent prediction history
+
+### Route Optimizer (`src/components/RouteOptimizer.tsx`)
+- Job selection with urgency indicators
+- Route configuration options
+- Real-time route optimization
+- Cost and time estimates
+- Visual map integration
+- Turn-by-turn directions
 
 ## Design Philosophy
 
@@ -149,6 +199,10 @@ All learning data is persisted using Spark's KV storage:
 - [ ] Advanced filtering and search in learning dashboard
 - [ ] Export capabilities for reports
 - [ ] Mobile app version
+- [ ] Real-time traffic integration for routes
+- [ ] Weather-aware routing
+- [ ] Multi-day route optimization
+- [ ] Route sharing between contractors
 
 ## Development
 
@@ -165,3 +219,28 @@ Built with the Spark template optimized for:
 - AI analysis: ~5-10 seconds depending on complexity
 - Pricing generation: ~3-5 seconds
 - Learning queries: <100ms (in-memory with KV persistence)
+- Route optimization: ~2-5 seconds for up to 25 stops
+- Map rendering: <100ms using canvas
+
+## API Integration
+
+### Trueway Routing API
+The platform integrates with Trueway Routing API (OpenAPI 3.0.1) for route optimization:
+
+**Endpoints Used:**
+- `GET /DirectionsService/FindDrivingRoute` - Multi-stop route optimization
+- `GET /DirectionsService/FindDrivingPath` - Point-to-point navigation
+
+**Features:**
+- Up to 25 stops per route
+- Automatic stop reordering for efficiency
+- Avoid tolls, highways, or ferries
+- Distance and duration calculations
+- Turn-by-turn directions
+- Polyline geometry for map visualization
+
+**Authentication:**
+- Header: `x-api-market-key`
+- Get your key at [API.market](https://api.market/)
+- Configure in `.env` as `VITE_TRUEWAY_API_KEY`
+

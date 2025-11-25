@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales } from '@phosphor-icons/react';
+import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales, Path } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +13,7 @@ import { JobDetails } from './JobDetails';
 import { EarningsDashboard } from './EarningsDashboard';
 import { ComplianceDashboard } from './ComplianceDashboard';
 import { EstimateAccuracyTrend } from './EstimateAccuracyTrend';
+import { RouteOptimizer } from './RouteOptimizer';
 
 interface ContractorDashboardProps {
   user: User;
@@ -147,9 +148,13 @@ export function ContractorDashboard({ user }: ContractorDashboardProps) {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-4xl grid-cols-5 mb-8">
+          <TabsList className="grid w-full max-w-5xl grid-cols-6 mb-8">
             <TabsTrigger value="browse">Browse Jobs</TabsTrigger>
             <TabsTrigger value="active">Active ({activeJobs.length})</TabsTrigger>
+            <TabsTrigger value="route">
+              <Path className="w-4 h-4 mr-2" />
+              Route Planner
+            </TabsTrigger>
             <TabsTrigger value="completed">Completed</TabsTrigger>
             <TabsTrigger value="earnings">Earnings</TabsTrigger>
             <TabsTrigger value="compliance">
@@ -212,6 +217,41 @@ export function ContractorDashboard({ user }: ContractorDashboardProps) {
                   </Card>
                 ))}
               </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="route">
+            {activeJobs.length === 0 ? (
+              <Card className="p-8 text-center">
+                <Path className="w-16 h-16 text-muted-foreground mx-auto mb-4" weight="duotone" />
+                <h4 className="text-lg font-semibold mb-2">No Active Jobs to Route</h4>
+                <p className="text-muted-foreground mb-4">Accept some jobs to optimize your route</p>
+                <Button onClick={() => setActiveTab('browse')}>
+                  Browse Jobs
+                </Button>
+              </Card>
+            ) : (
+              <RouteOptimizer
+                jobs={activeJobs.map(job => ({
+                  id: job.id,
+                  title: job.title,
+                  address: `${job.address.street}, ${job.address.city}, ${job.address.state} ${job.address.zip}`,
+                  location: {
+                    lat: job.address.lat || 0,
+                    lng: job.address.lng || 0,
+                  },
+                  urgency: job.urgency,
+                  estimatedDuration: job.laborHours ? job.laborHours * 3600 : undefined,
+                }))}
+                contractorLocation={{
+                  lat: profile.location.lat,
+                  lng: profile.location.lng,
+                  address: profile.location.address,
+                }}
+                onRouteOptimized={(route) => {
+                  console.log('Route optimized:', route);
+                }}
+              />
             )}
           </TabsContent>
 

@@ -50,6 +50,13 @@ A revolutionary 3-tier marketplace platform where homeowners upload 60-second vi
 - **Progression**: Homeowner pays $10,000 → held in escrow → job completed → $800 (8%) to operator → $9,200 to workers → platform takes from operator's $800
 - **Success criteria**: Workers see $0 deducted from their earnings, operator receives exactly 8%, escrow holds funds until completion, accurate split for multi-worker jobs (GC hires 3 subs, each gets their portion)
 
+### Route Optimization for Contractors
+- **Functionality**: Contractors can optimize their daily routes to visit multiple job sites efficiently using the Trueway Routing API, with options to avoid tolls/highways/ferries, automatic route optimization, distance/duration/cost calculations, and visual map display
+- **Purpose**: Save contractors time and money by finding the most efficient path through multiple job locations, reduce fuel costs, improve scheduling accuracy
+- **Trigger**: Contractor navigates to Route Planner tab in dashboard
+- **Progression**: View active jobs → select jobs to include → configure options (avoid tolls/highways/ferries, return to start) → click Optimize Route → AI calculates optimal order → display map with route → show turn-by-turn directions → view cost/time estimates
+- **Success criteria**: Route optimized in <5s, displays total distance/duration/fuel cost, reorders stops for efficiency, shows visual map with numbered stops, provides turn-by-turn leg details, calculates estimated route cost including time value
+
 ### Top Navigation System
 - **Functionality**: Persistent top navigation bar with dropdown menus for Homeowner (Browse, Payment), Partner (Dashboard, Finance), Admin (Analytics, User Management), and Referral (Program, My Referrals) sections
 - **Purpose**: Provide easy access to all platform features with clear organization and hierarchy
