@@ -103,26 +103,26 @@ export function QuickJobPost({ onCreateJob, onExploreMap }: QuickJobPostProps) {
                   }`}
                   onClick={() => onCreateJob(option.id as 'video' | 'photo' | 'text')}
                 >
-                  <CardContent className="relative p-3 text-center space-y-2">
+                  <CardContent className="relative p-6 text-center space-y-3">
                     {option.badge && (
-                      <Badge variant="default" className="text-[9px] px-1.5 py-0 h-4 bg-secondary text-secondary-foreground">
+                      <Badge variant="default" className="text-[10px] px-2 py-0.5 h-5 bg-secondary text-secondary-foreground">
                         {option.badge}
                       </Badge>
                     )}
                     
                     <motion.div 
-                      className={`mx-auto w-9 h-9 ${option.color} flex items-center justify-center rounded-lg`}
+                      className={`mx-auto w-14 h-14 ${option.color} flex items-center justify-center rounded-xl`}
                       animate={{ 
                         y: hoveredCard === option.id ? -2 : 0
                       }}
                       transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                     >
-                      <Icon className="w-5 h-5 text-white" weight="fill" />
+                      <Icon className="w-7 h-7 text-white" weight="fill" />
                     </motion.div>
                     
                     <div>
-                      <div className="font-bold text-[11px] mb-0.5">{option.title}</div>
-                      <p className="text-[9px] text-muted-foreground leading-tight">{option.description}</p>
+                      <div className="font-bold text-sm mb-1">{option.title}</div>
+                      <p className="text-xs text-muted-foreground leading-tight">{option.description}</p>
                     </div>
                   </CardContent>
                 </Card>

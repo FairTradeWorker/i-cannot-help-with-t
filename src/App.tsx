@@ -693,45 +693,45 @@ function App() {
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
                       
-                      <Card className="glass-card p-8 border-2 border-primary/20">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                      <Card className="glass-card p-10 border-2 border-primary/20">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                           <div>
-                            <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
-                            <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
-                            <p className="text-muted-foreground mb-6">
+                            <h3 className="text-3xl font-bold mb-3">Zero Fees for Contractors</h3>
+                            <Badge variant="secondary" className="mb-6 text-sm px-3 py-1">100% Earnings Guarantee</Badge>
+                            <p className="text-muted-foreground mb-8 text-base leading-relaxed">
                               Unlike other platforms that charge 15-30% fees, ServiceHub contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $10 platform fee per job.
                             </p>
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                            <div className="space-y-5">
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">No platform fees for contractors</p>
-                                  <p className="text-xs text-muted-foreground">Never lose a percentage of your earnings</p>
+                                  <p className="text-base font-semibold mb-1">No platform fees for contractors</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Never lose a percentage of your earnings</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">Keep 100% of job payments</p>
-                                  <p className="text-xs text-muted-foreground">Full payment released upon completion</p>
+                                  <p className="text-base font-semibold mb-1">Keep 100% of job payments</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Full payment released upon completion</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">Instant payouts available</p>
-                                  <p className="text-xs text-muted-foreground">Get paid immediately after job approval</p>
+                                  <p className="text-base font-semibold mb-1">Instant payouts available</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Get paid immediately after job approval</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">Secure escrow protection</p>
-                                  <p className="text-xs text-muted-foreground">Funds guaranteed before starting work</p>
+                                  <p className="text-base font-semibold mb-1">Secure escrow protection</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Funds guaranteed before starting work</p>
                                 </div>
                               </div>
                             </div>
-                            <Button size="lg" className="mt-6" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                            <Button size="lg" className="mt-8" onClick={() => handleNavClick('contractor', 'dashboard')}>
                               Join as Contractor
                               <ArrowRight className="w-5 h-5 ml-2" />
                             </Button>
