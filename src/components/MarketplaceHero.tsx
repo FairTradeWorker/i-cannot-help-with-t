@@ -20,7 +20,7 @@ export function MarketplaceHero() {
     {
       icon: Lightning,
       title: 'Instant Matching',
-      description: 'AI-powered matching finds the perfect service provider for your needs',
+      description: 'Smart matching finds the perfect service provider for your needs',
       color: 'from-primary to-secondary',
     },
     {

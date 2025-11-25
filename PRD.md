@@ -3,15 +3,15 @@
 A revolutionary 3-tier marketplace platform where homeowners upload 60-second videos of home repairs, platform analyzes and estimates jobs with precision, and three types of workers collaborate: Operators (territory investors earning 8%), General Contractors (project managers), and Subcontractors (specialists). The system learns from every completed job, improving from 82% accuracy to 99.9%+ over 10,000 jobs.
 
 **Experience Qualities**:
-1. **Intelligent & Self-Improving** - GPT-4 Vision analyzes videos, generates estimates, learns from reality (225fps ultra-smooth animations)
+1. **Intelligent & Self-Improving** - Video analysis generates estimates, learns from reality (225fps ultra-smooth animations)
 2. **Zero-Friction for Workers** - Workers pay $0 fees ever. Operators fund everything through 8% revenue share from their territories.
 3. **Transparent & Fair** - Clear 3-tier structure, confidence scores, real-time learning metrics, honest accuracy tracking
 
 **Complexity Level**: Complex Application (advanced vision analysis, self-learning system, 3-tier marketplace)
-- Video-to-job creation with GPT-4 Vision frame extraction and analysis
+- Video-to-job creation with frame extraction and analysis
 - Self-learning system that tracks predictions vs. reality and improves accuracy over time
 - 3-tier worker system: Operators (passive investors), General Contractors (project managers), Subcontractors (specialists)
-- Territory ownership with 8% revenue share for operators
+- Territory ownership with 8% revenue share for operators - First 10 territories FREE, then $500 each
 - Worker-friendly: $0 fees for all contractors, operators fund the platform
 
 ## Essential Features
@@ -41,10 +41,10 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - Mold Remediation, Pest Control, Insulation Installation, Chimney Repair & Cleaning, Septic System Repair, Well Installation & Repair, Pool Installation & Repair, Hot Tub Installation, Home Automation & Security, Solar Panel Installation, Radon Mitigation, Asbestos Removal, Lead Paint Removal
 
 ### 60-Second Video Job Creation (Core Innovation)
-- **Functionality**: Homeowner films damage for 60 seconds, system extracts middle frame, GPT-4 Vision analyzes image, generates detailed scope with materials/labor/costs automatically
+- **Functionality**: Homeowner films damage for 60 seconds, system extracts middle frame, analyzes image, generates detailed scope with materials/labor/costs automatically
 - **Purpose**: Remove friction from job posting, provide instant professional estimates, capture visual proof
 - **Trigger**: Homeowner clicks "New Job", uploads video
-- **Progression**: Upload video (60s) → system extracts middle frame → GPT-4 Vision analyzes → generates scope with confidence score → job posted with estimate → contractors see job
+- **Progression**: Upload video (60s) → system extracts middle frame → analysis → generates scope with confidence score → job posted with estimate → contractors see job
 - **Success criteria**: Frame extracted in <5s, analysis complete in <30s, scope includes materials list + labor hours + cost range + confidence score (85%+), job appears in contractor browse queue
 
 ### Self-Learning System (The Magic)
@@ -89,18 +89,18 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: All sections accessible from navigation, dropdowns work smoothly, active state clearly indicated
 
 ### Territory Map with Claiming
-- **Functionality**: Comprehensive territory map with list/map view toggle, search by zip/city/county/state, territory claiming with ROI calculations, claimed territory tracking with KV persistence
-- **Purpose**: Allow operators to discover, evaluate, and claim territories with clear financial projections and 8% revenue share details
+- **Functionality**: Comprehensive territory map with list/map view toggle, search by zip/city/county/state, territory claiming with dynamic pricing (First 10 FREE, then $500 each), ROI calculations, claimed territory tracking with KV persistence
+- **Purpose**: Allow operators to discover, evaluate, and claim territories with clear financial projections and 8% revenue share details. Incentivize early adoption with free territories.
 - **Trigger**: User navigates to Territories tab in main navigation
-- **Progression**: Map loads → switch between map/list view → search territories → click territory → view details (jobs, revenue, price, ROI) → claim territory → confirm purchase → territory saved to profile
-- **Success criteria**: All territories searchable and claimable, claims persist between sessions using useKV, ROI calculations accurate, claimed territories display differently
+- **Progression**: Map loads → switch between map/list view → search territories → click territory → view details (jobs, revenue, current price) → claim territory → confirm purchase (free for first 10, $500 after) → territory saved to profile
+- **Success criteria**: All territories searchable and claimable, claims persist between sessions using useKV, pricing updates dynamically (0 for claims 1-10, then $500, $1000, $1500...), claimed territories display differently, price shown is "Next Claim Price"
 
 ### Intelligence API Marketplace
-- **Functionality**: Enterprise API marketplace with 4 pricing tiers (Starter $5K/mo, Professional $25K/mo, Enterprise $100K/mo, Custom), 6 API endpoints (Demand Forecasting, Market Pricing, Labor Availability, Risk Assessment, Territory Valuation, Market Trends), authentication documentation, request/response examples
-- **Purpose**: Monetize platform intelligence for non-competing businesses (PE firms, real estate platforms, insurance companies), provide market data APIs
-- **Trigger**: User clicks Intelligence API in main navigation
-- **Progression**: API page loads → view pricing plans → explore API documentation → select endpoint → view examples → purchase plan → receive API keys
-- **Success criteria**: All 4 pricing tiers displayed with features, 6 API endpoints documented with examples, authentication methods explained, plan selection triggers purchase flow
+- **Functionality**: Enterprise API marketplace with dramatically reduced pricing (Starter $199/mo, Professional $449/mo, Enterprise $1,299/mo), 6 individual API products ($49-$129/mo), authentication documentation, request/response examples
+- **Purpose**: Monetize platform intelligence for non-competing businesses (PE firms, real estate platforms, insurance companies), provide market data APIs at accessible prices
+- **Trigger**: User scrolls to API section on home page
+- **Progression**: API section loads → view pricing cards and individual products → explore features → select plan or API → purchase → receive API keys
+- **Success criteria**: All pricing tiers displayed prominently on home page with icon boxes, 6 individual API products shown with icons and features, authentication methods explained, plan selection triggers purchase flow
 
 ### Quick Job Post Component
 - **Functionality**: Three job creation options on home page: Video (60-second AI analysis), Photo (image upload), Text (manual description), each with visual card and gradient styling
@@ -131,18 +131,18 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: All payment methods work, installment tracking accurate, payment history maintained, finance approval process clear
 
 ### Partner Dashboard
-- **Functionality**: Partnership management with revenue tracking, commission breakdowns, active partnership list, payout requests, partnership creation, and technology integration options (AI partners accessible via Partners > AI Technology)
+- **Functionality**: Partnership management with revenue tracking, commission breakdowns, active partnership list, payout requests, partnership creation, and technology integration options (learning metrics accessible via Partners > Technology)
 - **Purpose**: Enable partnership programs, track partner revenue, manage commissions, showcase platform technology capabilities
-- **Trigger**: Partner user accesses Partner dropdown → Dashboard or specific partner type (Materials, Insurance, AI Technology, Private Equity, Real Estate)
-- **Progression**: Dashboard loads → view stats → see active partnerships → check commission breakdown → request payout → access finance options → view AI learning metrics (Partners > AI Technology only)
-- **Success criteria**: Revenue accurately tracked, commissions calculated correctly, payout requests processed, partnership data displayed, AI learning metrics visible only in Partners > AI Technology section
+- **Trigger**: Partner user accesses Partner dropdown → Dashboard or specific partner type (Materials, Insurance, Technology, Private Equity, Real Estate)
+- **Progression**: Dashboard loads → view stats → see active partnerships → check commission breakdown → request payout → access finance options → view learning metrics (Partners > Technology only)
+- **Success criteria**: Revenue accurately tracked, commissions calculated correctly, payout requests processed, partnership data displayed, learning metrics visible only in Partners > Technology section
 
 ### Admin Analytics Dashboard
 - **Functionality**: Comprehensive platform analytics including total users, contractors, homeowners, jobs, revenue, completion rates, top states, top services, revenue by month with visual charts and trends
 - **Purpose**: Give administrators insight into platform performance, identify growth opportunities, track key metrics
 - **Trigger**: Admin user accesses Admin icon in header
 - **Progression**: Analytics loads → view overview stats → check state rankings → review service popularity → analyze revenue trends → export data
-- **Success criteria**: All metrics accurate, charts display correctly, trends calculated properly, data refreshes regularly (Note: AI/learning metrics are NOT shown here - those are in Partners > AI Technology section only)
+- **Success criteria**: All metrics accurate, charts display correctly, trends calculated properly, data refreshes regularly (Note: learning metrics are NOT shown here - those are in Partners > Technology section only)
 
 ### Referral Program
 - **Functionality**: User referral system with unique referral codes/links, email invitations, referral tracking, reward status, earnings dashboard, and program explanation
@@ -178,10 +178,10 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: Users can switch between roles (with new consent flows), profiles persist, appropriate features visible per role, all legal consents recorded
 
 ### Video-Based Job Creation (Homeowners)
-- **Functionality**: Upload video, AI analyzes damage, generates scope, creates job posting automatically
+- **Functionality**: Upload video, system analyzes damage, generates scope, creates job posting automatically
 - **Purpose**: Remove friction from homeowner job posting process, provide instant professional estimates
 - **Trigger**: Homeowner clicks "New Project", uploads video
-- **Progression**: Video upload → AI analysis → scope generation → job auto-created with estimates → posted for contractor bidding
+- **Progression**: Video upload → analysis → scope generation → job auto-created with estimates → posted for contractor bidding
 - **Success criteria**: Video analyzed in <30s, job appears in contractor browse queue, homeowner sees job in dashboard
 
 ### Job Matching & Browsing (Contractors)
@@ -219,12 +219,12 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Progression**: Status updates automatically based on actions → notifications sent → UI reflects current state
 - **Success criteria**: Status transitions work correctly, appropriate users can take actions at each stage
 
-### AI Learning Feedback System
-- **Functionality**: After job completion, contractors provide actual costs, materials cost, and labor hours; system compares with predictions and collects accuracy feedback (visible only in Partners > AI Technology section)
+### Learning Feedback System
+- **Functionality**: After job completion, contractors provide actual costs, materials cost, and labor hours; system compares with predictions and collects accuracy feedback (visible only in Partners > Technology section)
 - **Purpose**: Continuously improve estimation accuracy through real-world outcome data
 - **Trigger**: Contractor marks job as complete
-- **Progression**: Job completion form → enter actual cost/materials/labor → mark complete → feedback modal appears → rate accuracy (0-100%) → add comments (optional) → submit → system learns from data → accuracy trends displayed on Partners > AI Technology dashboard
-- **Success criteria**: Feedback stored per job, accuracy calculated correctly, trends displayed in Partners > AI Technology section only, predictions improve over time, accuracy score visible (85%+ target)
+- **Progression**: Job completion form → enter actual cost/materials/labor → mark complete → feedback modal appears → rate accuracy (0-100%) → add comments (optional) → submit → system learns from data → accuracy trends displayed on Partners > Technology dashboard
+- **Success criteria**: Feedback stored per job, accuracy calculated correctly, trends displayed in Partners > Technology section only, predictions improve over time, accuracy score visible (85%+ target)
 
 ### Rating System (100-Point Scale)
 - **Functionality**: Homeowners rate contractors on professionalism, quality, communication, timeliness, cleanliness
@@ -255,7 +255,7 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Duplicate bids** - Prevent contractors from bidding twice on same job
 - **Concurrent bid acceptance** - Handle race condition if homeowner tries to accept multiple bids
 - **Invalid video formats** - Validate file type and size before upload attempt
-- **AI API failures** - Graceful degradation, allow manual scope entry, retry mechanisms
+- **Analysis API failures** - Graceful degradation, allow manual scope entry, retry mechanisms
 - **Message ordering** - Ensure messages display in chronological order with consistent timestamps
 - **Earnings calculation** - Handle platform fee calculation (default 0% for founder tier), ensure math precision
 - **Payout request limits** - Prevent payout requests when balance is $0 or payout already in progress
@@ -313,16 +313,16 @@ Typography should convey precision, modern professionalism, and approachability 
 
 Animations should run at 225fps equivalent (ultra-smooth, imperceptible lag) - every interaction feels instant and fluid. All transitions use optimized durations: ultra-fast (0.044s), fast (0.088s), normal (0.133s), smooth (0.177s), slow (0.266s).
 
-- **Purposeful Meaning**: Video upload drag-drop with instant visual feedback, AI analysis progress with smooth percentage updates, confidence score animates in with spring physics, frame extraction shows seamless transition, job cards lift with silky hover, territory map states highlight instantly
+- **Purposeful Meaning**: Video upload drag-drop with instant visual feedback, analysis progress with smooth percentage updates, confidence score animates in with spring physics, frame extraction shows seamless transition, job cards lift with silky hover, territory map states highlight instantly
 - **Hierarchy of Movement**: 
-  1. Primary: Video analysis pipeline (frame extraction → AI thinking → scope generation) with progress indicators
+  1. Primary: Video analysis pipeline (frame extraction → analysis → scope generation) with progress indicators
   2. Secondary: Job creation flow, territory revenue updates, contractor approvals
   3. Tertiary: Hover states on cards, button presses, navigation transitions
 
 All framer-motion transitions updated to 225fps equivalent timing:
 - Button/card hover: 0.088s (fast)
 - Page transitions: 0.177s (smooth) 
-- AI analysis progress: 0.133s updates (normal)
+- Analysis progress: 0.133s updates (normal)
 - Micro-interactions: 0.044s (ultra-fast)
 - Spring animations: high stiffness (300), optimal damping (25)
 

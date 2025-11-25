@@ -779,7 +779,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
                 <Brain className="w-7 h-7 text-white" weight="duotone" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold">AI Technology Partners</h2>
+                <h2 className="text-3xl font-bold">Technology Partners</h2>
                 <p className="text-muted-foreground">Platform intelligence and learning systems</p>
               </div>
             </div>

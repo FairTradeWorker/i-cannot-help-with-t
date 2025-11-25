@@ -19,7 +19,7 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
       description: '60-second video analysis',
       icon: VideoCamera,
       gradient: 'from-primary to-secondary',
-      badge: 'AI-Powered',
+      badge: 'Recommended',
     },
     {
       id: 'photo',

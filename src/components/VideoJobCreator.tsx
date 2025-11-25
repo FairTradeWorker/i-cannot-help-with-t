@@ -195,7 +195,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
                     <Upload className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-lg font-semibold mb-2">Upload Repair Video</h3>
                     <p className="text-muted-foreground mb-4">
-                      Film the damage for 60 seconds. AI will analyze and estimate the repair.
+                      Film the damage for 60 seconds. We'll analyze and estimate the repair.
                     </p>
                     <input
                       type="file"

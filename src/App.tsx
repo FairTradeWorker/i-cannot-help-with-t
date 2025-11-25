@@ -18,12 +18,10 @@ import {
   Briefcase,
   Hammer,
   HardHat,
-  Code,
   CreditCard,
   UserGear,
   SignOut,
   MapTrifold,
-  Brain,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -46,17 +44,17 @@ import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
-import { IntelligenceAPIMarketplace } from '@/components/IntelligenceAPIMarketplace';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { QuickJobPost } from '@/components/QuickJobPost';
 import { VideoJobCreator } from '@/components/VideoJobCreator';
+import { APIMarketplaceSection } from '@/components/APIMarketplaceSection';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral' | 'apis';
-type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings' | 'api_docs' | 'api_pricing' | 'api_access';
+type MainTab = 'home' | 'territories' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral';
+type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -356,15 +354,6 @@ function App() {
               </DropdownMenu>
 
               <Button
-                variant={activeTab === 'apis' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('apis')}
-                className="glass-hover"
-              >
-                <Brain className="w-5 h-5 mr-2" weight={activeTab === 'apis' ? 'fill' : 'regular'} />
-                Intelligence API
-              </Button>
-
-              <Button
                 variant={activeTab === 'messages' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('messages')}
                 className="glass-hover"
@@ -507,6 +496,13 @@ function App() {
                       >
                         <JobBrowser />
                       </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.177, duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
+                      >
+                        <APIMarketplaceSection />
+                      </motion.div>
                     </div>
                   )}
                   {activeTab === 'territories' && <TerritoryMapPage />}
@@ -521,7 +517,6 @@ function App() {
                       activeView={activeSubTab === 'my_referrals' ? 'referrals' : 'program'}
                     />
                   )}
-                  {activeTab === 'apis' && <IntelligenceAPIMarketplace />}
                 </>
               )}
             </motion.div>

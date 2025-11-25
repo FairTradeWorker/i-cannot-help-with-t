@@ -125,6 +125,13 @@ export function TerritoryMapPage() {
     return matchesSearch && matchesState;
   });
 
+  const calculateTerritoryPrice = (currentClaimedCount: number): number => {
+    if (currentClaimedCount < 10) {
+      return 0;
+    }
+    return (currentClaimedCount - 9) * 500;
+  };
+
   const handleClaimTerritory = (territory: TerritoryData) => {
     setSelectedTerritory(territory);
     setShowClaimDialog(true);
@@ -133,9 +140,18 @@ export function TerritoryMapPage() {
   const confirmClaim = () => {
     if (selectedTerritory) {
       setClaimedTerritories(current => [...(current || []), selectedTerritory.zipCode]);
-      toast.success('Territory Claimed!', {
-        description: `You now own ${selectedTerritory.city}, ${selectedTerritory.state} (${selectedTerritory.zipCode})`,
-      });
+      const claimNumber = (claimedTerritories?.length || 0) + 1;
+      const price = calculateTerritoryPrice(claimedTerritories?.length || 0);
+      
+      if (price === 0) {
+        toast.success('Territory Claimed FREE!', {
+          description: `${selectedTerritory.city}, ${selectedTerritory.state} - Claim #${claimNumber}/10 free territories`,
+        });
+      } else {
+        toast.success('Territory Claimed!', {
+          description: `${selectedTerritory.city}, ${selectedTerritory.state} for $${price}`,
+        });
+      }
       setShowClaimDialog(false);
       setSelectedTerritory(null);
     }
@@ -163,7 +179,7 @@ export function TerritoryMapPage() {
           <div>
             <h1 className="text-4xl font-bold tracking-tight mb-2">Territory Map</h1>
             <p className="text-lg text-muted-foreground">
-              Claim territories to earn 8% revenue from all jobs in your zip code
+              First 10 territories FREE • Then $500 each • Earn 8% revenue from all jobs
             </p>
           </div>
           
@@ -347,11 +363,19 @@ export function TerritoryMapPage() {
 
                     <div className="pt-3 border-t">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-muted-foreground">Territory Price</span>
+                        <span className="text-sm text-muted-foreground">Next Claim Price</span>
                         <span className="text-xl font-bold text-primary">
-                          ${(territory.price / 1000).toFixed(1)}K
+                          {calculateTerritoryPrice(claimedTerritories?.length || 0) === 0 
+                            ? 'FREE' 
+                            : `$${calculateTerritoryPrice(claimedTerritories?.length || 0)}`
+                          }
                         </span>
                       </div>
+                      {(claimedTerritories?.length || 0) < 10 && (
+                        <p className="text-xs text-muted-foreground mb-2">
+                          {10 - (claimedTerritories?.length || 0)} free claims remaining
+                        </p>
+                      )}
                       
                       {territory.status === 'available' ? (
                         <Button 
@@ -359,7 +383,10 @@ export function TerritoryMapPage() {
                           onClick={() => handleClaimTerritory(territory)}
                         >
                           <Plus className="w-4 h-4 mr-2" />
-                          Claim Territory
+                          {calculateTerritoryPrice(claimedTerritories?.length || 0) === 0 
+                            ? 'Claim FREE Territory' 
+                            : 'Claim Territory'
+                          }
                         </Button>
                       ) : (
                         <Button className="w-full" variant="secondary" disabled>
@@ -399,10 +426,18 @@ export function TerritoryMapPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <Label className="text-sm text-muted-foreground">Investment</Label>
+                  <Label className="text-sm text-muted-foreground">Price</Label>
                   <p className="text-2xl font-bold text-primary">
-                    ${(selectedTerritory.price / 1000).toFixed(1)}K
+                    {calculateTerritoryPrice(claimedTerritories?.length || 0) === 0 
+                      ? 'FREE' 
+                      : `$${calculateTerritoryPrice(claimedTerritories?.length || 0)}`
+                    }
                   </p>
+                  {(claimedTerritories?.length || 0) < 10 && (
+                    <p className="text-xs text-green-600">
+                      Claim #{(claimedTerritories?.length || 0) + 1}/10 free
+                    </p>
+                  )}
                 </div>
                 
                 <div className="space-y-1">
@@ -431,12 +466,14 @@ export function TerritoryMapPage() {
                       ${((selectedTerritory.estimatedRevenue * 0.08) / 1000).toFixed(1)}K
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-sm pt-2 border-t">
-                    <span className="text-muted-foreground">Est. ROI (Year 1):</span>
-                    <span className="font-bold text-green-600">
-                      {(((selectedTerritory.estimatedRevenue * 0.08) / selectedTerritory.price) * 100).toFixed(1)}%
-                    </span>
-                  </div>
+                  {calculateTerritoryPrice(claimedTerritories?.length || 0) > 0 && (
+                    <div className="flex items-center justify-between text-sm pt-2 border-t">
+                      <span className="text-muted-foreground">Est. ROI (Year 1):</span>
+                      <span className="font-bold text-green-600">
+                        {(((selectedTerritory.estimatedRevenue * 0.08) / calculateTerritoryPrice(claimedTerritories?.length || 0)) * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
