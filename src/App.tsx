@@ -663,89 +663,63 @@ function App() {
                   {activeTab === 'home' && (
                     <div className="space-y-8">
                       <QuickJobPost onCreateJob={handleCreateJob} />
-
-                      <TerritoryMiniMap onExplore={() => handleNavClick('territories', 'overview')} />
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <motion.div
-                          whileHover={{ y: -8 }}
-                          whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-                        >
-                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('territories', 'overview')}>
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-primary">
-                                <MapTrifold className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Available</p>
-                                <p className="text-2xl font-bold">850+</p>
-                              </div>
+                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('territories', 'overview')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-primary">
+                              <MapTrifold className="w-7 h-7 text-white" weight="fill" />
                             </div>
-                            <p className="text-sm font-semibold">Territories</p>
-                            <p className="text-xs text-muted-foreground">$45/month • Exclusive lead rights</p>
-                          </Card>
-                        </motion.div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Available</p>
+                              <p className="text-2xl font-bold">850+</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">Territories</p>
+                          <p className="text-xs text-muted-foreground">$45/month • Exclusive lead rights</p>
+                        </Card>
 
-                        <motion.div
-                          whileHover={{ y: -8 }}
-                          whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-                        >
-                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('browse-jobs')}>
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-accent">
-                                <Briefcase className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Active</p>
-                                <p className="text-2xl font-bold">2.8K+</p>
-                              </div>
+                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('browse-jobs')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-accent">
+                              <Briefcase className="w-7 h-7 text-white" weight="fill" />
                             </div>
-                            <p className="text-sm font-semibold">Jobs Available</p>
-                            <p className="text-xs text-muted-foreground">Browse opportunities now</p>
-                          </Card>
-                        </motion.div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Active</p>
+                              <p className="text-2xl font-bold">2.8K+</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">Jobs Available</p>
+                          <p className="text-xs text-muted-foreground">Browse opportunities now</p>
+                        </Card>
 
-                        <motion.div
-                          whileHover={{ y: -8 }}
-                          whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-                        >
-                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('contractor', 'dashboard')}>
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-secondary">
-                                <Hammer className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Network</p>
-                                <p className="text-2xl font-bold">3.5K+</p>
-                              </div>
+                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-secondary">
+                              <Hammer className="w-7 h-7 text-white" weight="fill" />
                             </div>
-                            <p className="text-sm font-semibold">Contractors</p>
-                            <p className="text-xs text-muted-foreground">Join our network</p>
-                          </Card>
-                        </motion.div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Network</p>
+                              <p className="text-2xl font-bold">3.5K+</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">Contractors</p>
+                          <p className="text-xs text-muted-foreground">Join our network</p>
+                        </Card>
 
-                        <motion.div
-                          whileHover={{ y: -8 }}
-                          whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-                        >
-                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('intelligence')}>
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-primary">
-                                <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Starting at</p>
-                                <p className="text-2xl font-bold">$99</p>
-                              </div>
+                        <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('intelligence')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-primary">
+                              <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
                             </div>
-                            <p className="text-sm font-semibold">API Access</p>
-                            <p className="text-xs text-muted-foreground">Intelligence endpoints</p>
-                          </Card>
-                        </motion.div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Starting at</p>
+                              <p className="text-2xl font-bold">$99</p>
+                            </div>
+                          </div>
+                          <p className="text-sm font-semibold">API Access</p>
+                          <p className="text-xs text-muted-foreground">Intelligence endpoints</p>
+                        </Card>
                       </div>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
