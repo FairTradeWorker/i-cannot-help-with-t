@@ -158,9 +158,9 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="free">Starter - 1K calls/month ($29/mo)</SelectItem>
-                    <SelectItem value="professional">Professional - 10K calls/month ($89/mo)</SelectItem>
-                    <SelectItem value="enterprise">Enterprise - Unlimited ($249/mo)</SelectItem>
+                    <SelectItem value="free">Starter - 1K calls/month (Free)</SelectItem>
+                    <SelectItem value="professional">Professional - 10K calls/month ($49/mo)</SelectItem>
+                    <SelectItem value="enterprise">Enterprise - Unlimited ($209/mo)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -334,7 +334,7 @@ function PricingPlans() {
   const plans = [
     {
       name: 'Starter',
-      price: 29,
+      price: 0,
       calls: 1000,
       features: [
         '1,000 API calls/month',
@@ -345,7 +345,7 @@ function PricingPlans() {
     },
     {
       name: 'Professional',
-      price: 89,
+      price: 49,
       calls: 10000,
       features: [
         '10,000 API calls/month',
@@ -358,7 +358,7 @@ function PricingPlans() {
     },
     {
       name: 'Enterprise',
-      price: 249,
+      price: 209,
       calls: null,
       features: [
         'Unlimited API calls',

@@ -29,6 +29,7 @@ import {
   Users,
   CheckCircle,
   ArrowRight,
+  ShieldCheck,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -64,12 +65,13 @@ import { PaymentModal } from '@/components/PaymentModal';
 import { PaymentScreen } from '@/components/PaymentScreen';
 import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
+import { WarrantySection } from '@/components/WarrantySection';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'browse-jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral' | 'payment';
+type MainTab = 'home' | 'territories' | 'browse-jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral' | 'payment' | 'warranty';
 type SubTab = 'overview' | 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings' | 'my-jobs' | 'post-job';
 
 function App() {
@@ -488,6 +490,22 @@ function App() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
+                <Button
+                  variant={activeTab === 'warranty' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('warranty')}
+                  className="button-interactive"
+                  size="sm"
+                >
+                  <ShieldCheck className="w-4 h-4 mr-1.5" weight={activeTab === 'warranty' ? 'fill' : 'regular'} />
+                  Warranty
+                </Button>
+              </motion.div>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -795,6 +813,7 @@ function App() {
                       activeView={activeSubTab === 'my_referrals' ? 'referrals' : 'program'}
                     />
                   )}
+                  {activeTab === 'warranty' && <WarrantySection />}
                 </>
               )}
             </motion.div>

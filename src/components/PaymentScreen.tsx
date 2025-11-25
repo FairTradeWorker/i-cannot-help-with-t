@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   CreditCard,
   Money,
@@ -25,6 +26,11 @@ import {
   Wallet,
   ArrowRight,
   Info,
+  Shield,
+  MapPin,
+  User,
+  Phone,
+  House,
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -48,10 +54,13 @@ export function PaymentScreen({
   const [cardName, setCardName] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
+  const [selectedWarranty, setSelectedWarranty] = useState<'none' | 'extended' | 'premium'>('none');
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const platformFee = amount * 0.029 + 0.30;
-  const operatorFee = amount * 0.08;
-  const contractorAmount = amount - operatorFee;
+  const operatorMonthlyFee = 45;
+  const warrantyPrices = { none: 0, extended: 299, premium: 599 };
+  const warrantyPrice = warrantyPrices[selectedWarranty];
+  const totalAmount = amount + warrantyPrice;
 
   const financeOptions = [
     {
@@ -110,6 +119,11 @@ export function PaymentScreen({
   const handlePayment = async () => {
     if (selectedMethod === 'card' && (!cardNumber || !cardName || !cardExpiry || !cardCvv)) {
       toast.error('Please fill in all card details');
+      return;
+    }
+
+    if (!agreeToTerms) {
+      toast.error('Please agree to the terms and conditions');
       return;
     }
 
@@ -360,6 +374,107 @@ export function PaymentScreen({
               </TabsContent>
             </Tabs>
           </Card>
+
+          <Card className="glass-card p-6">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <House className="w-6 h-6 text-primary" weight="fill" />
+              Job Details
+            </h3>
+            <Separator className="mb-4" />
+
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-3">
+                <MapPin className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Service Address</p>
+                  <p className="font-semibold">123 Main St, Austin, TX 78701</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <User className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Contractor</p>
+                  <p className="font-semibold">Elite Roofing Solutions</p>
+                  <Badge variant="outline" className="mt-1 text-xs">
+                    <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
+                    Verified
+                  </Badge>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Estimated Start</p>
+                  <p className="font-semibold">Within 3-5 business days</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Clock className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Project Duration</p>
+                  <p className="font-semibold">3-4 days</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="glass-card p-6">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <Shield className="w-6 h-6 text-primary" weight="fill" />
+              Warranty Protection
+            </h3>
+            <Separator className="mb-4" />
+
+            <div className="space-y-3">
+              <div
+                onClick={() => setSelectedWarranty('none')}
+                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedWarranty === 'none'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-primary/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">Basic Warranty</h4>
+                  <Badge variant={selectedWarranty === 'none' ? 'default' : 'outline'}>Included</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mb-2">1-year workmanship guarantee included with every job</p>
+                <div className="text-sm font-bold">Free</div>
+              </div>
+
+              <div
+                onClick={() => setSelectedWarranty('extended')}
+                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedWarranty === 'extended'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-primary/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">Extended Warranty</h4>
+                  <Badge variant={selectedWarranty === 'extended' ? 'default' : 'outline'}>Popular</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mb-2">3-year coverage with priority service</p>
+                <div className="text-sm font-bold">+$299</div>
+              </div>
+
+              <div
+                onClick={() => setSelectedWarranty('premium')}
+                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedWarranty === 'premium'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-primary/50'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">Premium Warranty</h4>
+                  <Badge variant={selectedWarranty === 'premium' ? 'default' : 'outline'}>Best Value</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mb-2">5-year full coverage with 24/7 support</p>
+                <div className="text-sm font-bold">+$599</div>
+              </div>
+            </div>
+          </Card>
         </div>
 
         <div className="space-y-6">
@@ -385,6 +500,17 @@ export function PaymentScreen({
                   <span className="font-semibold">${amount.toLocaleString()}</span>
                 </div>
 
+                {warrantyPrice > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      {selectedWarranty === 'extended' ? 'Extended' : 'Premium'} Warranty
+                    </span>
+                    <span className="text-sm font-semibold text-accent">
+                      +${warrantyPrice.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
                 {selectedOption !== 'full' && selectedFinanceOption.fee && (
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Processing Fee</span>
@@ -397,15 +523,15 @@ export function PaymentScreen({
                 <Separator />
 
                 <div className="flex items-center justify-between text-lg">
-                  <span className="font-semibold">Total Due</span>
+                  <span className="font-semibold">Total Due Today</span>
                   <span className="font-bold text-primary">
-                    ${selectedFinanceOption.totalAmount ? selectedFinanceOption.totalAmount.toLocaleString() : amount.toLocaleString()}
+                    ${(selectedFinanceOption.totalAmount ? selectedFinanceOption.totalAmount : totalAmount).toLocaleString()}
                   </span>
                 </div>
 
                 {selectedOption !== 'full' && (
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Payment Amount</span>
+                    <span className="text-sm text-muted-foreground">First Payment</span>
                     <span className="text-sm font-semibold">
                       ${selectedFinanceOption.amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                     </span>
@@ -415,27 +541,58 @@ export function PaymentScreen({
 
               <Separator />
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-start gap-2 text-xs text-muted-foreground">
                   <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                  <p>Funds held in escrow until job completion. 8% territory fee included.</p>
+                  <p>Funds held in escrow until job completion</p>
                 </div>
                 
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-2 text-xs">
+                  <h4 className="font-semibold text-sm flex items-center gap-2">
+                    <MapPin className="w-4 h-4" weight="fill" />
+                    Territory Operator Fee
+                  </h4>
+                  <p className="text-muted-foreground">
+                    Territory operators pay ${operatorMonthlyFee}/month to maintain exclusive lead rights in their area. This fee supports the platform.
+                  </p>
+                  <div className="flex justify-between items-center pt-2 border-t border-primary/20">
+                    <span className="font-medium">Monthly Platform Fee:</span>
+                    <span className="font-bold text-primary">${operatorMonthlyFee}/mo</span>
+                  </div>
+                </div>
+
                 <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span>Territory Operator (8%)</span>
-                    <span className="font-semibold">${operatorFee.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                    <span className="text-muted-foreground">Payment to Contractor</span>
+                    <span className="font-semibold">${amount.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>To Contractor</span>
-                    <span className="font-semibold">${contractorAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                  <div className="text-muted-foreground text-[10px] leading-tight">
+                    Contractor receives 100% of job payment. No platform fees deducted.
                   </div>
                 </div>
               </div>
 
+              <Separator />
+
+              <div className="flex items-start gap-2">
+                <Checkbox 
+                  id="terms" 
+                  checked={agreeToTerms}
+                  onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
+                />
+                <label
+                  htmlFor="terms"
+                  className="text-xs text-muted-foreground leading-tight cursor-pointer"
+                >
+                  I agree to the{' '}
+                  <span className="text-primary underline">Terms of Service</span> and{' '}
+                  <span className="text-primary underline">Escrow Agreement</span>
+                </label>
+              </div>
+
               <Button 
                 onClick={handlePayment} 
-                disabled={processing} 
+                disabled={processing || !agreeToTerms} 
                 size="lg" 
                 className="w-full h-14 text-base"
               >
