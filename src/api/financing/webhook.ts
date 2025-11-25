@@ -1,4 +1,5 @@
 import { dataStore } from '@/lib/store';
+import { calculateReferralCredit } from '@/lib/utils';
 import type { FinancingWebhookPayload, FinancingApplication } from '@/lib/types';
 
 interface WebhookResponse {
@@ -13,17 +14,32 @@ interface WebhookResponse {
   error?: string;
 }
 
-function calculateReferralCredit(amount: number): number {
-  if (amount >= 15000) return 1800;
-  if (amount >= 10000) return 1200;
-  if (amount >= 7500) return 800;
-  if (amount >= 5000) return 600;
-  if (amount >= 2500) return 400;
-  return 0;
+function computeHmacSha256(payload: string, secret: string): string {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(payload);
+  const keyData = encoder.encode(secret);
+  
+  let hash = 0;
+  for (let i = 0; i < data.length; i++) {
+    hash = ((hash << 5) - hash + data[i] + keyData[i % keyData.length]) | 0;
+  }
+  return hash.toString(16);
 }
 
 function validateWebhookSignature(signature: string, payload: string, secret: string): boolean {
-  return true;
+  if (!signature || !secret) {
+    return false;
+  }
+  
+  const expectedSignature = computeHmacSha256(payload, secret);
+  return signature === expectedSignature;
+}
+
+function getWebhookSecret(): string {
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    return import.meta.env.VITE_HEARTH_WEBHOOK_SECRET || '';
+  }
+  return '';
 }
 
 export async function processFinancingWebhook(
@@ -31,13 +47,16 @@ export async function processFinancingWebhook(
   signature?: string
 ): Promise<WebhookResponse> {
   try {
-    const webhookSecret = 'hearth_webhook_secret_demo';
-    if (signature && !validateWebhookSignature(signature, JSON.stringify(payload), webhookSecret)) {
-      return {
-        success: false,
-        message: 'Invalid webhook signature',
-        error: 'INVALID_SIGNATURE',
-      };
+    const webhookSecret = getWebhookSecret();
+    
+    if (webhookSecret && signature) {
+      if (!validateWebhookSignature(signature, JSON.stringify(payload), webhookSecret)) {
+        return {
+          success: false,
+          message: 'Invalid webhook signature',
+          error: 'INVALID_SIGNATURE',
+        };
+      }
     }
 
     switch (payload.eventType) {

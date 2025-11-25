@@ -26,6 +26,7 @@ import {
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import type { FinancingApplication } from '@/lib/types';
+import { calculateMonthlyPayment, calculateReferralCredit, generateFinancingApplicationId } from '@/lib/utils';
 
 interface InstantFinancingModalProps {
   open: boolean;
@@ -65,25 +66,6 @@ const warrantyOptions: WarrantyOption[] = [
     description: 'Maximum protection with 24/7 support',
   },
 ];
-
-function calculateMonthlyPayment(principal: number, apr: number = 9.99, termMonths: number = 60): number {
-  if (apr === 0) {
-    return principal / termMonths;
-  }
-  const monthlyRate = apr / 100 / 12;
-  const payment = (principal * monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / 
-                  (Math.pow(1 + monthlyRate, termMonths) - 1);
-  return Math.ceil(payment);
-}
-
-function calculateReferralCredit(amount: number): number {
-  if (amount >= 15000) return 1800;
-  if (amount >= 10000) return 1200;
-  if (amount >= 7500) return 800;
-  if (amount >= 5000) return 600;
-  if (amount >= 2500) return 400;
-  return 0;
-}
 
 export function InstantFinancingModal({
   open,
@@ -130,7 +112,7 @@ export function InstantFinancingModal({
       setProcessing(true);
 
       const newApplication: FinancingApplication = {
-        id: `fin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: generateFinancingApplicationId(),
         jobId,
         homeownerId,
         contractorId,

@@ -11,6 +11,7 @@ import { analyzeVideoFrames, analyzeJobFromVideo, type JobScope } from '@/lib/ai
 import { PricingSuggester } from './PricingSuggester';
 import { InstantFinancingModal, FinanceAndBookButton } from './InstantFinancingModal';
 import { toast } from 'sonner';
+import { generateJobId } from '@/lib/utils';
 import type { FinancingApplication } from '@/lib/types';
 
 type AnalysisStage = 'idle' | 'extracting' | 'analyzing-vision' | 'generating-scope' | 'complete' | 'error';
@@ -371,7 +372,7 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
         <InstantFinancingModal
           open={showFinancingModal}
           onOpenChange={setShowFinancingModal}
-          jobId={`job-${Date.now()}`}
+          jobId={generateJobId()}
           jobTitle={scope.jobTitle}
           jobTotal={scope.estimatedCost.max}
           homeownerId={homeownerId || 'demo-user'}
