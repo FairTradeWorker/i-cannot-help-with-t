@@ -205,6 +205,18 @@ export function TerritoryMapPage() {
       <AnimatePresence mode="wait">
         {view === 'list' && (
           <motion.div
+            key="list-view"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            {filteredTerritories.map((territory) => (
+              <motion.div
+                key={territory.zip}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
                 <Card className={`h-full ${
                   territory.status === 'claimed' ? 'border-amber-500/50 bg-amber-50/50' : ''
                 }`}>
