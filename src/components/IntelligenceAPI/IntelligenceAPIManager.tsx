@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { intelligenceDB } from '@/lib/intelligence-db';
 import { toast } from 'sonner';
+import { APIMarketplaceSection } from '@/components/APIMarketplaceSection';
 import type { APIKey } from '@/types/intelligence-api';
 
 interface IntelligenceAPIManagerProps {
@@ -147,8 +148,8 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="free">Free - 100 calls/month</SelectItem>
-                    <SelectItem value="professional">Professional - 10K calls/month ($124.99/mo)</SelectItem>
-                    <SelectItem value="enterprise">Enterprise - Unlimited (Custom)</SelectItem>
+                    <SelectItem value="professional">Professional - 10K calls/month ($199/mo)</SelectItem>
+                    <SelectItem value="enterprise">Enterprise - Unlimited ($1,299/mo)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -310,6 +311,7 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
         </TabsContent>
 
         <TabsContent value="pricing" className="space-y-6 mt-6">
+          <APIMarketplaceSection />
           <PricingPlans />
         </TabsContent>
       </Tabs>

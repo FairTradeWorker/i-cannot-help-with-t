@@ -56,7 +56,6 @@ import { JobBrowser } from '@/components/JobBrowser';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { QuickJobPost } from '@/components/QuickJobPost';
 import { VideoJobCreator } from '@/components/VideoJobCreator';
-import { APIMarketplaceSection } from '@/components/APIMarketplaceSection';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
@@ -69,8 +68,8 @@ import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'browse-jobs' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral' | 'payment';
-type SubTab = 'overview' | 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings';
+type MainTab = 'home' | 'territories' | 'browse-jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral' | 'payment';
+type SubTab = 'overview' | 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings' | 'my-jobs' | 'post-job';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -253,22 +252,16 @@ function App() {
         className="sticky top-0 z-50 glass-card border-b border-border/50 pt-2"
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-18 py-2">
-            <nav className="flex items-center gap-3 flex-1">
+          <div className="flex items-center justify-center h-16 py-2 relative">
+            <nav className="flex items-center gap-2 justify-center">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant={activeTab === 'home' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('home')}
                   className="glass-hover"
+                  size="sm"
                 >
-                  <motion.div
-                    animate={{ 
-                      rotate: activeTab === 'home' ? [0, -5, 5, 0] : 0 
-                    }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <House className="w-5 h-5 mr-2" weight={activeTab === 'home' ? 'fill' : 'regular'} />
-                  </motion.div>
+                  <House className="w-4 h-4 mr-1.5" weight={activeTab === 'home' ? 'fill' : 'regular'} />
                   Home
                 </Button>
               </motion.div>
@@ -278,15 +271,9 @@ function App() {
                   variant={activeTab === 'territories' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('territories', 'overview')}
                   className="glass-hover"
+                  size="sm"
                 >
-                  <motion.div
-                    animate={{ 
-                      scale: activeTab === 'territories' ? [1, 1.1, 1] : 1 
-                    }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <MapTrifold className="w-5 h-5 mr-2" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
-                  </motion.div>
+                  <MapTrifold className="w-4 h-4 mr-1.5" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
                   Territories
                 </Button>
               </motion.div>
@@ -296,16 +283,10 @@ function App() {
                   variant={activeTab === 'browse-jobs' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('browse-jobs')}
                   className="glass-hover"
+                  size="sm"
                 >
-                  <motion.div
-                    animate={{ 
-                      y: activeTab === 'browse-jobs' ? [0, -2, 0] : 0 
-                    }}
-                    transition={{ duration: 0.4, repeat: activeTab === 'browse-jobs' ? Infinity : 0, repeatDelay: 2 }}
-                  >
-                    <CurrencyDollar className="w-5 h-5 mr-2" weight={activeTab === 'browse-jobs' ? 'fill' : 'regular'} />
-                  </motion.div>
-                  Browse Jobs
+                  <Briefcase className="w-4 h-4 mr-1.5" weight={activeTab === 'browse-jobs' ? 'fill' : 'regular'} />
+                  Jobs
                 </Button>
               </motion.div>
 
@@ -313,12 +294,39 @@ function App() {
                 <DropdownMenuTrigger asChild>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Button
+                      variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
+                      className="glass-hover"
+                      size="sm"
+                    >
+                      <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
+                      Homeowner
+                      <CaretDown className="w-3 h-3 ml-1" />
+                    </Button>
+                  </motion.div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'my-jobs')}>
+                    <Package className="w-4 h-4 mr-2" />
+                    My Jobs
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'post-job')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Post New Job
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
                       variant={activeTab === 'contractor' ? 'default' : 'ghost'}
                       className="glass-hover"
+                      size="sm"
                     >
-                      <Hammer className="w-5 h-5 mr-2" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
+                      <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
                       Contractor
-                      <CaretDown className="w-4 h-4 ml-1" />
+                      <CaretDown className="w-3 h-3 ml-1" />
                     </Button>
                   </motion.div>
                 </DropdownMenuTrigger>
@@ -344,10 +352,11 @@ function App() {
                     <Button
                       variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
                       className="glass-hover"
+                      size="sm"
                     >
-                      <HardHat className="w-5 h-5 mr-2" weight={activeTab === 'subcontractor' ? 'fill' : 'regular'} />
-                      Subcontractor
-                      <CaretDown className="w-4 h-4 ml-1" />
+                      <HardHat className="w-4 h-4 mr-1.5" weight={activeTab === 'subcontractor' ? 'fill' : 'regular'} />
+                      Sub
+                      <CaretDown className="w-3 h-3 ml-1" />
                     </Button>
                   </motion.div>
                 </DropdownMenuTrigger>
@@ -368,15 +377,9 @@ function App() {
                   variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('intelligence')}
                   className="glass-hover"
+                  size="sm"
                 >
-                  <motion.div
-                    animate={{ 
-                      scale: activeTab === 'intelligence' ? [1, 1.1, 1] : 1 
-                    }}
-                    transition={{ duration: 0.4, repeat: activeTab === 'intelligence' ? Infinity : 0, repeatDelay: 2 }}
-                  >
-                    <Lightning className="w-5 h-5 mr-2" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
-                  </motion.div>
+                  <Lightning className="w-4 h-4 mr-1.5" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
                   API
                 </Button>
               </motion.div>
@@ -387,10 +390,11 @@ function App() {
                     <Button
                       variant={activeTab === 'partners' ? 'default' : 'ghost'}
                       className="glass-hover"
+                      size="sm"
                     >
-                      <Handshake className="w-5 h-5 mr-2" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
+                      <Handshake className="w-4 h-4 mr-1.5" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
                       Partners
-                      <CaretDown className="w-4 h-4 ml-1" />
+                      <CaretDown className="w-3 h-3 ml-1" />
                     </Button>
                   </motion.div>
                 </DropdownMenuTrigger>
@@ -428,10 +432,11 @@ function App() {
                     <Button
                       variant={activeTab === 'referral' ? 'default' : 'ghost'}
                       className="glass-hover"
+                      size="sm"
                     >
-                      <Gift className="w-5 h-5 mr-2" weight={activeTab === 'referral' ? 'fill' : 'regular'} />
+                      <Gift className="w-4 h-4 mr-1.5" weight={activeTab === 'referral' ? 'fill' : 'regular'} />
                       Referral
-                      <CaretDown className="w-4 h-4 ml-1" />
+                      <CaretDown className="w-3 h-3 ml-1" />
                     </Button>
                   </motion.div>
                 </DropdownMenuTrigger>
@@ -448,47 +453,34 @@ function App() {
               </DropdownMenu>
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="absolute right-4 flex items-center gap-2">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant={activeTab === 'messages' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('messages')}
                   className="glass-hover relative"
+                  size="sm"
                 >
-                  <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+                  <ChatCircle className="w-4 h-4 mr-1.5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
                   Messages
-                  <motion.span 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: [0, 1.2, 1] }}
-                    transition={{ duration: 0.4 }}
-                    className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"
-                  />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
                 </Button>
               </motion.div>
 
-              <div className="h-8 w-px bg-border mx-2"></div>
-
               <motion.div 
-                whileHover={{ scale: 1.05, y: -2 }} 
+                whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                <Button variant="ghost" size="icon" className="relative glass-hover">
-                  <BellRinging className="w-5 h-5" />
-                  <motion.span 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"
-                  />
+                <Button variant="ghost" size="icon" className="relative glass-hover h-8 w-8">
+                  <BellRinging className="w-4 h-4" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
                 </Button>
               </motion.div>
 
               {currentUser?.role === 'admin' && (
                 <motion.div 
-                  whileHover={{ scale: 1.05, y: -2 }} 
+                  whileHover={{ scale: 1.05 }} 
                   whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <Button
                     variant={showAdminPanel ? 'default' : 'outline'}
@@ -497,9 +489,9 @@ function App() {
                       setShowAdminPanel(!showAdminPanel);
                       setShowProfile(false);
                     }}
-                    className="glass-hover"
+                    className="glass-hover h-8 w-8"
                   >
-                    <ChartBar className="w-5 h-5" weight={showAdminPanel ? 'fill' : 'regular'} />
+                    <ChartBar className="w-4 h-4" weight={showAdminPanel ? 'fill' : 'regular'} />
                   </Button>
                 </motion.div>
               )}
@@ -513,10 +505,10 @@ function App() {
                   setShowAdminPanel(false);
                   setShowProfile(false);
                 }}
-                className="glass-hover"
+                className="glass-hover h-8 w-8"
                 title="Make a Payment"
               >
-                <CreditCard className="w-5 h-5" />
+                <CreditCard className="w-4 h-4" />
               </Button>
 
               <DropdownMenu>
@@ -524,22 +516,21 @@ function App() {
                   <motion.div 
                     whileHover={{ scale: 1.05 }} 
                     whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
                     <Button
                       variant="ghost"
-                      className="glass-hover flex items-center gap-2 px-2"
+                      className="glass-hover flex items-center gap-1.5 px-2 h-8"
                     >
-                      <Avatar className="w-8 h-8">
+                      <Avatar className="w-6 h-6">
                         <AvatarImage src={currentUser?.avatar} />
-                        <AvatarFallback>
+                        <AvatarFallback className="text-xs">
                           {currentUser?.name?.charAt(0) || 'U'}
                         </AvatarFallback>
                       </Avatar>
                       <span className="hidden md:inline text-sm font-medium">
                         {currentUser?.name || 'User'}
                       </span>
-                      <CaretDown className="w-4 h-4" />
+                      <CaretDown className="w-3 h-3" />
                     </Button>
                   </motion.div>
                 </DropdownMenuTrigger>
@@ -669,7 +660,7 @@ function App() {
                               <p className="text-2xl font-bold">94.5%</p>
                             </div>
                           </div>
-                          <p className="text-sm font-semibold">Platform Intelligence</p>
+                          <p className="text-sm font-semibold">AI Accuracy</p>
                           <p className="text-xs text-muted-foreground">Self-learning platform</p>
                         </Card>
                       </div>
@@ -721,11 +712,10 @@ function App() {
                           </div>
                         </div>
                       </Card>
-
-                      <APIMarketplaceSection />
                     </div>
                   )}
                   {activeTab === 'browse-jobs' && <JobBrowser />}
+                  {activeTab === 'homeowner' && <QuickJobPost onCreateJob={handleCreateJob} />}
                   {activeTab === 'territories' && activeSubTab === 'overview' && (
                     <TerritoriesOverview 
                       onNavigateToDetail={(stateCode) => {
