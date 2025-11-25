@@ -106,5 +106,5 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
         })}
       </div>
     </motion.div>
-  );
+}
 }
