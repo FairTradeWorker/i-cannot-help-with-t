@@ -10,6 +10,7 @@ import {
   getWarrantyRecommendation,
   getPlatinumQuote,
   formatWarrantyPrice,
+  formatUpsellButtonText,
   COMMISSION_RATE,
   type WarrantyQuote,
 } from '@/lib/WarrantyEngine';
@@ -78,7 +79,7 @@ export function WarrantyUpsell({
           onClick={() => handleAddWarranty(platinumQuote)}
         >
           <Shield className="w-6 h-6 mr-2" weight="fill" />
-          Add 25-Year Platinum (+{formatWarrantyPrice(platinumQuote.price)})
+          {formatUpsellButtonText(platinumQuote)}
           <Crown className="w-5 h-5 ml-2" weight="fill" />
         </Button>
         <p className="text-xs text-muted-foreground text-center mt-2">
@@ -136,7 +137,7 @@ export function WarrantyUpsell({
                   onClick={() => handleAddWarranty(platinumQuote)}
                 >
                   <Shield className="w-5 h-5 mr-2" weight="fill" />
-                  Add 25-Year Platinum (+{formatWarrantyPrice(platinumQuote.price)})
+                  {formatUpsellButtonText(platinumQuote)}
                 </Button>
                 <Button
                   variant="outline"

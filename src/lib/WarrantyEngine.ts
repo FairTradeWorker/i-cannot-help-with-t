@@ -136,6 +136,28 @@ export function calculateAllWarrantyQuotes(jobTotal: number): WarrantyQuote[] {
   return WARRANTY_TIERS.map((tier) => calculateWarrantyQuote(jobTotal, tier));
 }
 
+/** Job total thresholds for tier recommendations */
+export const RECOMMENDATION_THRESHOLDS = {
+  SMALL_JOB_MAX: 5000,
+  MEDIUM_JOB_MAX: 15000,
+  LARGE_JOB_MAX: 30000,
+} as const;
+
+/** Tier IDs for easy reference */
+export const TIER_IDS = {
+  STANDARD_10: 'standard-10',
+  EXTENDED_15: 'extended-15',
+  PREMIUM_20: 'premium-20',
+  PLATINUM_25: 'platinum-25',
+} as const;
+
+/**
+ * Get a warranty tier by its ID
+ */
+export function getTierById(tierId: string): WarrantyTier | undefined {
+  return WARRANTY_TIERS.find((tier) => tier.id === tierId);
+}
+
 /**
  * Get recommended warranty tier based on job total
  * 
@@ -146,14 +168,16 @@ export function calculateAllWarrantyQuotes(jobTotal: number): WarrantyQuote[] {
  * - Jobs over $30,000: Recommend 25-Year Platinum
  */
 export function getRecommendedTier(jobTotal: number): WarrantyTier {
-  if (jobTotal < 5000) {
-    return WARRANTY_TIERS[0]; // 10-Year Standard
-  } else if (jobTotal < 15000) {
-    return WARRANTY_TIERS[1]; // 15-Year Extended
-  } else if (jobTotal < 30000) {
-    return WARRANTY_TIERS[2]; // 20-Year Premium
+  const { SMALL_JOB_MAX, MEDIUM_JOB_MAX, LARGE_JOB_MAX } = RECOMMENDATION_THRESHOLDS;
+  
+  if (jobTotal < SMALL_JOB_MAX) {
+    return getTierById(TIER_IDS.STANDARD_10) || WARRANTY_TIERS[0];
+  } else if (jobTotal < MEDIUM_JOB_MAX) {
+    return getTierById(TIER_IDS.EXTENDED_15) || WARRANTY_TIERS[1];
+  } else if (jobTotal < LARGE_JOB_MAX) {
+    return getTierById(TIER_IDS.PREMIUM_20) || WARRANTY_TIERS[2];
   } else {
-    return WARRANTY_TIERS[3]; // 25-Year Platinum
+    return getTierById(TIER_IDS.PLATINUM_25) || WARRANTY_TIERS[3];
   }
 }
 
@@ -161,11 +185,13 @@ export function getRecommendedTier(jobTotal: number): WarrantyTier {
  * Get reason for warranty recommendation
  */
 function getRecommendationReason(jobTotal: number, tier: WarrantyTier): string {
-  if (jobTotal >= 30000) {
-    return `For premium jobs over $30,000, the ${tier.name} provides maximum protection with full replacement guarantee and zero-deductible claims.`;
-  } else if (jobTotal >= 15000) {
-    return `For significant investments of $15,000+, the ${tier.name} offers comprehensive coverage with 24/7 emergency support.`;
-  } else if (jobTotal >= 5000) {
+  const { SMALL_JOB_MAX, MEDIUM_JOB_MAX, LARGE_JOB_MAX } = RECOMMENDATION_THRESHOLDS;
+  
+  if (jobTotal >= LARGE_JOB_MAX) {
+    return `For premium jobs over $${LARGE_JOB_MAX.toLocaleString()}, the ${tier.name} provides maximum protection with full replacement guarantee and zero-deductible claims.`;
+  } else if (jobTotal >= MEDIUM_JOB_MAX) {
+    return `For significant investments of $${MEDIUM_JOB_MAX.toLocaleString()}+, the ${tier.name} offers comprehensive coverage with 24/7 emergency support.`;
+  } else if (jobTotal >= SMALL_JOB_MAX) {
     return `For mid-range projects, the ${tier.name} balances value with excellent coverage and priority service.`;
   } else {
     return `For smaller projects, the ${tier.name} provides solid protection at an affordable price point.`;
@@ -202,7 +228,7 @@ export function getWarrantyRecommendation(
  * Get the platinum tier quote for the big upsell button
  */
 export function getPlatinumQuote(jobTotal: number): WarrantyQuote {
-  const platinumTier = WARRANTY_TIERS[3]; // 25-Year Platinum
+  const platinumTier = getTierById(TIER_IDS.PLATINUM_25) || WARRANTY_TIERS[3];
   return calculateWarrantyQuote(jobTotal, platinumTier);
 }
 
