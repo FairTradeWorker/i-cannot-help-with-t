@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useKV } from '@github/spark/hooks';
-  Sparkl
+import { 
   Sparkle,
   Lightning,
   MapTrifold,
-import { 
   CurrencyDollar,
 } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
@@ -14,11 +13,11 @@ import { motion } from 'framer-motion';
 
 interface Territory {
   id: string;
-  onNavigateToDe
+  state: string;
   zip: string;
-const statePathsSimpli
+  demandScore: number;
   annualRevenue: number;
-  FL: "M720,460 L78
+  claimed: boolean;
 }
 
 interface TerritoriesOverviewProps {
@@ -46,19 +45,16 @@ const statePathsSimplified: Record<string, string> = {
   OR: "M90,140 L170,140 L170,220 L90,220 Z",
   NV: "M140,220 L200,220 L200,340 L140,340 Z",
   NM: "M250,360 L320,360 L320,480 L250,480 Z",
-    zip: '00000',
   KS: "M380,270 L500,270 L500,340 L380,340 Z",
   SD: "M360,130 L460,130 L460,200 L360,200 Z",
   LA: "M500,430 L570,430 L570,510 L500,510 Z",
   AL: "M620,380 L670,380 L670,480 L620,480 Z",
   KY: "M620,300 L700,300 L700,360 L620,360 Z",
-
   MD: "M760,250 L810,250 L810,290 L760,290 Z",
   NJ: "M790,210 L820,210 L820,260 L790,260 Z",
   RI: "M830,180 L845,180 L845,200 L830,200 Z",
-
   ME: "M840,80 L880,80 L880,160 L840,160 Z",
-  
+};
 
 export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewProps) {
   const [claimedTerritories, setClaimedTerritories] = useKV<string[]>('claimed-territories', []);
@@ -68,39 +64,33 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
   const containerRef = useRef<HTMLDivElement>(null);
 
   const territories: Territory[] = Object.keys(statePathsSimplified).map((state) => ({
-    const stateTerritor
+    id: `${state}-001`,
     state,
-    
+    zip: '00000',
     demandScore: Math.floor(Math.random() * 100),
     annualRevenue: (Math.random() * 2 + 0.5) * 1000000,
-    claimed: claimedTerritories.includes(state),
-  retu
+    claimed: claimedTerritories?.includes(state) || false,
+  }));
 
-  const claimedCount = claimedTerritories.length;
+  const claimedCount = claimedTerritories?.length || 0;
   const moatMultiplier = Math.min(10, (claimedCount / territories.length) * 10 + 1).toFixed(1);
   const runRate = ((claimedCount * 45000) / 1000000).toFixed(1);
-
-      {showParticle
-    if (claimedCount > 10) {
-            <motion.div
-    }
-              initial
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
       setMousePos({
-              transition={{
+        x: e.clientX - rect.left,
         y: e.clientY - rect.top,
-         
+      });
     }
-    
+  };
 
   const handleStateClick = (stateCode: string) => {
     if (onNavigateToDetail) {
-        <motion.div
+      onNavigateToDetail(stateCode);
     }
-    
+  };
 
   const getStateColorType = (stateCode: string): 'default' | 'claimed' | 'high-demand' => {
     const stateTerritories = territories.filter((t) => t.state === stateCode);
@@ -110,45 +100,44 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
     if (claimedInState > 0) return 'claimed';
     if (highDemandInState) return 'high-demand';
     return 'default';
-    
+  };
 
-          
+  return (
     <motion.div
-          <div className
       initial={{ opacity: 0 }}
-            <div className="te
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       className="relative h-[calc(100vh-10rem)] w-full rounded-2xl overflow-hidden glass-card"
+      ref={containerRef}
       onMouseMove={handleMouseMove}
     >
       {showParticles && (
-
+        <div className="absolute inset-0 pointer-events-none">
           {[...Array(30)].map((_, i) => (
-          viewBox="0 0 
+            <motion.div
               key={i}
               className="absolute w-1 h-1 rounded-full bg-primary"
               initial={{ 
-              <feGaussianBlur stdDeviation="3
+                x: Math.random() * 100 + '%',
                 y: Math.random() * 100 + '%',
-                <feMergeNod
               }}
-          </defs>
+              animate={{
                 y: [null, '-100%'],
                 opacity: [0, 1, 0],
               }}
-              colorType ===
+              transition={{
                 duration: Math.random() * 3 + 2,
                 repeat: Infinity,
                 delay: Math.random() * 2,
                 ease: 'linear',
               }}
-              
+            />
           ))}
-              
+        </div>
       )}
 
       <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20">
-              />
+        <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -156,107 +145,146 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
         >
           <h1 className="text-3xl font-bold mb-1 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
             Territory Dominance Engine
-          style
+          </h1>
           <p className="text-sm text-muted-foreground">Real-time territory intelligence & market saturation analysis</p>
-          }}
+        </motion.div>
       </div>
 
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="absolute top-28 left-6 z-20 space-y-4"
+      >
+        <Card className="glass-card p-4 w-64">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Claimed Territories</span>
+              <Badge variant="secondary" className="font-mono">
+                {claimedCount}/{territories.length}
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Moat Multiplier</span>
+              <Badge variant="default" className="font-mono">
+                {moatMultiplier}x
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Run Rate</span>
+              <Badge className="font-mono bg-accent text-accent-foreground">
+                ${runRate}M
+              </Badge>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="glass-card p-4 w-64">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-3 h-3 rounded-sm bg-primary" />
+              <span>Claimed</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-3 h-3 rounded-sm bg-accent" />
+              <span>High Demand</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-3 h-3 rounded-sm bg-muted" />
+              <span>Available</span>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      <div className="absolute inset-0 flex items-center justify-center">
+        <svg
+          viewBox="0 0 900 600"
+          className="w-full h-full"
+          style={{ maxWidth: '900px', maxHeight: '600px' }}
+        >
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {Object.entries(statePathsSimplified).map(([stateCode, path]) => {
+            const colorType = getStateColorType(stateCode);
+            const isHovered = hoveredTerritory === stateCode;
+
+            return (
+              <g key={stateCode}>
+                <motion.path
+                  d={path}
+                  fill={
+                    colorType === 'claimed'
+                      ? 'oklch(0.50 0.20 260 / 0.5)'
+                      : colorType === 'high-demand'
+                      ? 'oklch(0.70 0.20 320 / 0.3)'
+                      : 'oklch(0.96 0.01 250 / 0.2)'
+                  }
+                  stroke={
+                    colorType === 'claimed'
+                      ? 'oklch(0.50 0.20 260)'
+                      : colorType === 'high-demand'
+                      ? 'oklch(0.70 0.20 320)'
+                      : 'oklch(0.90 0.01 250)'
+                  }
+                  strokeWidth={isHovered ? 3 : 1.5}
+                  className="cursor-pointer transition-all"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ 
+                    opacity: isHovered ? 1 : 0.8, 
+                    scale: isHovered ? 1.05 : 1 
+                  }}
+                  transition={{ delay: 0.6 + Math.random() * 0.3 }}
+                  onMouseEnter={() => setHoveredTerritory(stateCode)}
+                  onMouseLeave={() => setHoveredTerritory(null)}
+                  onClick={() => handleStateClick(stateCode)}
+                  style={{
+                    filter: isHovered ? 'url(#glow)' : 'none',
+                  }}
+                />
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+
+      {hoveredTerritory && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          className="absolute z-30 pointer-events-none glass-card p-3 rounded-lg"
+          style={{
+            left: mousePos.x + 20,
+            top: mousePos.y - 20,
+          }}
+        >
+          <div className="text-sm font-semibold">{hoveredTerritory}</div>
+          <div className="text-xs text-muted-foreground">
+            {claimedTerritories?.includes(hoveredTerritory) ? 'Claimed' : 'Available'}
+          </div>
+        </motion.div>
+      )}
+
+      <div className="absolute bottom-6 right-6 z-20">
+        <Button
+          onClick={() => setShowParticles(!showParticles)}
+          variant="outline"
+          size="sm"
+          className="glass-card"
+        >
+          <Sparkle className="w-4 h-4 mr-2" weight={showParticles ? 'fill' : 'regular'} />
+          {showParticles ? 'Hide' : 'Show'} Effects
+        </Button>
+      </div>
+    </motion.div>
+  );
+}
