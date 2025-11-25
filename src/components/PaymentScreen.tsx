@@ -643,12 +643,11 @@ export function PaymentScreen({
       </div>
 
       <Card className="glass-card p-6">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <Question className="w-5 h-5 text-primary" weight="fill" />
           Frequently Asked Questions
         </h3>
         <Separator className="mb-4" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Separator className="mb-4" />
           <div>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
               <Clock className="w-4 h-4 text-primary" />
@@ -656,29 +655,28 @@ export function PaymentScreen({
             </h4>
             <p className="text-sm text-muted-foreground">Work typically begins within 3-5 business days of payment confirmation. Your contractor will contact you within 24 hours to schedule.</p>
           </div>
-          <div>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-primary" />
+          <div>
               What is the escrow process?
             </h4>
             <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
           </div>
           <div>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <ArrowRight className="w-4 h-4 text-primary" />
+          </div>nt-semibold text-sm mb-2 flex items-center gap-2">
+          <div> className="w-4 h-4 text-primary" />
               Can I get a refund?
             </h4>
             <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
           </div>
           <div>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-primary" />
-              What are the financing terms?
-            </h4>
-            <p className="text-sm text-muted-foreground">0% APR financing available for qualified customers on 12-month plans. 3-month plans include a 2% processing fee. No hidden charges.</p>
           </div>
           <div>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-primary" />
+              What are the financing terms?
+          </div>
+          <div>
+          </div>
               <Shield className="w-4 h-4 text-primary" />
               What does the $20 platform fee cover?
             </h4>
@@ -693,6 +691,11 @@ export function PaymentScreen({
           </div>
         </div>
       </Card>
+        </div>
+      </Card>
+    </div>
+  );
+}
     </div>
   );
 }
