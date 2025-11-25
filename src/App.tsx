@@ -58,7 +58,6 @@ import { QuickJobPost } from '@/components/QuickJobPost';
 import { VideoJobCreator } from '@/components/VideoJobCreator';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
-import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { PaymentModal } from '@/components/PaymentModal';
 import { PaymentScreen } from '@/components/PaymentScreen';
 import { LocationJobBrowser } from '@/components/LocationJobBrowser';
@@ -199,11 +198,8 @@ function App() {
     if (type === 'video') {
       setShowVideoCreator(true);
     } else {
-      setPaymentJobData({
-        title: `${type.charAt(0).toUpperCase() + type.slice(1)} Job Post`,
-        amount: 3500
-      });
-      setShowPaymentModal(true);
+      setActiveTab('payment');
+      setActiveSubTab(null);
     }
   };
 
@@ -650,20 +646,13 @@ function App() {
                   }} />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div className="lg:col-span-2">
-                          <QuickJobPost onCreateJob={handleCreateJob} />
-                        </div>
-                        <div>
-                          <TerritoryMiniMap onStateClick={(stateCode) => handleNavClick('territories', 'overview')} />
-                        </div>
-                      </div>
+                      <QuickJobPost onCreateJob={handleCreateJob} />
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <motion.div
                           whileHover={{ y: -8 }}
                           whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                         >
                           <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('territories', 'overview')}>
                             <div className="flex items-center gap-4 mb-3">
@@ -683,7 +672,7 @@ function App() {
                         <motion.div
                           whileHover={{ y: -8 }}
                           whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                         >
                           <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('browse-jobs')}>
                             <div className="flex items-center gap-4 mb-3">
@@ -703,7 +692,7 @@ function App() {
                         <motion.div
                           whileHover={{ y: -8 }}
                           whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                         >
                           <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('contractor', 'dashboard')}>
                             <div className="flex items-center gap-4 mb-3">
@@ -723,7 +712,7 @@ function App() {
                         <motion.div
                           whileHover={{ y: -8 }}
                           whileTap={{ scale: 0.96 }}
-                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                          transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                         >
                           <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('intelligence')}>
                             <div className="flex items-center gap-4 mb-3">

@@ -166,10 +166,11 @@ export function PaymentScreen({
                   <motion.div
                     key={option.id}
                     whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                   >
                     <Card
-                      className={`p-5 cursor-pointer transition-all duration-200 ${
+                      className={`p-5 cursor-pointer transition-all duration-110 ${
                         isSelected
                           ? 'ring-2 ring-primary bg-primary/5 shadow-lg'
                           : 'hover:shadow-md border-2'
