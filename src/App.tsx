@@ -201,12 +201,8 @@ function App() {
   };
 
   const handleCreateJob = (type: 'video' | 'photo' | 'text') => {
-    if (type === 'video') {
-      setShowVideoCreator(true);
-    } else {
-      setActiveTab('payment');
-      setActiveSubTab(null);
-    }
+    setActiveTab('homeowner');
+    setActiveSubTab('post-job');
   };
 
   const handleLogout = () => {
@@ -578,12 +574,12 @@ function App() {
                     Profile Settings
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => {
-                    setActiveTab('home');
-                    setActiveSubTab(null);
+                    setActiveTab('homeowner');
+                    setActiveSubTab('post-job');
                     setShowProfile(false);
                     setShowAdminPanel(false);
                   }}>
-                    <CreditCard className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     Post a Job
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -614,8 +610,14 @@ function App() {
                   onJobCreated={(jobData) => {
                     toast.success('Job created successfully!');
                     setShowVideoCreator(false);
+                    setActiveTab('homeowner');
+                    setActiveSubTab('my-jobs');
                   }}
-                  onCancel={() => setShowVideoCreator(false)}
+                  onCancel={() => {
+                    setShowVideoCreator(false);
+                    setActiveTab('homeowner');
+                    setActiveSubTab('post-job');
+                  }}
                 />
               )}
               {!showProfile && !showVideoCreator && (

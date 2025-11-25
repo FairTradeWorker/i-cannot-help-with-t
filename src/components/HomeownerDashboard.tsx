@@ -204,9 +204,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
 
           <TabsContent value="post-job">
             <QuickJobPost onCreateJob={(type) => {
-              if (type === 'video') {
-                setShowNewJob(true);
-              }
+              setShowNewJob(true);
             }} />
           </TabsContent>
 
