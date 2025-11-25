@@ -14,6 +14,7 @@ import { EarningsDashboard } from './EarningsDashboard';
 import { ComplianceDashboard } from './ComplianceDashboard';
 import { EstimateAccuracyTrend } from './EstimateAccuracyTrend';
 import { RouteOptimizer } from './RouteOptimizer';
+import { DispatchPanel } from './DispatchPanel';
 
 interface ContractorDashboardProps {
   user?: User;
@@ -111,6 +112,17 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Lightning Dispatch™ Panel - Shows incoming job assignments */}
+        <div className="mb-8">
+          <DispatchPanel 
+            contractorId={user.id} 
+            onAssignmentAccepted={(assignment) => {
+              // Reload data when a job is accepted
+              loadData();
+            }}
+          />
+        </div>
+
         <div className="mb-8">
           <EstimateAccuracyTrend contractorId={user.id} />
         </div>
