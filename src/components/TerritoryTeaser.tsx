@@ -60,7 +60,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
               <div className="space-y-4">
                 <h2 className="text-4xl font-bold tracking-tight">
                   Own Your Territory
-                  <span className="block text-2xl text-primary font-mono mt-2">$124.99/month</span>
+                  <span className="block text-2xl text-primary font-mono mt-2">$45/month</span>
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
                   Secure exclusive rights to service entire zip codes. Build a sustainable business with intelligent platform features and guaranteed lead flow.

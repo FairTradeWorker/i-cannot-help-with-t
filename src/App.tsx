@@ -676,7 +676,7 @@ function App() {
                               </div>
                             </div>
                             <p className="text-sm font-semibold">Territories</p>
-                            <p className="text-xs text-muted-foreground">First 10 FREE • Then $124.99 each</p>
+                            <p className="text-xs text-muted-foreground">$45/month • Exclusive lead rights</p>
                           </Card>
                         </motion.div>
 
