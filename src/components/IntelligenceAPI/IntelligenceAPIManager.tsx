@@ -102,7 +102,7 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
       </div>
 
       <Tabs defaultValue="keys" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="keys">
             <Key className="w-4 h-4 mr-2" />
             API Keys
@@ -110,10 +110,6 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
           <TabsTrigger value="usage">
             <TrendUp className="w-4 h-4 mr-2" />
             Usage
-          </TabsTrigger>
-          <TabsTrigger value="docs">
-            <Code className="w-4 h-4 mr-2" />
-            Documentation
           </TabsTrigger>
           <TabsTrigger value="pricing">
             <Lightning className="w-4 h-4 mr-2" />
@@ -305,116 +301,10 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
           </Card>
         </TabsContent>
 
-        <TabsContent value="docs" className="space-y-6 mt-6">
-          <APIDocumentation />
-        </TabsContent>
-
         <TabsContent value="pricing" className="space-y-6 mt-6">
           <PricingPlans />
         </TabsContent>
       </Tabs>
-    </div>
-  );
-}
-
-function APIDocumentation() {
-  const endpoints = [
-    { name: 'Job Scope', path: '/api/intelligence/job-scope', method: 'POST', description: 'Analyze job requirements from video, image, or description' },
-    { name: 'Instant Quote', path: '/api/intelligence/instant-quote', method: 'POST', description: 'Generate instant pricing quote for home services' },
-    { name: 'Pricing Oracle', path: '/api/intelligence/pricing-oracle', method: 'POST', description: 'Get optimal pricing recommendations' },
-    { name: 'Contractor Match', path: '/api/intelligence/contractor-match', method: 'POST', description: 'Find best contractors for specific jobs' },
-    { name: 'Demand Heatmap', path: '/api/intelligence/demand-heatmap', method: 'GET', description: 'Visualize service demand by region' },
-    { name: 'Storm Alert', path: '/api/intelligence/storm-alert', method: 'GET', description: 'Get weather-related demand predictions' },
-    { name: 'Material Price', path: '/api/intelligence/material-price', method: 'GET', description: 'Current and predicted material costs' },
-    { name: 'Permit Prediction', path: '/api/intelligence/permit-prediction', method: 'POST', description: 'Predict permit requirements and timing' },
-    { name: 'Scope Creep Risk', path: '/api/intelligence/scope-creep-risk', method: 'POST', description: 'Analyze risk of project scope expansion' },
-    { name: 'Contractor Performance', path: '/api/intelligence/contractor-performance', method: 'GET', description: 'Detailed contractor metrics and predictions' },
-  ];
-
-  const [selectedEndpoint, setSelectedEndpoint] = useState(endpoints[0]);
-
-  return (
-    <div className="grid grid-cols-3 gap-6">
-      <div className="col-span-1">
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="text-sm">Available Endpoints</CardTitle>
-          </CardHeader>
-          <CardContent className="p-2">
-            <div className="space-y-1">
-              {endpoints.map((endpoint) => (
-                <Button
-                  key={endpoint.path}
-                  variant={selectedEndpoint.path === endpoint.path ? 'secondary' : 'ghost'}
-                  className="w-full justify-start text-left"
-                  onClick={() => setSelectedEndpoint(endpoint)}
-                >
-                  <span className="font-mono text-xs truncate">{endpoint.name}</span>
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="col-span-2 space-y-4">
-        <Card className="glass-card">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline">{selectedEndpoint.method}</Badge>
-              <code className="text-sm font-mono">{selectedEndpoint.path}</code>
-            </div>
-            <CardDescription>{selectedEndpoint.description}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <h4 className="font-semibold mb-2">Authentication</h4>
-              <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-{`curl -X ${selectedEndpoint.method} \\
-  ${selectedEndpoint.path} \\
-  -H "X-API-Key: sk_live_your_key_here" \\
-  -H "Content-Type: application/json"`}
-              </pre>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">Example Request</h4>
-              <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-{`{
-  "description": "Need roof repair after storm damage",
-  "location": {
-    "zipCode": "90210",
-    "state": "CA"
-  }
-}`}
-              </pre>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">Example Response</h4>
-              <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-{`{
-  "success": true,
-  "data": {
-    "jobTitle": "Roof Storm Damage Repair",
-    "estimatedCost": {
-      "min": 3500,
-      "max": 5000
-    },
-    "confidenceScore": 92
-  },
-  "metadata": {
-    "learningContext": {
-      "totalPredictions": 15420,
-      "currentAccuracy": 0.948
-    }
-  }
-}`}
-              </pre>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }

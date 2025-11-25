@@ -24,6 +24,8 @@ import {
   MapTrifold,
   Lightning,
   Brain,
+  CurrencyDollar,
+  MapPin,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -52,6 +54,9 @@ import { VideoJobCreator } from '@/components/VideoJobCreator';
 import { APIMarketplaceSection } from '@/components/APIMarketplaceSection';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
+import { TerritoryTeaser } from '@/components/TerritoryTeaser';
+import { PaymentModal } from '@/components/PaymentModal';
+import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
@@ -69,6 +74,8 @@ function App() {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showVideoCreator, setShowVideoCreator] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
 
   const mockReferrals: Referral[] = [
     {
@@ -182,7 +189,11 @@ function App() {
     if (type === 'video') {
       setShowVideoCreator(true);
     } else {
-      toast.info(`${type.charAt(0).toUpperCase() + type.slice(1)} job creation coming soon!`);
+      setPaymentJobData({
+        title: `${type.charAt(0).toUpperCase() + type.slice(1)} Job Post`,
+        amount: 3500
+      });
+      setShowPaymentModal(true);
     }
   };
 
@@ -226,14 +237,14 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.8 }}
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <nav className="flex items-center gap-2 flex-1">
+            <nav className="flex items-center gap-3 flex-1">
               <Button
                 variant={activeTab === 'home' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('home')}
@@ -270,8 +281,13 @@ function App() {
                     Browse Jobs
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('contractor', 'earnings')}>
-                    <CreditCard className="w-4 h-4 mr-2" />
+                    <CurrencyDollar className="w-4 h-4 mr-2" />
                     Earnings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'ai')}>
+                    <Brain className="w-4 h-4 mr-2" />
+                    AI Intelligence
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -289,12 +305,16 @@ function App() {
                     <ChartBar className="w-4 h-4 mr-2" />
                     Dashboard
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'browse')}>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Location Browse
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'jobs')}>
                     <Briefcase className="w-4 h-4 mr-2" />
-                    Browse Jobs
+                    All Jobs
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'earnings')}>
-                    <CreditCard className="w-4 h-4 mr-2" />
+                    <CurrencyDollar className="w-4 h-4 mr-2" />
                     Earnings
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -358,15 +378,6 @@ function App() {
               </DropdownMenu>
 
               <Button
-                variant={activeTab === 'messages' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('messages')}
-                className="glass-hover"
-              >
-                <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
-                Messages
-              </Button>
-
-              <Button
                 variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('intelligence')}
                 className="glass-hover"
@@ -374,20 +385,29 @@ function App() {
                 <Lightning className="w-5 h-5 mr-2" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
                 Intelligence API
               </Button>
+
+              <Button
+                variant={activeTab === 'messages' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('messages')}
+                className="glass-hover"
+              >
+                <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+                Messages
+              </Button>
             </nav>
 
             <div className="flex items-center gap-2">
               <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+                whileHover={{ scale: 1.05, y: -2 }} 
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
                 <Button variant="ghost" size="icon" className="relative glass-hover">
                   <BellRinging className="w-5 h-5" />
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ duration: 0.133, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"
                   />
                 </Button>
@@ -395,9 +415,9 @@ function App() {
 
               {currentUser?.role === 'admin' && (
                 <motion.div 
-                  whileHover={{ scale: 1.02 }} 
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+                  whileHover={{ scale: 1.05, y: -2 }} 
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <Button
                     variant={showAdminPanel ? 'default' : 'outline'}
@@ -416,7 +436,12 @@ function App() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => handleNavClick('home', 'payment')}
+                onClick={() => {
+                  setActiveTab('home');
+                  setActiveSubTab(null);
+                  setShowAdminPanel(false);
+                  setShowProfile(false);
+                }}
                 className="glass-hover"
               >
                 <CreditCard className="w-5 h-5" />
@@ -425,9 +450,9 @@ function App() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+                    whileHover={{ scale: 1.05 }} 
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
                     <Button
                       variant="ghost"
@@ -461,9 +486,14 @@ function App() {
                     <UserGear className="w-4 h-4 mr-2" />
                     Profile Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('home', 'payment')}>
+                  <DropdownMenuItem onClick={() => {
+                    setActiveTab('home');
+                    setActiveSubTab(null);
+                    setShowProfile(false);
+                    setShowAdminPanel(false);
+                  }}>
                     <CreditCard className="w-4 h-4 mr-2" />
-                    Payment Methods
+                    Post a Job
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive">
@@ -485,7 +515,7 @@ function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
               {showProfile && <UserProfile user={currentUser} />}
               {showVideoCreator && (
@@ -501,18 +531,19 @@ function App() {
                 <>
                   {activeTab === 'home' && (
                     <div className="space-y-8">
+                      <TerritoryTeaser onExplore={() => handleNavClick('territories')} />
                       <QuickJobPost onCreateJob={handleCreateJob} />
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.088, duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
+                        transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <JobBrowser />
                       </motion.div>
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.177, duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
+                        transition={{ delay: 0.2, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <APIMarketplaceSection />
                       </motion.div>
@@ -520,7 +551,8 @@ function App() {
                   )}
                   {activeTab === 'territories' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
-                  {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
+                  {activeTab === 'subcontractor' && activeSubTab === 'browse' && <LocationJobBrowser userId={currentUser?.id} />}
+                  {activeTab === 'subcontractor' && activeSubTab !== 'browse' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
                   {activeTab === 'intelligence' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
                   {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
@@ -540,12 +572,25 @@ function App() {
 
       <LegalFooter />
 
+      {paymentJobData && (
+        <PaymentModal
+          open={showPaymentModal}
+          onOpenChange={setShowPaymentModal}
+          amount={paymentJobData.amount}
+          jobTitle={paymentJobData.title}
+          onPaymentComplete={() => {
+            setShowPaymentModal(false);
+            setPaymentJobData(null);
+          }}
+        />
+      )}
+
       {showAdminPanel && currentUser?.role === 'admin' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="border-t-2 border-primary/20 bg-gradient-to-b from-background to-muted/20"
         >
           <div className="max-w-7xl mx-auto px-4 py-8">

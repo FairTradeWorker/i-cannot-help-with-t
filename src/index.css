@@ -72,12 +72,16 @@
   --glass-bg: oklch(1 0.01 250 / 0.5);
   --glass-border: oklch(1 0.01 250 / 0.2);
   
-  --animation-fps: 225;
-  --animation-ultra-fast: 0.044s;
-  --animation-fast: 0.088s;
-  --animation-normal: 0.133s;
-  --animation-smooth: 0.177s;
-  --animation-slow: 0.266s;
+  --animation-fps: 60;
+  --animation-ultra-fast: 0.1s;
+  --animation-fast: 0.2s;
+  --animation-normal: 0.3s;
+  --animation-smooth: 0.4s;
+  --animation-slow: 0.6s;
+  
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .glass {
@@ -96,14 +100,14 @@
 }
 
 .glass-hover {
-  transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-hover:hover {
   background: oklch(1 0.01 250 / 0.7);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.14);
 }
 

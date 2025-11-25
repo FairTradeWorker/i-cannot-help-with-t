@@ -82,8 +82,8 @@ export function USMap({ onStateClick, selectedState }: USMapProps) {
         >
           <defs>
             <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="oklch(0.50 0.18 260)" stopOpacity="0.1" />
-              <stop offset="100%" stopColor="oklch(0.70 0.20 320)" stopOpacity="0.1" />
+              <stop offset="0%" stopColor="oklch(0.75 0.15 260)" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="oklch(0.80 0.18 300)" stopOpacity="0.4" />
             </linearGradient>
           </defs>
           
@@ -102,17 +102,17 @@ export function USMap({ onStateClick, selectedState }: USMapProps) {
                 className="cursor-pointer transition-all duration-200"
                 fill={
                   isSelected 
-                    ? 'oklch(0.50 0.18 260)'
+                    ? 'oklch(0.65 0.20 260)'
                     : isHovered 
-                    ? 'oklch(0.70 0.20 320)'
+                    ? 'oklch(0.75 0.20 280)'
                     : 'url(#mapGradient)'
                 }
                 stroke={
                   isSelected || isHovered 
-                    ? 'oklch(0.50 0.18 260)'
-                    : 'oklch(0.90 0.01 250)'
+                    ? 'oklch(0.55 0.20 260)'
+                    : 'oklch(0.70 0.05 250)'
                 }
-                strokeWidth={isSelected || isHovered ? 2 : 1}
+                strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
                 onMouseEnter={() => setHoveredState(stateAbbr)}
                 onMouseLeave={() => setHoveredState(null)}
                 onClick={() => state && onStateClick?.(state)}
