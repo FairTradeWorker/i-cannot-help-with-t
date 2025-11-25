@@ -648,57 +648,53 @@ export function PaymentScreen({
           Frequently Asked Questions
         </h3>
         <Separator className="mb-4" />
-        
         <div className="space-y-4">
           <div>
+          <div>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" />
               When will work begin?
             </h4>
             <p className="text-sm text-muted-foreground">Work typically begins within 3-5 business days of payment confirmation. Your contractor will contact you within 24 hours to schedule.</p>
           </div>
           
-          <div>
+          
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-primary" />
+            </h4>
+            <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
               What is the escrow process?
             </h4>
             <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+          </div>mb-2 flex items-center gap-2">
               <Money className="w-4 h-4 text-primary" />
+          <div>
+            </h4>
+            <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
               Can I get a refund?
             </h4>
             <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
-          </div>
-          
-          <div>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-primary" />
+          
               What are the financing terms?
             </h4>
             <p className="text-sm text-muted-foreground">We offer 0% APR financing for 12 months to qualified customers. 3-month payment plans have a 2% processing fee.</p>
-          </div>
+              What are the financing terms?
+            </h4>
+            <p className="text-sm text-muted-foreground">We offer 0% APR financing for 12 months to qualified customers. 3-month payment plans have a 2% processing fee.</p>
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
           
           <div>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" />
-              What does the $20 platform fee cover?
-            </h4>
             <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
           </div>
           
-          <div>
+            <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
             <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-primary" />
-              Are contractors verified?
+          <div>
             </h4>
-            <p className="text-sm text-muted-foreground">All contractors are background checked, licensed, and insured. We verify credentials and maintain quality standards through regular reviews.</p>
+              <CheckCircle className="w-4 h-4 text-primary" />
           </div>
         </div>
       </Card>
     </div>
   );
-}
