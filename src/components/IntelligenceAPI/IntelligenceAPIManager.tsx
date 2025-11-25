@@ -102,10 +102,14 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
       </div>
 
       <Tabs defaultValue="keys" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="keys">
             <Key className="w-4 h-4 mr-2" />
             API Keys
+          </TabsTrigger>
+          <TabsTrigger value="endpoints">
+            <Code className="w-4 h-4 mr-2" />
+            Endpoints
           </TabsTrigger>
           <TabsTrigger value="usage">
             <TrendUp className="w-4 h-4 mr-2" />
@@ -251,6 +255,10 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
           )}
         </TabsContent>
 
+        <TabsContent value="endpoints" className="space-y-6 mt-6">
+          <EndpointsDocumentation />
+        </TabsContent>
+
         <TabsContent value="usage" className="space-y-6 mt-6">
           <div className="grid grid-cols-4 gap-4">
             <Card className="glass-card">
@@ -382,6 +390,151 @@ function PricingPlans() {
           </CardContent>
         </Card>
       ))}
+    </div>
+  );
+}
+
+function EndpointsDocumentation() {
+  const nuclearAPIs = [
+    {
+      method: 'POST',
+      endpoint: '/api/v1/hailstrike',
+      description: 'Real-time hail event detection and demand surge prediction',
+      tier: 'Professional',
+      params: { zipCodes: 'string[]', radius: 'number', severity: 'enum' }
+    },
+    {
+      method: 'POST',
+      endpoint: '/api/v1/catastrophe-alpha',
+      description: 'Pre-event catastrophe intelligence and deployment recommendations',
+      tier: 'Professional',
+      params: { region: 'string', eventType: 'enum', forecastDays: 'number' }
+    },
+    {
+      method: 'POST',
+      endpoint: '/api/v1/ghostbid',
+      description: 'Competitive bid analysis and strategic pricing recommendations',
+      tier: 'Professional',
+      params: { jobId: 'string', targetPrice: 'number', materialsCost: 'number', laborHours: 'number' }
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/contractor-dna/:id',
+      description: 'Deep behavioral analysis and performance prediction of contractors',
+      tier: 'Professional',
+      params: { id: 'path param' }
+    },
+    {
+      method: 'POST',
+      endpoint: '/api/v1/creep-oracle',
+      description: 'Material price forecasting with buy/wait recommendations',
+      tier: 'Professional',
+      params: { materialCategory: 'string', region: 'string', forecastMonths: 'number' }
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/arbitrage-heat',
+      description: 'Cross-market pricing arbitrage opportunities',
+      tier: 'Enterprise',
+      params: {}
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/permit-velocity',
+      description: 'Jurisdiction-specific permit processing times and strategies',
+      tier: 'Professional',
+      params: { jurisdiction: 'query param' }
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/silent-rollup/:name',
+      description: 'Acquisition target analysis for contractor consolidation plays',
+      tier: 'Enterprise',
+      params: { name: 'path param' }
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/weather-weapon',
+      description: '7-day predictive demand and revenue intelligence',
+      tier: 'Professional',
+      params: { zipCode: 'query param' }
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/doomsday',
+      description: 'Market collapse scenarios and survival strategies',
+      tier: 'Enterprise',
+      params: {}
+    }
+  ];
+
+  return (
+    <div className="space-y-4">
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle>Nuclear API Endpoints</CardTitle>
+          <CardDescription>
+            10 high-powered intelligence endpoints with learning feedback integration
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {nuclearAPIs.map((api, index) => (
+              <Card key={index} className="bg-muted/30 border-border/50">
+                <CardContent className="pt-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <Badge variant={api.method === 'GET' ? 'outline' : 'default'} className="font-mono">
+                        {api.method}
+                      </Badge>
+                      <code className="text-sm font-mono text-foreground">{api.endpoint}</code>
+                    </div>
+                    <Badge className={api.tier === 'Enterprise' ? 'bg-gradient-to-r from-accent to-secondary' : 'bg-primary'}>
+                      {api.tier}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">{api.description}</p>
+                  {Object.keys(api.params).length > 0 && (
+                    <div className="bg-background/50 rounded px-3 py-2 text-xs font-mono">
+                      {Object.entries(api.params).map(([key, type]) => (
+                        <div key={key} className="flex gap-2">
+                          <span className="text-primary">{key}:</span>
+                          <span className="text-muted-foreground">{type}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-6 p-4 bg-accent/10 border border-accent/30 rounded-lg">
+            <h4 className="font-semibold mb-2 flex items-center gap-2">
+              <Lightning className="w-4 h-4 text-accent" weight="fill" />
+              Learning Feedback Integration
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              Every API call feeds the learning_feedback table automatically. The system tracks prediction accuracy, 
+              adjusts confidence scores, and improves over time. All responses include learning context with 
+              total predictions, current accuracy, and confidence metrics.
+            </p>
+          </div>
+
+          <div className="mt-4 p-4 bg-primary/10 border border-primary/30 rounded-lg">
+            <h4 className="font-semibold mb-2 flex items-center gap-2">
+              <Lock className="w-4 h-4 text-primary" weight="fill" />
+              Authentication & Billing
+            </h4>
+            <p className="text-sm text-muted-foreground mb-2">
+              All endpoints require API key authentication and are metered via Stripe billing.
+            </p>
+            <code className="text-xs font-mono bg-background/50 px-2 py-1 rounded">
+              Authorization: Bearer sk_professional_YourAPIKey
+            </code>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
