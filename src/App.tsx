@@ -4,6 +4,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { HomeownerDashboard } from '@/components/HomeownerDashboard';
+import { LegalConsentModal } from '@/components/LegalConsentModal';
+import { LegalFooter } from '@/components/LegalFooter';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData, switchUserRole } from '@/lib/demo-data';
 import type { User as UserType } from '@/lib/types';
@@ -11,6 +13,8 @@ import type { User as UserType } from '@/lib/types';
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showLegalConsent, setShowLegalConsent] = useState(false);
+  const [pendingRole, setPendingRole] = useState<'contractor' | 'homeowner' | null>(null);
 
   useEffect(() => {
     initialize();
@@ -24,8 +28,22 @@ function App() {
   };
 
   const handleSelectRole = async (role: 'contractor' | 'homeowner') => {
-    const user = await switchUserRole(role);
-    setCurrentUser(user);
+    setPendingRole(role);
+    setShowLegalConsent(true);
+  };
+
+  const handleLegalAccept = async (consents: any) => {
+    if (pendingRole) {
+      const user = await switchUserRole(pendingRole);
+      setCurrentUser(user);
+      setShowLegalConsent(false);
+      setPendingRole(null);
+    }
+  };
+
+  const handleLegalDecline = () => {
+    setShowLegalConsent(false);
+    setPendingRole(null);
   };
 
   if (loading) {
@@ -39,9 +57,19 @@ function App() {
     );
   }
 
+  if (showLegalConsent && pendingRole) {
+    return (
+      <LegalConsentModal
+        userType={pendingRole}
+        onAccept={handleLegalAccept}
+        onDecline={handleLegalDecline}
+      />
+    );
+  }
+
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <div className="border-b border-border bg-card">
           <div className="max-w-7xl mx-auto px-4 py-6">
             <h1 className="text-3xl font-bold tracking-tight">AI Home Services Platform</h1>
@@ -49,7 +77,7 @@ function App() {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="flex-1 max-w-4xl mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="p-8 hover:border-primary/50 transition-colors cursor-pointer" 
               onClick={() => handleSelectRole('contractor')}
@@ -84,12 +112,14 @@ function App() {
             </Card>
           </div>
         </div>
+
+        <LegalFooter />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <div className="fixed top-4 right-4 z-50">
         <Button 
           variant="outline" 
@@ -101,8 +131,12 @@ function App() {
         </Button>
       </div>
 
-      {currentUser.role === 'contractor' && <ContractorDashboard user={currentUser} />}
-      {currentUser.role === 'homeowner' && <HomeownerDashboard user={currentUser} />}
+      <div className="flex-1">
+        {currentUser.role === 'contractor' && <ContractorDashboard user={currentUser} />}
+        {currentUser.role === 'homeowner' && <HomeownerDashboard user={currentUser} />}
+      </div>
+
+      <LegalFooter />
     </div>
   );
 }

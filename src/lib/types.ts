@@ -14,6 +14,35 @@ export interface User {
   createdAt: Date;
   contractorProfile?: ContractorProfile;
   homeownerProfile?: HomeownerProfile;
+  legalConsents?: LegalConsents;
+  dataPrivacyConsent?: DataPrivacyConsent;
+}
+
+export interface LegalConsents {
+  termsOfService: boolean;
+  privacyPolicy: boolean;
+  contractorAgreement?: boolean;
+  independentContractorStatus?: boolean;
+  territoryOwnerAgreement?: boolean;
+  territoryRiskDisclosure?: boolean;
+  dataProcessing: boolean;
+  tcpaConsent: boolean;
+  disputeResolution: boolean;
+  acceptedAt: Date;
+  ipAddress: string;
+  userAgent: string;
+}
+
+export interface DataPrivacyConsent {
+  userId: string;
+  gdprConsent: boolean;
+  ccpaConsent: boolean;
+  tcpaConsent: boolean;
+  marketingConsent: boolean;
+  dataProcessingConsent: boolean;
+  consentDate: Date;
+  ipAddress: string;
+  userAgent: string;
 }
 
 export interface ContractorProfile {

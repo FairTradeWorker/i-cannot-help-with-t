@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle } from '@phosphor-icons/react';
+import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import type { Job, User, Earnings } from '@/lib/types';
 import { JobBrowser } from './JobBrowser';
 import { JobDetails } from './JobDetails';
 import { EarningsDashboard } from './EarningsDashboard';
+import { ComplianceDashboard } from './ComplianceDashboard';
 
 interface ContractorDashboardProps {
   user: User;
@@ -141,11 +142,15 @@ export function ContractorDashboard({ user }: ContractorDashboardProps) {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-3xl grid-cols-4 mb-8">
+          <TabsList className="grid w-full max-w-4xl grid-cols-5 mb-8">
             <TabsTrigger value="browse">Browse Jobs</TabsTrigger>
             <TabsTrigger value="active">Active ({activeJobs.length})</TabsTrigger>
             <TabsTrigger value="completed">Completed</TabsTrigger>
             <TabsTrigger value="earnings">Earnings</TabsTrigger>
+            <TabsTrigger value="compliance">
+              <Scales className="w-4 h-4 mr-2" />
+              Compliance
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="browse">
@@ -244,6 +249,10 @@ export function ContractorDashboard({ user }: ContractorDashboardProps) {
 
           <TabsContent value="earnings">
             <EarningsDashboard earnings={earnings} user={user} onUpdate={loadData} />
+          </TabsContent>
+
+          <TabsContent value="compliance">
+            <ComplianceDashboard user={user} />
           </TabsContent>
         </Tabs>
       </div>

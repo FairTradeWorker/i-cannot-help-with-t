@@ -12,12 +12,33 @@ A comprehensive marketplace connecting homeowners with qualified contractors thr
 
 ## Essential Features
 
+### Legal Compliance & Consent Management
+- **Functionality**: Comprehensive legal agreement system with role-specific terms, independent contractor status acknowledgment, territory ownership risk disclosures, GDPR/CCPA consent management
+- **Purpose**: Protect platform from liability, ensure contractor classification compliance, meet consumer protection laws, satisfy data privacy regulations
+- **Trigger**: First-time user registration, before accessing platform features
+- **Progression**: Role selection → legal consent modal → review agreements → accept all required terms → IP/timestamp recorded → access granted
+- **Success criteria**: All users accept required agreements, consents logged with metadata, independent contractor status properly acknowledged, territory risk disclosures accepted before purchase
+
+### Contractor Verification & Licensing
+- **Functionality**: License verification system with state-specific requirements, insurance certificate uploads, trade-specific license validation, automatic state requirement checks
+- **Purpose**: Comply with state licensing laws, protect homeowners, validate contractor credentials, prevent unlicensed work
+- **Trigger**: Contractor profile setup, before bidding on jobs above state thresholds
+- **Progression**: Enter license info → select trade type → upload certificates → system validates against state requirements → verification request submitted → agency verification (2-5 days) → verified badge granted
+- **Success criteria**: All licenses verified with state agencies, insurance meets $1M minimum, expired credentials flagged, jobs require appropriate licenses based on amount and trade type
+
+### Contractor Classification Dashboard
+- **Functionality**: Real-time independent contractor status evaluation, 6-factor compliance scoring, tax responsibility education, classification risk warnings
+- **Purpose**: Demonstrate independent contractor status to avoid employee misclassification lawsuits, educate contractors on tax obligations, document platform's non-employer relationship
+- **Trigger**: Contractor views compliance dashboard, periodic review notifications
+- **Progression**: Load contractor profile → evaluate 6 factors (pricing control, schedule control, competition, training, uniform, supervision) → calculate score → display status → show tax responsibilities
+- **Success criteria**: Score above 80% indicates proper classification, all 6 factors properly configured, contractors acknowledge 1099 status and tax responsibilities
+
 ### User Roles & Authentication
-- **Functionality**: Role selection (contractor/homeowner), profile management, demo data initialization
-- **Purpose**: Enable distinct experiences for different user types with appropriate permissions and features
+- **Functionality**: Role selection (contractor/homeowner/territory owner), profile management, demo data initialization, legal consent tracking
+- **Purpose**: Enable distinct experiences for different user types with appropriate permissions, features, and legal agreements
 - **Trigger**: App launch, role selection screen
-- **Progression**: App load → role selection → profile load → role-specific dashboard
-- **Success criteria**: Users can switch between contractor and homeowner views, profiles persist, appropriate features visible per role
+- **Progression**: App load → role selection → legal consent modal → accept agreements → profile load → role-specific dashboard
+- **Success criteria**: Users can switch between roles (with new consent flows), profiles persist, appropriate features visible per role, all legal consents recorded
 
 ### Video-Based Job Creation (Homeowners)
 - **Functionality**: Upload video, AI analyzes damage, generates scope, creates job posting automatically
@@ -85,7 +106,7 @@ A comprehensive marketplace connecting homeowners with qualified contractors thr
 ## Edge Case Handling
 
 - **No demo data** - Initialize with sample contractors, homeowners, and jobs on first load
-- **Role switching** - Preserve data when switching between contractor/homeowner views, show appropriate UI per role
+- **Role switching** - Preserve data when switching between contractor/homeowner views, show appropriate UI per role, require new legal consents if role changes
 - **Empty job lists** - Show helpful empty states with call-to-action to browse/create jobs
 - **Duplicate bids** - Prevent contractors from bidding twice on same job
 - **Concurrent bid acceptance** - Handle race condition if homeowner tries to accept multiple bids
@@ -99,6 +120,17 @@ A comprehensive marketplace connecting homeowners with qualified contractors thr
 - **Job without video** - Support text-only job creation as fallback
 - **Timezone handling** - Store all dates in UTC, display in user's local timezone
 - **Browser storage limits** - Monitor KV storage usage, implement data archival for old jobs
+- **Expired licenses** - Flag expired contractor licenses, prevent bidding until renewed
+- **Insufficient insurance** - Block contractors with <$1M coverage from bidding
+- **License threshold enforcement** - Check job amount against state minimums, require appropriate license level
+- **Independent contractor violations** - Monitor for policy changes that could affect classification (mandatory training, price controls, etc.)
+- **Consent withdrawal** - Handle GDPR/CCPA data deletion requests, maintain compliance logs
+- **Territory passive investment** - Prevent territory sales that appear to be passive investments (securities risk)
+- **Multi-state licensing** - Track contractors working across state lines, validate licenses in each state
+- **Trade-specific requirements** - Enforce electrical/plumbing/HVAC license requirements regardless of job size
+- **Payment processor compliance** - Use Stripe Connect to avoid money transmitter licensing
+- **Terms updates** - Notify users of terms changes, require re-acceptance of material changes
+- **Minor users** - Age gate to prevent <18 registration (COPPA compliance)
 
 ## Design Direction
 
