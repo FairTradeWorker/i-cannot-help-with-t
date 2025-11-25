@@ -1,35 +1,35 @@
 import { useState } from 'react';
-import { 
+import { motion } from 'framer-motion';
 import { 
   MapPin,
   CurrencyDollar,
-  Light
-  MapPin,
-import {
-  CurrencyDollar,
-import {
-interface Ma
+  Lightning,
+  MagnifyingGlass,
+  SlidersHorizontal,
+  Star,
+  Clock,
+  Heart,
+  Sparkle
+} from '@phosphor-icons/react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { MarketplaceHero } from '@/components/MarketplaceHero';
+
+interface MarketplaceBrowseProps {
+  featured?: boolean;
 }
-export function MarketplaceBrow
-  const [selectedCategory, setSelectedCategory
+
+export function MarketplaceBrowse({ featured = false }: MarketplaceBrowseProps) {
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
   const categories = [
-    { id: 'plumbing', label: 'Plumbing', icon:
-    { id: 'painting', label: 'Painting', ico
-    { id: 'cleaning', label: 'Cleaning', icon: Spark
-
-    {
-      title: 'Profess
- 
-
-      location: 'San Francisco, CA',
-      image: 'https://images.unsplash.com/photo-15569
-      verified: true,
-
-      title: 'Emergenc
-      rating: 4.8,
-      price: 150,
-      location: 'Oakland, CA',
-      image: 'https://images.unsplash.com/photo-160747258
+    { id: 'all', label: 'All Services', icon: Sparkle },
+    { id: 'plumbing', label: 'Plumbing', icon: Sparkle },
+    { id: 'painting', label: 'Painting', icon: Sparkle },
+    { id: 'electrical', label: 'Electrical', icon: Lightning },
     { id: 'carpentry', label: 'Carpentry', icon: Sparkle },
     { id: 'cleaning', label: 'Cleaning', icon: Sparkle },
   ];
@@ -48,7 +48,7 @@ export function MarketplaceBrow
       image: 'https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=400',
       tags: ['Premium', 'Licensed', 'Insured'],
       verified: true,
-      
+    },
     {
       id: 2,
       title: 'Emergency Plumbing Repair',
@@ -62,9 +62,9 @@ export function MarketplaceBrow
       image: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=400',
       tags: ['24/7', 'Same Day', 'Emergency'],
       verified: true,
-      
+    },
     {
-  };
+      id: 3,
       title: 'Interior & Exterior Painting',
       provider: 'ColorCraft Painters',
       rating: 5.0,
@@ -76,27 +76,27 @@ export function MarketplaceBrow
       image: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400',
       tags: ['Eco-Friendly', 'Premium', 'Insured'],
       verified: true,
-      
+    },
     {
-            
+      id: 4,
       title: 'Custom Carpentry & Woodwork',
       provider: 'Artisan Wood Co.',
       rating: 4.9,
-          {categori
+      reviews: 143,
       price: 1200,
       priceUnit: 'per project',
       location: 'San Francisco, CA',
-                whileHover={{
+      responseTime: '45 min',
       image: 'https://images.unsplash.com/photo-1617082351431-f1c84e5487f5?w=400',
       tags: ['Custom', 'Licensed', 'Premium'],
       verified: true,
-      
+    },
     {
-            
+      id: 5,
       title: 'Deep Cleaning Services',
-
+      provider: 'Sparkle Clean Co.',
       rating: 4.7,
-          animate={
+      reviews: 892,
       price: 120,
       priceUnit: 'per visit',
       location: 'San Jose, CA',
@@ -104,13 +104,13 @@ export function MarketplaceBrow
       image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
       tags: ['Same Day', 'Eco-Friendly', 'Trusted'],
       verified: true,
-      
+    },
     {
-            
+      id: 6,
       title: 'Electrical Installation & Repair',
       provider: 'Volt Masters',
       rating: 4.9,
-                   
+      reviews: 421,
       price: 180,
       priceUnit: 'per hour',
       location: 'Palo Alto, CA',
@@ -118,13 +118,13 @@ export function MarketplaceBrow
       image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400',
       tags: ['Licensed', 'Emergency', 'Certified'],
       verified: true,
-      
+    },
   ];
 
   const container = {
-                    <h3 cla
+    hidden: { opacity: 0 },
     show: {
-                 
+      opacity: 1,
       transition: {
         staggerChildren: 0.1,
       },
@@ -132,23 +132,23 @@ export function MarketplaceBrow
   };
 
   const item = {
-                    <span>{service
+    hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
-    
+  };
 
-          
+  return (
     <div className="space-y-8">
       {!featured && <MarketplaceHero />}
       
-                 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="glass-card rounded-3xl p-6"
-       
+      >
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-}
+            <Input
               type="text"
               placeholder="Search services, providers, or projects..."
               value={searchQuery}
@@ -160,9 +160,9 @@ export function MarketplaceBrow
             <Button variant="outline" size="lg" className="h-12 rounded-2xl">
               <SlidersHorizontal className="w-5 h-5 mr-2" />
               Filters
-
+            </Button>
           </motion.div>
-
+        </div>
 
         <div className="flex gap-2 mt-6 overflow-x-auto pb-2">
           {categories.map((cat, index) => {
@@ -180,7 +180,7 @@ export function MarketplaceBrow
                   isSelected
                     ? 'bg-primary text-primary-foreground shadow-lg'
                     : 'bg-background/50 text-foreground hover:bg-background/80'
-
+                }`}
               >
                 <cat.icon className="w-4 h-4 inline mr-2" weight={isSelected ? 'fill' : 'regular'} />
                 {cat.label}
@@ -188,9 +188,9 @@ export function MarketplaceBrow
             );
           })}
         </div>
+      </motion.div>
 
-
-
+      {featured && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -200,16 +200,16 @@ export function MarketplaceBrow
             <Sparkle className="w-6 h-6 text-accent" weight="fill" />
             <h2 className="text-2xl font-bold">Featured Services</h2>
           </div>
-
+        </motion.div>
       )}
 
       <motion.div
-
+        variants={container}
         initial="hidden"
-
+        animate="show"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-
-        {services.map((service, index) => (
+      >
+        {services.map((service) => (
           <motion.div
             key={service.id}
             variants={item}
@@ -218,7 +218,7 @@ export function MarketplaceBrow
           >
             <Card className="glass-card rounded-3xl overflow-hidden border-border/50 hover:border-primary/50 transition-all duration-300 h-full">
               <div className="relative overflow-hidden h-48">
-
+                <motion.img
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.4 }}
                   src={service.image}
@@ -230,11 +230,12 @@ export function MarketplaceBrow
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
                     className="w-10 h-10 rounded-full glass flex items-center justify-center"
-
+                  >
                     <Heart className="w-5 h-5 text-white" />
-
+                  </motion.button>
                 </div>
 
+                {service.verified && (
                   <div className="absolute top-3 left-3">
                     <Badge className="bg-accent text-accent-foreground">
                       <Lightning className="w-3 h-3 mr-1" weight="fill" />
@@ -278,7 +279,7 @@ export function MarketplaceBrow
                 </div>
 
                 <div className="pt-4 border-t border-border/50 flex items-center justify-between">
-
+                  <div>
                     <p className="text-xs text-muted-foreground">{service.priceUnit}</p>
                     <p className="text-2xl font-bold text-primary">
                       ${service.price}
@@ -286,15 +287,15 @@ export function MarketplaceBrow
                   </div>
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Button className="rounded-full">
-
+                      View Details
                     </Button>
-
+                  </motion.div>
                 </div>
               </div>
             </Card>
-
+          </motion.div>
         ))}
-
+      </motion.div>
     </div>
-
+  );
 }
