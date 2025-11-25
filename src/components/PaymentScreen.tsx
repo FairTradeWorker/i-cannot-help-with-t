@@ -56,11 +56,11 @@ export function PaymentScreen({
   const [cardName, setCardName] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
-  const [selectedWarranty, setSelectedWarranty] = useState<'basic' | 'extended' | 'premium'>('basic');
+  const [selectedWarranty, setSelectedWarranty] = useState<'extended' | 'premium'>('extended');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const operatorFee = 20;
-  const warrantyPrices = { basic: 75, extended: 299, premium: 499 };
+  const operatorFee = 10;
+  const warrantyPrices = { extended: 249, premium: 499 };
   const warrantyPrice = warrantyPrices[selectedWarranty];
   const totalAmount = amount + warrantyPrice + operatorFee;
 
@@ -429,22 +429,6 @@ export function PaymentScreen({
 
             <div className="space-y-3">
               <div
-                onClick={() => setSelectedWarranty('basic')}
-                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                  selectedWarranty === 'basic'
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/50'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold">Basic Warranty</h4>
-                  <Badge variant={selectedWarranty === 'basic' ? 'default' : 'outline'}>Included</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mb-2">1-year workmanship guarantee</p>
-                <div className="text-sm font-bold">$75</div>
-              </div>
-
-              <div
                 onClick={() => setSelectedWarranty('extended')}
                 className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                   selectedWarranty === 'extended'
@@ -457,7 +441,7 @@ export function PaymentScreen({
                   <Badge variant={selectedWarranty === 'extended' ? 'default' : 'outline'}>Popular</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mb-2">3-year coverage with priority service</p>
-                <div className="text-sm font-bold">$299</div>
+                <div className="text-sm font-bold">$249</div>
               </div>
 
               <div
@@ -475,6 +459,12 @@ export function PaymentScreen({
                 <p className="text-xs text-muted-foreground mb-2">5-year full coverage with 24/7 support</p>
                 <div className="text-sm font-bold">$499</div>
               </div>
+            </div>
+
+            <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <strong className="text-foreground">Warranty Disclaimer:</strong> Warranties are provided by the contractor and administered by ServiceHub. Coverage terms vary by service type. Review full terms and conditions before purchase. Warranties do not cover pre-existing conditions, improper use, or natural disasters unless explicitly stated.
+              </p>
             </div>
           </Card>
         </div>
@@ -523,7 +513,7 @@ export function PaymentScreen({
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
-                    {selectedWarranty === 'basic' ? 'Basic' : selectedWarranty === 'extended' ? 'Extended' : 'Premium'} Warranty
+                    {selectedWarranty === 'extended' ? 'Extended' : 'Premium'} Warranty
                   </span>
                   <span className="text-sm font-semibold text-accent">
                     ${warrantyPrice.toLocaleString()}

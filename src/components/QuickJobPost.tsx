@@ -92,7 +92,7 @@ export function QuickJobPost({ onCreateJob, onExploreMap }: QuickJobPostProps) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
-                whileHover={{ y: -8 }}
+                whileHover={{ y: -6 }}
                 whileTap={{ scale: 0.96 }}
                 onHoverStart={() => setHoveredCard(option.id)}
                 onHoverEnd={() => setHoveredCard(null)}
@@ -103,25 +103,26 @@ export function QuickJobPost({ onCreateJob, onExploreMap }: QuickJobPostProps) {
                   }`}
                   onClick={() => onCreateJob(option.id as 'video' | 'photo' | 'text')}
                 >
-                  <CardContent className="relative p-6 text-center space-y-3">
+                  <CardContent className="relative p-4 text-center space-y-2.5">
+                    {option.badge && (
+                      <Badge variant="default" className="text-[10px] bg-secondary text-secondary-foreground">
+                        {option.badge}
+                      </Badge>
+                    )}
+                    
                     <motion.div 
-                      className={`mx-auto w-14 h-14 ${option.color} flex items-center justify-center rounded-xl`}
+                      className={`mx-auto w-11 h-11 ${option.color} flex items-center justify-center rounded-lg`}
                       animate={{ 
-                        y: hoveredCard === option.id ? -4 : 0
+                        y: hoveredCard === option.id ? -3 : 0
                       }}
                       transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                     >
-                      <Icon className="w-7 h-7 text-white" weight="fill" />
+                      <Icon className="w-6 h-6 text-white" weight="fill" />
                     </motion.div>
                     
                     <div>
-                      <div className="font-bold text-sm mb-1">{option.title}</div>
-                      <p className="text-xs text-muted-foreground">{option.description}</p>
-                      {option.badge && (
-                        <Badge variant="secondary" className="mt-2 text-xs">
-                          {option.badge}
-                        </Badge>
-                      )}
+                      <div className="font-bold text-xs mb-0.5">{option.title}</div>
+                      <p className="text-[10px] text-muted-foreground leading-tight">{option.description}</p>
                     </div>
                   </CardContent>
                 </Card>

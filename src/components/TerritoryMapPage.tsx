@@ -203,20 +203,7 @@ export function TerritoryMapPage() {
       </motion.div>
 
       <AnimatePresence mode="wait">
-        {view === 'map' ? (
-          <motion.div
-            key="map"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="space-y-4"
-          >
-            <USMap
-              selectedState={selectedState?.abbreviation}
-              onStateClick={handleStateClick}
-            />
-          </motion.div>
-        ) : (
+        {view === 'list' && (
           <motion.div
             key="list"
             initial={{ opacity: 0 }}

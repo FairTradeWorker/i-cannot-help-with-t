@@ -257,8 +257,8 @@ function App() {
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
         <div className="w-full px-6 pt-2">
-          <div className="flex items-center justify-between h-16 py-2 max-w-[1920px] mx-auto">
-            <nav className="flex items-center gap-2">
+          <div className="flex items-center h-16 py-2 max-w-[1920px] mx-auto" style={{ paddingLeft: '2rem' }}>
+            <nav className="flex items-center gap-2 flex-1">
               <motion.div 
                 whileHover={{ scale: 1.02 }} 
                 whileTap={{ scale: 0.96 }}
@@ -307,6 +307,21 @@ function App() {
                 </Button>
               </motion.div>
 
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
+                <Button
+                  size="default"
+                  onClick={() => handleNavClick('homeowner', 'post-job')}
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-6"
+                >
+                  <Plus className="w-4 h-4 mr-1.5" weight="bold" />
+                  Post a Job
+                </Button>
+              </motion.div>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
@@ -342,24 +357,7 @@ function App() {
               </DropdownMenu>
             </nav>
 
-            <div className="flex-1 flex justify-center">
-              <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              >
-                <Button
-                  size="lg"
-                  onClick={() => handleNavClick('homeowner', 'post-job')}
-                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-8"
-                >
-                  <Plus className="w-5 h-5 mr-2" weight="bold" />
-                  Post a Job
-                </Button>
-              </motion.div>
-            </div>
-
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-2 flex-1 justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
@@ -427,7 +425,7 @@ function App() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'ai')}>
                     <Brain className="w-4 h-4 mr-2" />
-                    Technology
+                    API - Coming Soon
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
                     <Bank className="w-4 h-4 mr-2" />
@@ -466,11 +464,11 @@ function App() {
                 <Button
                   variant={activeTab === 'messages' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('messages')}
-                  className="button-interactive relative"
+                  className="button-interactive relative h-8 w-8"
                   size="icon"
                 >
-                  <ChatCircle className="w-4 h-4" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
+                  <ChatCircle className="w-3.5 h-3.5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+                  <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-accent rounded-full" />
                 </Button>
               </motion.div>
 
@@ -766,6 +764,38 @@ function App() {
                               </p>
                             </div>
                           </div>
+                        </div>
+                      </Card>
+
+                      <Card className="glass-card p-8 col-span-full">
+                        <h3 className="text-2xl font-bold mb-6 text-center">Services We Support</h3>
+                        <p className="text-center text-muted-foreground mb-8">ServiceHub connects you with verified professionals across all major home service trades</p>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {[
+                            'Roofing', 'HVAC', 'Plumbing', 'Electrical',
+                            'Landscaping', 'Painting', 'Carpentry', 'Masonry',
+                            'Flooring', 'Windows & Doors', 'Siding', 'Gutters',
+                            'Fencing', 'Decking', 'Concrete', 'Drywall',
+                            'Insulation', 'Foundation Repair', 'Pool Service', 'Pest Control',
+                            'Tree Service', 'Snow Removal', 'Garage Doors', 'Solar Installation',
+                            'Demolition', 'Waterproofing', 'Septic Systems', 'Well Drilling',
+                            'Chimney Service', 'Appliance Repair', 'Home Theater', 'Smart Home'
+                          ].map((service) => (
+                            <div
+                              key={service}
+                              className="p-3 rounded-lg bg-muted/50 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-all text-center"
+                            >
+                              <span className="text-sm font-medium">{service}</span>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-6 text-center">
+                          <Button variant="outline" onClick={() => handleNavClick('browse-jobs')}>
+                            View All Service Categories
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
                         </div>
                       </Card>
                     </div>

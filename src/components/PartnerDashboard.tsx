@@ -800,17 +800,39 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent">
-                <Brain className="w-7 h-7 text-white" weight="duotone" />
+            <Card className="glass-card p-12 text-center">
+              <div className="max-w-2xl mx-auto">
+                <div className="inline-block p-6 rounded-full bg-primary/10 mb-6">
+                  <Brain className="w-16 h-16 text-primary" weight="duotone" />
+                </div>
+                <h2 className="text-4xl font-bold mb-4">API Access - Coming Soon</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  We're building powerful APIs to connect technology partners with our platform intelligence and learning systems. This will enable innovative integrations for AI, machine learning, and data analytics partners.
+                </p>
+                <div className="flex items-center justify-center gap-4">
+                  <Badge variant="secondary" className="text-base px-4 py-2">
+                    Q2 2024 Launch
+                  </Badge>
+                  <Button size="lg" onClick={() => toast.info('We\'ll notify you when API access is available')}>
+                    Join Waitlist
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[
+                    { label: 'RESTful APIs', desc: 'Modern web standards' },
+                    { label: 'Real-time Data', desc: 'WebSocket support' },
+                    { label: 'ML Integration', desc: 'Training data access' },
+                  ].map((feature) => (
+                    <Card key={feature.label} className="p-4 bg-muted/30">
+                      <h4 className="font-semibold mb-1">{feature.label}</h4>
+                      <p className="text-xs text-muted-foreground">{feature.desc}</p>
+                    </Card>
+                  ))}
+                </div>
               </div>
-              <div>
-                <h2 className="text-3xl font-bold">Technology Partners</h2>
-                <p className="text-muted-foreground">Platform intelligence and learning systems</p>
-              </div>
-            </div>
+            </Card>
           </motion.div>
-          <AILearningDashboard />
         </div>
       )}
     </motion.div>
