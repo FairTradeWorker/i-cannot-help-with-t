@@ -1,20 +1,38 @@
 import { useState, useEffect } from 'react';
-import { User, Hammer, House } from '@phosphor-icons/react';
-import { Card } from '@/components/ui/card';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { 
+  House, 
+  MagnifyingGlass, 
+  User, 
+  Heart, 
+  ChatCircle,
+  Sparkle,
+  Plus,
+  Hammer,
+  BellRinging,
+  ShoppingCart
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { ContractorDashboard } from '@/components/ContractorDashboard';
-import { HomeownerDashboard } from '@/components/HomeownerDashboard';
 import { LegalConsentModal } from '@/components/LegalConsentModal';
 import { LegalFooter } from '@/components/LegalFooter';
+import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
+import { UserProfile } from '@/components/UserProfile';
+import { MessagesView } from '@/components/MessagesView';
+import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { dataStore } from '@/lib/store';
-import { initializeDemoData, switchUserRole } from '@/lib/demo-data';
+import { initializeDemoData } from '@/lib/demo-data';
 import type { User as UserType } from '@/lib/types';
+
+type NavTab = 'browse' | 'services' | 'messages' | 'profile';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showLegalConsent, setShowLegalConsent] = useState(false);
-  const [pendingRole, setPendingRole] = useState<'contractor' | 'homeowner' | null>(null);
+  const [activeTab, setActiveTab] = useState<NavTab>('browse');
+  const { scrollY } = useScroll();
+  const headerOpacity = useTransform(scrollY, [0, 100], [1, 0.95]);
+  const headerBlur = useTransform(scrollY, [0, 100], [20, 30]);
 
   useEffect(() => {
     initialize();
@@ -23,118 +41,187 @@ function App() {
   const initialize = async () => {
     await initializeDemoData();
     const user = await dataStore.getCurrentUser();
-    setCurrentUser(user);
+    
+    if (!user) {
+      setShowLegalConsent(true);
+    } else {
+      setCurrentUser(user);
+    }
+    
     setLoading(false);
   };
 
-  const handleSelectRole = async (role: 'contractor' | 'homeowner') => {
-    setPendingRole(role);
-    setShowLegalConsent(true);
-  };
-
   const handleLegalAccept = async (consents: any) => {
-    if (pendingRole) {
-      const user = await switchUserRole(pendingRole);
-      setCurrentUser(user);
-      setShowLegalConsent(false);
-      setPendingRole(null);
-    }
+    const newUser: UserType = {
+      id: 'user-' + Date.now(),
+      role: 'homeowner',
+      email: 'user@example.com',
+      name: 'Guest User',
+      createdAt: new Date(),
+      legalConsents: {
+        ...consents,
+        acceptedAt: new Date(),
+        ipAddress: '127.0.0.1',
+        userAgent: navigator.userAgent,
+      },
+    };
+    
+    await dataStore.saveUser(newUser);
+    setCurrentUser(newUser);
+    setShowLegalConsent(false);
   };
 
   const handleLegalDecline = () => {
     setShowLegalConsent(false);
-    setPendingRole(null);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading platform...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full mx-auto mb-4"
+          />
+          <p className="text-muted-foreground">Loading marketplace...</p>
+        </motion.div>
       </div>
     );
   }
 
-  if (showLegalConsent && pendingRole) {
+  if (showLegalConsent) {
     return (
       <LegalConsentModal
-        userType={pendingRole}
+        userType="homeowner"
         onAccept={handleLegalAccept}
         onDecline={handleLegalDecline}
       />
     );
   }
 
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <div className="border-b border-border bg-card">
-          <div className="max-w-7xl mx-auto px-4 py-6">
-            <h1 className="text-3xl font-bold tracking-tight">AI Home Services Platform</h1>
-            <p className="text-muted-foreground mt-1">Select your role to get started</p>
-          </div>
-        </div>
-
-        <div className="flex-1 max-w-4xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="p-8 hover:border-primary/50 transition-colors cursor-pointer" 
-              onClick={() => handleSelectRole('contractor')}
-            >
-              <div className="text-center">
-                <Hammer className="w-20 h-20 text-primary mx-auto mb-4" weight="duotone" />
-                <h2 className="text-2xl font-bold mb-2">I'm a Contractor</h2>
-                <p className="text-muted-foreground mb-6">
-                  Find jobs, submit bids, manage projects, and grow your business
-                </p>
-                <Button size="lg" className="w-full">
-                  <Hammer className="w-5 h-5 mr-2" weight="fill" />
-                  Continue as Contractor
-                </Button>
-              </div>
-            </Card>
-
-            <Card className="p-8 hover:border-accent/50 transition-colors cursor-pointer"
-              onClick={() => handleSelectRole('homeowner')}
-            >
-              <div className="text-center">
-                <House className="w-20 h-20 text-accent mx-auto mb-4" weight="duotone" />
-                <h2 className="text-2xl font-bold mb-2">I'm a Homeowner</h2>
-                <p className="text-muted-foreground mb-6">
-                  Post projects, get AI estimates, compare bids, and hire trusted contractors
-                </p>
-                <Button size="lg" variant="outline" className="w-full">
-                  <House className="w-5 h-5 mr-2" weight="fill" />
-                  Continue as Homeowner
-                </Button>
-              </div>
-            </Card>
-          </div>
-        </div>
-
-        <LegalFooter />
-      </div>
-    );
-  }
+  const navItems = [
+    { id: 'browse' as NavTab, icon: House, label: 'Browse' },
+    { id: 'services' as NavTab, icon: Sparkle, label: 'Services' },
+    { id: 'messages' as NavTab, icon: ChatCircle, label: 'Messages' },
+    { id: 'profile' as NavTab, icon: User, label: 'Profile' },
+  ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="fixed top-4 right-4 z-50">
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => setCurrentUser(null)}
-        >
-          <User className="w-4 h-4 mr-2" />
-          Switch Role
-        </Button>
-      </div>
+    <div className="min-h-screen pb-24">
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", damping: 20 }}
+        style={{ opacity: headerOpacity }}
+        className="fixed top-0 left-0 right-0 z-50 glass"
+      >
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-2"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkle className="w-6 h-6 text-white" weight="fill" />
+              </div>
+              <h1 className="text-xl font-bold">ServiceHub</h1>
+            </motion.div>
 
-      <div className="flex-1">
-        {currentUser.role === 'contractor' && <ContractorDashboard user={currentUser} />}
-        {currentUser.role === 'homeowner' && <HomeownerDashboard user={currentUser} />}
-      </div>
+            <div className="flex items-center gap-2">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button variant="ghost" size="icon" className="relative">
+                  <BellRinging className="w-5 h-5" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
+                </Button>
+              </motion.div>
+              
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button variant="ghost" size="icon">
+                  <Heart className="w-5 h-5" />
+                </Button>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button className="rounded-full">
+                  <Plus className="w-5 h-5 mr-2" weight="bold" />
+                  Post Job
+                </Button>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </motion.header>
+
+      <main className="pt-24 pb-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {activeTab === 'browse' && <MarketplaceBrowse />}
+              {activeTab === 'services' && <MarketplaceBrowse featured />}
+              {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
+              {activeTab === 'profile' && <UserProfile user={currentUser} />}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </main>
+
+      <motion.nav
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", damping: 20, delay: 0.2 }}
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50"
+      >
+        <div className="glass rounded-full px-4 py-3 shadow-2xl">
+          <div className="flex items-center gap-2">
+            {navItems.map((item, index) => {
+              const isActive = activeTab === item.id;
+              return (
+                <motion.button
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`relative px-6 py-3 rounded-full transition-all duration-300 ${
+                    isActive 
+                      ? 'bg-primary text-primary-foreground shadow-lg' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <item.icon 
+                    className="w-6 h-6" 
+                    weight={isActive ? 'fill' : 'regular'} 
+                  />
+                  
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-0 bg-primary rounded-full -z-10"
+                      transition={{ type: "spring", damping: 20, stiffness: 300 }}
+                    />
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      </motion.nav>
+
+      <FloatingActionButton onAction={(action) => console.log('Action:', action)} />
 
       <LegalFooter />
     </div>

@@ -1,14 +1,14 @@
-# AI-Powered Home Services Platform
+# AI-Powered Home Services Marketplace
 
-A comprehensive marketplace connecting homeowners with qualified contractors through AI-powered video analysis, intelligent job matching, transparent bidding, secure payments, and continuous learning systems.
+A modern, glass-morphic marketplace connecting users with qualified service professionals through AI-powered job analysis, intelligent matching, transparent browsing, and seamless transactions - designed with a unified marketplace experience rather than two-sided platform dynamics.
 
 **Experience Qualities**:
-1. **Intelligent** - AI analyzes videos, matches contractors, suggests optimal pricing, and learns from every interaction to improve accuracy
-2. **Trustworthy** - Verified contractors, escrow payments, transparent ratings, secure messaging, and dispute resolution build confidence
-3. **Efficient** - 60-second video to instant estimates, one-tap bidding, real-time notifications, and streamlined workflows accelerate every interaction
+1. **Modern & Fluid** - Glassmorphism design, smooth animations, center navigation create an immersive, contemporary browsing experience
+2. **Effortless** - Browse services marketplace-style, AI-powered suggestions, one-click actions eliminate friction at every step
+3. **Transparent** - Clear pricing, verified professionals, real-time availability, and honest reviews build marketplace trust
 
-**Complexity Level**: Complex Application (advanced functionality, accounts)
-- Multi-role user system (contractors, homeowners, territory owners), AI vision processing, job matching algorithms, bidding marketplace, messaging system, payment tracking, earnings management, rating system, and self-learning capabilities
+**Complexity Level**: Light Application (multiple features with basic state)
+- Unified marketplace browsing interface, service professional profiles, job posting system, basic messaging, AI-powered recommendations, glassmorphism UI with extensive animations
 
 ## Essential Features
 
@@ -134,7 +134,7 @@ A comprehensive marketplace connecting homeowners with qualified contractors thr
 
 ## Design Direction
 
-The design should feel professional, trustworthy, and intelligent - like consulting with a seasoned construction expert combined with cutting-edge AI technology. A clean, data-driven interface with clear visual hierarchy serves the complex information architecture better than decorative elements that might distract from the analytical nature of the platform.
+The design should feel modern, fluid, and premium - like browsing a high-end marketplace where every interaction delights. Extensive use of glassmorphism (frosted glass effects with backdrop blur), smooth animations throughout the interface, and center-aligned navigation create an immersive, app-like experience that feels contemporary and engaging.
 
 ## Color Selection
 
@@ -166,13 +166,13 @@ Typography should convey precision, clarity, and modern professionalism - charac
 
 ## Animations
 
-Animations should emphasize the AI's analytical process and data transformation - making the complex workflow feel guided and intentional rather than instantaneous or jarring. Smooth, purposeful transitions reinforce the intelligence at work.
+Animations should be abundant, smooth, and purposeful - creating a fluid, app-like experience that feels alive and responsive. Every interaction should have motion feedback, transitions should be silky-smooth with spring physics, and elements should gracefully enter/exit the viewport.
 
-- **Purposeful Meaning**: Use loading animations that suggest analysis depth (progress bars that pause at milestones), smooth reveals for cost data that build trust, and gentle pulsing for AI confidence scores
+- **Purposeful Meaning**: Card hover lifts with subtle shadows, glassmorphic panels slide in smoothly, loading states pulse gently, success actions bounce with spring physics, scroll-triggered reveals fade up elegantly
 - **Hierarchy of Movement**: 
-  1. Primary: Video upload progress and AI analysis stages (most prominent)
-  2. Secondary: Scope result reveals and data table animations
-  3. Tertiary: Hover states on interactive elements and micro-interactions
+  1. Primary: Page transitions and navigation changes (full-screen slides with blur)
+  2. Secondary: Card interactions, modal appearances, tab switches (scale + fade combos)
+  3. Tertiary: Hover states, micro-interactions, icon animations (subtle transforms)
 
 ## Component Selection
 
