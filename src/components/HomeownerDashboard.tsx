@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, MapPin, Clock, CheckCircle, Users, ChatCircle } from '@phosphor-icons/react';
+import { Plus, MapPin, Clock, CheckCircle, Users, ChatCircle, UserCircle, Package, Briefcase } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,17 +8,28 @@ import { dataStore } from '@/lib/store';
 import type { Job, User } from '@/lib/types';
 import { VideoUploader } from './VideoUploader';
 import { JobDetails } from './JobDetails';
+import { QuickJobPost } from './QuickJobPost';
+import { UserProfile } from './UserProfile';
 
 interface HomeownerDashboardProps {
   user: User;
+  activeSubTab?: string | null;
 }
 
-export function HomeownerDashboard({ user }: HomeownerDashboardProps) {
-  const [activeTab, setActiveTab] = useState('my-jobs');
+export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardProps) {
+  const [activeTab, setActiveTab] = useState(activeSubTab === 'profile' ? 'profile' : activeSubTab === 'post-job' ? 'post-job' : 'my-jobs');
   const [myJobs, setMyJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showNewJob, setShowNewJob] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (activeSubTab) {
+      if (activeSubTab === 'profile') setActiveTab('profile');
+      else if (activeSubTab === 'post-job') setActiveTab('post-job');
+      else setActiveTab('my-jobs');
+    }
+  }, [activeSubTab]);
 
   useEffect(() => {
     loadData();
@@ -95,10 +106,23 @@ export function HomeownerDashboard({ user }: HomeownerDashboardProps) {
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full max-w-2xl grid-cols-3 mb-8">
-            <TabsTrigger value="my-jobs">My Projects</TabsTrigger>
-            <TabsTrigger value="active">Active ({activeJobs.length})</TabsTrigger>
-            <TabsTrigger value="completed">Completed</TabsTrigger>
+            <TabsTrigger value="profile">
+              <UserCircle className="w-4 h-4 mr-2" />
+              Profile
+            </TabsTrigger>
+            <TabsTrigger value="my-jobs">
+              <Package className="w-4 h-4 mr-2" />
+              Job Status
+            </TabsTrigger>
+            <TabsTrigger value="post-job">
+              <Briefcase className="w-4 h-4 mr-2" />
+              Post a Job
+            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="profile">
+            <UserProfile user={user} />
+          </TabsContent>
 
           <TabsContent value="my-jobs">
             {myJobs.length === 0 ? (
@@ -221,38 +245,12 @@ export function HomeownerDashboard({ user }: HomeownerDashboardProps) {
             )}
           </TabsContent>
 
-          <TabsContent value="completed">
-            {completedJobs.length === 0 ? (
-              <Card className="p-8 text-center">
-                <CheckCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" weight="duotone" />
-                <h4 className="text-lg font-semibold mb-2">No Completed Projects</h4>
-                <p className="text-muted-foreground">Completed projects will appear here</p>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {completedJobs.map(job => (
-                  <Card key={job.id} className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-2">{job.title}</h3>
-                        <p className="text-muted-foreground mb-4">{job.description}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>Completed {new Date(job.completedAt!).toLocaleDateString()}</span>
-                          {job.rating && (
-                            <span className="text-accent font-semibold">Rated {job.rating.overallScore}/100</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-foreground font-mono">
-                          ${job.actualCost?.toLocaleString() || job.estimatedCost.min.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
+          <TabsContent value="post-job">
+            <QuickJobPost onCreateJob={(type) => {
+              if (type === 'video') {
+                setShowNewJob(true);
+              }
+            }} />
           </TabsContent>
         </Tabs>
       </div>

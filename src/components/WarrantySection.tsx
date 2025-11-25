@@ -10,9 +10,9 @@ export function WarrantySection() {
   const warrantyTiers = [
     {
       name: 'Basic Warranty',
-      price: 0,
+      price: 75,
       duration: '1 Year',
-      description: 'Included with every job at no extra cost',
+      description: 'Essential protection for your investment',
       features: [
         'Workmanship guarantee',
         'Material defects covered',

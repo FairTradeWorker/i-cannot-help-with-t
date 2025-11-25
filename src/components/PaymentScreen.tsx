@@ -56,11 +56,11 @@ export function PaymentScreen({
   const [cardName, setCardName] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
-  const [selectedWarranty, setSelectedWarranty] = useState<'none' | 'extended' | 'premium'>('none');
+  const [selectedWarranty, setSelectedWarranty] = useState<'basic' | 'extended' | 'premium'>('basic');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const operatorFee = 20;
-  const warrantyPrices = { none: 0, extended: 299, premium: 499 };
+  const warrantyPrices = { basic: 75, extended: 299, premium: 499 };
   const warrantyPrice = warrantyPrices[selectedWarranty];
   const totalAmount = amount + warrantyPrice + operatorFee;
 
@@ -429,19 +429,19 @@ export function PaymentScreen({
 
             <div className="space-y-3">
               <div
-                onClick={() => setSelectedWarranty('none')}
+                onClick={() => setSelectedWarranty('basic')}
                 className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                  selectedWarranty === 'none'
+                  selectedWarranty === 'basic'
                     ? 'border-primary bg-primary/5'
                     : 'border-border hover:border-primary/50'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">Basic Warranty</h4>
-                  <Badge variant={selectedWarranty === 'none' ? 'default' : 'outline'}>Included</Badge>
+                  <Badge variant={selectedWarranty === 'basic' ? 'default' : 'outline'}>Included</Badge>
                 </div>
-                <p className="text-xs text-muted-foreground mb-2">1-year workmanship guarantee included with every job</p>
-                <div className="text-sm font-bold">Free</div>
+                <p className="text-xs text-muted-foreground mb-2">1-year workmanship guarantee</p>
+                <div className="text-sm font-bold">$75</div>
               </div>
 
               <div
@@ -457,7 +457,7 @@ export function PaymentScreen({
                   <Badge variant={selectedWarranty === 'extended' ? 'default' : 'outline'}>Popular</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mb-2">3-year coverage with priority service</p>
-                <div className="text-sm font-bold">+$299</div>
+                <div className="text-sm font-bold">$299</div>
               </div>
 
               <div
@@ -473,7 +473,7 @@ export function PaymentScreen({
                   <Badge variant={selectedWarranty === 'premium' ? 'default' : 'outline'}>Best Value</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mb-2">5-year full coverage with 24/7 support</p>
-                <div className="text-sm font-bold">+$499</div>
+                <div className="text-sm font-bold">$499</div>
               </div>
             </div>
           </Card>
@@ -521,16 +521,14 @@ export function PaymentScreen({
                   </span>
                 </div>
 
-                {warrantyPrice > 0 && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      {selectedWarranty === 'extended' ? 'Extended' : 'Premium'} Warranty
-                    </span>
-                    <span className="text-sm font-semibold text-accent">
-                      +${warrantyPrice.toLocaleString()}
-                    </span>
-                  </div>
-                )}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {selectedWarranty === 'basic' ? 'Basic' : selectedWarranty === 'extended' ? 'Extended' : 'Premium'} Warranty
+                  </span>
+                  <span className="text-sm font-semibold text-accent">
+                    ${warrantyPrice.toLocaleString()}
+                  </span>
+                </div>
 
                 {selectedOption !== 'full' && selectedFinanceOption.fee && (
                   <div className="flex items-center justify-between">
@@ -650,51 +648,31 @@ export function PaymentScreen({
         <Separator className="mb-4" />
         <div className="space-y-4">
           <div>
-          <div>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              When will work begin?
-            </h4>
+            <h4 className="font-semibold text-sm mb-2">When will work begin?</h4>
             <p className="text-sm text-muted-foreground">Work typically begins within 3-5 business days of payment confirmation. Your contractor will contact you within 24 hours to schedule.</p>
           </div>
           
-          
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-            </h4>
-            <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
-              What is the escrow process?
-            </h4>
-            <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
-          </div>mb-2 flex items-center gap-2">
-              <Money className="w-4 h-4 text-primary" />
           <div>
-            </h4>
-            <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
-              Can I get a refund?
-            </h4>
-            <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-          
-              What are the financing terms?
-            </h4>
-            <p className="text-sm text-muted-foreground">We offer 0% APR financing for 12 months to qualified customers. 3-month payment plans have a 2% processing fee.</p>
-              What are the financing terms?
-            </h4>
-            <p className="text-sm text-muted-foreground">We offer 0% APR financing for 12 months to qualified customers. 3-month payment plans have a 2% processing fee.</p>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-          
-          <div>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-            <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
+            <h4 className="font-semibold text-sm mb-2">What is the escrow process?</h4>
+            <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
           </div>
           
-            <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
-            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary" />
           <div>
-            </h4>
-              <CheckCircle className="w-4 h-4 text-primary" />
+            <h4 className="font-semibold text-sm mb-2">Can I get a refund?</h4>
+            <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold text-sm mb-2">What are the financing terms?</h4>
+            <p className="text-sm text-muted-foreground">We offer 0% APR financing for 12 months to qualified customers. 3-month payment plans have a 2% processing fee.</p>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold text-sm mb-2">What does the platform fee cover?</h4>
+            <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
           </div>
         </div>
       </Card>
     </div>
   );
+}
