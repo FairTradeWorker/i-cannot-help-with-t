@@ -43,6 +43,7 @@ import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
 import { TerritoryMapPage } from '@/components/TerritoryMapPage';
+import { TerritoriesOverview } from '@/components/TerritoriesOverview';
 import { ReferralSystem } from '@/components/ReferralSystem';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { PaymentManagement } from '@/components/PaymentManagement';
@@ -63,7 +64,7 @@ import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
 type MainTab = 'home' | 'territories' | 'browse-jobs' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral';
-type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings';
+type SubTab = 'overview' | 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -269,7 +270,7 @@ function App() {
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant={activeTab === 'territories' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('territories')}
+                  onClick={() => handleNavClick('territories', 'overview')}
                   className="glass-hover"
                 >
                   <motion.div
@@ -518,12 +519,19 @@ function App() {
                   {activeTab === 'home' && (
                     <div className="space-y-6">
                       <QuickJobPost onCreateJob={handleCreateJob} />
-                      <TerritoryTeaser onExplore={() => handleNavClick('territories')} />
+                      <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
                       <APIMarketplaceSection />
                     </div>
                   )}
                   {activeTab === 'browse-jobs' && <JobBrowser />}
-                  {activeTab === 'territories' && <TerritoryMapPage />}
+                  {activeTab === 'territories' && activeSubTab === 'overview' && (
+                    <TerritoriesOverview 
+                      onNavigateToDetail={(stateCode) => {
+                        setActiveSubTab(null);
+                      }}
+                    />
+                  )}
+                  {activeTab === 'territories' && activeSubTab !== 'overview' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'subcontractor' && activeSubTab === 'browse' && <LocationJobBrowser userId={currentUser?.id} />}
                   {activeTab === 'subcontractor' && activeSubTab !== 'browse' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
