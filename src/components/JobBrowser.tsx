@@ -8,9 +8,9 @@ import { dataStore } from '@/lib/store';
 import type { Job, User } from '@/lib/types';
 
 interface JobBrowserProps {
-  user: User;
-  onJobSelect: (job: Job) => void;
-  onJobUpdated: () => void;
+  user?: User;
+  onJobSelect?: (job: Job) => void;
+  onJobUpdated?: () => void;
 }
 
 export function JobBrowser({ user, onJobSelect, onJobUpdated }: JobBrowserProps) {
@@ -88,13 +88,13 @@ export function JobBrowser({ user, onJobSelect, onJobUpdated }: JobBrowserProps)
       ) : (
         <div className="space-y-4">
           {filteredJobs.map(job => {
-            const hasMyBid = job.bids.some(b => b.contractorId === user.id);
+            const hasMyBid = user ? job.bids.some(b => b.contractorId === user.id) : false;
             
             return (
               <Card 
                 key={job.id} 
                 className="p-6 hover:border-primary/50 transition-colors cursor-pointer"
-                onClick={() => onJobSelect(job)}
+                onClick={() => onJobSelect?.(job)}
               >
                 <div className="flex items-start justify-between gap-6">
                   <div className="flex-1">
@@ -140,7 +140,7 @@ export function JobBrowser({ user, onJobSelect, onJobUpdated }: JobBrowserProps)
                     
                     <Button className="w-full" onClick={(e) => {
                       e.stopPropagation();
-                      onJobSelect(job);
+                      onJobSelect?.(job);
                     }}>
                       View Details
                       <ArrowRight className="w-4 h-4 ml-2" />

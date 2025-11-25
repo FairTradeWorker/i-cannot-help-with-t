@@ -21,9 +21,10 @@ import { toast } from 'sonner';
 interface ReferralSystemProps {
   userId: string;
   referrals: Referral[];
+  activeView?: string;
 }
 
-export function ReferralSystem({ userId, referrals }: ReferralSystemProps) {
+export function ReferralSystem({ userId, referrals, activeView = 'program' }: ReferralSystemProps) {
   const [email, setEmail] = useState('');
   const [sending, setSending] = useState(false);
 

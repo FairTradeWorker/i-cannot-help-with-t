@@ -20,12 +20,16 @@ import type { Payment, FinanceOption } from '@/lib/types';
 import { toast } from 'sonner';
 
 interface PaymentManagementProps {
-  jobId: string;
-  amount: number;
+  jobId?: string;
+  amount?: number;
   onPaymentComplete?: () => void;
 }
 
-export function PaymentManagement({ jobId, amount, onPaymentComplete }: PaymentManagementProps) {
+export function PaymentManagement({ 
+  jobId = 'demo-job-123', 
+  amount = 4500, 
+  onPaymentComplete 
+}: PaymentManagementProps) {
   const [selectedOption, setSelectedOption] = useState<FinanceOption>('full_payment');
   const [processing, setProcessing] = useState(false);
 

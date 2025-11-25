@@ -7,11 +7,18 @@ import {
   Sparkle,
   BellRinging,
   Handshake,
-  ChartBar,
   Gift,
-  CreditCard,
   MapTrifold,
   CaretDown,
+  UserCircle,
+  ShoppingBag,
+  Package,
+  Shield,
+  Bank,
+  Buildings,
+  Question,
+  ChartBar,
+  Briefcase,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,23 +36,24 @@ import { MessagesView } from '@/components/MessagesView';
 import { TerritoryBrowser } from '@/components/TerritoryBrowser';
 import { ReferralSystem } from '@/components/ReferralSystem';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
+import { PaymentManagement } from '@/components/PaymentManagement';
+import { PartnerDashboard } from '@/components/PartnerDashboard';
+import { JobBrowser } from '@/components/JobBrowser';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territory' | 'messages' | 'profile';
-type HomeownerSubTab = 'browse' | 'payment';
-type PartnerSubTab = 'overview';
-type AdminSubTab = 'analytics';
-type ReferralSubTab = 'program';
+type MainTab = 'home' | 'jobs' | 'territory' | 'messages' | 'partners' | 'referral';
+type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showLegalConsent, setShowLegalConsent] = useState(false);
   const [activeTab, setActiveTab] = useState<MainTab>('home');
-  const [homeownerSubTab, setHomeownerSubTab] = useState<HomeownerSubTab>('browse');
-  const [showPayment, setShowPayment] = useState(false);
+  const [activeSubTab, setActiveSubTab] = useState<SubTab | null>(null);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   const mockReferrals: Referral[] = [
     {
@@ -140,6 +148,13 @@ function App() {
     setShowLegalConsent(false);
   };
 
+  const handleNavClick = (tab: MainTab, subTab?: SubTab) => {
+    setActiveTab(tab);
+    setActiveSubTab(subTab || null);
+    setShowAdminPanel(false);
+    setShowProfile(false);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -175,7 +190,7 @@ function App() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", damping: 20 }}
-        className="sticky top-0 z-50 glass border-b border-border"
+        className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -183,18 +198,21 @@ function App() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 cursor-pointer"
-              onClick={() => setActiveTab('home')}
+              onClick={() => handleNavClick('home')}
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
                 <Sparkle className="w-6 h-6 text-white" weight="fill" />
               </div>
-              <h1 className="text-xl font-bold">ServiceHub</h1>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                ServiceHub
+              </h1>
             </motion.div>
 
-            <nav className="hidden md:flex items-center gap-2">
+            <nav className="hidden md:flex items-center gap-2 flex-1 justify-center">
               <Button
                 variant={activeTab === 'home' ? 'default' : 'ghost'}
-                onClick={() => setActiveTab('home')}
+                onClick={() => handleNavClick('home')}
+                className="glass-hover"
               >
                 <House className="w-5 h-5 mr-2" weight={activeTab === 'home' ? 'fill' : 'regular'} />
                 Home
@@ -202,31 +220,37 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost">
-                    <User className="w-5 h-5 mr-2" weight="regular" />
+                  <Button variant={activeTab === 'home' && activeSubTab === 'browse' ? 'default' : 'ghost'} className="glass-hover">
+                    <ShoppingBag className="w-5 h-5 mr-2" weight="regular" />
                     Homeowner
                     <CaretDown className="w-4 h-4 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => {
-                    setActiveTab('home');
-                    setHomeownerSubTab('browse');
-                  }}>
+                <DropdownMenuContent align="center" className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('home', 'browse')}>
+                    <ShoppingBag className="w-4 h-4 mr-2" />
                     Browse Services
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => {
-                    setActiveTab('home');
-                    setHomeownerSubTab('payment');
-                  }}>
+                  <DropdownMenuItem onClick={() => handleNavClick('home', 'payment')}>
+                    <Package className="w-4 h-4 mr-2" />
                     Payment
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
               <Button
+                variant={activeTab === 'jobs' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('jobs')}
+                className="glass-hover"
+              >
+                <Briefcase className="w-5 h-5 mr-2" weight={activeTab === 'jobs' ? 'fill' : 'regular'} />
+                Jobs
+              </Button>
+
+              <Button
                 variant={activeTab === 'territory' ? 'default' : 'ghost'}
-                onClick={() => setActiveTab('territory')}
+                onClick={() => handleNavClick('territory')}
+                className="glass-hover"
               >
                 <MapTrifold className="w-5 h-5 mr-2" weight={activeTab === 'territory' ? 'fill' : 'regular'} />
                 Territory
@@ -234,55 +258,52 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost">
+                  <Button variant={activeTab === 'partners' ? 'default' : 'ghost'} className="glass-hover">
                     <Handshake className="w-5 h-5 mr-2" weight="regular" />
-                    Partner
+                    Partners
                     <CaretDown className="w-4 h-4 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    Partner Dashboard
+                <DropdownMenuContent align="center" className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'materials')}>
+                    <Package className="w-4 h-4 mr-2" />
+                    Materials Vendors
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard className="w-4 h-4 mr-2" />
-                    Finance
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'insurance')}>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Insurance
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
+                    <Bank className="w-4 h-4 mr-2" />
+                    Private Equity (Contact Us)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'real_estate')}>
+                    <Buildings className="w-4 h-4 mr-2" />
+                    Real Estate
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'contact')}>
+                    <Question className="w-4 h-4 mr-2" />
+                    Don't see your business? Contact us
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost">
-                    <ChartBar className="w-5 h-5 mr-2" weight="regular" />
-                    Admin
-                    <CaretDown className="w-4 h-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setActiveTab('home')}>
-                    <ChartBar className="w-4 h-4 mr-2" />
-                    Analytics
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    User Management
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost">
+                  <Button variant={activeTab === 'referral' ? 'default' : 'ghost'} className="glass-hover">
                     <Gift className="w-5 h-5 mr-2" weight="regular" />
                     Referral
                     <CaretDown className="w-4 h-4 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setActiveTab('home')}>
+                <DropdownMenuContent align="center" className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('referral', 'program')}>
+                    <Gift className="w-4 h-4 mr-2" />
                     Referral Program
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('referral', 'my_referrals')}>
+                    <User className="w-4 h-4 mr-2" />
                     My Referrals
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -290,7 +311,8 @@ function App() {
 
               <Button
                 variant={activeTab === 'messages' ? 'default' : 'ghost'}
-                onClick={() => setActiveTab('messages')}
+                onClick={() => handleNavClick('messages')}
+                className="glass-hover"
               >
                 <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
                 Messages
@@ -299,19 +321,47 @@ function App() {
 
             <div className="flex items-center gap-2">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon" className="relative glass-hover">
                   <BellRinging className="w-5 h-5" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"
+                  />
                 </Button>
               </motion.div>
 
-              <Button
-                variant={activeTab === 'profile' ? 'default' : 'outline'}
-                size="icon"
-                onClick={() => setActiveTab('profile')}
-              >
-                <User className="w-5 h-5" weight={activeTab === 'profile' ? 'fill' : 'regular'} />
-              </Button>
+              {currentUser?.role === 'admin' && (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    variant={showAdminPanel ? 'default' : 'outline'}
+                    size="icon"
+                    onClick={() => {
+                      setShowAdminPanel(!showAdminPanel);
+                      setShowProfile(false);
+                      setActiveTab('home');
+                      setActiveSubTab('analytics');
+                    }}
+                    className="glass-hover"
+                  >
+                    <ChartBar className="w-5 h-5" weight={showAdminPanel ? 'fill' : 'regular'} />
+                  </Button>
+                </motion.div>
+              )}
+
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant={showProfile ? 'default' : 'outline'}
+                  size="icon"
+                  onClick={() => {
+                    setShowProfile(!showProfile);
+                    setShowAdminPanel(false);
+                  }}
+                  className="glass-hover"
+                >
+                  <UserCircle className="w-5 h-5" weight={showProfile ? 'fill' : 'regular'} />
+                </Button>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -321,35 +371,45 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeTab}
+              key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {activeTab === 'home' && homeownerSubTab === 'browse' && <MarketplaceBrowse />}
-              {activeTab === 'home' && homeownerSubTab === 'payment' && (
-                <div className="space-y-6">
-                  <h2 className="text-3xl font-bold">Payment Management</h2>
-                  <p className="text-muted-foreground">Manage your payments and finance options</p>
-                </div>
+              {showProfile && <UserProfile user={currentUser} />}
+              {showAdminPanel && <AnalyticsDashboard analytics={mockAnalytics} />}
+              {!showProfile && !showAdminPanel && (
+                <>
+                  {activeTab === 'home' && !activeSubTab && (
+                    <div className="space-y-8">
+                      <MarketplaceBrowse />
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <TerritoryBrowser />
+                      </motion.div>
+                    </div>
+                  )}
+                  {activeTab === 'home' && activeSubTab === 'browse' && <MarketplaceBrowse />}
+                  {activeTab === 'home' && activeSubTab === 'payment' && <PaymentManagement />}
+                  {activeTab === 'jobs' && <JobBrowser />}
+                  {activeTab === 'territory' && <TerritoryBrowser />}
+                  {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
+                  {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
+                  {activeTab === 'referral' && (
+                    <ReferralSystem 
+                      userId={currentUser?.id || ''} 
+                      referrals={mockReferrals}
+                      activeView={activeSubTab === 'my_referrals' ? 'referrals' : 'program'}
+                    />
+                  )}
+                </>
               )}
-              {activeTab === 'territory' && <TerritoryBrowser />}
-              {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
-              {activeTab === 'profile' && <UserProfile user={currentUser} />}
             </motion.div>
           </AnimatePresence>
-
-          {/* Demo sections that can be accessed via navigation */}
-          <div className="mt-12 space-y-12">
-            <div id="analytics-section">
-              <AnalyticsDashboard analytics={mockAnalytics} />
-            </div>
-
-            <div id="referral-section" className="mt-12">
-              <ReferralSystem userId={currentUser?.id || ''} referrals={mockReferrals} />
-            </div>
-          </div>
         </div>
       </main>
 
