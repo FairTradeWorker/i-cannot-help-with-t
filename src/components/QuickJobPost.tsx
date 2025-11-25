@@ -18,7 +18,7 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
       title: 'Video Job Post',
       description: '60-second video analysis',
       icon: VideoCamera,
-      gradient: 'from-primary to-secondary',
+      color: 'bg-primary',
       badge: 'Recommended',
     },
     {
@@ -26,7 +26,7 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
       title: 'Photo Job Post',
       description: 'Upload photos of the work',
       icon: ImageIcon,
-      gradient: 'from-secondary to-accent',
+      color: 'bg-secondary',
       badge: 'Quick',
     },
     {
@@ -34,7 +34,7 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
       title: 'Text Job Post',
       description: 'Describe the job yourself',
       icon: FileText,
-      gradient: 'from-accent to-primary',
+      color: 'bg-accent',
       badge: 'Traditional',
     },
   ];
@@ -69,11 +69,11 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
                 }`}
                 onClick={() => onCreateJob(option.id as 'video' | 'photo' | 'text')}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${option.gradient} opacity-5`} />
+                <div className={`absolute inset-0 ${option.color} opacity-5`} />
                 
                 <CardContent className="relative p-5 text-center space-y-2">
                   <motion.div 
-                    className={`mx-auto w-14 h-14 rounded-lg bg-gradient-to-br ${option.gradient} flex items-center justify-center`}
+                    className={`mx-auto w-14 h-14 rounded-lg ${option.color} flex items-center justify-center`}
                     animate={{ 
                       rotate: hoveredCard === option.id ? [0, -5, 5, 0] : 0,
                       scale: hoveredCard === option.id ? 1.05 : 1
@@ -95,7 +95,7 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
                 </CardContent>
 
                 <motion.div
-                  className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${option.gradient}`}
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 ${option.color}`}
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: hoveredCard === option.id ? 1 : 0 }}
                   transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}

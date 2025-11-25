@@ -211,14 +211,10 @@ export function TerritoryMapPage() {
             exit={{ opacity: 0 }}
             className="space-y-4"
           >
-            <Card>
-              <CardContent className="p-6">
-                <USMap
-                  selectedState={selectedState?.abbreviation}
-                  onStateClick={handleStateClick}
-                />
-              </CardContent>
-            </Card>
+            <USMap
+              selectedState={selectedState?.abbreviation}
+              onStateClick={handleStateClick}
+            />
           </motion.div>
         ) : (
           <motion.div

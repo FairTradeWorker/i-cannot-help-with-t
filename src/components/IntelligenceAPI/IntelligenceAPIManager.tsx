@@ -98,12 +98,16 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
         </div>
         <Badge className="bg-primary text-white px-4 py-2">
           <Lightning className="w-4 h-4 mr-2" weight="fill" />
-          Self-Learning Platform
+          Platform Intelligence
         </Badge>
       </div>
 
-      <Tabs defaultValue="keys" className="w-full">
+      <Tabs defaultValue="pricing" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="pricing">
+            <Lightning className="w-4 h-4 mr-2" />
+            Pricing
+          </TabsTrigger>
           <TabsTrigger value="keys">
             <Key className="w-4 h-4 mr-2" />
             API Keys
@@ -116,11 +120,12 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
             <TrendUp className="w-4 h-4 mr-2" />
             Usage
           </TabsTrigger>
-          <TabsTrigger value="pricing">
-            <Lightning className="w-4 h-4 mr-2" />
-            Pricing
-          </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="pricing" className="space-y-6 mt-6">
+          <APIMarketplaceSection />
+          <PricingPlans />
+        </TabsContent>
 
         <TabsContent value="keys" className="space-y-6 mt-6">
           <Card className="glass-card">
@@ -147,9 +152,9 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="free">Free - 100 calls/month</SelectItem>
-                    <SelectItem value="professional">Professional - 10K calls/month ($199/mo)</SelectItem>
-                    <SelectItem value="enterprise">Enterprise - Unlimited ($1,299/mo)</SelectItem>
+                    <SelectItem value="free">Starter - 1K calls/month ($99/mo)</SelectItem>
+                    <SelectItem value="professional">Professional - 10K calls/month ($299/mo)</SelectItem>
+                    <SelectItem value="enterprise">Enterprise - Unlimited ($899/mo)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -309,11 +314,6 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="pricing" className="space-y-6 mt-6">
-          <APIMarketplaceSection />
-          <PricingPlans />
-        </TabsContent>
       </Tabs>
     </div>
   );
@@ -322,24 +322,24 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
 function PricingPlans() {
   const plans = [
     {
-      name: 'Free',
-      price: 0,
-      calls: 100,
+      name: 'Starter',
+      price: 99,
+      calls: 1000,
       features: [
-        '100 API calls/month',
+        '1,000 API calls/month',
         'Basic endpoints only',
-        'Community support',
+        'Email support',
         'Standard rate limits'
       ]
     },
     {
       name: 'Professional',
-      price: 199,
+      price: 299,
       calls: 10000,
       features: [
         '10,000 API calls/month',
         'All standard endpoints',
-        'Email support',
+        'Priority email support',
         'Webhooks included',
         'Higher rate limits'
       ],
@@ -347,7 +347,7 @@ function PricingPlans() {
     },
     {
       name: 'Enterprise',
-      price: 1299,
+      price: 899,
       calls: null,
       features: [
         'Unlimited API calls',

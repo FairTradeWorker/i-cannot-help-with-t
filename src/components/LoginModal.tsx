@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface LoginModalProps {
   onLogin: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => void;
@@ -17,8 +18,14 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState<'homeowner' | 'contractor' | 'subcontractor'>('homeowner');
+  const [selectedTrade, setSelectedTrade] = useState<string>('General Contractor');
   const [isLogin, setIsLogin] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
+
+  const trades = [
+    'General Contractor', 'Roofing', 'Plumbing', 'Electrical', 'HVAC',
+    'Carpentry', 'Painting', 'Flooring', 'Landscaping', 'Concrete'
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,21 +42,21 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
       label: 'Homeowner',
       icon: House,
       description: 'Post jobs and hire contractors',
-      color: 'from-primary to-black',
+      color: 'bg-primary',
     },
     {
       id: 'contractor' as const,
       label: 'Contractor',
       icon: Hammer,
       description: 'Find work and grow your business',
-      color: 'from-accent to-black',
+      color: 'bg-accent',
     },
     {
       id: 'subcontractor' as const,
       label: 'Subcontractor',
       icon: HardHat,
       description: 'Browse location-based opportunities',
-      color: 'from-secondary to-black',
+      color: 'bg-secondary',
     },
   ];
 
@@ -275,7 +282,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                           }`}
                         >
                           <div
-                            className={`w-12 h-12 rounded-lg bg-gradient-to-br ${role.color} flex items-center justify-center`}
+                            className={`w-12 h-12 rounded-lg ${role.color} flex items-center justify-center`}
                           >
                             <Icon className="w-6 h-6 text-white" weight="fill" />
                           </div>
@@ -287,6 +294,26 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                     })}
                   </div>
                 </div>
+
+                {(selectedRole === 'contractor' || selectedRole === 'subcontractor') && !isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="trade" className="text-sm font-medium">
+                      Trade / Specialty
+                    </Label>
+                    <Select value={selectedTrade} onValueChange={setSelectedTrade}>
+                      <SelectTrigger id="trade">
+                        <SelectValue placeholder="Select your trade" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {trades.map((trade) => (
+                          <SelectItem key={trade} value={trade}>
+                            {trade}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <Button
                   type="submit"

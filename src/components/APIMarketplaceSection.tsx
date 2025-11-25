@@ -22,20 +22,20 @@ const API_PRODUCTS = [
     name: 'Demand Forecasting',
     icon: TrendUp,
     description: 'Predict future demand for trades by geography',
-    price: 49,
+    price: 39,
     period: 'month',
     calls: '1,000',
-    gradient: 'from-blue-500 to-cyan-500',
+    color: 'bg-primary',
     features: ['30-day predictions', 'Zipcode-level data', 'Trade-specific forecasts', '1,000 API calls/month']
   },
   {
     name: 'Market Pricing',
     icon: CurrencyDollar,
     description: 'Real-time market pricing intelligence',
-    price: 79,
+    price: 59,
     period: 'month',
     calls: '2,000',
-    gradient: 'from-green-500 to-emerald-500',
+    color: 'bg-secondary',
     popular: true,
     features: ['Real-time pricing', 'Bid optimization', 'Win probability', '2,000 API calls/month']
   },
@@ -43,40 +43,40 @@ const API_PRODUCTS = [
     name: 'Labor Availability',
     icon: Users,
     description: 'Track contractor supply and capacity',
-    price: 59,
+    price: 49,
     period: 'month',
     calls: '1,500',
-    gradient: 'from-purple-500 to-pink-500',
+    color: 'bg-primary',
     features: ['Contractor availability', 'Utilization rates', 'Supply/demand ratio', '1,500 API calls/month']
   },
   {
     name: 'Risk Assessment',
     icon: Warning,
     description: 'Predict job completion and potential issues',
-    price: 99,
+    price: 79,
     period: 'month',
     calls: '1,000',
-    gradient: 'from-orange-500 to-red-500',
+    color: 'bg-primary',
     features: ['Completion probability', 'Dispute prediction', 'Risk scoring', '1,000 API calls/month']
   },
   {
     name: 'Territory Valuation',
     icon: MapPin,
     description: 'Comprehensive territory ROI analysis',
-    price: 129,
+    price: 99,
     period: 'month',
     calls: '500',
-    gradient: 'from-indigo-500 to-purple-500',
+    color: 'bg-primary',
     features: ['Fair market value', 'ROI projections', '5-year forecasts', '500 API calls/month']
   },
   {
     name: 'Market Trends',
     icon: ChartLine,
     description: 'Market trends across demand and pricing',
-    price: 69,
+    price: 59,
     period: 'month',
     calls: '2,000',
-    gradient: 'from-teal-500 to-green-500',
+    color: 'bg-secondary',
     features: ['Trend analysis', 'Market insights', 'Growth predictions', '2,000 API calls/month']
   },
 ];
@@ -84,14 +84,14 @@ const API_PRODUCTS = [
 const PRICING_TIERS = [
   {
     name: 'Starter',
-    price: 199,
+    price: 99,
     description: 'Perfect for getting started',
     apis: 'Choose 3 APIs',
     features: ['Up to 3 API endpoints', 'Email support', 'Monthly billing', '30-day trial']
   },
   {
     name: 'Professional',
-    price: 449,
+    price: 299,
     popular: true,
     description: 'For growing businesses',
     apis: 'All APIs included',
@@ -99,7 +99,7 @@ const PRICING_TIERS = [
   },
   {
     name: 'Enterprise',
-    price: 1299,
+    price: 899,
     description: 'For large organizations',
     apis: 'Unlimited access',
     features: ['Unlimited API calls', 'Dedicated support', 'Custom SLA', 'White-glove onboarding']
@@ -221,7 +221,7 @@ export function APIMarketplaceSection() {
                   )}
                   
                   <CardHeader className="pb-3">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${api.gradient} flex items-center justify-center mb-3`}>
+                    <div className={`w-12 h-12 rounded-xl ${api.color} flex items-center justify-center mb-3`}>
                       <Icon className="w-6 h-6 text-white" weight="bold" />
                     </div>
                     <CardTitle className="text-lg">{api.name}</CardTitle>

@@ -46,6 +46,7 @@ import { LoginModal } from '@/components/LoginModal';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
+import { HomeownerDashboard } from '@/components/HomeownerDashboard';
 import { TerritoryMapPage } from '@/components/TerritoryMapPage';
 import { TerritoriesOverview } from '@/components/TerritoriesOverview';
 import { ReferralSystem } from '@/components/ReferralSystem';
@@ -58,6 +59,7 @@ import { QuickJobPost } from '@/components/QuickJobPost';
 import { VideoJobCreator } from '@/components/VideoJobCreator';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
+import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { PaymentModal } from '@/components/PaymentModal';
 import { PaymentScreen } from '@/components/PaymentScreen';
 import { LocationJobBrowser } from '@/components/LocationJobBrowser';
@@ -578,6 +580,13 @@ function App() {
                       <span className="hidden md:inline text-sm font-medium">
                         {currentUser?.name || 'User'}
                       </span>
+                      {(currentUser?.role === 'contractor' || currentUser?.role === 'subcontractor') && 
+                        currentUser?.contractorProfile?.specialties && 
+                        currentUser.contractorProfile.specialties.length > 0 && (
+                        <span className="hidden lg:inline text-xs text-muted-foreground ml-1">
+                          ({currentUser.contractorProfile.specialties[0]})
+                        </span>
+                      )}
                       <CaretDown className="w-3 h-3" />
                     </Button>
                   </motion.div>
@@ -586,6 +595,13 @@ function App() {
                   <DropdownMenuLabel>
                     <div className="flex flex-col">
                       <span className="text-sm font-semibold">{currentUser?.name || 'User'}</span>
+                      {(currentUser?.role === 'contractor' || currentUser?.role === 'subcontractor') && 
+                        currentUser?.contractorProfile?.specialties && 
+                        currentUser.contractorProfile.specialties.length > 0 && (
+                        <span className="text-xs text-muted-foreground">
+                          {currentUser.contractorProfile.specialties[0]}
+                        </span>
+                      )}
                       <span className="text-xs text-muted-foreground">{currentUser?.email}</span>
                     </div>
                   </DropdownMenuLabel>
@@ -647,6 +663,8 @@ function App() {
                   {activeTab === 'home' && (
                     <div className="space-y-8">
                       <QuickJobPost onCreateJob={handleCreateJob} />
+
+                      <TerritoryMiniMap onExplore={() => handleNavClick('territories', 'overview')} />
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <motion.div
@@ -717,15 +735,15 @@ function App() {
                           <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('intelligence')}>
                             <div className="flex items-center gap-4 mb-3">
                               <div className="p-3 rounded-xl bg-primary">
-                                <Brain className="w-7 h-7 text-white" weight="fill" />
+                                <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
                               </div>
                               <div>
-                                <p className="text-sm text-muted-foreground">Accuracy</p>
-                                <p className="text-2xl font-bold">94.5%</p>
+                                <p className="text-sm text-muted-foreground">Starting at</p>
+                                <p className="text-2xl font-bold">$99</p>
                               </div>
                             </div>
-                            <p className="text-sm font-semibold">AI Accuracy</p>
-                            <p className="text-xs text-muted-foreground">Self-learning platform</p>
+                            <p className="text-sm font-semibold">API Access</p>
+                            <p className="text-xs text-muted-foreground">Intelligence endpoints</p>
                           </Card>
                         </motion.div>
                       </div>
@@ -741,15 +759,15 @@ function App() {
                             </p>
                             <div className="space-y-3">
                               <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" weight="fill" />
+                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
                                 <p className="text-sm">No platform fees ever</p>
                               </div>
                               <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" weight="fill" />
+                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
                                 <p className="text-sm">Keep 100% of your earnings</p>
                               </div>
                               <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" weight="fill" />
+                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
                                 <p className="text-sm">Instant payouts available</p>
                               </div>
                             </div>
@@ -769,9 +787,9 @@ function App() {
                                 <span className="text-sm">Territory Fee (8%)</span>
                                 <span className="font-bold text-blue-600">-$800</span>
                               </div>
-                              <div className="flex items-center justify-between p-3 bg-accent/10 rounded-lg">
+                              <div className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg">
                                 <span className="text-sm font-semibold">You Receive</span>
-                                <span className="font-bold text-accent text-lg">$9,200</span>
+                                <span className="font-bold text-secondary text-lg">$9,200</span>
                               </div>
                             </div>
                           </div>
@@ -780,7 +798,8 @@ function App() {
                     </div>
                   )}
                   {activeTab === 'browse-jobs' && <JobBrowser />}
-                  {activeTab === 'homeowner' && <QuickJobPost onCreateJob={handleCreateJob} />}
+                  {activeTab === 'homeowner' && activeSubTab === 'my-jobs' && currentUser && <HomeownerDashboard user={currentUser} />}
+                  {activeTab === 'homeowner' && activeSubTab === 'post-job' && <QuickJobPost onCreateJob={handleCreateJob} />}
                   {activeTab === 'territories' && activeSubTab === 'overview' && (
                     <TerritoriesOverview 
                       onNavigateToDetail={(stateCode) => {
@@ -830,15 +849,15 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t-2 border-primary/20 bg-gradient-to-b from-background to-muted/20"
+          className="border-t-2 border-primary/20 bg-muted/20"
         >
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 rounded-lg bg-primary">
-                  <Brain className="w-6 h-6 text-white" weight="fill" />
+                  <ChartBar className="w-6 h-6 text-white" weight="fill" />
                 </div>
-                <h2 className="text-2xl font-bold">Admin Dashboard - Intelligence & Learning</h2>
+                <h2 className="text-2xl font-bold">Admin Dashboard - Platform Analytics</h2>
               </div>
               <p className="text-muted-foreground">Platform analytics, learning metrics, and performance</p>
             </div>
