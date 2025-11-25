@@ -257,8 +257,8 @@ function App() {
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
         <div className="w-full px-6">
-          <div className="flex items-center justify-center h-16 py-2 max-w-[1920px] mx-auto gap-6">
-            <nav className="flex items-center gap-3">
+          <div className="flex items-center justify-between h-16 py-2 max-w-[1920px] mx-auto">
+            <nav className="flex items-center gap-2">
               <motion.div 
                 whileHover={{ scale: 1.02 }} 
                 whileTap={{ scale: 0.96 }}
@@ -342,22 +342,24 @@ function App() {
               </DropdownMenu>
             </nav>
 
-            <motion.div
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-            >
-              <Button
-                size="lg"
-                onClick={() => handleNavClick('homeowner', 'post-job')}
-                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-8 mx-4"
+            <div className="flex-1 flex justify-center">
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                <Plus className="w-5 h-5 mr-2" weight="bold" />
-                Post a Job
-              </Button>
-            </motion.div>
+                <Button
+                  size="lg"
+                  onClick={() => handleNavClick('homeowner', 'post-job')}
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-8"
+                >
+                  <Plus className="w-5 h-5 mr-2" weight="bold" />
+                  Post a Job
+                </Button>
+              </motion.div>
+            </div>
 
-            <nav className="flex items-center gap-3">
+            <nav className="flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
@@ -471,7 +473,7 @@ function App() {
               </motion.div>
             </nav>
 
-            <div className="flex items-center gap-3 ml-auto">
+            <div className="flex items-center gap-2">
               <motion.div 
                 whileHover={{ scale: 1.02 }} 
                 whileTap={{ scale: 0.96 }}
