@@ -23,9 +23,11 @@ import {
   CheckCircle,
   Calendar,
   ArrowRight,
+  Brain,
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { AILearningDashboard } from '@/components/AILearningDashboard';
 
 interface PartnerDashboardProps {
   activeSubTab?: string | null;
@@ -766,6 +768,25 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
       {activeSubTab === 'private_equity' && renderPrivateEquity()}
       {activeSubTab === 'real_estate' && renderRealEstate()}
       {activeSubTab === 'contact' && renderContactForm()}
+      {activeSubTab === 'ai' && (
+        <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent">
+                <Brain className="w-7 h-7 text-white" weight="duotone" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold">AI Technology Partners</h2>
+                <p className="text-muted-foreground">Platform intelligence and learning systems</p>
+              </div>
+            </div>
+          </motion.div>
+          <AILearningDashboard />
+        </div>
+      )}
     </motion.div>
   );
 }

@@ -8,13 +8,19 @@ import {
   SlidersHorizontal,
   Clock,
   Sparkle,
-  Star
+  Star,
+  House,
+  PaintRoller,
+  Wrench,
+  Hammer,
+  ShieldCheck
 } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { MarketplaceHero } from '@/components/MarketplaceHero';
+import { SERVICE_CATEGORY_NAMES, getServicesByCategory } from '@/lib/service-categories';
 
 interface MarketplaceBrowseProps {
   featured?: boolean;
@@ -26,11 +32,13 @@ export function MarketplaceBrowse({ featured = false }: MarketplaceBrowseProps) 
 
   const categories = [
     { id: 'all', label: 'All Services', icon: Sparkle },
-    { id: 'plumbing', label: 'Plumbing', icon: Sparkle },
-    { id: 'painting', label: 'Painting', icon: Sparkle },
-    { id: 'electrical', label: 'Electrical', icon: Lightning },
-    { id: 'cleaning', label: 'Cleaning', icon: Sparkle },
-    { id: 'landscaping', label: 'Landscaping', icon: Sparkle },
+    { id: 'Home Exterior', label: 'Home Exterior', icon: House },
+    { id: 'Home Interior', label: 'Home Interior', icon: PaintRoller },
+    { id: 'Plumbing', label: 'Plumbing', icon: Wrench },
+    { id: 'Electrical', label: 'Electrical', icon: Lightning },
+    { id: 'HVAC', label: 'HVAC', icon: Sparkle },
+    { id: 'Foundation & Structural', label: 'Foundation', icon: Hammer },
+    { id: 'Specialty Services', label: 'Specialty', icon: ShieldCheck },
   ];
 
   const services = [

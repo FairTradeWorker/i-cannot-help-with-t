@@ -1,34 +1,58 @@
-# AI-Powered Home Services Marketplace with Self-Learning Vision System
+# Home Services Marketplace with Self-Learning Vision System
 
-A revolutionary 3-tier marketplace platform where homeowners upload 60-second videos of home repairs, AI analyzes and estimates jobs with superhuman accuracy, and three types of workers collaborate: Operators (territory investors earning 8%), General Contractors (project managers), and Subcontractors (specialists). The AI learns from every completed job, improving from 82% accuracy to 99.9%+ over 10,000 jobs.
+A revolutionary 3-tier marketplace platform where homeowners upload 60-second videos of home repairs, platform analyzes and estimates jobs with precision, and three types of workers collaborate: Operators (territory investors earning 8%), General Contractors (project managers), and Subcontractors (specialists). The system learns from every completed job, improving from 82% accuracy to 99.9%+ over 10,000 jobs.
 
 **Experience Qualities**:
-1. **Intelligent & Self-Improving** - GPT-4 Vision analyzes videos, generates estimates, learns from reality, and gets smarter with every job (225fps ultra-smooth animations)
+1. **Intelligent & Self-Improving** - GPT-4 Vision analyzes videos, generates estimates, learns from reality (225fps ultra-smooth animations)
 2. **Zero-Friction for Workers** - Workers pay $0 fees ever. Operators fund everything through 8% revenue share from their territories.
-3. **Transparent & Fair** - Clear 3-tier structure, AI confidence scores, real-time learning metrics, honest accuracy tracking
+3. **Transparent & Fair** - Clear 3-tier structure, confidence scores, real-time learning metrics, honest accuracy tracking
 
-**Complexity Level**: Complex Application (advanced AI vision, self-learning system, 3-tier marketplace)
+**Complexity Level**: Complex Application (advanced vision analysis, self-learning system, 3-tier marketplace)
 - Video-to-job creation with GPT-4 Vision frame extraction and analysis
-- Self-learning AI that tracks predictions vs. reality and improves accuracy over time
+- Self-learning system that tracks predictions vs. reality and improves accuracy over time
 - 3-tier worker system: Operators (passive investors), General Contractors (project managers), Subcontractors (specialists)
 - Territory ownership with 8% revenue share for operators
 - Worker-friendly: $0 fees for all contractors, operators fund the platform
 
 ## Essential Features
 
+### Service Categories (60 Total)
+The platform supports 60 comprehensive service categories organized into 7 major groups:
+
+**Home Exterior (10 services)**
+- Roofing, Siding, Gutter Installation & Repair, Window Installation, Door Installation, Deck & Patio Construction, Fence Installation & Repair, Driveway & Walkway, Exterior Painting, Power Washing
+
+**Home Interior (10 services)**
+- Interior Painting, Drywall Repair, Flooring Installation (Hardwood, Tile, Carpet), Kitchen Remodeling, Bathroom Remodeling, Basement Finishing, Attic Conversion, Closet Organization Systems, Crown Molding & Trim, Cabinet Installation & Refacing
+
+**Plumbing (8 services)**
+- General Plumbing Repair, Drain Cleaning, Water Heater Installation, Sewer Line Repair, Pipe Replacement, Fixture Installation (Sinks, Toilets, Faucets), Gas Line Installation, Backflow Prevention
+
+**Electrical (8 services)**
+- General Electrical Repair, Panel Upgrades, Lighting Installation, Ceiling Fan Installation, Outlet & Switch Installation, Generator Installation, EV Charger Installation, Smart Home Wiring
+
+**HVAC (6 services)**
+- HVAC Installation, HVAC Repair, AC Maintenance, Furnace Repair, Duct Cleaning, Thermostat Installation
+
+**Foundation & Structural (5 services)**
+- Foundation Repair, Basement Waterproofing, Crack Repair, Structural Engineering, Crawl Space Encapsulation
+
+**Specialty Services (13 services)**
+- Mold Remediation, Pest Control, Insulation Installation, Chimney Repair & Cleaning, Septic System Repair, Well Installation & Repair, Pool Installation & Repair, Hot Tub Installation, Home Automation & Security, Solar Panel Installation, Radon Mitigation, Asbestos Removal, Lead Paint Removal
+
 ### 60-Second Video Job Creation (Core Innovation)
 - **Functionality**: Homeowner films damage for 60 seconds, system extracts middle frame, GPT-4 Vision analyzes image, generates detailed scope with materials/labor/costs automatically
 - **Purpose**: Remove friction from job posting, provide instant professional estimates, capture visual proof
 - **Trigger**: Homeowner clicks "New Job", uploads video
-- **Progression**: Upload video (60s) → AI extracts middle frame → GPT-4 Vision analyzes → generates scope with confidence score → job posted with AI estimate → contractors see job
+- **Progression**: Upload video (60s) → system extracts middle frame → GPT-4 Vision analyzes → generates scope with confidence score → job posted with estimate → contractors see job
 - **Success criteria**: Frame extracted in <5s, analysis complete in <30s, scope includes materials list + labor hours + cost range + confidence score (85%+), job appears in contractor browse queue
 
-### Self-Learning AI System (The Magic)
-- **Functionality**: After every job completion, contractor provides actual costs/materials/labor, system compares with AI prediction, calculates accuracy, stores learning, improves next predictions
-- **Purpose**: Achieve superhuman estimation accuracy (99.9%+) through continuous learning from real-world outcomes
+### Self-Learning System (The Magic)
+- **Functionality**: After every job completion, contractor provides actual costs/materials/labor, system compares with prediction, calculates accuracy, stores learning, improves next predictions
+- **Purpose**: Achieve precision estimation accuracy (99.9%+) through continuous learning from real-world outcomes
 - **Trigger**: Job marked complete by contractor
 - **Progression**: Job completes → contractor enters actual cost/materials/hours → system compares with prediction → calculates accuracy score → stores learning feedback → adjusts future predictions → displays accuracy trends
-- **Success criteria**: Accuracy improves over time (Job 1: 82%, Job 100: 94%, Job 1000: 99%, Job 10000: 99.9%), predictions get tighter (range narrows from $8K-$12K to $9,748), learning metrics visible on dashboard
+- **Success criteria**: Accuracy improves over time (Job 1: 82%, Job 100: 94%, Job 1000: 99%, Job 10000: 99.9%), predictions get tighter (range narrows from $8K-$12K to $9,748), learning metrics visible on dashboard (Partners > AI Technology section only)
 
 ### 3-Tier Worker System
 - **Functionality**: Three distinct worker roles with clear value propositions
@@ -86,18 +110,18 @@ A revolutionary 3-tier marketplace platform where homeowners upload 60-second vi
 - **Success criteria**: All payment methods work, installment tracking accurate, payment history maintained, finance approval process clear
 
 ### Partner Dashboard
-- **Functionality**: Partnership management with revenue tracking, commission breakdowns, active partnership list, payout requests, and partnership creation
-- **Purpose**: Enable partnership programs, track partner revenue, manage commissions
-- **Trigger**: Partner user accesses Partner dropdown → Dashboard
-- **Progression**: Dashboard loads → view stats → see active partnerships → check commission breakdown → request payout → access finance options
-- **Success criteria**: Revenue accurately tracked, commissions calculated correctly, payout requests processed, partnership data displayed
+- **Functionality**: Partnership management with revenue tracking, commission breakdowns, active partnership list, payout requests, partnership creation, and technology integration options (AI partners accessible via Partners > AI Technology)
+- **Purpose**: Enable partnership programs, track partner revenue, manage commissions, showcase platform technology capabilities
+- **Trigger**: Partner user accesses Partner dropdown → Dashboard or specific partner type (Materials, Insurance, AI Technology, Private Equity, Real Estate)
+- **Progression**: Dashboard loads → view stats → see active partnerships → check commission breakdown → request payout → access finance options → view AI learning metrics (Partners > AI Technology only)
+- **Success criteria**: Revenue accurately tracked, commissions calculated correctly, payout requests processed, partnership data displayed, AI learning metrics visible only in Partners > AI Technology section
 
 ### Admin Analytics Dashboard
 - **Functionality**: Comprehensive platform analytics including total users, contractors, homeowners, jobs, revenue, completion rates, top states, top services, revenue by month with visual charts and trends
 - **Purpose**: Give administrators insight into platform performance, identify growth opportunities, track key metrics
-- **Trigger**: Admin user accesses Admin dropdown → Analytics
+- **Trigger**: Admin user accesses Admin icon in header
 - **Progression**: Analytics loads → view overview stats → check state rankings → review service popularity → analyze revenue trends → export data
-- **Success criteria**: All metrics accurate, charts display correctly, trends calculated properly, data refreshes regularly
+- **Success criteria**: All metrics accurate, charts display correctly, trends calculated properly, data refreshes regularly (Note: AI/learning metrics are NOT shown here - those are in Partners > AI Technology section only)
 
 ### Referral Program
 - **Functionality**: User referral system with unique referral codes/links, email invitations, referral tracking, reward status, earnings dashboard, and program explanation
@@ -175,11 +199,11 @@ A revolutionary 3-tier marketplace platform where homeowners upload 60-second vi
 - **Success criteria**: Status transitions work correctly, appropriate users can take actions at each stage
 
 ### AI Learning Feedback System
-- **Functionality**: After job completion, contractors provide actual costs, materials cost, and labor hours; system compares with AI predictions and collects accuracy feedback
-- **Purpose**: Continuously improve AI estimate accuracy through real-world outcome data
+- **Functionality**: After job completion, contractors provide actual costs, materials cost, and labor hours; system compares with predictions and collects accuracy feedback (visible only in Partners > AI Technology section)
+- **Purpose**: Continuously improve estimation accuracy through real-world outcome data
 - **Trigger**: Contractor marks job as complete
-- **Progression**: Job completion form → enter actual cost/materials/labor → mark complete → feedback modal appears → rate accuracy (0-100%) → add comments (optional) → submit → AI learns from data → accuracy trends displayed on dashboard
-- **Success criteria**: Feedback stored per job, accuracy calculated correctly, trends displayed on contractor dashboard, AI predictions improve over time, accuracy score visible (85%+ target)
+- **Progression**: Job completion form → enter actual cost/materials/labor → mark complete → feedback modal appears → rate accuracy (0-100%) → add comments (optional) → submit → system learns from data → accuracy trends displayed on Partners > AI Technology dashboard
+- **Success criteria**: Feedback stored per job, accuracy calculated correctly, trends displayed in Partners > AI Technology section only, predictions improve over time, accuracy score visible (85%+ target)
 
 ### Rating System (100-Point Scale)
 - **Functionality**: Homeowners rate contractors on professionalism, quality, communication, timeliness, cleanliness
@@ -233,7 +257,7 @@ A revolutionary 3-tier marketplace platform where homeowners upload 60-second vi
 
 ## Design Direction
 
-The design should feel modern, fluid, and premium - like browsing a high-end marketplace where every interaction delights. Extensive use of glassmorphism (frosted glass effects with backdrop blur), smooth animations throughout the interface, and center-aligned navigation create an immersive, app-like experience that feels contemporary and engaging.
+The design should feel modern, fluid, and professional - like browsing a high-end marketplace where every interaction is purposeful. Use of glassmorphism (frosted glass effects with backdrop blur), smooth animations throughout the interface, and slightly reduced border radius (0.375rem instead of 1rem) create a more refined, less playful aesthetic that communicates trust and expertise.
 
 ## Color Selection
 
@@ -283,7 +307,7 @@ All framer-motion transitions updated to 225fps equivalent timing:
 ## Component Selection
 
 - **Components**: 
-  - Card (scope results, pricing breakdown) with subtle shadows for depth
+  - Card (scope results, pricing breakdown) with subtle shadows and reduced radius (0.375rem base)
   - Button (primary actions) with solid fills and hover state darkening
   - Progress (analysis pipeline) showing multi-step workflow with current stage highlighted
   - Tabs (switching between scope/pricing/learning views) with underline indicator
@@ -295,7 +319,7 @@ All framer-motion transitions updated to 225fps equivalent timing:
 - **Customizations**: 
   - Custom video preview component with play controls
   - Drag-and-drop upload zone with visual feedback for hover/drop states
-  - AI confidence meter as circular progress indicator
+  - Confidence meter as circular progress indicator
   - Multi-step analysis progress bar showing "Vision Analysis → Scope Generation → Complete"
   - Cost range slider visualization showing min-max estimates
 
@@ -312,6 +336,7 @@ All framer-motion transitions updated to 225fps equivalent timing:
   - Section gaps: gap-8 between major sections, gap-4 for related items
   - Grid layouts: gap-6 for feature cards, gap-3 for data tables
   - Page margins: max-w-6xl mx-auto with px-4 for responsive edge spacing
+  - Border radius: --radius: 0.375rem (reduced from 1rem for more professional appearance)
 
 - **Mobile**: 
   - Stack all grid layouts to single column on <768px

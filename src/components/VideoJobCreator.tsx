@@ -79,7 +79,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
       setExtractedFrame(frameBase64);
       setAnalysisProgress(40);
       
-      toast.info('AI analyzing damage...');
+      toast.info('Analyzing damage...');
       const videoAnalysis = await analyzeVideoFrames(frameBase64);
       setAnalysisProgress(70);
       
@@ -112,7 +112,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
 
   const stepLabels = {
     upload: 'Upload Video',
-    analyzing: 'AI Analysis',
+    analyzing: 'Analyzing',
     scope: 'Review Scope',
     complete: 'Complete',
   };
@@ -133,7 +133,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
             </div>
             <div>
               <h2 className="text-2xl font-bold">Create Job from Video</h2>
-              <p className="text-muted-foreground">AI will analyze and estimate your repair</p>
+              <p className="text-muted-foreground">Upload video to analyze and estimate your repair</p>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={onCancel}>

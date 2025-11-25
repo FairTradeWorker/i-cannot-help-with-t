@@ -36,7 +36,6 @@ import { MessagesView } from '@/components/MessagesView';
 import { TerritoryBrowser } from '@/components/TerritoryBrowser';
 import { ReferralSystem } from '@/components/ReferralSystem';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
-import { AILearningDashboard } from '@/components/AILearningDashboard';
 import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
@@ -45,7 +44,7 @@ import { initializeDemoData } from '@/lib/demo-data';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
 type MainTab = 'home' | 'jobs' | 'territory' | 'messages' | 'partners' | 'referral';
-type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals';
+type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -283,6 +282,10 @@ function App() {
                     <Shield className="w-4 h-4 mr-2" />
                     Insurance
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'ai')}>
+                    <ChartBar className="w-4 h-4 mr-2" />
+                    AI Technology
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
                     <Bank className="w-4 h-4 mr-2" />
                     Private Equity (Contact Us)
@@ -403,7 +406,7 @@ function App() {
                 <>
                   {activeTab === 'home' && !activeSubTab && (
                     <div className="space-y-8">
-                      <MarketplaceBrowse />
+                      <JobBrowser />
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -451,12 +454,11 @@ function App() {
                 </div>
                 <h2 className="text-2xl font-bold">Admin Dashboard</h2>
               </div>
-              <p className="text-muted-foreground">Platform analytics and AI learning metrics</p>
+              <p className="text-muted-foreground">Platform analytics and performance metrics</p>
             </div>
             
             <div className="space-y-8">
               <AnalyticsDashboard analytics={mockAnalytics} />
-              <AILearningDashboard />
             </div>
           </div>
         </motion.div>
