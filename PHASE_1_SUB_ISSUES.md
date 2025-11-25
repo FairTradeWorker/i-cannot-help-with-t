@@ -76,7 +76,7 @@ docs/
    - `id` (UUID, FK to auth.users)
    - `email` (TEXT, UNIQUE)
    - `full_name` (TEXT)
-   - `phone` (TEXT)
+   - `phone` (TEXT, validated E.164 format, e.g., +1234567890)
    - `role` (ENUM: homeowner, contractor, subcontractor, operator, admin)
    - `avatar_url` (TEXT)
    - `created_at`, `updated_at` (TIMESTAMPTZ)
@@ -88,7 +88,7 @@ docs/
    - `state` (TEXT, 2-char)
    - `county` (TEXT)
    - `owner_id` (UUID, FK to users, nullable)
-   - `price` (DECIMAL - dynamic: first 10 free, then $500+)
+   - `price` (DECIMAL - dynamic pricing: first 10 claims per user are FREE, then $500, $1000, $1500... incrementing by $500 per additional claim)
    - `claimed_at` (TIMESTAMPTZ)
    - `revenue_share_percent` (DECIMAL, default 8.0)
    - `created_at`, `updated_at` (TIMESTAMPTZ)
@@ -99,7 +99,7 @@ docs/
    - `territory_id` (UUID, FK to territories)
    - `title` (TEXT)
    - `description` (TEXT)
-   - `category` (TEXT - 60 service categories)
+   - `category_id` (UUID, FK to service_categories - enforces 60 valid categories)
    - `status` (ENUM: draft, posted, bidding, assigned, in_progress, completed, disputed)
    - `urgency` (ENUM: low, medium, high, emergency)
    - `video_url` (TEXT)
@@ -186,6 +186,16 @@ docs/
     - `user_agent` (TEXT)
     - `consented_at` (TIMESTAMPTZ)
 
+11. **service_categories** - Master list of 60 service types
+    - `id` (UUID, PK)
+    - `name` (TEXT, UNIQUE)
+    - `group` (TEXT - Home Exterior, Home Interior, Plumbing, etc.)
+    - `description` (TEXT)
+    - `icon` (TEXT - icon identifier)
+    - `requires_license` (BOOLEAN)
+    - `license_types` (TEXT[] - applicable license types)
+    - `created_at` (TIMESTAMPTZ)
+
 ### RLS Policies Required
 
 - Users can only read/update their own profile
@@ -198,7 +208,7 @@ docs/
 
 ### Acceptance Criteria
 
-- [ ] All 10+ core tables created with proper constraints
+- [ ] All 11 core tables created with proper constraints
 - [ ] Foreign key relationships established correctly
 - [ ] Indexes created for frequently queried columns
 - [ ] RLS policies enable proper data isolation
@@ -390,9 +400,11 @@ supabase/
 ```sql
 -- Supabase Storage Buckets
 - jobs-videos (public: false, max: 100MB, allowed: mp4, mov, avi)
-- job-frames (public: true, max: 5MB, allowed: jpg, png, webp)
+- job-frames (public: false, max: 5MB, allowed: jpg, png, webp)  -- Private: contains sensitive property damage images
 - contractor-documents (public: false, max: 10MB, allowed: pdf, jpg, png)
 ```
+
+> **Note:** All storage buckets are private to protect sensitive property information. Signed URLs are generated for authorized access.
 
 ### AI Scope Output Schema
 
