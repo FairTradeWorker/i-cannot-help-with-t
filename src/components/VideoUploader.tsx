@@ -33,7 +33,7 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Generate stable job ID that persists across renders for the same scope
+  // Generate job ID that is stable for a given scope (new scope = new job)
   const jobId = useMemo(() => generateJobId(), [scope]);
 
   const handleFinancingApproved = (application: FinancingApplication) => {

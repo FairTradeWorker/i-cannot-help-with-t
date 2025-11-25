@@ -51,11 +51,12 @@ async function validateWebhookSignature(signature: string, payload: string, secr
   return result === 0;
 }
 
-function getWebhookSecret(): string {
+function getWebhookSecret(): string | null {
   if (typeof import.meta !== 'undefined' && import.meta.env) {
-    return import.meta.env.VITE_HEARTH_WEBHOOK_SECRET || '';
+    const secret = import.meta.env.VITE_HEARTH_WEBHOOK_SECRET;
+    return secret && secret.trim() ? secret : null;
   }
-  return '';
+  return null;
 }
 
 export async function processFinancingWebhook(
@@ -65,7 +66,16 @@ export async function processFinancingWebhook(
   try {
     const webhookSecret = getWebhookSecret();
     
-    if (webhookSecret && signature) {
+    // Require signature validation in production when secret is configured
+    if (webhookSecret) {
+      if (!signature) {
+        return {
+          success: false,
+          message: 'Missing webhook signature',
+          error: 'MISSING_SIGNATURE',
+        };
+      }
+      
       const isValidSignature = await validateWebhookSignature(signature, JSON.stringify(payload), webhookSecret);
       if (!isValidSignature) {
         return {
@@ -74,6 +84,9 @@ export async function processFinancingWebhook(
           error: 'INVALID_SIGNATURE',
         };
       }
+    } else {
+      // Log warning when no secret is configured (development/demo mode only)
+      console.warn('Webhook secret not configured - signature validation skipped. Configure VITE_HEARTH_WEBHOOK_SECRET for production.');
     }
 
     switch (payload.eventType) {
