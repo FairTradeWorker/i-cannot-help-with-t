@@ -49,6 +49,13 @@
   
   --glass-bg: oklch(1 0.01 250 / 0.4);
   --glass-border: oklch(1 0.01 250 / 0.2);
+  
+  --animation-fps: 225;
+  --animation-ultra-fast: 0.044s;
+  --animation-fast: 0.088s;
+  --animation-normal: 0.133s;
+  --animation-smooth: 0.177s;
+  --animation-slow: 0.266s;
 }
 
 .glass {
@@ -67,7 +74,7 @@
 }
 
 .glass-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-hover:hover {

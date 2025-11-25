@@ -80,10 +80,12 @@ function App() {
     totalUsers: 15420,
     totalContractors: 3542,
     totalHomeowners: 11878,
+    totalOperators: 156,
     totalJobs: 28934,
     completedJobs: 24127,
     totalRevenue: 12450000,
     averageJobValue: 2850,
+    aiAccuracy: 94.5,
     topStates: [
       { state: 'California', jobs: 5234 },
       { state: 'Texas', jobs: 4123 },
@@ -106,6 +108,11 @@ function App() {
       { month: 'May', revenue: 1150000 },
       { month: 'Jun', revenue: 1200000 },
     ],
+    aiLearningMetrics: {
+      totalPredictions: 10523,
+      averageAccuracy: 94.5,
+      improvementRate: 12.3,
+    },
   };
 
   useEffect(() => {
@@ -160,13 +167,14 @@ function App() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.133, ease: [0.4, 0, 0.2, 1] }}
           className="text-center"
         >
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
             className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full mx-auto mb-4"
           />
           <p className="text-muted-foreground">Loading marketplace...</p>
@@ -190,14 +198,15 @@ function App() {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ type: "spring", damping: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.8 }}
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
               className="flex items-center gap-2 cursor-pointer"
               onClick={() => handleNavClick('home')}
             >
@@ -321,19 +330,28 @@ function App() {
             </nav>
 
             <div className="flex items-center gap-2">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+              >
                 <Button variant="ghost" size="icon" className="relative glass-hover">
                   <BellRinging className="w-5 h-5" />
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
+                    transition={{ duration: 0.133, ease: [0.4, 0, 0.2, 1] }}
                     className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"
                   />
                 </Button>
               </motion.div>
 
               {currentUser?.role === 'admin' && (
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div 
+                  whileHover={{ scale: 1.02 }} 
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+                >
                   <Button
                     variant={showAdminPanel ? 'default' : 'outline'}
                     size="icon"
@@ -348,7 +366,11 @@ function App() {
                 </motion.div>
               )}
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+              >
                 <Button
                   variant={showProfile ? 'default' : 'outline'}
                   size="icon"
@@ -374,7 +396,7 @@ function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
             >
               {showProfile && <UserProfile user={currentUser} />}
               {!showProfile && (
@@ -385,7 +407,7 @@ function App() {
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
+                        transition={{ delay: 0.088, duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
                       >
                         <TerritoryBrowser />
                       </motion.div>
@@ -418,7 +440,7 @@ function App() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
           className="border-t-2 border-primary/20 bg-gradient-to-b from-background to-muted/20"
         >
           <div className="max-w-7xl mx-auto px-4 py-8">

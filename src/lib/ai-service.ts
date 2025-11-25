@@ -79,6 +79,35 @@ class LearningDatabase {
 
 export const learningDB = new LearningDatabase();
 
+export async function extractVideoFrame(videoFile: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    video.preload = 'metadata';
+    video.src = URL.createObjectURL(videoFile);
+    
+    video.onloadedmetadata = () => {
+      video.currentTime = video.duration / 2;
+    };
+    
+    video.onseeked = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx?.drawImage(video, 0, 0);
+      
+      const base64 = canvas.toDataURL('image/jpeg', 0.8);
+      URL.revokeObjectURL(video.src);
+      resolve(base64);
+    };
+    
+    video.onerror = () => {
+      reject(new Error('Failed to load video'));
+    };
+  });
+}
+
 export async function analyzeVideoFrames(
   videoBase64: string
 ): Promise<VideoAnalysis> {
@@ -92,6 +121,8 @@ Extract:
 - Access difficulty
 
 Be specific and technical. Analyze this image from a home repair video and extract key observations, damage type, urgency, and location.
+
+IMAGE DATA: ${videoBase64.substring(0, 100)}...
 
 Respond with valid JSON in this exact format:
 {
@@ -118,6 +149,8 @@ Respond with valid JSON in this exact format:
 export async function analyzeJobFromVideo(videoAnalysis: VideoAnalysis): Promise<JobScope> {
   const context = await learningDB.getLearningContext("scope");
   
+  const observations = videoAnalysis.keyObservations.map((obs: string) => `- ${obs}`).join('\n');
+  
   const promptText = `You are an expert construction estimator with 20+ years of experience.
 
 LEARNING CONTEXT:
@@ -132,7 +165,7 @@ Analyze this job:
 VIDEO TRANSCRIPT: "${videoAnalysis.transcript}"
 
 OBSERVATIONS:
-${videoAnalysis.keyObservations.map((obs: string) => `- ${obs}`).join('\n')}
+${observations}
 
 DETAILS:
 - Damage Type: ${videoAnalysis.damageType}

@@ -1,4 +1,5 @@
-export type UserRole = 'homeowner' | 'contractor' | 'territory_owner' | 'partner' | 'admin';
+export type UserRole = 'homeowner' | 'contractor' | 'operator' | 'general_contractor' | 'subcontractor' | 'partner' | 'admin';
+export type ContractorType = 'general_contractor' | 'subcontractor';
 
 export type JobStatus = 'draft' | 'posted' | 'bidding' | 'assigned' | 'in_progress' | 'completed' | 'disputed';
 
@@ -51,6 +52,7 @@ export interface DataPrivacyConsent {
 
 export interface ContractorProfile {
   userId: string;
+  contractorType: ContractorType;
   rating: number;
   completedJobs: number;
   skills: string[];
@@ -62,6 +64,8 @@ export interface ContractorProfile {
   licenses: License[];
   insurance: Insurance;
   territoryId?: string;
+  operatorId?: string;
+  specialties?: string[];
 }
 
 export interface HomeownerProfile {
@@ -261,17 +265,31 @@ export interface Territory {
   id: string;
   name: string;
   zipCodes: string[];
-  ownerId: string;
-  price: number;
-  revenueShare: number;
-  contractors: string[];
+  operatorId: string;
+  purchasePrice: number;
+  operatorRevenueShare: number;
+  approvedContractors: string[];
+  generalContractors: string[];
+  subcontractors: string[];
   stats: {
     totalJobs: number;
+    monthlyJobVolume: number;
     activeContractors: number;
     averageRating: number;
     totalRevenue: number;
+    monthlyRevenue: number;
+    operatorEarnings: number;
   };
   purchasedAt: Date;
+}
+
+export interface OperatorProfile {
+  userId: string;
+  territories: string[];
+  totalInvestment: number;
+  monthlyEarnings: number;
+  totalEarnings: number;
+  approvedContractors: number;
 }
 
 export interface Payment {
@@ -306,11 +324,33 @@ export interface Analytics {
   totalUsers: number;
   totalContractors: number;
   totalHomeowners: number;
+  totalOperators: number;
   totalJobs: number;
   completedJobs: number;
   totalRevenue: number;
   averageJobValue: number;
+  aiAccuracy: number;
   topStates: { state: string; jobs: number }[];
   topServices: { service: string; count: number }[];
   revenueByMonth: { month: string; revenue: number }[];
+  aiLearningMetrics: {
+    totalPredictions: number;
+    averageAccuracy: number;
+    improvementRate: number;
+  };
+}
+
+export interface AILearningMetrics {
+  jobId: string;
+  predictionId: string;
+  predictedCost: { min: number; max: number };
+  actualCost: number;
+  predictedMaterials: Material[];
+  actualMaterials: Material[];
+  predictedLaborHours: number;
+  actualLaborHours: number;
+  accuracyScore: number;
+  errorMargin: number;
+  timestamp: Date;
+  feedback?: string;
 }

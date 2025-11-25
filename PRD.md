@@ -1,16 +1,54 @@
-# AI-Powered Home Services Marketplace
+# AI-Powered Home Services Marketplace with Self-Learning Vision System
 
-A modern, comprehensive marketplace platform connecting homeowners with qualified contractors through AI-powered job analysis, intelligent matching, transparent browsing, seamless transactions, and advanced management tools - featuring top navigation, comprehensive 50-state database, integrated chat, payment management with finance options, partner programs, admin analytics, and referral system.
+A revolutionary 3-tier marketplace platform where homeowners upload 60-second videos of home repairs, AI analyzes and estimates jobs with superhuman accuracy, and three types of workers collaborate: Operators (territory investors earning 8%), General Contractors (project managers), and Subcontractors (specialists). The AI learns from every completed job, improving from 82% accuracy to 99.9%+ over 10,000 jobs.
 
 **Experience Qualities**:
-1. **Modern & Fluid** - Glassmorphism design, smooth animations, top navigation create an immersive, professional browsing experience
-2. **Effortless** - Browse services marketplace-style, AI-powered suggestions, integrated chat, flexible payment options eliminate friction at every step
-3. **Transparent** - Clear pricing, verified professionals, real-time availability, honest reviews, and comprehensive state-by-state data build marketplace trust
+1. **Intelligent & Self-Improving** - GPT-4 Vision analyzes videos, generates estimates, learns from reality, and gets smarter with every job (225fps ultra-smooth animations)
+2. **Zero-Friction for Workers** - Workers pay $0 fees ever. Operators fund everything through 8% revenue share from their territories.
+3. **Transparent & Fair** - Clear 3-tier structure, AI confidence scores, real-time learning metrics, honest accuracy tracking
 
-**Complexity Level**: Complex Application (advanced functionality, comprehensive features)
-- Full marketplace platform with multi-role support (homeowner, contractor, partner, admin), comprehensive state database with interactive map, integrated chat system, payment management with multiple finance options, partner dashboard, admin analytics, referral program, and territory management
+**Complexity Level**: Complex Application (advanced AI vision, self-learning system, 3-tier marketplace)
+- Video-to-job creation with GPT-4 Vision frame extraction and analysis
+- Self-learning AI that tracks predictions vs. reality and improves accuracy over time
+- 3-tier worker system: Operators (passive investors), General Contractors (project managers), Subcontractors (specialists)
+- Territory ownership with 8% revenue share for operators
+- Worker-friendly: $0 fees for all contractors, operators fund the platform
 
 ## Essential Features
+
+### 60-Second Video Job Creation (Core Innovation)
+- **Functionality**: Homeowner films damage for 60 seconds, system extracts middle frame, GPT-4 Vision analyzes image, generates detailed scope with materials/labor/costs automatically
+- **Purpose**: Remove friction from job posting, provide instant professional estimates, capture visual proof
+- **Trigger**: Homeowner clicks "New Job", uploads video
+- **Progression**: Upload video (60s) → AI extracts middle frame → GPT-4 Vision analyzes → generates scope with confidence score → job posted with AI estimate → contractors see job
+- **Success criteria**: Frame extracted in <5s, analysis complete in <30s, scope includes materials list + labor hours + cost range + confidence score (85%+), job appears in contractor browse queue
+
+### Self-Learning AI System (The Magic)
+- **Functionality**: After every job completion, contractor provides actual costs/materials/labor, system compares with AI prediction, calculates accuracy, stores learning, improves next predictions
+- **Purpose**: Achieve superhuman estimation accuracy (99.9%+) through continuous learning from real-world outcomes
+- **Trigger**: Job marked complete by contractor
+- **Progression**: Job completes → contractor enters actual cost/materials/hours → system compares with prediction → calculates accuracy score → stores learning feedback → adjusts future predictions → displays accuracy trends
+- **Success criteria**: Accuracy improves over time (Job 1: 82%, Job 100: 94%, Job 1000: 99%, Job 10000: 99.9%), predictions get tighter (range narrows from $8K-$12K to $9,748), learning metrics visible on dashboard
+
+### 3-Tier Worker System
+- **Functionality**: Three distinct worker roles with clear value propositions
+  - **Operators**: Buy zip codes ($5K-$50K), recruit contractors, approve workers, earn 8% of all jobs, can sell territory later
+  - **General Contractors**: Take large multi-trade projects, hire subcontractors through platform, manage entire job, keep 100% of their portion
+  - **Subcontractors**: Specialists (plumber, electrician, roofer), take direct small jobs OR get hired by GCs, keep 100% of their earnings
+- **Purpose**: Align incentives - operators fund platform growth, workers never pay fees, everyone profits from volume
+- **Trigger**: User role selection at signup, territory purchase for operators, job type routing for contractors
+- **Progression**: 
+  - Operator: Buy territory → recruit contractors → approve workers → jobs happen → earn 8% automatically → view revenue dashboard
+  - GC: Browse large jobs ($10K+) → accept → hire subs through platform → manage project → complete → keep 100% of GC portion
+  - Sub: Browse small direct jobs OR get hired by GC → accept → do work → complete → keep 100% (no fees)
+- **Success criteria**: Clear role distinction in UI, operator earnings tracked correctly (8% of territory jobs), contractors see $0 fees on all transactions, GCs can hire subs within platform, money flows correctly (homeowner → 8% operator → remainder to workers)
+
+### Money Flow (Zero Fees for Workers)
+- **Functionality**: Homeowner pays upfront, money held in escrow, upon completion: 8% to territory operator, 92% to workers (GC + subs OR direct contractor), platform takes portion of operator's 8%
+- **Purpose**: Workers never pay fees (attracts best talent), operators fund platform through territory revenue share
+- **Trigger**: Job completion and payment release
+- **Progression**: Homeowner pays $10,000 → held in escrow → job completed → $800 (8%) to operator → $9,200 to workers → platform takes from operator's $800
+- **Success criteria**: Workers see $0 deducted from their earnings, operator receives exactly 8%, escrow holds funds until completion, accurate split for multi-worker jobs (GC hires 3 subs, each gets their portion)
 
 ### Top Navigation System
 - **Functionality**: Persistent top navigation bar with dropdown menus for Homeowner (Browse, Payment), Partner (Dashboard, Finance), Admin (Analytics, User Management), and Referral (Program, My Referrals) sections
@@ -220,13 +258,20 @@ Typography should convey precision, clarity, and modern professionalism - charac
 
 ## Animations
 
-Animations should be abundant, smooth, and purposeful - creating a fluid, app-like experience that feels alive and responsive. Every interaction should have motion feedback, transitions should be silky-smooth with spring physics, and elements should gracefully enter/exit the viewport.
+Animations should run at 225fps equivalent (ultra-smooth, imperceptible lag) - every interaction feels instant and fluid. All transitions use optimized durations: ultra-fast (0.044s), fast (0.088s), normal (0.133s), smooth (0.177s), slow (0.266s).
 
-- **Purposeful Meaning**: Card hover lifts with subtle shadows, glassmorphic panels slide in smoothly, loading states pulse gently, success actions bounce with spring physics, scroll-triggered reveals fade up elegantly
+- **Purposeful Meaning**: Video upload drag-drop with instant visual feedback, AI analysis progress with smooth percentage updates, confidence score animates in with spring physics, frame extraction shows seamless transition, job cards lift with silky hover, territory map states highlight instantly
 - **Hierarchy of Movement**: 
-  1. Primary: Page transitions and navigation changes (full-screen slides with blur)
-  2. Secondary: Card interactions, modal appearances, tab switches (scale + fade combos)
-  3. Tertiary: Hover states, micro-interactions, icon animations (subtle transforms)
+  1. Primary: Video analysis pipeline (frame extraction → AI thinking → scope generation) with progress indicators
+  2. Secondary: Job creation flow, territory revenue updates, contractor approvals
+  3. Tertiary: Hover states on cards, button presses, navigation transitions
+
+All framer-motion transitions updated to 225fps equivalent timing:
+- Button/card hover: 0.088s (fast)
+- Page transitions: 0.177s (smooth) 
+- AI analysis progress: 0.133s updates (normal)
+- Micro-interactions: 0.044s (ultra-fast)
+- Spring animations: high stiffness (300), optimal damping (25)
 
 ## Component Selection
 

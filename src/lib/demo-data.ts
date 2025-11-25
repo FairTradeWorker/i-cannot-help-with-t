@@ -17,6 +17,7 @@ export async function initializeDemoData(): Promise<void> {
     createdAt: new Date('2023-01-15'),
     contractorProfile: {
       userId: 'contractor-1',
+      contractorType: 'general_contractor',
       rating: 92,
       completedJobs: 47,
       skills: ['Roofing', 'Siding', 'Gutters', 'Waterproofing'],
@@ -57,9 +58,11 @@ export async function initializeDemoData(): Promise<void> {
     createdAt: new Date('2023-03-20'),
     contractorProfile: {
       userId: 'contractor-2',
+      contractorType: 'subcontractor',
       rating: 88,
       completedJobs: 32,
       skills: ['Roofing', 'Painting', 'General Repairs'],
+      specialties: ['Roof Repair', 'Exterior Painting'],
       serviceRadius: 20,
       location: {
         lat: 40.7300,
