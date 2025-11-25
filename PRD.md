@@ -171,11 +171,11 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: All licenses verified with state agencies, insurance meets $1M minimum, expired credentials flagged, jobs require appropriate licenses based on amount and trade type
 
 ### Contractor Classification Dashboard
-- **Functionality**: Real-time independent contractor status evaluation, 6-factor compliance scoring, tax responsibility education, classification risk warnings
-- **Purpose**: Demonstrate independent contractor status to avoid employee misclassification lawsuits, educate contractors on tax obligations, document platform's non-employer relationship
-- **Trigger**: Contractor views compliance dashboard, periodic review notifications
-- **Progression**: Load contractor profile → evaluate 6 factors (pricing control, schedule control, competition, training, uniform, supervision) → calculate score → display status → show tax responsibilities
-- **Success criteria**: Score above 80% indicates proper classification, all 6 factors properly configured, contractors acknowledge 1099 status and tax responsibilities
+- **Functionality**: Enhanced splash screen with animated ServiceHub logo, platform statistics, and smooth transition to role selection (contractor/homeowner/territory owner). Improved login modal with side-by-side layout featuring benefits panel and larger role selection cards. Profile management includes legal consent tracking and demo data initialization.
+- **Purpose**: Enable distinct experiences for different user types with appropriate permissions, features, and legal agreements. Create professional first impression with engaging splash screen.
+- **Trigger**: App launch, shows animated splash screen first, then transitions to role selection screen
+- **Progression**: App loads → animated splash screen displays with logo, tagline, and stats → "Get Started" button → transitions to login/signup screen with role selection → user selects role from three large cards (Homeowner/Contractor/Subcontractor) → enters credentials → legal consent modal → accepts agreements → profile loads → role-specific dashboard
+- **Success criteria**: Users can switch between roles (with new consent flows), profiles persist, appropriate features visible per role, all legal consents recorded, splash screen animation smooth, role cards clearly differentiated with icons and descriptions
 
 ### User Roles & Authentication
 - **Functionality**: Enhanced splash screen with animated ServiceHub logo, platform statistics, and smooth transition to role selection (contractor/homeowner/territory owner). Improved login modal with side-by-side layout featuring benefits panel and larger role selection cards. Profile management includes legal consent tracking and demo data initialization.
