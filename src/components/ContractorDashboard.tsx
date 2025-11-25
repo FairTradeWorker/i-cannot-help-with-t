@@ -12,6 +12,7 @@ import { JobBrowser } from './JobBrowser';
 import { JobDetails } from './JobDetails';
 import { EarningsDashboard } from './EarningsDashboard';
 import { ComplianceDashboard } from './ComplianceDashboard';
+import { EstimateAccuracyTrend } from './EstimateAccuracyTrend';
 
 interface ContractorDashboardProps {
   user: User;
@@ -103,6 +104,10 @@ export function ContractorDashboard({ user }: ContractorDashboardProps) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-8">
+          <EstimateAccuracyTrend contractorId={user.id} />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="p-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">

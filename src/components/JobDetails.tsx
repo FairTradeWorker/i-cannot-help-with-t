@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, MapPin, Clock, CurrencyDollar, ChatCircle, PaperPlane, Calendar, CheckCircle } from '@phosphor-icons/react';
+import { X, MapPin, Clock, CurrencyDollar, ChatCircle, PaperPlane, Calendar, CheckCircle, Package, Toolbox } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { dataStore } from '@/lib/store';
+import { JobFeedbackModal } from '@/components/JobFeedbackModal';
 import type { Job, User, Bid, Message } from '@/lib/types';
 
 interface JobDetailsProps {
@@ -27,11 +28,17 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
   const [bidTimeline, setBidTimeline] = useState({ start: '', end: '' });
   const [messageText, setMessageText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [actualCost, setActualCost] = useState('');
+  const [actualMaterialsCost, setActualMaterialsCost] = useState('');
+  const [actualLaborHours, setActualLaborHours] = useState('');
+  const [showCompletionForm, setShowCompletionForm] = useState(false);
 
   const isContractor = user.role === 'contractor';
   const isHomeowner = user.role === 'homeowner';
   const hasMyBid = job.bids.some(b => b.contractorId === user.id);
   const myBid = job.bids.find(b => b.contractorId === user.id);
+  const isMyJob = job.contractorId === user.id;
 
   const handleSubmitBid = async () => {
     if (!bidAmount || !bidMessage || !bidTimeline.start || !bidTimeline.end) {
@@ -135,6 +142,67 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
       onJobUpdated();
     } catch (error) {
       toast.error('Failed to send message');
+    }
+  };
+
+  const handleMarkComplete = async () => {
+    if (!actualCost || !actualMaterialsCost || !actualLaborHours) {
+      toast.error('Please fill in all completion details');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const updatedJob = await dataStore.getJobById(job.id);
+      if (!updatedJob) throw new Error('Job not found');
+
+      updatedJob.status = 'completed';
+      updatedJob.completedAt = new Date();
+      updatedJob.actualCost = parseFloat(actualCost);
+      updatedJob.updatedAt = new Date();
+
+      await dataStore.saveJob(updatedJob);
+
+      toast.success('Job marked as completed!');
+      setShowCompletionForm(false);
+      
+      if (job.scope) {
+        setShowFeedbackModal(true);
+      } else {
+        onJobUpdated();
+        onClose();
+      }
+    } catch (error) {
+      console.error('Failed to mark job complete:', error);
+      toast.error('Failed to mark job as complete');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleFeedbackClose = () => {
+    setShowFeedbackModal(false);
+    onJobUpdated();
+    onClose();
+  };
+
+  const handleStartJob = async () => {
+    setSubmitting(true);
+    try {
+      const updatedJob = await dataStore.getJobById(job.id);
+      if (!updatedJob) throw new Error('Job not found');
+
+      updatedJob.status = 'in_progress';
+      updatedJob.updatedAt = new Date();
+
+      await dataStore.saveJob(updatedJob);
+      toast.success('Job started!');
+      onJobUpdated();
+    } catch (error) {
+      console.error('Failed to start job:', error);
+      toast.error('Failed to start job');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -329,6 +397,122 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
                 </Card>
               </>
             )}
+
+            {isContractor && isMyJob && job.status === 'assigned' && (
+              <>
+                <Separator />
+                <Card className="p-6 bg-secondary/5 border-secondary/30">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-1">Ready to Start?</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Begin working on this job
+                      </p>
+                    </div>
+                    <Button onClick={handleStartJob} disabled={submitting} size="lg" variant="secondary">
+                      <Toolbox className="w-5 h-5 mr-2" weight="fill" />
+                      Start Job
+                    </Button>
+                  </div>
+                </Card>
+              </>
+            )}
+
+            {isContractor && isMyJob && (job.status === 'assigned' || job.status === 'in_progress') && !showCompletionForm && (
+              <>
+                <Separator />
+                <Card className="p-6 bg-accent/5 border-accent/30">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-1">Ready to Complete?</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Mark this job as complete and provide feedback to help AI learn
+                      </p>
+                    </div>
+                    <Button onClick={() => setShowCompletionForm(true)} size="lg">
+                      <CheckCircle className="w-5 h-5 mr-2" weight="fill" />
+                      Mark Complete
+                    </Button>
+                  </div>
+                </Card>
+              </>
+            )}
+
+            {showCompletionForm && (
+              <>
+                <Separator />
+                <Card className="p-6 bg-accent/5">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Toolbox className="w-5 h-5 text-accent" weight="duotone" />
+                    Job Completion Details
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="actualCost">Final Total Cost ($)</Label>
+                      <Input
+                        id="actualCost"
+                        type="number"
+                        value={actualCost}
+                        onChange={(e) => setActualCost(e.target.value)}
+                        placeholder="5000"
+                        className="font-mono"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Total amount charged to customer
+                      </p>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="actualMaterialsCost">Materials Cost ($)</Label>
+                      <Input
+                        id="actualMaterialsCost"
+                        type="number"
+                        value={actualMaterialsCost}
+                        onChange={(e) => setActualMaterialsCost(e.target.value)}
+                        placeholder="2000"
+                        className="font-mono"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Total spent on materials for this job
+                      </p>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="actualLaborHours">Actual Labor Hours</Label>
+                      <Input
+                        id="actualLaborHours"
+                        type="number"
+                        value={actualLaborHours}
+                        onChange={(e) => setActualLaborHours(e.target.value)}
+                        placeholder="24"
+                        className="font-mono"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Total hours worked on this job
+                      </p>
+                    </div>
+
+                    <div className="flex gap-3 pt-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setShowCompletionForm(false)}
+                        className="flex-1"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        onClick={handleMarkComplete}
+                        disabled={submitting || !actualCost || !actualMaterialsCost || !actualLaborHours}
+                        className="flex-1"
+                      >
+                        {submitting ? 'Completing...' : 'Complete Job'}
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </>
+            )}
           </TabsContent>
 
           <TabsContent value="bids" className="space-y-4">
@@ -422,6 +606,18 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
           </TabsContent>
         </Tabs>
       </DialogContent>
+
+      {showFeedbackModal && job.scope && (
+        <JobFeedbackModal
+          open={showFeedbackModal}
+          onClose={handleFeedbackClose}
+          job={job}
+          prediction={job.scope}
+          actualCost={parseFloat(actualCost)}
+          actualMaterialsCost={parseFloat(actualMaterialsCost)}
+          actualLaborHours={parseFloat(actualLaborHours)}
+        />
+      )}
     </Dialog>
   );
 }

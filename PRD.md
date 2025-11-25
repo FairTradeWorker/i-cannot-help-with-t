@@ -129,6 +129,13 @@ A modern, comprehensive marketplace platform connecting homeowners with qualifie
 - **Progression**: Status updates automatically based on actions → notifications sent → UI reflects current state
 - **Success criteria**: Status transitions work correctly, appropriate users can take actions at each stage
 
+### AI Learning Feedback System
+- **Functionality**: After job completion, contractors provide actual costs, materials cost, and labor hours; system compares with AI predictions and collects accuracy feedback
+- **Purpose**: Continuously improve AI estimate accuracy through real-world outcome data
+- **Trigger**: Contractor marks job as complete
+- **Progression**: Job completion form → enter actual cost/materials/labor → mark complete → feedback modal appears → rate accuracy (0-100%) → add comments (optional) → submit → AI learns from data → accuracy trends displayed on dashboard
+- **Success criteria**: Feedback stored per job, accuracy calculated correctly, trends displayed on contractor dashboard, AI predictions improve over time, accuracy score visible (85%+ target)
+
 ### Rating System (100-Point Scale)
 - **Functionality**: Homeowners rate contractors on professionalism, quality, communication, timeliness, cleanliness
 - **Purpose**: Build contractor reputation, help homeowners make informed decisions
