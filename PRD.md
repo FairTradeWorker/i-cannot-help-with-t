@@ -1,61 +1,104 @@
 # AI-Powered Home Services Platform
 
-An intelligent platform that analyzes home repair videos using AI vision, generates detailed job scopes, suggests optimal contractor pricing, and learns from outcomes to improve accuracy over time.
+A comprehensive marketplace connecting homeowners with qualified contractors through AI-powered video analysis, intelligent job matching, transparent bidding, secure payments, and continuous learning systems.
 
 **Experience Qualities**:
-1. **Intelligent** - The platform acts as an expert construction estimator, providing detailed analysis and insights that feel professional and trustworthy
-2. **Efficient** - Video upload to complete job scope happens seamlessly with clear progress indicators showing each AI processing step
-3. **Transparent** - Every AI decision includes confidence scores, detailed breakdowns, and reasoning to build user trust
+1. **Intelligent** - AI analyzes videos, matches contractors, suggests optimal pricing, and learns from every interaction to improve accuracy
+2. **Trustworthy** - Verified contractors, escrow payments, transparent ratings, secure messaging, and dispute resolution build confidence
+3. **Efficient** - 60-second video to instant estimates, one-tap bidding, real-time notifications, and streamlined workflows accelerate every interaction
 
 **Complexity Level**: Complex Application (advanced functionality, accounts)
-- Involves AI vision processing, multi-step analysis pipeline, persistent learning database, and sophisticated pricing algorithms with self-improvement capabilities
+- Multi-role user system (contractors, homeowners, territory owners), AI vision processing, job matching algorithms, bidding marketplace, messaging system, payment tracking, earnings management, rating system, and self-learning capabilities
 
 ## Essential Features
 
-### Video Upload & Analysis
-- **Functionality**: Drag-and-drop or click-to-upload video files, extract frames, display preview
-- **Purpose**: Enable users to submit visual evidence of home repair needs for AI analysis
-- **Trigger**: User selects video file or drags into upload zone
-- **Progression**: File selection → validation → preview display → frame extraction → ready for analysis
-- **Success criteria**: Video previews correctly, file size validated (100MB max), frame extraction succeeds
+### User Roles & Authentication
+- **Functionality**: Role selection (contractor/homeowner), profile management, demo data initialization
+- **Purpose**: Enable distinct experiences for different user types with appropriate permissions and features
+- **Trigger**: App launch, role selection screen
+- **Progression**: App load → role selection → profile load → role-specific dashboard
+- **Success criteria**: Users can switch between contractor and homeowner views, profiles persist, appropriate features visible per role
 
-### AI Vision Processing
-- **Functionality**: Extract middle frame from video, send to AI vision model for damage analysis
-- **Purpose**: Transform visual content into structured data about damage type, location, urgency
-- **Trigger**: Automatic after video upload completes
-- **Progression**: Frame extraction → base64 encoding → AI vision API call → parse structured response
-- **Success criteria**: AI identifies damage type, location, urgency level, and key observations accurately
+### Video-Based Job Creation (Homeowners)
+- **Functionality**: Upload video, AI analyzes damage, generates scope, creates job posting automatically
+- **Purpose**: Remove friction from homeowner job posting process, provide instant professional estimates
+- **Trigger**: Homeowner clicks "New Project", uploads video
+- **Progression**: Video upload → AI analysis → scope generation → job auto-created with estimates → posted for contractor bidding
+- **Success criteria**: Video analyzed in <30s, job appears in contractor browse queue, homeowner sees job in dashboard
 
-### Job Scope Generation
-- **Functionality**: AI analyzes video insights to generate detailed job scope with materials, labor, costs
-- **Purpose**: Provide contractors and homeowners with comprehensive project understanding
-- **Trigger**: Automatic after vision analysis completes
-- **Progression**: Video analysis data → AI scope generation → parse materials/costs/recommendations → display results
-- **Success criteria**: Generates itemized materials list, labor hours estimate, cost range, recommendations, and warnings
+### Job Matching & Browsing (Contractors)
+- **Functionality**: Browse available jobs filtered by location, skills, urgency; search functionality
+- **Purpose**: Help contractors discover relevant opportunities quickly
+- **Trigger**: Contractor accesses "Browse Jobs" tab
+- **Progression**: Load available jobs → filter/search → view details → submit bid
+- **Success criteria**: Shows only jobs not yet assigned, filters work correctly, search returns relevant results
 
-### Dynamic Pricing Suggestions
-- **Functionality**: AI suggests optimal contractor pricing based on job scope, market data, contractor profile
-- **Purpose**: Help contractors price competitively while maximizing profitability
-- **Trigger**: User clicks "Get Pricing Suggestion" button on scope results
-- **Progression**: Scope data + market inputs → AI pricing strategy → multiple price options → win probability calculation
-- **Success criteria**: Provides suggested price, reasoning, competitive advantage, breakdown, and alternative pricing tiers
+### Bidding System
+- **Functionality**: Contractors submit price, timeline, message; homeowners compare bids side-by-side
+- **Purpose**: Transparent marketplace for pricing negotiation and contractor selection
+- **Trigger**: Contractor views job details and clicks "Submit Bid"
+- **Progression**: Enter bid amount + timeline + message → submit → homeowner receives notification → homeowner reviews bids → accepts one bid
+- **Success criteria**: Bids saved correctly, notifications sent, only one bid can be accepted, rejected bidders notified
 
-### Self-Learning System
-- **Functionality**: Records prediction outcomes, calculates accuracy, adjusts future confidence scores
-- **Purpose**: Improve AI accuracy over time through feedback loop
-- **Trigger**: User submits outcome feedback after job completion
-- **Progression**: Record prediction → capture actual outcome → calculate accuracy → update learning context → adjust future predictions
-- **Success criteria**: Maintains feedback history, calculates running accuracy metrics, adjusts confidence multipliers
+### In-App Messaging
+- **Functionality**: Real-time chat between homeowners and contractors per job, photo attachments, read receipts
+- **Purpose**: Centralize communication, provide dispute evidence, reduce phone tag
+- **Trigger**: User clicks "Messages" tab in job details
+- **Progression**: Type message → send → recipient receives notification → conversation persists
+- **Success criteria**: Messages saved per job, unread indicators work, both parties can send/receive
+
+### Earnings & Payment Tracking (Contractors)
+- **Functionality**: Track total/available/pending earnings, request instant or standard payouts, view earning history
+- **Purpose**: Transparent financial management, flexible cash-out options, tax preparation
+- **Trigger**: Contractor completes job, payment released to available balance
+- **Progression**: Job completed → earnings added to pending → 48hr hold → moves to available → contractor requests payout → payout processed
+- **Success criteria**: Earnings calculated correctly (minus platform fees), instant payout charges 1.5%, standard payout free, transaction history maintained
+
+### Job Status Management
+- **Functionality**: Jobs progress through states: draft → posted → bidding → assigned → in_progress → completed → disputed
+- **Purpose**: Clear workflow visibility for all parties, triggers appropriate notifications and permissions
+- **Trigger**: Various actions (job creation, bid acceptance, completion)
+- **Progression**: Status updates automatically based on actions → notifications sent → UI reflects current state
+- **Success criteria**: Status transitions work correctly, appropriate users can take actions at each stage
+
+### Rating System (100-Point Scale)
+- **Functionality**: Homeowners rate contractors on professionalism, quality, communication, timeliness, cleanliness
+- **Purpose**: Build contractor reputation, help homeowners make informed decisions
+- **Trigger**: Job marked complete, homeowner prompted to rate
+- **Progression**: Job completes → rating form shown → homeowner submits ratings → average calculated → displayed on contractor profile
+- **Success criteria**: Multi-dimension ratings saved, overall score calculated, ratings visible to other homeowners
+
+### Contractor Profile & Verification
+- **Functionality**: Display rating, completed jobs, skills, licenses, insurance, service area, availability
+- **Purpose**: Build trust through transparency, help homeowners select qualified contractors
+- **Trigger**: Contractor signup, profile edit, bid submission shows profile preview
+- **Progression**: Profile data entered → verification badges earned → displayed in bids and search results
+- **Success criteria**: All profile fields display correctly, verified badges show when credentials confirmed
+
+### Dashboard Analytics
+- **Functionality**: Real-time stats on active jobs, earnings, bids, messages for both roles
+- **Purpose**: At-a-glance understanding of platform activity and personal performance
+- **Trigger**: User accesses dashboard
+- **Progression**: Load user data → calculate metrics → display in card grid
+- **Success criteria**: Stats update in real-time, match actual data, clearly labeled
 
 ## Edge Case Handling
 
-- **Invalid file types** - Show clear error message indicating only video formats accepted
-- **Oversized videos** - Validate file size before processing, show specific size limit in error
-- **Frame extraction failure** - Retry with different timestamp, fallback to first frame if middle fails
-- **AI API errors** - Display user-friendly error with retry option, log technical details for debugging
-- **Malformed AI responses** - Validate JSON structure, provide default values for missing fields
-- **Empty learning database** - Use sensible default confidence scores when no historical data exists
-- **Network failures** - Show offline indicator, queue requests for retry when connection restored
+- **No demo data** - Initialize with sample contractors, homeowners, and jobs on first load
+- **Role switching** - Preserve data when switching between contractor/homeowner views, show appropriate UI per role
+- **Empty job lists** - Show helpful empty states with call-to-action to browse/create jobs
+- **Duplicate bids** - Prevent contractors from bidding twice on same job
+- **Concurrent bid acceptance** - Handle race condition if homeowner tries to accept multiple bids
+- **Invalid video formats** - Validate file type and size before upload attempt
+- **AI API failures** - Graceful degradation, allow manual scope entry, retry mechanisms
+- **Message ordering** - Ensure messages display in chronological order with consistent timestamps
+- **Earnings calculation** - Handle platform fee calculation (default 0% for founder tier), ensure math precision
+- **Payout request limits** - Prevent payout requests when balance is $0 or payout already in progress
+- **Notification spam** - Batch notifications for multiple bids on same job
+- **Profile incomplete** - Warn contractors if missing critical verification before allowing bids
+- **Job without video** - Support text-only job creation as fallback
+- **Timezone handling** - Store all dates in UTC, display in user's local timezone
+- **Browser storage limits** - Monitor KV storage usage, implement data archival for old jobs
 
 ## Design Direction
 

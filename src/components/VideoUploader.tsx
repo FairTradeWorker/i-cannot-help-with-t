@@ -12,7 +12,12 @@ import { PricingSuggester } from './PricingSuggester';
 
 type AnalysisStage = 'idle' | 'extracting' | 'analyzing-vision' | 'generating-scope' | 'complete' | 'error';
 
-export function VideoUploader() {
+interface VideoUploaderProps {
+  homeownerId?: string;
+  onJobCreated?: () => void;
+}
+
+export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps = {}) {
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState<AnalysisStage>('idle');
   const [scope, setScope] = useState<JobScope | null>(null);
