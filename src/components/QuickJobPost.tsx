@@ -84,16 +84,24 @@ export function QuickJobPost({ onCreateJob }: QuickJobPostProps) {
                   </motion.div>
                   
                   <div>
+                    <div className="font-semibold text-sm">{option.title}</div>
+                    <p className="text-xs text-muted-foreground">{option.description}</p>
+                    {option.badge && (
+                      <Badge variant="secondary" className="mt-2 text-xs">
+                        {option.badge}
+                      </Badge>
+                    )}
                   </div>
-                  </div>
+                </CardContent>
 
                 <motion.div
                   className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${option.gradient}`}
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: hoveredCard === option.id ? 1 : 0 }}
                   transition={{ duration: 0.133 }}
-              </Card>
                 />
+              </Card>
+            </motion.div>
           );
         })}
       </div>
