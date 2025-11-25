@@ -4,10 +4,7 @@ import type {
   JobAssignment,
   DispatchPingRequest,
   DispatchPingResponse,
-  ContractorDispatchInfo,
 } from '@/lib/types';
-
-const ASSIGNMENT_EXPIRATION_MINUTES = 3;
 
 interface ExpoPushMessage {
   to: string;
@@ -52,20 +49,32 @@ export async function sendExpoPushNotification(
     if (result.data?.id) {
       return result.data.id;
     }
-    console.log('Push notification sent:', result);
+    // Push notification sent but no ID returned - still considered success
     return null;
   } catch (error) {
+    // Push notification failed - log for debugging but don't block dispatch
     console.error('Failed to send push notification:', error);
     return null;
   }
 }
 
 function generateAssignmentId(): string {
-  return `assign_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `assign_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 }
 
 function generateDispatchId(): string {
-  return `dispatch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `dispatch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+}
+
+// Configurable expiration times based on job urgency
+const EXPIRATION_MINUTES_BY_URGENCY: Record<string, number> = {
+  normal: 3,
+  urgent: 2,
+  emergency: 1,
+};
+
+function getExpirationMinutes(urgency: string): number {
+  return EXPIRATION_MINUTES_BY_URGENCY[urgency] || 3;
 }
 
 export async function dispatchPingAPI(
@@ -116,7 +125,8 @@ export async function dispatchPingAPI(
 
     // Create assignments and send push notifications
     const now = new Date();
-    const expiresAt = new Date(now.getTime() + ASSIGNMENT_EXPIRATION_MINUTES * 60 * 1000);
+    const expirationMinutes = getExpirationMinutes(request.urgency);
+    const expiresAt = new Date(now.getTime() + expirationMinutes * 60 * 1000);
     const assignments: JobAssignment[] = [];
 
     for (const contractor of nearestContractors) {
@@ -133,16 +143,17 @@ export async function dispatchPingAPI(
 
       // Send push notification if contractor has a push token
       if (contractor.expoPushToken) {
+        const countdownSeconds = expirationMinutes * 60;
         const pushNotificationId = await sendExpoPushNotification(
           contractor.expoPushToken,
           '⚡ New Job Alert!',
-          `${request.jobType} job ${contractor.distance.toFixed(1)} miles away - $${request.estimatedValue.toLocaleString()}. Accept in 3:00!`,
+          `${request.jobType} job ${contractor.distance.toFixed(1)} miles away - $${request.estimatedValue.toLocaleString()}. Accept in ${expirationMinutes}:00!`,
           {
             assignmentId: assignment.id,
             jobId: request.jobId,
             action: 'dispatch_ping',
             expiresAt: expiresAt.toISOString(),
-            countdownSeconds: ASSIGNMENT_EXPIRATION_MINUTES * 60,
+            countdownSeconds,
           }
         );
         assignment.pushNotificationId = pushNotificationId || undefined;

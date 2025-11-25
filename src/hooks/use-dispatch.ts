@@ -12,17 +12,20 @@ import type {
   DispatchPingResponse 
 } from '@/lib/types';
 
-const AUTO_REASSIGN_CHECK_INTERVAL = 30000; // 30 seconds
+// Default auto-reassign check interval (30 seconds)
+// Set to half the minimum assignment expiration time (1 minute for emergency jobs)
+const DEFAULT_AUTO_REASSIGN_CHECK_INTERVAL_MS = 30000;
 
 export interface UseDispatchOptions {
   autoReassign?: boolean;
+  /** Poll interval in milliseconds for checking reassignments. Defaults to 30 seconds. */
   pollInterval?: number;
 }
 
 export function useDispatch(options: UseDispatchOptions = {}) {
   const { 
     autoReassign = true, 
-    pollInterval = AUTO_REASSIGN_CHECK_INTERVAL 
+    pollInterval = DEFAULT_AUTO_REASSIGN_CHECK_INTERVAL_MS 
   } = options;
   
   const [isDispatching, setIsDispatching] = useState(false);

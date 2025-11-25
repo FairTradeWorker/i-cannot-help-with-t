@@ -149,15 +149,23 @@ export function DispatchPanel({ contractorId, onAssignmentAccepted }: DispatchPa
     const pendingAssignments = await getPendingAssignments(contractorId);
     setAssignments(pendingAssignments);
 
-    // Load job details for each assignment
-    const jobDetails: Record<string, Job | null> = {};
-    for (const assignment of pendingAssignments) {
-      if (!jobs[assignment.jobId]) {
-        jobDetails[assignment.jobId] = await dataStore.getJobById(assignment.jobId);
+    // Load job details for each assignment (only fetch jobs we don't already have)
+    const jobIdsToFetch = pendingAssignments
+      .map(a => a.jobId)
+      .filter((id, i, arr) => arr.indexOf(id) === i); // unique ids
+
+    const newJobDetails: Record<string, Job | null> = {};
+    for (const jobId of jobIdsToFetch) {
+      const jobData = await dataStore.getJobById(jobId);
+      if (jobData) {
+        newJobDetails[jobId] = jobData;
       }
     }
-    setJobs(prev => ({ ...prev, ...jobDetails }));
-  }, [contractorId, jobs]);
+    
+    if (Object.keys(newJobDetails).length > 0) {
+      setJobs(prev => ({ ...prev, ...newJobDetails }));
+    }
+  }, [contractorId]);
 
   useEffect(() => {
     loadAssignments();

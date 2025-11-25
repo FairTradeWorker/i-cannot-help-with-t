@@ -9,6 +9,9 @@ const JOB_ASSIGNMENTS_KEY = 'job-assignments';
 const DISPATCH_HISTORY_KEY = 'dispatch-history';
 const CONTRACTOR_PUSH_TOKENS_KEY = 'contractor-push-tokens';
 
+// Default maximum distance in miles for contractor matching
+const DEFAULT_MAX_DISTANCE_MILES = 50;
+
 interface DispatchHistoryEntry {
   id: string;
   jobId: string;
@@ -170,7 +173,8 @@ export class DispatchStore {
     jobLocation: { lat: number; lng: number },
     users: User[],
     count: number = 3,
-    excludeContractorIds: string[] = []
+    excludeContractorIds: string[] = [],
+    maxDistanceMiles: number = DEFAULT_MAX_DISTANCE_MILES
   ): Promise<ContractorDispatchInfo[]> {
     const pushTokens = await this.getAllPushTokens();
     
@@ -202,7 +206,7 @@ export class DispatchStore {
           expoPushToken: pushTokens[user.id] || undefined,
         } as ContractorDispatchInfo;
       })
-      .filter(c => c.distance <= 50) // Within 50 miles
+      .filter(c => c.distance <= maxDistanceMiles)
       .sort((a, b) => {
         // Sort by distance first, then by rating
         if (Math.abs(a.distance - b.distance) < 5) {
