@@ -285,29 +285,30 @@ The platform supports 60 comprehensive service categories organized into 7 major
 
 ## Design Direction
 
-The design should feel modern, fluid, and professional - like browsing a high-end marketplace where every interaction is purposeful. Use of glassmorphism (frosted glass effects with backdrop blur), smooth animations throughout the interface, and slightly reduced border radius (0.375rem instead of 1rem) create a more refined, less playful aesthetic that communicates trust and expertise.
+The design should feel like iOS 18 Maps + Linear.app + Arc browser - precise, expensive, and mechanical. Glass morphism with 40px blur and 180% saturation, ultra-smooth micro-interactions that feel engineered rather than bouncy, and a refined color palette centered on professional blue that communicates intelligence and trust.
 
 ## Color Selection
 
-**Custom palette** with professional blue (trust/intelligence), vibrant red (action/alerts), and deep black (contrast/professionalism) on a pure white base to clearly differentiate information types and guide user attention to critical data points.
+**Custom palette** inspired by iOS 18 system colors with professional blue (intelligence/trust) and emerald green (success states).
 
-- **Primary Color**: Professional blue `oklch(0.45 0.22 264)` - communicates trust, intelligence, and technology expertise
-- **Secondary Colors**: Deep black `oklch(0.15 0 0)` for strong contrast and professional appearance
-- **Accent Color**: Vibrant red `oklch(0.55 0.22 25)` for calls-to-action, alerts, and urgent items
-- **Background**: Pure white `oklch(1 0 0)` - always kept white for a clean, professional appearance
+- **Primary Color**: Professional Blue `oklch(0.45 0.20 264)` - communicates intelligence, precision, and trust (iOS-inspired)
+- **Secondary Colors**: Muted Purple-Blue `oklch(0.55 0.12 264)` for supporting elements
+- **Accent Color**: Professional Blue `oklch(0.50 0.18 264)` for interactive highlights
+- **Success Color**: Emerald Green `oklch(0.60 0.17 158)` - for success pulse animations (0.4s duration)
+- **Background**: Clean White with subtle gradient `oklch(0.98 0.002 264)` - iOS-inspired purity
 - **Foreground/Background Pairings**:
-  - Background (Pure White `oklch(1 0 0)`): Dark text `oklch(0.15 0 0)` - Ratio 18.5:1 ✓
-  - Card (White `oklch(1 0 0)`): Dark text `oklch(0.15 0 0)` - Ratio 18.5:1 ✓
-  - Primary (Professional Blue `oklch(0.45 0.22 264)`): White text `oklch(1 0 0)` - Ratio 7.8:1 ✓
-  - Secondary (Deep Black `oklch(0.15 0 0)`): White text `oklch(1 0 0)` - Ratio 18.5:1 ✓
-  - Accent (Vibrant Red `oklch(0.55 0.22 25)`): White text `oklch(1 0 0)` - Ratio 5.2:1 ✓
-  - Muted (Light Gray `oklch(0.96 0 0)`): Dark muted text `oklch(0.50 0 0)` - Ratio 5.9:1 ✓
+  - Background (Clean White `oklch(0.98 0.002 264)`): Dark text `oklch(0.09 0.005 264)` - Ratio 19.2:1 ✓
+  - Card (Glass `oklch(0.98 0.001 264 / 0.72)`): Dark text `oklch(0.09 0.005 264)` - Ratio 18.8:1 ✓
+  - Primary (Professional Blue `oklch(0.45 0.20 264)`): White text `oklch(0.99 0 0)` - Ratio 8.1:1 ✓
+  - Secondary (Muted Purple-Blue `oklch(0.55 0.12 264)`): White text `oklch(0.99 0 0)` - Ratio 5.8:1 ✓
+  - Accent (Professional Blue `oklch(0.50 0.18 264)`): White text `oklch(0.99 0 0)` - Ratio 6.2:1 ✓
+  - Success (Emerald Green `oklch(0.60 0.17 158)`): White text `oklch(0.99 0 0)` - Ratio 4.9:1 ✓
 
-**Note**: Dark mode is intentionally not implemented. The platform maintains a consistent white background theme for all users.
+**Note**: Dark mode is intentionally not implemented. The platform maintains a consistent light theme for all users.
 
 ## Font Selection
 
-Typography should convey precision, modern professionalism, and approachability using Plus Jakarta Sans - a contemporary geometric sans-serif that balances technical clarity with warmth. Its slightly rounded terminals create a friendly yet professional tone perfect for a platform connecting homeowners and contractors.
+Typography should convey precision and modern professionalism using Plus Jakarta Sans - a contemporary geometric sans-serif that balances technical clarity with approachability, matching iOS system font aesthetics.
 
 - **Typographic Hierarchy**:
   - H1 (Page Title): Plus Jakarta Sans Bold/40px (2.5rem)/tight line height 1.2/letter spacing -0.02em
@@ -320,20 +321,21 @@ Typography should convey precision, modern professionalism, and approachability 
 
 ## Animations
 
-Animations should run at 225fps equivalent (ultra-smooth, imperceptible lag) - every interaction feels instant and fluid. All transitions use optimized durations: ultra-fast (0.044s), fast (0.088s), normal (0.133s), smooth (0.177s), slow (0.266s).
+**iOS 18-inspired micro-interactions** - mechanical, precise, expensive-feeling:
 
-- **Purposeful Meaning**: Video upload drag-drop with instant visual feedback, analysis progress with smooth percentage updates, confidence score animates in with spring physics, frame extraction shows seamless transition, job cards lift with silky hover, territory map states highlight instantly
+- **Button Press**: Scale down 4% (0.96) on press with 110ms ease-out `cubic-bezier(0.32, 0, 0.67, 0)` - feels mechanical, not bouncy
+- **Card Hover**: Lift 8px (`translateY(-8px)`) with 280ms ease `cubic-bezier(0.34, 1.25, 0.64, 1)` + subtle inner shadow enhancement
+- **Success Actions**: Quick emerald-green pulse border animation (400ms) with expanding glow effect
+- **Loading States**: Horizontal progress bar that moves like a torque wrench tightening - 1.8s smooth back-and-forth motion
+- **Territory Map Zoom**: 480ms ease-out with slight overshoot `cubic-bezier(0.22, 1, 0.36, 1)` - feels like a drone shot in a war room
+
+- **Purposeful Meaning**: Every animation serves function - buttons feel tactile, cards feel substantial, success states feel rewarding, loading feels purposeful
 - **Hierarchy of Movement**: 
-  1. Primary: Video analysis pipeline (frame extraction → analysis → scope generation) with progress indicators
-  2. Secondary: Job creation flow, territory revenue updates, contractor approvals
-  3. Tertiary: Hover states on cards, button presses, navigation transitions
+  1. Primary: Map interactions, territory selection with 480ms drone-like zoom
+  2. Secondary: Card lifts (8px, 280ms), form submissions with success pulse
+  3. Tertiary: Button presses (4% scale, 110ms), hover states
 
-All framer-motion transitions updated to 225fps equivalent timing:
-- Button/card hover: 0.088s (fast)
-- Page transitions: 0.177s (smooth) 
-- Analysis progress: 0.133s updates (normal)
-- Micro-interactions: 0.044s (ultra-fast)
-- Spring animations: high stiffness (300), optimal damping (25)
+**Reference Apps**: Apple iOS 18 Maps flyover animations + Linear.app button interactions + Arc browser smooth transitions
 
 ## Component Selection
 

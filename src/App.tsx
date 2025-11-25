@@ -62,6 +62,7 @@ import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { PaymentModal } from '@/components/PaymentModal';
 import { PaymentScreen } from '@/components/PaymentScreen';
 import { LocationJobBrowser } from '@/components/LocationJobBrowser';
+import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
@@ -219,15 +220,18 @@ function App() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.133, ease: [0.4, 0, 0.2, 1] }}
-          className="text-center"
+          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+          className="text-center w-full max-w-xs"
         >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full mx-auto mb-4"
-          />
-          <p className="text-muted-foreground">Loading ServiceHub...</p>
+          <div className="mb-4">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+              className="w-12 h-12 border-3 border-primary/20 border-t-primary rounded-full mx-auto"
+            />
+          </div>
+          <div className="loading-bar mb-3" />
+          <p className="text-sm text-muted-foreground font-medium">Loading ServiceHub...</p>
         </motion.div>
       </div>
     );
@@ -248,16 +252,20 @@ function App() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-        className="sticky top-0 z-50 glass-card border-b border-border/50 pt-2"
+        className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-center h-16 py-2 relative">
-            <nav className="flex items-center gap-2 justify-center">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <div className="w-full px-4">
+          <div className="flex items-center justify-between h-16 py-2 max-w-[1920px] mx-auto">
+            <nav className="flex items-center gap-2 flex-1 justify-center">
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
                 <Button
                   variant={activeTab === 'home' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('home')}
-                  className="glass-hover"
+                  className="button-interactive"
                   size="sm"
                 >
                   <House className="w-4 h-4 mr-1.5" weight={activeTab === 'home' ? 'fill' : 'regular'} />
@@ -265,11 +273,15 @@ function App() {
                 </Button>
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
                 <Button
                   variant={activeTab === 'territories' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('territories', 'overview')}
-                  className="glass-hover"
+                  className="button-interactive"
                   size="sm"
                 >
                   <MapTrifold className="w-4 h-4 mr-1.5" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
@@ -277,11 +289,15 @@ function App() {
                 </Button>
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
                 <Button
                   variant={activeTab === 'browse-jobs' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('browse-jobs')}
-                  className="glass-hover"
+                  className="button-interactive"
                   size="sm"
                 >
                   <Briefcase className="w-4 h-4 mr-1.5" weight={activeTab === 'browse-jobs' ? 'fill' : 'regular'} />
@@ -291,10 +307,14 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  >
                     <Button
                       variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
-                      className="glass-hover"
+                      className="button-interactive"
                       size="sm"
                     >
                       <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
@@ -317,10 +337,14 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  >
                     <Button
                       variant={activeTab === 'contractor' ? 'default' : 'ghost'}
-                      className="glass-hover"
+                      className="button-interactive"
                       size="sm"
                     >
                       <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
@@ -347,10 +371,14 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  >
                     <Button
                       variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
-                      className="glass-hover"
+                      className="button-interactive"
                       size="sm"
                     >
                       <HardHat className="w-4 h-4 mr-1.5" weight={activeTab === 'subcontractor' ? 'fill' : 'regular'} />
@@ -371,11 +399,15 @@ function App() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
                 <Button
                   variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('intelligence')}
-                  className="glass-hover"
+                  className="button-interactive"
                   size="sm"
                 >
                   <Lightning className="w-4 h-4 mr-1.5" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
@@ -385,10 +417,14 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  >
                     <Button
                       variant={activeTab === 'partners' ? 'default' : 'ghost'}
-                      className="glass-hover"
+                      className="button-interactive"
                       size="sm"
                     >
                       <Handshake className="w-4 h-4 mr-1.5" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
@@ -427,10 +463,14 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  >
                     <Button
                       variant={activeTab === 'referral' ? 'default' : 'ghost'}
-                      className="glass-hover"
+                      className="button-interactive"
                       size="sm"
                     >
                       <Gift className="w-4 h-4 mr-1.5" weight={activeTab === 'referral' ? 'fill' : 'regular'} />
@@ -452,12 +492,16 @@ function App() {
               </DropdownMenu>
             </nav>
 
-            <div className="absolute right-4 flex items-center gap-2">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div className="flex items-center gap-2">
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
                 <Button
                   variant={activeTab === 'messages' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('messages')}
-                  className="glass-hover relative"
+                  className="button-interactive relative"
                   size="sm"
                 >
                   <ChatCircle className="w-4 h-4 mr-1.5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
@@ -467,10 +511,11 @@ function App() {
               </motion.div>
 
               <motion.div 
-                whileHover={{ scale: 1.05 }} 
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                <Button variant="ghost" size="icon" className="relative glass-hover h-8 w-8">
+                <Button variant="ghost" size="icon" className="button-interactive relative h-8 w-8">
                   <BellRinging className="w-4 h-4" />
                   <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
                 </Button>
@@ -478,8 +523,9 @@ function App() {
 
               {currentUser?.role === 'admin' && (
                 <motion.div 
-                  whileHover={{ scale: 1.05 }} 
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }} 
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                 >
                   <Button
                     variant={showAdminPanel ? 'default' : 'outline'}
@@ -488,37 +534,44 @@ function App() {
                       setShowAdminPanel(!showAdminPanel);
                       setShowProfile(false);
                     }}
-                    className="glass-hover h-8 w-8"
+                    className="button-interactive h-8 w-8"
                   >
                     <ChartBar className="w-4 h-4" weight={showAdminPanel ? 'fill' : 'regular'} />
                   </Button>
                 </motion.div>
               )}
 
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  setActiveTab('payment');
-                  setActiveSubTab(null);
-                  setShowAdminPanel(false);
-                  setShowProfile(false);
-                }}
-                className="glass-hover h-8 w-8"
-                title="Make a Payment"
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                <CreditCard className="w-4 h-4" />
-              </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setActiveTab('payment');
+                    setActiveSubTab(null);
+                    setShowAdminPanel(false);
+                    setShowProfile(false);
+                  }}
+                  className="button-interactive h-8 w-8"
+                  title="Make a Payment"
+                >
+                  <CreditCard className="w-4 h-4" />
+                </Button>
+              </motion.div>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
-                    whileHover={{ scale: 1.05 }} 
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                   >
                     <Button
                       variant="ghost"
-                      className="glass-hover flex items-center gap-1.5 px-2 h-8"
+                      className="button-interactive flex items-center gap-1.5 px-2 h-8"
                     >
                       <Avatar className="w-6 h-6">
                         <AvatarImage src={currentUser?.avatar} />
@@ -607,61 +660,85 @@ function App() {
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('territories', 'overview')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-primary">
-                              <MapTrifold className="w-7 h-7 text-white" weight="fill" />
+                        <motion.div
+                          whileHover={{ y: -8 }}
+                          whileTap={{ scale: 0.96 }}
+                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                        >
+                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('territories', 'overview')}>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-primary">
+                                <MapTrifold className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Available</p>
+                                <p className="text-2xl font-bold">850+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Available</p>
-                              <p className="text-2xl font-bold">850+</p>
-                            </div>
-                          </div>
-                          <p className="text-sm font-semibold">Territories</p>
-                          <p className="text-xs text-muted-foreground">First 10 FREE • Then $124.99 each</p>
-                        </Card>
+                            <p className="text-sm font-semibold">Territories</p>
+                            <p className="text-xs text-muted-foreground">First 10 FREE • Then $124.99 each</p>
+                          </Card>
+                        </motion.div>
 
-                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('browse-jobs')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-accent">
-                              <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                        <motion.div
+                          whileHover={{ y: -8 }}
+                          whileTap={{ scale: 0.96 }}
+                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                        >
+                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('browse-jobs')}>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-accent">
+                                <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Active</p>
+                                <p className="text-2xl font-bold">2.8K+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Active</p>
-                              <p className="text-2xl font-bold">2.8K+</p>
-                            </div>
-                          </div>
-                          <p className="text-sm font-semibold">Jobs Available</p>
-                          <p className="text-xs text-muted-foreground">Browse opportunities now</p>
-                        </Card>
+                            <p className="text-sm font-semibold">Jobs Available</p>
+                            <p className="text-xs text-muted-foreground">Browse opportunities now</p>
+                          </Card>
+                        </motion.div>
 
-                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('contractor', 'dashboard')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-secondary">
-                              <Hammer className="w-7 h-7 text-white" weight="fill" />
+                        <motion.div
+                          whileHover={{ y: -8 }}
+                          whileTap={{ scale: 0.96 }}
+                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                        >
+                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-secondary">
+                                <Hammer className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Network</p>
+                                <p className="text-2xl font-bold">3.5K+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Network</p>
-                              <p className="text-2xl font-bold">3.5K+</p>
-                            </div>
-                          </div>
-                          <p className="text-sm font-semibold">Contractors</p>
-                          <p className="text-xs text-muted-foreground">Join our network</p>
-                        </Card>
+                            <p className="text-sm font-semibold">Contractors</p>
+                            <p className="text-xs text-muted-foreground">Join our network</p>
+                          </Card>
+                        </motion.div>
 
-                        <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => handleNavClick('intelligence')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-primary">
-                              <Brain className="w-7 h-7 text-white" weight="fill" />
+                        <motion.div
+                          whileHover={{ y: -8 }}
+                          whileTap={{ scale: 0.96 }}
+                          transition={{ duration: 0.28, ease: [0.34, 1.25, 0.64, 1] }}
+                        >
+                          <Card className="glass-card p-6 cursor-pointer h-full" onClick={() => handleNavClick('intelligence')}>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-primary">
+                                <Brain className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Accuracy</p>
+                                <p className="text-2xl font-bold">94.5%</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Accuracy</p>
-                              <p className="text-2xl font-bold">94.5%</p>
-                            </div>
-                          </div>
-                          <p className="text-sm font-semibold">AI Accuracy</p>
-                          <p className="text-xs text-muted-foreground">Self-learning platform</p>
-                        </Card>
+                            <p className="text-sm font-semibold">AI Accuracy</p>
+                            <p className="text-xs text-muted-foreground">Self-learning platform</p>
+                          </Card>
+                        </motion.div>
                       </div>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
