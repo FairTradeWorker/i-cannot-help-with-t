@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { VideoCamera, Eye, Package, Clock, CurrencyDollar, CheckCircle, Warning, Certificate } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,9 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
   const [financingApproved, setFinancingApproved] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Generate stable job ID that persists across renders for the same scope
+  const jobId = useMemo(() => generateJobId(), [scope]);
 
   const handleFinancingApproved = (application: FinancingApplication) => {
     setFinancingApproved(true);
@@ -372,7 +375,7 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
         <InstantFinancingModal
           open={showFinancingModal}
           onOpenChange={setShowFinancingModal}
-          jobId={generateJobId()}
+          jobId={jobId}
           jobTitle={scope.jobTitle}
           jobTotal={scope.estimatedCost.max}
           homeownerId={homeownerId || 'demo-user'}

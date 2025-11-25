@@ -14,25 +14,41 @@ interface WebhookResponse {
   error?: string;
 }
 
-function computeHmacSha256(payload: string, secret: string): string {
+async function computeHmacSha256(payload: string, secret: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(payload);
   const keyData = encoder.encode(secret);
+  const messageData = encoder.encode(payload);
+
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, messageData);
   
-  let hash = 0;
-  for (let i = 0; i < data.length; i++) {
-    hash = ((hash << 5) - hash + data[i] + keyData[i % keyData.length]) | 0;
-  }
-  return hash.toString(16);
+  const hashArray = Array.from(new Uint8Array(signature));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function validateWebhookSignature(signature: string, payload: string, secret: string): boolean {
+async function validateWebhookSignature(signature: string, payload: string, secret: string): Promise<boolean> {
   if (!signature || !secret) {
     return false;
   }
   
-  const expectedSignature = computeHmacSha256(payload, secret);
-  return signature === expectedSignature;
+  const expectedSignature = await computeHmacSha256(payload, secret);
+  
+  if (signature.length !== expectedSignature.length) {
+    return false;
+  }
+  
+  let result = 0;
+  for (let i = 0; i < signature.length; i++) {
+    result |= signature.charCodeAt(i) ^ expectedSignature.charCodeAt(i);
+  }
+  return result === 0;
 }
 
 function getWebhookSecret(): string {
@@ -50,7 +66,8 @@ export async function processFinancingWebhook(
     const webhookSecret = getWebhookSecret();
     
     if (webhookSecret && signature) {
-      if (!validateWebhookSignature(signature, JSON.stringify(payload), webhookSecret)) {
+      const isValidSignature = await validateWebhookSignature(signature, JSON.stringify(payload), webhookSecret);
+      if (!isValidSignature) {
         return {
           success: false,
           message: 'Invalid webhook signature',
@@ -199,6 +216,14 @@ async function handleCompletedEvent(payload: FinancingWebhookPayload): Promise<W
   };
 }
 
+/**
+ * Save financing application to storage.
+ * 
+ * NOTE: This implementation uses localStorage for demo purposes only.
+ * In production, financial transactions should be stored in a secure,
+ * persistent database with proper encryption, audit trails, and
+ * compliance with financial data regulations (PCI-DSS, etc.).
+ */
 async function saveFinancingApplication(application: FinancingApplication): Promise<void> {
   const storageKey = `financing_${application.id}`;
   localStorage.setItem(storageKey, JSON.stringify(application));
