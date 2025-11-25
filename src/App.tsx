@@ -2,13 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   House, 
-  User, 
   ChatCircle,
-  Sparkle,
   BellRinging,
   Handshake,
   Gift,
-  MapTrifold,
   CaretDown,
   UserCircle,
   ShoppingBag,
@@ -19,6 +16,12 @@ import {
   Question,
   ChartBar,
   Briefcase,
+  Hammer,
+  HardHat,
+  Code,
+  CreditCard,
+  UserGear,
+  SignOut,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +30,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LegalConsentModal } from '@/components/LegalConsentModal';
 import { LegalFooter } from '@/components/LegalFooter';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
@@ -39,12 +44,14 @@ import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
+import { APILicense } from '@/components/APILicense';
+import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'jobs' | 'territory' | 'messages' | 'partners' | 'referral';
-type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals';
+type MainTab = 'home' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral' | 'apis';
+type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings' | 'api_docs' | 'api_pricing' | 'api_access';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -162,6 +169,13 @@ function App() {
     setShowProfile(false);
   };
 
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setShowLegalConsent(true);
+    setActiveTab('home');
+    setActiveSubTab(null);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -176,7 +190,7 @@ function App() {
             transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
             className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full mx-auto mb-4"
           />
-          <p className="text-muted-foreground">Loading marketplace...</p>
+          <p className="text-muted-foreground">Loading ServiceHub...</p>
         </motion.div>
       </div>
     );
@@ -202,22 +216,7 @@ function App() {
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => handleNavClick('home')}
-            >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                <Sparkle className="w-6 h-6 text-white" weight="fill" />
-              </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                ServiceHub
-              </h1>
-            </motion.div>
-
-            <nav className="hidden md:flex items-center gap-2 flex-1 justify-center">
+            <nav className="flex items-center gap-2 flex-1">
               <Button
                 variant={activeTab === 'home' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('home')}
@@ -235,35 +234,65 @@ function App() {
                     <CaretDown className="w-4 h-4 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="glass-card border-border/50">
+                <DropdownMenuContent align="start" className="glass-card border-border/50">
                   <DropdownMenuItem onClick={() => handleNavClick('home', 'browse')}>
                     <ShoppingBag className="w-4 h-4 mr-2" />
                     Browse Services
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('home', 'payment')}>
                     <Package className="w-4 h-4 mr-2" />
-                    Payment
+                    Payment Options
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button
-                variant={activeTab === 'jobs' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('jobs')}
-                className="glass-hover"
-              >
-                <Briefcase className="w-5 h-5 mr-2" weight={activeTab === 'jobs' ? 'fill' : 'regular'} />
-                Jobs
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant={activeTab === 'contractor' ? 'default' : 'ghost'} className="glass-hover">
+                    <Hammer className="w-5 h-5 mr-2" weight="regular" />
+                    Contractor
+                    <CaretDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
+                    <ChartBar className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'jobs')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Browse Jobs
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'earnings')}>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Earnings
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-              <Button
-                variant={activeTab === 'territory' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('territory')}
-                className="glass-hover"
-              >
-                <MapTrifold className="w-5 h-5 mr-2" weight={activeTab === 'territory' ? 'fill' : 'regular'} />
-                Territory
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant={activeTab === 'subcontractor' ? 'default' : 'ghost'} className="glass-hover">
+                    <HardHat className="w-5 h-5 mr-2" weight="regular" />
+                    Subcontractor
+                    <CaretDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'dashboard')}>
+                    <ChartBar className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'jobs')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Browse Jobs
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'earnings')}>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Earnings
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -284,11 +313,11 @@ function App() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'ai')}>
                     <ChartBar className="w-4 h-4 mr-2" />
-                    AI Technology
+                    Technology
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
                     <Bank className="w-4 h-4 mr-2" />
-                    Private Equity (Contact Us)
+                    Private Equity
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'real_estate')}>
                     <Buildings className="w-4 h-4 mr-2" />
@@ -297,7 +326,7 @@ function App() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'contact')}>
                     <Question className="w-4 h-4 mr-2" />
-                    Don't see your business? Contact us
+                    Partner With Us
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -316,8 +345,32 @@ function App() {
                     Referral Program
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('referral', 'my_referrals')}>
-                    <User className="w-4 h-4 mr-2" />
+                    <UserCircle className="w-4 h-4 mr-2" />
                     My Referrals
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant={activeTab === 'apis' ? 'default' : 'ghost'} className="glass-hover">
+                    <Code className="w-5 h-5 mr-2" weight="regular" />
+                    API
+                    <CaretDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="center" className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('apis', 'api_docs')}>
+                    <Code className="w-4 h-4 mr-2" />
+                    Documentation
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('apis', 'api_pricing')}>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Pricing & Plans
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('apis', 'api_access')}>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Get Access
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -369,23 +422,65 @@ function App() {
                 </motion.div>
               )}
 
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleNavClick('home', 'payment')}
+                className="glass-hover"
               >
-                <Button
-                  variant={showProfile ? 'default' : 'outline'}
-                  size="icon"
-                  onClick={() => {
-                    setShowProfile(!showProfile);
+                <CreditCard className="w-5 h-5" />
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.088, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    <Button
+                      variant="ghost"
+                      className="glass-hover flex items-center gap-2 px-2"
+                    >
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={currentUser?.avatar} />
+                        <AvatarFallback>
+                          {currentUser?.name?.charAt(0) || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="hidden md:inline text-sm font-medium">
+                        {currentUser?.name || 'User'}
+                      </span>
+                      <CaretDown className="w-4 h-4" />
+                    </Button>
+                  </motion.div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="glass-card border-border/50 w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-semibold">{currentUser?.name || 'User'}</span>
+                      <span className="text-xs text-muted-foreground">{currentUser?.email}</span>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => {
+                    setShowProfile(true);
                     setShowAdminPanel(false);
-                  }}
-                  className="glass-hover"
-                >
-                  <UserCircle className="w-5 h-5" weight={showProfile ? 'fill' : 'regular'} />
-                </Button>
-              </motion.div>
+                  }}>
+                    <UserGear className="w-4 h-4 mr-2" />
+                    Profile Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('home', 'payment')}>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Payment Methods
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                    <SignOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -406,20 +501,20 @@ function App() {
                 <>
                   {activeTab === 'home' && !activeSubTab && (
                     <div className="space-y-8">
-                      <JobBrowser />
+                      <TerritoryBrowser />
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.088, duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
                       >
-                        <TerritoryBrowser />
+                        <JobBrowser />
                       </motion.div>
                     </div>
                   )}
                   {activeTab === 'home' && activeSubTab === 'browse' && <MarketplaceBrowse />}
                   {activeTab === 'home' && activeSubTab === 'payment' && <PaymentManagement />}
-                  {activeTab === 'jobs' && <JobBrowser />}
-                  {activeTab === 'territory' && <TerritoryBrowser />}
+                  {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
+                  {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
                   {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
                   {activeTab === 'referral' && (
@@ -429,6 +524,7 @@ function App() {
                       activeView={activeSubTab === 'my_referrals' ? 'referrals' : 'program'}
                     />
                   )}
+                  {activeTab === 'apis' && <APILicense activeView={activeSubTab} />}
                 </>
               )}
             </motion.div>
@@ -449,7 +545,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-accent">
+                <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-accent">
                   <ChartBar className="w-6 h-6 text-white" weight="fill" />
                 </div>
                 <h2 className="text-2xl font-bold">Admin Dashboard</h2>

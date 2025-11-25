@@ -16,21 +16,27 @@ import { EstimateAccuracyTrend } from './EstimateAccuracyTrend';
 import { RouteOptimizer } from './RouteOptimizer';
 
 interface ContractorDashboardProps {
-  user: User;
+  user?: User;
+  subTab?: string | null;
+  isSubcontractor?: boolean;
 }
 
-export function ContractorDashboard({ user }: ContractorDashboardProps) {
-  const [activeTab, setActiveTab] = useState('browse');
+export function ContractorDashboard({ user, subTab, isSubcontractor }: ContractorDashboardProps) {
+  const [activeTab, setActiveTab] = useState(subTab || 'dashboard');
   const [myJobs, setMyJobs] = useState<Job[]>([]);
   const [earnings, setEarnings] = useState<Earnings | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
-  }, [user.id]);
+    if (user?.id) {
+      loadData();
+    }
+  }, [user?.id]);
 
   const loadData = async () => {
+    if (!user?.id) return;
+    
     setLoading(true);
     try {
       const jobs = await dataStore.getJobsForContractor(user.id);
@@ -45,9 +51,9 @@ export function ContractorDashboard({ user }: ContractorDashboardProps) {
     }
   };
 
-  const profile = user.contractorProfile;
+  const profile = user?.contractorProfile;
 
-  if (!profile) {
+  if (!user || !profile) {
     return (
       <div className="p-8 text-center">
         <p className="text-muted-foreground">No contractor profile found</p>
