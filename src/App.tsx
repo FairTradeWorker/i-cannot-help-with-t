@@ -22,6 +22,8 @@ import {
   UserGear,
   SignOut,
   MapTrifold,
+  Lightning,
+  Brain,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -48,12 +50,14 @@ import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { QuickJobPost } from '@/components/QuickJobPost';
 import { VideoJobCreator } from '@/components/VideoJobCreator';
 import { APIMarketplaceSection } from '@/components/APIMarketplaceSection';
+import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
+import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral';
+type MainTab = 'home' | 'territories' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral' | 'intelligence';
 type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings';
 
 function App() {
@@ -361,6 +365,15 @@ function App() {
                 <ChatCircle className="w-5 h-5 mr-2" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
                 Messages
               </Button>
+
+              <Button
+                variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('intelligence')}
+                className="glass-hover"
+              >
+                <Lightning className="w-5 h-5 mr-2" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
+                Intelligence API
+              </Button>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -509,6 +522,7 @@ function App() {
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
+                  {activeTab === 'intelligence' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
                   {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
                   {activeTab === 'referral' && (
                     <ReferralSystem 
@@ -538,14 +552,15 @@ function App() {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-accent">
-                  <ChartBar className="w-6 h-6 text-white" weight="fill" />
+                  <Brain className="w-6 h-6 text-white" weight="fill" />
                 </div>
-                <h2 className="text-2xl font-bold">Admin Dashboard</h2>
+                <h2 className="text-2xl font-bold">Admin Dashboard - Intelligence & Learning</h2>
               </div>
-              <p className="text-muted-foreground">Platform analytics and performance metrics</p>
+              <p className="text-muted-foreground">Platform analytics, learning metrics, and AI performance</p>
             </div>
             
             <div className="space-y-8">
+              <AdminLearningDashboard />
               <AnalyticsDashboard analytics={mockAnalytics} />
             </div>
           </div>
