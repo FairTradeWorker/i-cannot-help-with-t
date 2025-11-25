@@ -82,11 +82,32 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: Route optimized in <5s, displays total distance/duration/fuel cost, reorders stops for efficiency, shows visual map with numbered stops, provides turn-by-turn leg details, calculates estimated route cost including time value
 
 ### Top Navigation System
-- **Functionality**: Persistent top navigation bar with dropdown menus for Homeowner (Browse, Payment), Partner (Dashboard, Finance), Admin (Analytics, User Management), and Referral (Program, My Referrals) sections
+- **Functionality**: Persistent top navigation bar with main tabs: Home (job posting), Territories (map & claiming), Contractor, Subcontractor, Partners, Referral, Intelligence API, Messages, and user profile with payment access
 - **Purpose**: Provide easy access to all platform features with clear organization and hierarchy
 - **Trigger**: Always visible at top of screen, dropdowns appear on click
 - **Progression**: Click nav item → dropdown opens (if applicable) → select option → navigate to section → content loads
 - **Success criteria**: All sections accessible from navigation, dropdowns work smoothly, active state clearly indicated
+
+### Territory Map with Claiming
+- **Functionality**: Comprehensive territory map with list/map view toggle, search by zip/city/county/state, territory claiming with ROI calculations, claimed territory tracking with KV persistence
+- **Purpose**: Allow operators to discover, evaluate, and claim territories with clear financial projections and 8% revenue share details
+- **Trigger**: User navigates to Territories tab in main navigation
+- **Progression**: Map loads → switch between map/list view → search territories → click territory → view details (jobs, revenue, price, ROI) → claim territory → confirm purchase → territory saved to profile
+- **Success criteria**: All territories searchable and claimable, claims persist between sessions using useKV, ROI calculations accurate, claimed territories display differently
+
+### Intelligence API Marketplace
+- **Functionality**: Enterprise API marketplace with 4 pricing tiers (Starter $5K/mo, Professional $25K/mo, Enterprise $100K/mo, Custom), 6 API endpoints (Demand Forecasting, Market Pricing, Labor Availability, Risk Assessment, Territory Valuation, Market Trends), authentication documentation, request/response examples
+- **Purpose**: Monetize platform intelligence for non-competing businesses (PE firms, real estate platforms, insurance companies), provide market data APIs
+- **Trigger**: User clicks Intelligence API in main navigation
+- **Progression**: API page loads → view pricing plans → explore API documentation → select endpoint → view examples → purchase plan → receive API keys
+- **Success criteria**: All 4 pricing tiers displayed with features, 6 API endpoints documented with examples, authentication methods explained, plan selection triggers purchase flow
+
+### Quick Job Post Component
+- **Functionality**: Three job creation options on home page: Video (60-second AI analysis), Photo (image upload), Text (manual description), each with visual card and gradient styling
+- **Purpose**: Make job posting prominent and accessible immediately on home page, offer multiple posting methods to suit user preferences
+- **Trigger**: User lands on Home tab (default view)
+- **Progression**: Home loads → see 3 posting options → select method → appropriate job creator opens → complete posting flow
+- **Success criteria**: All 3 options visible on home page, Video opens VideoJobCreator, Photo/Text show coming soon toast, visually distinct cards with hover effects
 
 ### 50-State Territory Database & Interactive Map
 - **Functionality**: Comprehensive database of all 50 US states with interactive SVG map, clickable states showing detailed information including active contractors, total jobs, ratings, top services, licensing authority, and website
@@ -277,15 +298,16 @@ The design should feel modern, fluid, and professional - like browsing a high-en
 
 ## Font Selection
 
-Typography should convey precision, clarity, and modern professionalism - characteristics of both construction documentation and AI technology. Inter provides excellent readability for complex data tables and technical information while maintaining a contemporary feel.
+Typography should convey precision, modern professionalism, and approachability using Plus Jakarta Sans - a contemporary geometric sans-serif that balances technical clarity with warmth. Its slightly rounded terminals create a friendly yet professional tone perfect for a platform connecting homeowners and contractors.
 
 - **Typographic Hierarchy**:
-  - H1 (Page Title): Inter Bold/32px/tight letter spacing/-0.02em
-  - H2 (Section Headers): Inter SemiBold/24px/tight letter spacing/-0.01em  
-  - H3 (Component Titles): Inter SemiBold/18px/normal letter spacing
-  - Body (Primary Text): Inter Regular/16px/relaxed line height/1.6
-  - Small (Metadata/Labels): Inter Medium/14px/normal line height/1.4
-  - Mono (Technical Data): JetBrains Mono Regular/14px for cost figures and measurements
+  - H1 (Page Title): Plus Jakarta Sans Bold/40px (2.5rem)/tight line height 1.2/letter spacing -0.02em
+  - H2 (Section Headers): Plus Jakarta Sans Bold/32px (2rem)/tight line height 1.2/letter spacing -0.02em  
+  - H3 (Component Titles): Plus Jakarta Sans Bold/24px (1.5rem)/tight line height 1.2/letter spacing -0.02em
+  - H4 (Subsection): Plus Jakarta Sans Bold/20px (1.25rem)/tight line height 1.2/letter spacing -0.02em
+  - Body (Primary Text): Plus Jakarta Sans Regular/15px/relaxed line height 1.6
+  - Small (Metadata/Labels): Plus Jakarta Sans Medium/13px/normal line height 1.4
+  - Mono (Technical Data/Code): Space Mono Regular/13px for API examples and technical specifications
 
 ## Animations
 

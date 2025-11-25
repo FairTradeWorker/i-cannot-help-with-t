@@ -22,6 +22,8 @@ import {
   CreditCard,
   UserGear,
   SignOut,
+  MapTrifold,
+  Brain,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,19 +40,22 @@ import { LegalFooter } from '@/components/LegalFooter';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
-import { TerritoryBrowser } from '@/components/TerritoryBrowser';
+import { TerritoryMapPage } from '@/components/TerritoryMapPage';
 import { ReferralSystem } from '@/components/ReferralSystem';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
-import { APILicense } from '@/components/APILicense';
+import { IntelligenceAPIMarketplace } from '@/components/IntelligenceAPIMarketplace';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
+import { QuickJobPost } from '@/components/QuickJobPost';
+import { VideoJobCreator } from '@/components/VideoJobCreator';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
+import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral' | 'apis';
+type MainTab = 'home' | 'territories' | 'contractor' | 'subcontractor' | 'messages' | 'partners' | 'referral' | 'apis';
 type SubTab = 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings' | 'api_docs' | 'api_pricing' | 'api_access';
 
 function App() {
@@ -61,6 +66,7 @@ function App() {
   const [activeSubTab, setActiveSubTab] = useState<SubTab | null>(null);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showVideoCreator, setShowVideoCreator] = useState(false);
 
   const mockReferrals: Referral[] = [
     {
@@ -167,6 +173,15 @@ function App() {
     setActiveSubTab(subTab || null);
     setShowAdminPanel(false);
     setShowProfile(false);
+    setShowVideoCreator(false);
+  };
+
+  const handleCreateJob = (type: 'video' | 'photo' | 'text') => {
+    if (type === 'video') {
+      setShowVideoCreator(true);
+    } else {
+      toast.info(`${type.charAt(0).toUpperCase() + type.slice(1)} job creation coming soon!`);
+    }
   };
 
   const handleLogout = () => {
@@ -226,25 +241,14 @@ function App() {
                 Home
               </Button>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={activeTab === 'home' && activeSubTab === 'browse' ? 'default' : 'ghost'} className="glass-hover">
-                    <ShoppingBag className="w-5 h-5 mr-2" weight="regular" />
-                    Homeowner
-                    <CaretDown className="w-4 h-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('home', 'browse')}>
-                    <ShoppingBag className="w-4 h-4 mr-2" />
-                    Browse Services
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('home', 'payment')}>
-                    <Package className="w-4 h-4 mr-2" />
-                    Payment Options
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button
+                variant={activeTab === 'territories' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('territories')}
+                className="glass-hover"
+              >
+                <MapTrifold className="w-5 h-5 mr-2" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
+                Territories
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -351,29 +355,14 @@ function App() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={activeTab === 'apis' ? 'default' : 'ghost'} className="glass-hover">
-                    <Code className="w-5 h-5 mr-2" weight="regular" />
-                    API
-                    <CaretDown className="w-4 h-4 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('apis', 'api_docs')}>
-                    <Code className="w-4 h-4 mr-2" />
-                    Documentation
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('apis', 'api_pricing')}>
-                    <CreditCard className="w-4 h-4 mr-2" />
-                    Pricing & Plans
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('apis', 'api_access')}>
-                    <Shield className="w-4 h-4 mr-2" />
-                    Get Access
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button
+                variant={activeTab === 'apis' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('apis')}
+                className="glass-hover"
+              >
+                <Brain className="w-5 h-5 mr-2" weight={activeTab === 'apis' ? 'fill' : 'regular'} />
+                Intelligence API
+              </Button>
 
               <Button
                 variant={activeTab === 'messages' ? 'default' : 'ghost'}
@@ -497,11 +486,20 @@ function App() {
               transition={{ duration: 0.177, ease: [0.4, 0, 0.2, 1] }}
             >
               {showProfile && <UserProfile user={currentUser} />}
-              {!showProfile && (
+              {showVideoCreator && (
+                <VideoJobCreator 
+                  onJobCreated={(jobData) => {
+                    toast.success('Job created successfully!');
+                    setShowVideoCreator(false);
+                  }}
+                  onCancel={() => setShowVideoCreator(false)}
+                />
+              )}
+              {!showProfile && !showVideoCreator && (
                 <>
-                  {activeTab === 'home' && !activeSubTab && (
+                  {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <TerritoryBrowser />
+                      <QuickJobPost onCreateJob={handleCreateJob} />
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -511,8 +509,7 @@ function App() {
                       </motion.div>
                     </div>
                   )}
-                  {activeTab === 'home' && activeSubTab === 'browse' && <MarketplaceBrowse />}
-                  {activeTab === 'home' && activeSubTab === 'payment' && <PaymentManagement />}
+                  {activeTab === 'territories' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
@@ -524,7 +521,7 @@ function App() {
                       activeView={activeSubTab === 'my_referrals' ? 'referrals' : 'program'}
                     />
                   )}
-                  {activeTab === 'apis' && <APILicense activeView={activeSubTab} />}
+                  {activeTab === 'apis' && <IntelligenceAPIMarketplace />}
                 </>
               )}
             </motion.div>

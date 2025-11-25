@@ -7,9 +7,31 @@
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: linear-gradient(135deg, oklch(0.98 0.01 250) 0%, oklch(0.96 0.02 280) 100%);
     min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.125rem; }
+  h6 { font-size: 1rem; }
+  
+  code, pre {
+    font-family: 'Space Mono', 'Courier New', monospace;
   }
 }
 
@@ -17,13 +39,13 @@
   --background: oklch(0.98 0.01 250);
   --foreground: oklch(0.20 0.01 250);
   
-  --card: oklch(1 0.01 250 / 0.7);
+  --card: oklch(1 0.01 250 / 0.8);
   --card-foreground: oklch(0.20 0.01 250);
   
   --popover: oklch(1 0.01 250 / 0.95);
   --popover-foreground: oklch(0.20 0.01 250);
   
-  --primary: oklch(0.50 0.18 260);
+  --primary: oklch(0.50 0.20 260);
   --primary-foreground: oklch(1 0 0);
   
   --secondary: oklch(0.65 0.15 280);
@@ -43,11 +65,11 @@
   
   --border: oklch(0.90 0.01 250 / 0.3);
   --input: oklch(0.95 0.01 250 / 0.5);
-  --ring: oklch(0.50 0.18 260);
+  --ring: oklch(0.50 0.20 260);
   
-  --radius: 0.25rem;
+  --radius: 0.5rem;
   
-  --glass-bg: oklch(1 0.01 250 / 0.4);
+  --glass-bg: oklch(1 0.01 250 / 0.5);
   --glass-border: oklch(1 0.01 250 / 0.2);
   
   --animation-fps: 225;
@@ -60,17 +82,17 @@
 
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
 }
 
 .glass-card {
   background: var(--card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
 }
 
 .glass-hover {
@@ -78,11 +100,11 @@
 }
 
 .glass-hover:hover {
-  background: oklch(1 0.01 250 / 0.6);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: oklch(1 0.01 250 / 0.7);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   transform: translateY(-1px);
-  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.12);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.14);
 }
 
 @theme {
@@ -115,6 +137,6 @@
   --radius-2xl: calc(var(--radius) * 3);
   --radius-full: 9999px;
   
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
 }
