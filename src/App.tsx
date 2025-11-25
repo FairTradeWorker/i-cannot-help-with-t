@@ -303,21 +303,6 @@ function App() {
                 </Button>
               </motion.div>
 
-              <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              >
-                <Button
-                  size="default"
-                  onClick={() => handleNavClick('homeowner', 'post-job')}
-                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-6"
-                >
-                  <Plus className="w-4 h-4 mr-1.5" weight="bold" />
-                  Post a Job
-                </Button>
-              </motion.div>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
@@ -352,6 +337,23 @@ function App() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </nav>
+
+            <div className="absolute left-1/2 -translate-x-1/2">
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
+                <Button
+                  size="default"
+                  onClick={() => handleNavClick('homeowner', 'post-job')}
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-6"
+                >
+                  <Plus className="w-4 h-4 mr-1.5" weight="bold" />
+                  Post a Job
+                </Button>
+              </motion.div>
+            </div>
 
             <nav className="flex items-center gap-2 flex-1 justify-end">
               <DropdownMenu>
