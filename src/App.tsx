@@ -337,6 +337,8 @@ function App() {
               </DropdownMenu>
             </nav>
 
+            <div className="flex-1" />
+
             <nav className="flex items-center gap-1.5">
               <Button
                 size="lg"
@@ -346,6 +348,8 @@ function App() {
                 <Plus className="w-5 h-5 mr-2" weight="bold" />
                 Post a Job
               </Button>
+
+              <div className="w-8" />
 
               <Button
                 variant={activeTab === 'api' ? 'default' : 'ghost'}
