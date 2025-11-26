@@ -58,27 +58,22 @@ import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
-import { QuickJobPost } from '@/components/QuickJobPost';
-import { VideoJobCreator } from '@/components/VideoJobCreator';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
-import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { PaymentModal } from '@/components/PaymentModal';
 import { PaymentScreen } from '@/components/PaymentScreen';
-import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { WarrantySection } from '@/components/WarrantySection';
 import { FileAClaim } from '@/components/FileAClaim';
-import { HomeownerProfileForm } from '@/components/HomeownerProfileForm';
-import { PhotoJobPost } from '@/components/PhotoJobPost';
-import { TextJobPost } from '@/components/TextJobPost';
+import { UnifiedJobPost } from '@/components/UnifiedJobPost';
+import { NotificationsPage } from '@/components/NotificationsPage';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment';
-type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route' | 'photo-job' | 'text-job';
+type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications';
+type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -88,9 +83,7 @@ function App() {
   const [activeSubTab, setActiveSubTab] = useState<SubTab | null>(null);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [showVideoCreator, setShowVideoCreator] = useState(false);
-  const [showPhotoJobPost, setShowPhotoJobPost] = useState(false);
-  const [showTextJobPost, setShowTextJobPost] = useState(false);
+  const [showJobPost, setShowJobPost] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
 
@@ -203,23 +196,11 @@ function App() {
     setActiveSubTab(subTab || null);
     setShowAdminPanel(false);
     setShowProfile(false);
-    setShowVideoCreator(false);
+    setShowJobPost(false);
   };
 
-  const handleCreateJob = (type: 'video' | 'photo' | 'text') => {
-    if (type === 'video') {
-      setShowVideoCreator(true);
-      setShowPhotoJobPost(false);
-      setShowTextJobPost(false);
-    } else if (type === 'photo') {
-      setShowPhotoJobPost(true);
-      setShowVideoCreator(false);
-      setShowTextJobPost(false);
-    } else {
-      setShowTextJobPost(true);
-      setShowVideoCreator(false);
-      setShowPhotoJobPost(false);
-    }
+  const handleCreateJob = () => {
+    setShowJobPost(true);
   };
 
   const handleLogout = () => {
@@ -227,6 +208,7 @@ function App() {
     setShowLogin(true);
     setActiveTab('home');
     setActiveSubTab(null);
+    setShowJobPost(false);
   };
 
   if (loading) {
@@ -315,10 +297,7 @@ function App() {
                     Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'my-jobs')}>
-                    Job Status
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'post-job')}>
-                    Post a Job
+                    My Jobs
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -347,20 +326,35 @@ function App() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button
-                variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('subcontractor', 'dashboard')}
-                className="button-interactive"
-                size="sm"
-              >
-                Subcontractor
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
+                    className="button-interactive"
+                    size="sm"
+                  >
+                    Subcontractor
+                    <CaretDown className="w-3 h-3 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="border-2 border-black">
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'dashboard')}>
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'my-jobs')}>
+                    My Estimates
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'route')}>
+                    Route Planner
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </nav>
 
             <Button
               size="lg"
-              onClick={() => handleNavClick('homeowner', 'post-job')}
-              className="hover:bg-black/90 shadow-lg font-black uppercase px-8 h-12 border-2 ml-8 text-slate-50 bg-blue-800 border-blue-700"
+              onClick={handleCreateJob}
+              className="hover:bg-black/90 shadow-lg font-black uppercase px-6 h-12 border-2 ml-4 text-slate-50 bg-blue-800 border-blue-700"
             >
               <Plus className="w-5 h-5 mr-2" weight="bold" />
               Post a Job
@@ -432,7 +426,12 @@ function App() {
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                <Button variant="ghost" size="icon" className="button-interactive relative h-8 w-8">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="button-interactive relative h-8 w-8"
+                  onClick={() => handleNavClick('notifications')}
+                >
                   <BellRinging className="w-4 h-4" />
                   <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
                 </Button>
@@ -533,13 +532,13 @@ function App() {
                     Profile Settings
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => {
-                    setActiveTab('home');
+                    setActiveTab('payment');
                     setActiveSubTab(null);
                     setShowProfile(false);
                     setShowAdminPanel(false);
                   }}>
                     <CreditCard className="w-4 h-4 mr-2" />
-                    Post a Job
+                    Billing & Payments
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive">
@@ -556,56 +555,49 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
-              key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}`}
+              key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}-${showJobPost}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
               {showProfile && <UserProfile user={currentUser} />}
-              {showVideoCreator && (
-                <VideoJobCreator 
+              {showJobPost && (
+                <UnifiedJobPost 
                   onJobCreated={(jobData) => {
                     toast.success('Job created successfully!');
-                    setShowVideoCreator(false);
-                  }}
-                  onCancel={() => setShowVideoCreator(false)}
-                />
-              )}
-              {showPhotoJobPost && (
-                <PhotoJobPost 
-                  onJobCreated={(jobData) => {
-                    toast.success('Job created successfully!');
-                    setShowPhotoJobPost(false);
+                    setShowJobPost(false);
                     setActiveTab('homeowner');
                     setActiveSubTab('my-jobs');
                   }}
-                  onCancel={() => setShowPhotoJobPost(false)}
+                  onCancel={() => setShowJobPost(false)}
                 />
               )}
-              {showTextJobPost && (
-                <TextJobPost 
-                  onJobCreated={(jobData) => {
-                    toast.success('Job created successfully!');
-                    setShowTextJobPost(false);
-                    setActiveTab('homeowner');
-                    setActiveSubTab('my-jobs');
-                  }}
-                  onCancel={() => setShowTextJobPost(false)}
-                />
-              )}
-              {!showProfile && !showVideoCreator && !showPhotoJobPost && !showTextJobPost && (
+              {!showProfile && !showJobPost && (
                 <>
                   {activeTab === 'payment' && <PaymentScreen onPaymentComplete={() => {
                     setActiveTab('home');
                     toast.success('Payment completed successfully!');
                   }} />}
+                  {activeTab === 'notifications' && <NotificationsPage />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <QuickJobPost 
-                        onCreateJob={handleCreateJob} 
-                        onExploreMap={() => handleNavClick('territories', 'overview')}
-                      />
+                      <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all" onClick={handleCreateJob}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="p-4 rounded-xl bg-primary">
+                              <Plus className="w-8 h-8 text-white" weight="bold" />
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
+                              <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
+                            </div>
+                          </div>
+                          <Button size="lg">
+                            Get Started
+                          </Button>
+                        </div>
+                      </Card>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>

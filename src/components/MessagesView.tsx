@@ -7,7 +7,8 @@ import {
   PaperPlaneRight,
   Smiley,
   Paperclip,
-  DotsThree
+  DotsThree,
+  Plus
 } from '@phosphor-icons/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -128,7 +129,13 @@ export function MessagesView({ userId }: MessagesViewProps) {
       >
         <Card className="glass-card rounded-3xl h-full flex flex-col">
           <div className="p-6 border-b border-border/50">
-            <h2 className="text-2xl font-bold mb-4">Messages</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold">Messages</h2>
+              <Button size="sm" onClick={() => toast.info('New message feature coming soon')}>
+                <Plus className="w-4 h-4 mr-2" />
+                New
+              </Button>
+            </div>
             <div className="relative">
               <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
