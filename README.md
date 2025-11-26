@@ -978,7 +978,7 @@ You are free to use this software for commercial purposes, including:
 - **Notion** - Comprehensive documentation approach
 
 ### Community
-Thanks to all contributors, testers, and early adopters who helped shape ServiceHub into what it is today.
+Thanks to all contributors, testers, and early adopters who helped shape FairTradeWorker into what it is today.
 
 ---
 

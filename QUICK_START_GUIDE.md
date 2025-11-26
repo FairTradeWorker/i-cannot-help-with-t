@@ -37,9 +37,10 @@ Save Feedback → Track Outcome → Improve Future Predictions
 #### Understanding the Payment Model
 - **Homeowners**: Pay $20 one-time platform fee per job
 - **Contractors**: Pay $0 - keep 100% of earnings
-- **Territory Operators**: Pay $0 - build the network, don't pay into it
-- **First 10 Territories**: FREE
-- **Additional Territories**: $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
+- **Territory Operators**: Pay $0 recurring fees - no monthly fees, no revenue share
+- **Territory Claiming**:
+  - First 10 Territories: FREE (one-time)
+  - Additional Territories: One-time purchase - $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
 - **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 
 #### 1. Generate an API Key

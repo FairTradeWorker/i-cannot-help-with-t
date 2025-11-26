@@ -44,9 +44,16 @@
 | 34 Premium APIs | TBD | 🔒 May 2026 |
 
 ### Territory Pricing
-- First 10: FREE
-- #11: $500 | #12: $1,000 | #13: $1,500 | #14: $2,000 | #15+: $2,500
-- ⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION
+| Territory | One-Time Price |
+|-----------|----------------|
+| First 10 | FREE |
+| #11 | $500 |
+| #12 | $1,000 |
+| #13 | $1,500 |
+| #14 | $2,000 |
+| #15+ | $2,500 each |
+
+**⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 
 ---
 

@@ -28,11 +28,15 @@ A comprehensive home services marketplace connecting homeowners with verified co
 ## Essential Features
 
 ### Enhanced Home Dashboard
-- **Functionality**: Comprehensive home screen featuring prominent "Post a Job" call-to-action card, four stat cards showing key metrics (850+ territories available, 2.8K+ active jobs, 3.5K+ verified contractors, API access starting at $199), Territory Teaser section with map preview, Zero Fees explanation card with detailed payment breakdown visualization showing how $10K job splits (100% to contractor, $20 platform fee from homeowner, territory operator pays $0)
+- **Functionality**: Comprehensive home screen featuring:
+  - Prominent "Post a Job" call-to-action card
+  - Four stat cards showing key metrics (850+ territories available, 2.8K+ active jobs, 3.5K+ verified contractors, API access starting at $199)
+  - Territory Teaser section with map preview
+  - Zero Fees explanation card with detailed payment breakdown visualization showing how $10K job splits (100% to contractor, $20 platform fee from homeowner, territory operator pays $0 recurring fees)
 - **Purpose**: Provide immediate access to core platform features, showcase platform statistics, explain value proposition to contractors (zero fees), encourage territory claiming, and highlight API marketplace
 - **Trigger**: User lands on Home tab (default view after login)
 - **Progression**: Home loads → see prominent "Post a New Job" card → review four metric cards (territories, jobs, contractors, API) → scroll to Territory Teaser → explore Zero Fees benefit card with payment breakdown → understand zero-fee territory model
-- **Success criteria**: All stat cards clickable and navigate to relevant sections, Post a Job card opens UnifiedJobPost modal, zero fees card clearly shows 100% contractor earnings, payment breakdown displays $10K example with $20 homeowner fee and $0 operator fees, Territory Teaser links to territories overview
+- **Success criteria**: All stat cards clickable and navigate to relevant sections, Post a Job card opens UnifiedJobPost modal, zero fees card clearly shows 100% contractor earnings, payment breakdown displays $10K example with $20 homeowner fee and $0 operator recurring fees, Territory Teaser links to territories overview
 
 ### Service Categories (60 Total)
 The platform supports 60 comprehensive service categories organized into 7 major groups:
