@@ -162,6 +162,10 @@ To enable:
 
 ### DNS Configuration (for GitHub Pages)
 
+Refer to the [official GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#configuring-an-apex-domain) for the most current IP addresses.
+
+As of the latest documentation:
+
 | Type   | Name | Value                           |
 |--------|------|--------------------------------|
 | A      | @    | 185.199.108.153               |

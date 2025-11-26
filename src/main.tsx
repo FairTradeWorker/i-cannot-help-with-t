@@ -10,10 +10,17 @@ import "./styles/theme.css"
 import "./index.css"
 
 // Handle SPA redirect from 404.html (GitHub Pages)
+// Validate path to prevent open redirect vulnerabilities
 const redirectPath = sessionStorage.getItem('redirect_path');
 if (redirectPath) {
   sessionStorage.removeItem('redirect_path');
-  window.history.replaceState(null, '', redirectPath);
+  // Only allow relative paths starting with / and no protocol/external URLs
+  const isValidPath = redirectPath.startsWith('/') && 
+    !redirectPath.includes('//') && 
+    !redirectPath.includes(':');
+  if (isValidPath) {
+    window.history.replaceState(null, '', redirectPath);
+  }
 }
 
 createRoot(document.getElementById('root')!).render(

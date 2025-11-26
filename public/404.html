@@ -13,8 +13,13 @@
         const hash = window.location.hash;
         
         // Redirect to index.html with the original path as a query parameter
-        if (path !== '/') {
-            sessionStorage.setItem('redirect_path', path + search + hash);
+        // Validate path to prevent XSS - only allow safe relative paths
+        if (path !== '/' && path.startsWith('/') && !path.includes('//') && !path.includes(':')) {
+            const redirectPath = path + search + hash;
+            // Additional validation: ensure no script injection
+            if (!/[<>"']/.test(redirectPath)) {
+                sessionStorage.setItem('redirect_path', redirectPath);
+            }
             window.location.replace('/');
         }
     </script>
