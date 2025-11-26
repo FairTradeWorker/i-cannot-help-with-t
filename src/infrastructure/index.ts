@@ -118,12 +118,12 @@ export async function initializeInfrastructure(): Promise<void> {
 /**
  * Get current infrastructure status
  */
-export function getInfrastructureStatus(): {
+export async function getInfrastructureStatus(): Promise<{
   tier: string;
   monthlyCost: number;
   features: string[];
-} {
-  const { getUpgradeManager } = require('./auto-upgrade-manager');
+}> {
+  const { getUpgradeManager } = await import('./auto-upgrade-manager');
   const manager = getUpgradeManager();
   
   if (!manager) {

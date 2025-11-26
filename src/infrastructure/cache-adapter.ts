@@ -201,7 +201,9 @@ class UpstashCacheAdapter implements CacheAdapter {
   }
   
   async keys(pattern: string): Promise<string[]> {
-    const regex = new RegExp(pattern.replace('*', '.*'));
+    // Replace all occurrences of * with .* for regex matching
+    const escapedPattern = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escapedPattern.replace(/\*/g, '.*'));
     const result: string[] = [];
     this.fallbackCache.forEach((_, key) => {
       if (regex.test(key)) {
@@ -226,8 +228,20 @@ class UpstashCacheAdapter implements CacheAdapter {
       misses: this.misses,
       hitRate: total > 0 ? this.hits / total : 0,
       itemCount: this.fallbackCache.size,
-      memoryUsageMB: 0, // Upstash handles this
+      memoryUsageMB: this.estimateMemoryUsage(),
     };
+  }
+  
+  private estimateMemoryUsage(): number {
+    // Estimate memory based on cache contents
+    // Note: Actual Upstash usage would require API call to /info endpoint
+    let bytes = 0;
+    this.fallbackCache.forEach((entry, key) => {
+      bytes += key.length * 2;
+      bytes += JSON.stringify(entry.value).length * 2;
+      bytes += 16;
+    });
+    return bytes / (1024 * 1024);
   }
   
   async connect(): Promise<void> {
