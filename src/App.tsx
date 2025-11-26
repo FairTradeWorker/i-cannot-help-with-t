@@ -181,13 +181,13 @@ function App() {
 
   const handleLogin = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
     try {
-      console.log('Login attempt:', { email, role });
+      console.log('🔐 Login attempt:', { email, role });
       const users = await dataStore.getUsers();
-      console.log('Found users:', users.length);
+      console.log('👥 Found users:', users.length);
       let user = users.find(u => u.email === email);
       
       if (!user) {
-        console.log('User not found, creating new user');
+        console.log('❌ User not found, creating new user');
         user = {
           id: 'user-' + Date.now(),
           role: role,
@@ -196,16 +196,24 @@ function App() {
           createdAt: new Date(),
         };
         await dataStore.saveUser(user);
-        console.log('New user saved:', user.id);
+        console.log('✅ New user saved:', user.id);
+      } else {
+        console.log('✅ User found:', user.id, user.role);
       }
       
       await dataStore.setCurrentUser(user);
-      console.log('Current user set:', user.id);
+      console.log('✅ Current user set in storage');
+      
       setCurrentUser(user);
+      console.log('✅ Current user set in state');
+      
       setShowLogin(false);
-      toast.success('Welcome back!');
+      console.log('✅ Login modal closed');
+      
+      toast.success(`Welcome back, ${user.name}!`);
+      console.log('✅ Login complete');
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
       toast.error('Failed to sign in. Please try again.');
       throw error;
     }
