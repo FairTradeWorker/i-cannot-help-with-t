@@ -572,7 +572,7 @@ export function PaymentScreen({
                     Platform Fee Breakdown
                   </h4>
                   <p className="text-muted-foreground">
-                    A one-time ${operatorFee} platform fee per job helps maintain FairTradeWorker infrastructure, secure payments, and support services. Territory operators separately pay $45/month for exclusive lead rights in their area.
+                    A one-time ${platformFee} platform fee per job helps maintain FairTradeWorker infrastructure, secure payments, and support services. Territory operators separately pay $45/month for exclusive lead rights in their area.
                   </p>
                   <div className="flex justify-between items-center pt-2 border-t border-primary/20">
                     <span className="font-medium">Your Platform Fee:</span>
