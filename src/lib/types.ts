@@ -354,3 +354,46 @@ export interface LearningMetrics {
   timestamp: Date;
   feedback?: string;
 }
+
+// Lightning Dispatch™ Types
+export type JobAssignmentStatus = 'pending' | 'accepted' | 'rejected' | 'expired' | 'reassigned';
+
+export interface JobAssignment {
+  id: string;
+  jobId: string;
+  contractorId: string;
+  status: JobAssignmentStatus;
+  dispatchRound: number;
+  distanceToJob: number;
+  createdAt: Date;
+  expiresAt: Date;
+  respondedAt?: Date;
+  pushNotificationId?: string;
+}
+
+export interface DispatchPingRequest {
+  jobId: string;
+  jobLocation: { lat: number; lng: number };
+  jobType: string;
+  estimatedValue: number;
+  urgency: UrgencyLevel;
+}
+
+export interface DispatchPingResponse {
+  success: boolean;
+  dispatchId: string;
+  contractorsNotified: number;
+  assignments: JobAssignment[];
+  nextDispatchAt?: Date;
+}
+
+export interface ContractorDispatchInfo {
+  contractorId: string;
+  name: string;
+  location: { lat: number; lng: number };
+  distance: number;
+  rating: number;
+  completedJobs: number;
+  availability: 'available' | 'busy' | 'unavailable';
+  expoPushToken?: string;
+}

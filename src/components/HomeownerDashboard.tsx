@@ -144,23 +144,19 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full max-w-2xl grid-cols-3 mb-8">
-            <TabsTrigger value="profile">
-              <UserCircle className="w-4 h-4 mr-2" />
-              Profile
-            </TabsTrigger>
             <TabsTrigger value="my-jobs">
               <Package className="w-4 h-4 mr-2" />
-              Job Status
+              My Projects
             </TabsTrigger>
             <TabsTrigger value="post-job">
               <Briefcase className="w-4 h-4 mr-2" />
               Post a Job
             </TabsTrigger>
+            <TabsTrigger value="profile">
+              <UserCircle className="w-4 h-4 mr-2" />
+              Profile & Settings
+            </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="profile">
-            <HomeownerProfileForm />
-          </TabsContent>
 
           <TabsContent value="my-jobs">
             {myJobs.length === 0 ? (
@@ -251,7 +247,13 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
           </TabsContent>
 
           <TabsContent value="post-job">
-            <QuickJobPost onCreateJob={handleCreateJob} />
+            <QuickJobPost onCreateJob={(type) => {
+              setShowNewJob(true);
+            }} />
+          </TabsContent>
+
+          <TabsContent value="profile">
+            <UserProfile user={user} />
           </TabsContent>
         </Tabs>
       </motion.div>

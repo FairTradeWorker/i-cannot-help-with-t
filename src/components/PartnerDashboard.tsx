@@ -54,6 +54,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
       value: '$248,500',
       icon: CurrencyDollar,
       trend: '+18.2%',
+      percentage: '18.2%',
       color: 'text-accent',
       bgColor: 'bg-accent/10',
     },
@@ -62,6 +63,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
       value: '24',
       icon: Handshake,
       trend: '+3',
+      percentage: '+12.5%',
       color: 'text-primary',
       bgColor: 'bg-primary/10',
     },
@@ -70,6 +72,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
       value: '$12,450',
       icon: Percent,
       trend: '+12.5%',
+      percentage: '5.0%',
       color: 'text-secondary',
       bgColor: 'bg-secondary/10',
     },
@@ -94,9 +97,9 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Active Vendors', value: '42', icon: Users },
-          { label: 'Monthly Orders', value: '1,284', icon: Package },
-          { label: 'Total Volume', value: '$2.4M', icon: CurrencyDollar },
+          { label: 'Active Vendors', value: '42', icon: Users, percentage: '12%', desc: 'Average commission' },
+          { label: 'Monthly Orders', value: '1,284', icon: Package, percentage: '18%', desc: 'Avg margin' },
+          { label: 'Total Volume', value: '$2.4M', icon: CurrencyDollar, percentage: '15%', desc: 'Partner revenue share' },
         ].map((stat, index) => (
           <motion.div
             key={stat.label}
@@ -107,7 +110,13 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             <Card className="glass-card p-6">
               <div className="flex items-center justify-between mb-3">
                 <stat.icon className="w-8 h-8 text-primary" weight="duotone" />
-                <TrendUp className="w-5 h-5 text-accent" weight="bold" />
+                <div className="text-right">
+                  <div className="flex items-center gap-1">
+                    <Percent className="w-4 h-4 text-accent" weight="bold" />
+                    <span className="text-lg font-bold text-accent">{stat.percentage}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{stat.desc}</p>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground">{stat.label}</p>
               <p className="text-3xl font-bold">{stat.value}</p>
@@ -205,9 +214,9 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Active Policies', value: '2,845', icon: Shield },
-          { label: 'Total Premium', value: '$8.2M', icon: CurrencyDollar },
-          { label: 'Claims Processed', value: '142', icon: CheckCircle },
+          { label: 'Active Policies', value: '2,845', icon: Shield, percentage: '8-12%', desc: 'Commission rate' },
+          { label: 'Total Premium', value: '$8.2M', icon: CurrencyDollar, percentage: '10%', desc: 'Avg commission' },
+          { label: 'Claims Processed', value: '142', icon: CheckCircle, percentage: '94%', desc: 'Approval rate' },
         ].map((stat, index) => (
           <motion.div
             key={stat.label}
@@ -218,7 +227,13 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             <Card className="glass-card p-6">
               <div className="flex items-center justify-between mb-3">
                 <stat.icon className="w-8 h-8 text-secondary" weight="duotone" />
-                <TrendUp className="w-5 h-5 text-accent" weight="bold" />
+                <div className="text-right">
+                  <div className="flex items-center gap-1">
+                    <Percent className="w-4 h-4 text-accent" weight="bold" />
+                    <span className="text-lg font-bold text-accent">{stat.percentage}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{stat.desc}</p>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground">{stat.label}</p>
               <p className="text-3xl font-bold">{stat.value}</p>
@@ -453,9 +468,9 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Partner Agents', value: '684', icon: Users },
-          { label: 'Transactions', value: '3,240', icon: Buildings },
-          { label: 'Commission Earned', value: '$184K', icon: CurrencyDollar },
+          { label: 'Partner Agents', value: '684', icon: Users, percentage: '3-5%', desc: 'Referral commission' },
+          { label: 'Transactions', value: '3,240', icon: Buildings, percentage: '5-10%', desc: 'Commission range' },
+          { label: 'Commission Earned', value: '$184K', icon: CurrencyDollar, percentage: '6.8%', desc: 'Avg rate' },
         ].map((stat, index) => (
           <motion.div
             key={stat.label}
@@ -466,7 +481,13 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             <Card className="glass-card p-6">
               <div className="flex items-center justify-between mb-3">
                 <stat.icon className="w-8 h-8 text-accent" weight="duotone" />
-                <TrendUp className="w-5 h-5 text-accent" weight="bold" />
+                <div className="text-right">
+                  <div className="flex items-center gap-1">
+                    <Percent className="w-4 h-4 text-accent" weight="bold" />
+                    <span className="text-lg font-bold text-accent">{stat.percentage}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{stat.desc}</p>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground">{stat.label}</p>
               <p className="text-3xl font-bold">{stat.value}</p>
@@ -667,6 +688,11 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
                   <div>
                     <p className="text-sm text-muted-foreground">{stat.label}</p>
                     <p className="text-3xl font-bold">{stat.value}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Percent className={`w-4 h-4 ${stat.color}`} weight="bold" />
+                      <span className={`text-sm font-semibold ${stat.color}`}>{stat.percentage}</span>
+                      <span className="text-xs text-muted-foreground">commission rate</span>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -774,17 +800,39 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent">
-                <Brain className="w-7 h-7 text-white" weight="duotone" />
+            <Card className="glass-card p-12 text-center">
+              <div className="max-w-2xl mx-auto">
+                <div className="inline-block p-6 rounded-full bg-primary/10 mb-6">
+                  <Brain className="w-16 h-16 text-primary" weight="duotone" />
+                </div>
+                <h2 className="text-4xl font-bold mb-4">API Access - Coming Soon</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  We're building powerful APIs to connect technology partners with our platform intelligence and learning systems. This will enable innovative integrations for AI, machine learning, and data analytics partners.
+                </p>
+                <div className="flex items-center justify-center gap-4">
+                  <Badge variant="secondary" className="text-base px-4 py-2">
+                    Q2 2024 Launch
+                  </Badge>
+                  <Button size="lg" onClick={() => toast.info('We\'ll notify you when API access is available')}>
+                    Join Waitlist
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[
+                    { label: 'RESTful APIs', desc: 'Modern web standards' },
+                    { label: 'Real-time Data', desc: 'WebSocket support' },
+                    { label: 'ML Integration', desc: 'Training data access' },
+                  ].map((feature) => (
+                    <Card key={feature.label} className="p-4 bg-muted/30">
+                      <h4 className="font-semibold mb-1">{feature.label}</h4>
+                      <p className="text-xs text-muted-foreground">{feature.desc}</p>
+                    </Card>
+                  ))}
+                </div>
               </div>
-              <div>
-                <h2 className="text-3xl font-bold">Technology Partners</h2>
-                <p className="text-muted-foreground">Platform intelligence and learning systems</p>
-              </div>
-            </div>
+            </Card>
           </motion.div>
-          <AILearningDashboard />
         </div>
       )}
     </motion.div>

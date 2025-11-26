@@ -225,6 +225,99 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
           </TabsList>
 
           <TabsContent value="details" className="space-y-6">
+            {job.videoUrl && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <div className="aspect-video rounded-lg overflow-hidden bg-black">
+                    <video
+                      src={job.videoUrl}
+                      controls
+                      className="w-full h-full object-contain"
+                      poster={job.videoUrl}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+
+                {job.scope && (
+                  <Card className="p-5 bg-accent/5 border-accent/30">
+                    <h4 className="text-sm font-bold mb-3 flex items-center gap-2">
+                      <Package className="w-4 h-4" weight="fill" />
+                      Scope of Service
+                    </h4>
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Summary</p>
+                        <p className="text-xs leading-relaxed">{job.scope.summary}</p>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div>
+                        <p className="text-xs font-semibold mb-2">Estimated Cost Range</p>
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Minimum</span>
+                            <span className="font-mono font-semibold">${job.scope.estimatedCost.min.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Maximum</span>
+                            <span className="font-mono font-semibold">${job.scope.estimatedCost.max.toLocaleString()}</span>
+                          </div>
+                          <Separator />
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Labor Hours</span>
+                            <span className="font-mono font-semibold">{job.scope.laborHours}h</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Sq. Footage</span>
+                            <span className="font-mono font-semibold">{job.scope.estimatedSquareFootage} ft²</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {job.scope.materials.length > 0 && (
+                        <>
+                          <Separator />
+                          <div>
+                            <p className="text-xs font-semibold mb-2">Materials ({job.scope.materials.length})</p>
+                            <div className="space-y-1 max-h-24 overflow-y-auto">
+                              {job.scope.materials.slice(0, 3).map((m, i) => (
+                                <div key={i} className="text-[10px] text-muted-foreground flex justify-between">
+                                  <span>• {m.name}</span>
+                                  <span>${m.estimatedCost}</span>
+                                </div>
+                              ))}
+                              {job.scope.materials.length > 3 && (
+                                <p className="text-[10px] text-muted-foreground italic">+{job.scope.materials.length - 3} more</p>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      
+                      {isContractor && !hasMyBid && job.status === 'posted' && (
+                        <>
+                          <Separator />
+                          <Button 
+                            size="sm" 
+                            className="w-full"
+                            onClick={() => {
+                              const element = document.getElementById('bid-section');
+                              element?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                          >
+                            Submit Bid
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </Card>
+                )}
+              </div>
+            )}
+
             <div>
               <h3 className="text-lg font-semibold mb-2">Description</h3>
               <p className="text-muted-foreground">{job.description}</p>
@@ -317,7 +410,7 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
             {isContractor && !hasMyBid && job.status === 'posted' && (
               <>
                 <Separator />
-                <Card className="p-6 bg-accent/5">
+                <Card className="p-6 bg-accent/5" id="bid-section">
                   <h3 className="text-lg font-semibold mb-4">Submit Your Bid</h3>
                   
                   <div className="space-y-4">

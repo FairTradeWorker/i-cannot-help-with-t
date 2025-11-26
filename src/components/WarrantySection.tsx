@@ -13,30 +13,16 @@ interface WarrantySectionProps {
 export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
   const warrantyTiers = [
     {
-      name: 'Basic Warranty',
-      price: 75,
-      duration: '1 Year',
-      description: 'Essential protection for your investment',
-      features: [
-        'Workmanship guarantee',
-        'Material defects covered',
-        '30-day callback service',
-        'Email support',
-      ],
-      color: 'bg-muted',
-      popular: false,
-    },
-    {
       name: 'Extended Warranty',
-      price: 299,
+      price: 249,
       duration: '3 Years',
       description: 'Comprehensive coverage for peace of mind',
       features: [
-        'Everything in Basic',
         'Extended 3-year coverage',
         'Priority service response',
         'Annual inspection included',
         'Phone support',
+        'Workmanship & materials',
       ],
       color: 'bg-primary',
       popular: true,
@@ -83,7 +69,7 @@ export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
   ];
 
   const handlePurchaseWarranty = (name: string, price: number) => {
-    toast.success(`${name} added to cart`, {
+    toast.success(`${name} selected`, {
       description: `$${price} - Coverage will begin upon job completion`,
     });
   };
@@ -301,6 +287,20 @@ export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
                 Extended and Premium warranties include free annual inspections to catch issues early and maintain coverage.
               </p>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="glass-card border-2 border-muted bg-muted/20">
+        <CardContent className="pt-6">
+          <div className="space-y-3">
+            <h4 className="font-bold text-sm flex items-center gap-2">
+              <Shield className="w-4 h-4 text-muted-foreground" />
+              Warranty Terms & Disclaimer
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <strong className="text-foreground">Important:</strong> Warranties are provided by the contractor and administered by ServiceHub. Coverage terms vary by service type and contractor. All warranties are subject to inspection and approval. Coverage does not include pre-existing conditions, improper use, unauthorized modifications, natural disasters (except Premium tier), normal wear and tear, or cosmetic issues. Extended and Premium warranties require annual or bi-annual inspections to maintain coverage. ServiceHub reserves the right to deny claims that do not meet warranty terms. Full terms and conditions are provided upon purchase. By purchasing a warranty, you agree to binding arbitration for dispute resolution.
+            </p>
           </div>
         </CardContent>
       </Card>

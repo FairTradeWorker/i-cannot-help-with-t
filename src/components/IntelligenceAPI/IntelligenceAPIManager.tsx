@@ -159,8 +159,8 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="free">Starter - 1K calls/month (Free)</SelectItem>
-                    <SelectItem value="professional">Professional - 10K calls/month ($49/mo)</SelectItem>
-                    <SelectItem value="enterprise">Enterprise - Unlimited ($209/mo)</SelectItem>
+                    <SelectItem value="professional">Professional - 10K calls/month ($97/mo)</SelectItem>
+                    <SelectItem value="enterprise">Enterprise - Unlimited ($497/mo)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -330,12 +330,99 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
   );
 }
 
-function PricingPlans() {
+// Stripe checkout configuration
+const STRIPE_CONFIG = {
+  professional: {
+    priceId: 'price_professional_97_monthly',
+    price: 97,
+    name: 'Professional',
+  },
+  enterprise: {
+    priceId: 'price_enterprise_497_monthly',
+    price: 497,
+    name: 'Enterprise',
+  },
+};
+
+// Stripe webhook event types
+interface StripeSubscriptionItem {
+  price?: { id?: string };
+}
+
+interface StripeSubscription {
+  client_reference_id?: string;
+  items?: { data?: StripeSubscriptionItem[] };
+}
+
+interface StripeWebhookEvent {
+  type: string;
+  data: { object: StripeSubscription };
+}
+
+// Redirect to Stripe Checkout
+async function redirectToStripeCheckout(tier: 'professional' | 'enterprise', userId: string) {
+  const config = STRIPE_CONFIG[tier];
+  
+  // Properly encode URL parameters
+  const encodedUserId = encodeURIComponent(userId);
+  
+  // In production, this would call your backend to create a Stripe Checkout session
+  // The backend would handle email collection during checkout
+  const checkoutUrl = `https://checkout.stripe.com/c/pay/${config.priceId}?client_reference_id=${encodedUserId}`;
+  
+  toast.success(`Redirecting to Stripe Checkout for ${config.name} ($${config.price}/mo)...`);
+  
+  // Simulate redirect delay for demo
+  setTimeout(() => {
+    window.open(checkoutUrl, '_blank');
+  }, 500);
+}
+
+// Handle Stripe webhook for subscription.created
+export async function handleStripeWebhook(event: StripeWebhookEvent): Promise<{ success: boolean; apiKey?: APIKey; message?: string }> {
+  if (event.type === 'subscription.created') {
+    const subscription = event.data.object;
+    const userId = subscription.client_reference_id;
+    const priceId = subscription.items?.data?.[0]?.price?.id;
+    
+    // Validate required fields
+    if (!userId) {
+      return { success: false, message: 'Missing client_reference_id in subscription' };
+    }
+    
+    // Determine tier from price ID with proper validation
+    let tier: 'professional' | 'enterprise';
+    if (priceId === STRIPE_CONFIG.enterprise.priceId) {
+      tier = 'enterprise';
+    } else if (priceId === STRIPE_CONFIG.professional.priceId) {
+      tier = 'professional';
+    } else {
+      return { success: false, message: `Unknown price ID: ${priceId}` };
+    }
+    
+    // Generate API key for the new subscription
+    const apiKey = await intelligenceDB.generateAPIKey(
+      userId,
+      `${tier.charAt(0).toUpperCase() + tier.slice(1)} API Key`,
+      tier
+    );
+    
+    console.log(`✅ Subscription created: ${tier} tier for user ${userId}`);
+    console.log(`🔑 API Key generated: ${apiKey.key.substring(0, 20)}...`);
+    
+    return { success: true, apiKey };
+  }
+  
+  return { success: false, message: 'Unhandled event type' };
+}
+
+function PricingPlans({ userId }: { userId: string }) {
   const plans = [
     {
       name: 'Starter',
       price: 0,
       calls: 1000,
+      tier: 'free' as const,
       features: [
         '1,000 API calls/month',
         'Basic endpoints only',
@@ -345,11 +432,12 @@ function PricingPlans() {
     },
     {
       name: 'Professional',
-      price: 49,
+      price: 97,
       calls: 10000,
+      tier: 'professional' as const,
       features: [
         '10,000 API calls/month',
-        'All standard endpoints',
+        'All 20+ Intelligence APIs',
         'Priority email support',
         'Webhooks included',
         'Higher rate limits'
@@ -358,10 +446,12 @@ function PricingPlans() {
     },
     {
       name: 'Enterprise',
-      price: 209,
+      price: 497,
       calls: null,
+      tier: 'enterprise' as const,
       features: [
         'Unlimited API calls',
+        'All Intelligence APIs',
         'Capital Intelligence APIs',
         'Priority support',
         'Custom integrations',
@@ -372,6 +462,7 @@ function PricingPlans() {
   ];
 
   const [selectedPayment, setSelectedPayment] = useState<'card' | 'bank' | 'crypto' | 'wire'>('card');
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
   const paymentMethods = [
     { id: 'card', icon: CreditCard, label: 'Card' },
@@ -379,6 +470,20 @@ function PricingPlans() {
     { id: 'crypto', icon: Wallet, label: 'Crypto' },
     { id: 'wire', icon: QrCode, label: 'Wire' }
   ];
+
+  const handleSubscribe = async (tier: 'free' | 'professional' | 'enterprise') => {
+    if (tier === 'free') {
+      toast.success('Free tier activated! Generate your API key in the Keys tab.');
+      return;
+    }
+    
+    setCheckoutLoading(tier);
+    try {
+      await redirectToStripeCheckout(tier, userId);
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -407,8 +512,22 @@ function PricingPlans() {
                   </li>
                 ))}
               </ul>
-              <Button className="w-full" variant={plan.popular ? 'default' : 'outline'}>
-                {plan.price === 0 ? 'Get Started' : 'Upgrade Now'}
+              <Button 
+                className="w-full" 
+                variant={plan.popular ? 'default' : 'outline'}
+                onClick={() => handleSubscribe(plan.tier)}
+                disabled={checkoutLoading === plan.tier}
+              >
+                {checkoutLoading === plan.tier ? (
+                  <>Processing...</>
+                ) : plan.price === 0 ? (
+                  'Get Started'
+                ) : (
+                  <>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Subscribe ${plan.price}/mo
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>

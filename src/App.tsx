@@ -200,8 +200,9 @@ function App() {
     setShowJobPost(false);
   };
 
-  const handleCreateJob = () => {
-    setShowJobPost(true);
+  const handleCreateJob = (type: 'video' | 'photo' | 'text') => {
+    setActiveTab('homeowner');
+    setActiveSubTab('post-job');
   };
 
   const handleLogout = () => {
@@ -252,14 +253,13 @@ function App() {
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
-        <div className="w-full px-6">
-          <div className="flex items-center h-16 py-2 max-w-[1800px] mx-auto gap-4">
-            <nav className="flex items-center gap-1.5">
-              <Button
-                variant={activeTab === 'home' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('home')}
-                className="button-interactive"
-                size="sm"
+        <div className="w-full px-6 pt-2">
+          <div className="flex items-center h-16 py-2 max-w-[1920px] mx-auto" style={{ paddingLeft: '2rem' }}>
+            <nav className="flex items-center gap-2 flex-1">
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
                 Home
               </Button>
@@ -293,20 +293,52 @@ function App() {
                     className="button-interactive"
                     size="sm"
                   >
-                    Homeowner
-                    <CaretDown className="w-3 h-3 ml-1" />
-                  </Button>
+                    <Button
+                      variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                      className="button-interactive"
+                      size="sm"
+                    >
+                      <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
+                      Contractor
+                      <CaretDown className="w-3 h-3 ml-1" />
+                    </Button>
+                  </motion.div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="border-2 border-black">
-                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'profile')}>
-                    Profile
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'my-jobs')}>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'jobs')}>
+                    <Package className="w-4 h-4 mr-2" />
                     My Jobs
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Route Planner
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            </nav>
 
+            <div className="absolute left-1/2 -translate-x-1/2">
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
+                <Button
+                  size="default"
+                  onClick={() => handleNavClick('homeowner', 'post-job')}
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-6"
+                >
+                  <Plus className="w-4 h-4 mr-1.5" weight="bold" />
+                  Post a Job
+                </Button>
+              </motion.div>
+            </div>
+
+            <nav className="flex items-center gap-2 flex-1 justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -314,19 +346,29 @@ function App() {
                     className="button-interactive"
                     size="sm"
                   >
-                    Contractor
-                    <CaretDown className="w-3 h-3 ml-1" />
-                  </Button>
+                    <Button
+                      variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
+                      className="button-interactive"
+                      size="sm"
+                    >
+                      <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
+                      Homeowner
+                      <CaretDown className="w-3 h-3 ml-1" />
+                    </Button>
+                  </motion.div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="border-2 border-black">
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
-                    Dashboard
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'profile')}>
+                    <UserCircle className="w-4 h-4 mr-2" />
+                    Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'my-jobs')}>
-                    My Estimates
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'my-jobs')}>
+                    <Package className="w-4 h-4 mr-2" />
+                    Job Status
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
-                    Route Planner
+                  <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'post-job')}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Post a Job
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -342,9 +384,22 @@ function App() {
                     <CaretDown className="w-3 h-3 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="border-2 border-black">
-                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'dashboard')}>
-                    Dashboard
+                <DropdownMenuContent className="glass-card border-border/50">
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', undefined)}>
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Overview
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'materials')}>
+                    <Package className="w-4 h-4 mr-2" />
+                    Materials Vendors
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'insurance')}>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Insurance
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('intelligence')}>
+                    <Brain className="w-4 h-4 mr-2" />
+                    Intelligence API
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'my-jobs')}>
                     My Estimates
@@ -374,38 +429,32 @@ function App() {
                 className="button-interactive"
                 size="sm"
               >
-                API
-              </Button>
+                <Button
+                  variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('intelligence')}
+                  className="button-interactive"
+                  size="sm"
+                >
+                  <Brain className="w-4 h-4 mr-1.5" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
+                  Intelligence API
+                </Button>
+              </motion.div>
 
-              <Button
-                variant={activeTab === 'partners' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('partners')}
-                className="button-interactive"
-                size="sm"
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                Partners
-              </Button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={activeTab === 'warranty' ? 'default' : 'ghost'}
-                    className="button-interactive"
-                    size="sm"
-                  >
-                    Warranty
-                    <CaretDown className="w-3 h-3 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="border-2 border-black">
-                  <DropdownMenuItem onClick={() => handleNavClick('warranty', undefined)}>
-                    Coverage
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('warranty', 'file-claim')}>
-                    File a Claim
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                <Button
+                  variant={activeTab === 'warranty' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('warranty')}
+                  className="button-interactive"
+                  size="sm"
+                >
+                  <ShieldCheck className="w-4 h-4 mr-1.5" weight={activeTab === 'warranty' ? 'fill' : 'regular'} />
+                  Warranty
+                </Button>
+              </motion.div>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -417,12 +466,11 @@ function App() {
                 <Button
                   variant={activeTab === 'messages' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('messages')}
-                  className="button-interactive relative"
-                  size="sm"
+                  className="button-interactive relative h-8 w-8"
+                  size="icon"
                 >
-                  <ChatCircle className="w-4 h-4 mr-1.5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
-                  Messages
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
+                  <ChatCircle className="w-3.5 h-3.5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+                  <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-accent rounded-full" />
                 </Button>
               </motion.div>
 
@@ -537,13 +585,13 @@ function App() {
                     Profile Settings
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => {
-                    setActiveTab('payment');
-                    setActiveSubTab(null);
+                    setActiveTab('homeowner');
+                    setActiveSubTab('post-job');
                     setShowProfile(false);
                     setShowAdminPanel(false);
                   }}>
-                    <CreditCard className="w-4 h-4 mr-2" />
-                    Billing & Payments
+                    <Plus className="w-4 h-4 mr-2" />
+                    Post a Job
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive">
@@ -571,11 +619,15 @@ function App() {
                 <UnifiedJobPost 
                   onJobCreated={(jobData) => {
                     toast.success('Job created successfully!');
-                    setShowJobPost(false);
+                    setShowVideoCreator(false);
                     setActiveTab('homeowner');
                     setActiveSubTab('my-jobs');
                   }}
-                  onCancel={() => setShowJobPost(false)}
+                  onCancel={() => {
+                    setShowVideoCreator(false);
+                    setActiveTab('homeowner');
+                    setActiveSubTab('post-job');
+                  }}
                 />
               )}
               {!showProfile && !showJobPost && (
@@ -620,17 +672,11 @@ function App() {
                         </div>
                       </Card>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {currentUser?.role !== 'homeowner' && (
-                          <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-primary">
-                                <MapTrifold className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Available</p>
-                                <p className="text-2xl font-bold">850+</p>
-                              </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="p-3 rounded-xl bg-primary">
+                              <MapTrifold className="w-7 h-7 text-white" weight="fill" />
                             </div>
                             <p className="text-sm font-semibold mb-1">Territories</p>
                             <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
@@ -681,67 +727,49 @@ function App() {
                             <span className="text-muted-foreground">Zero platform fees</span>
                           </div>
                         </Card>
-
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('api')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-primary">
-                              <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
-                            </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Starting at</p>
-                              <p className="text-2xl font-bold">$99</p>
-                            </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">API Access</p>
-                          <p className="text-xs text-muted-foreground mb-2">Intelligence & pricing endpoints</p>
-                          <div className="flex items-center gap-1 mt-2 text-xs">
-                            <Lightning className="w-3 h-3 text-primary" weight="fill" />
-                            <span className="text-muted-foreground">Real-time data</span>
-                          </div>
-                        </Card>
                       </div>
 
                       <PriorityLeadsVisual onExplore={() => handleNavClick('territories', 'overview')} />
                       
-                      <Card className="glass-card p-8 border-2 border-primary/20">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                      <Card className="glass-card p-10 border-2 border-primary/20">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                           <div>
-                            <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
-                            <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
-                            <p className="text-muted-foreground mb-6">
-                              Unlike other platforms that charge 15-30% fees, ServiceHub contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
+                            <h3 className="text-3xl font-bold mb-3">Zero Fees for Contractors</h3>
+                            <Badge variant="secondary" className="mb-6 text-sm px-3 py-1">100% Earnings Guarantee</Badge>
+                            <p className="text-muted-foreground mb-8 text-base leading-relaxed">
+                              Unlike other platforms that charge 15-30% fees, ServiceHub contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $10 platform fee per job.
                             </p>
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                            <div className="space-y-5">
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">No platform fees for contractors</p>
-                                  <p className="text-xs text-muted-foreground">Never lose a percentage of your earnings</p>
+                                  <p className="text-base font-semibold mb-1">No platform fees for contractors</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Never lose a percentage of your earnings</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">Keep 100% of job payments</p>
-                                  <p className="text-xs text-muted-foreground">Full payment released upon completion</p>
+                                  <p className="text-base font-semibold mb-1">Keep 100% of job payments</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Full payment released upon completion</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">Instant payouts available</p>
-                                  <p className="text-xs text-muted-foreground">Get paid immediately after job approval</p>
+                                  <p className="text-base font-semibold mb-1">Instant payouts available</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Get paid immediately after job approval</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                              <div className="flex items-start gap-4">
+                                <CheckCircle className="w-7 h-7 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
                                 <div>
-                                  <p className="text-sm font-semibold">Secure escrow protection</p>
-                                  <p className="text-xs text-muted-foreground">Funds guaranteed before starting work</p>
+                                  <p className="text-base font-semibold mb-1">Secure escrow protection</p>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">Funds guaranteed before starting work</p>
                                 </div>
                               </div>
                             </div>
-                            <Button size="lg" className="mt-6" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                            <Button size="lg" className="mt-8" onClick={() => handleNavClick('contractor', 'dashboard')}>
                               Join as Contractor
                               <ArrowRight className="w-5 h-5 ml-2" />
                             </Button>
@@ -762,7 +790,7 @@ function App() {
                                   <span className="text-sm font-semibold">Platform Fee</span>
                                   <p className="text-xs text-muted-foreground">One-time charge</p>
                                 </div>
-                                <span className="font-bold text-blue-600">$20</span>
+                                <span className="font-bold text-blue-600">$10</span>
                               </div>
                               <div className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg border-2 border-secondary/30">
                                 <div>
@@ -778,6 +806,38 @@ function App() {
                               </p>
                             </div>
                           </div>
+                        </div>
+                      </Card>
+
+                      <Card className="glass-card p-8 col-span-full">
+                        <h3 className="text-2xl font-bold mb-6 text-center">Services We Support</h3>
+                        <p className="text-center text-muted-foreground mb-8">ServiceHub connects you with verified professionals across all major home service trades</p>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {[
+                            'Roofing', 'HVAC', 'Plumbing', 'Electrical',
+                            'Landscaping', 'Painting', 'Carpentry', 'Masonry',
+                            'Flooring', 'Windows & Doors', 'Siding', 'Gutters',
+                            'Fencing', 'Decking', 'Concrete', 'Drywall',
+                            'Insulation', 'Foundation Repair', 'Pool Service', 'Pest Control',
+                            'Tree Service', 'Snow Removal', 'Garage Doors', 'Solar Installation',
+                            'Demolition', 'Waterproofing', 'Septic Systems', 'Well Drilling',
+                            'Chimney Service', 'Appliance Repair', 'Home Theater', 'Smart Home'
+                          ].map((service) => (
+                            <div
+                              key={service}
+                              className="p-3 rounded-lg bg-muted/50 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-all text-center"
+                            >
+                              <span className="text-sm font-medium">{service}</span>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-6 text-center">
+                          <Button variant="outline" onClick={() => handleNavClick('browse-jobs')}>
+                            View All Service Categories
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
                         </div>
                       </Card>
                     </div>

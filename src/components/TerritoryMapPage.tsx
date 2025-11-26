@@ -218,33 +218,19 @@ export function TerritoryMapPage() {
       </motion.div>
 
       <AnimatePresence mode="wait">
-        {view === 'map' ? (
+        {view === 'list' && (
           <motion.div
-            key="map"
+            key="list-view"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="space-y-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            <USMap
-              selectedState={selectedState?.abbreviation}
-              onStateClick={handleStateClick}
-            />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="list"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"
-          >
-            {filteredTerritories.map((territory, index) => (
+            {filteredTerritories.map((territory) => (
               <motion.div
                 key={territory.zip}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
               >
                 <Card className={`h-full ${
                   territory.status === 'claimed' ? 'border-amber-500/50 bg-amber-50/50' : ''
