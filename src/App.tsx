@@ -73,8 +73,8 @@ import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications';
-type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
+type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'intelligence' | 'browse-jobs';
+type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route' | 'jobs';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -200,7 +200,7 @@ function App() {
     setShowJobPost(false);
   };
 
-  const handleCreateJob = (type: 'video' | 'photo' | 'text') => {
+  const handleCreateJob = () => {
     setActiveTab('homeowner');
     setActiveSubTab('post-job');
   };
@@ -607,12 +607,12 @@ function App() {
                 <UnifiedJobPost 
                   onJobCreated={(jobData) => {
                     toast.success('Job created successfully!');
-                    setShowVideoCreator(false);
+                    setShowJobPost(false);
                     setActiveTab('homeowner');
                     setActiveSubTab('my-jobs');
                   }}
                   onCancel={() => {
-                    setShowVideoCreator(false);
+                    setShowJobPost(false);
                     setActiveTab('homeowner');
                     setActiveSubTab('post-job');
                   }}

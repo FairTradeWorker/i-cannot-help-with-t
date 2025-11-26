@@ -248,12 +248,12 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
 
           <TabsContent value="post-job">
             <QuickJobPost onCreateJob={(type) => {
-              setShowNewJob(true);
+              setShowNewJobModal(true);
             }} />
           </TabsContent>
 
           <TabsContent value="profile">
-            <UserProfile user={user} />
+            <HomeownerProfileForm />
           </TabsContent>
         </Tabs>
       </motion.div>

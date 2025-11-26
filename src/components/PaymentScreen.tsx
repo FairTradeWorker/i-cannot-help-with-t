@@ -65,11 +65,22 @@ export function PaymentScreen({
   const [cardCvv, setCardCvv] = useState('');
   const [selectedWarranty, setSelectedWarranty] = useState<'extended' | 'premium'>('extended');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [selectedTerritoryCount, setSelectedTerritoryCount] = useState(1);
+  const [selectedApiPlan, setSelectedApiPlan] = useState<'starter' | 'professional' | 'enterprise'>('starter');
 
   const operatorFee = 10;
   const warrantyPrices = { extended: 249, premium: 499 };
   const warrantyPrice = warrantyPrices[selectedWarranty];
-  const totalAmount = amount + warrantyPrice + operatorFee;
+  const territoryPricePerMonth = 45;
+  const apiPrices = { starter: 99, professional: 299, enterprise: 999 };
+  
+  const baseAmount = paymentType === 'job' 
+    ? amount 
+    : paymentType === 'territory' 
+      ? territoryPricePerMonth * selectedTerritoryCount 
+      : apiPrices[selectedApiPlan];
+  
+  const totalAmount = baseAmount + (paymentType === 'job' ? warrantyPrice + operatorFee : 0);
 
   const financeOptions = [
     {
