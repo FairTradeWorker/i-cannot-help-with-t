@@ -70,6 +70,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
     } catch (error) {
       console.error('❌❌❌ Form submission error:', error);
       console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -437,6 +438,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                       } catch (error) {
                         console.error('❌❌❌ Demo login error:', error);
                         console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
+                      } finally {
                         setIsSubmitting(false);
                       }
                     }}
