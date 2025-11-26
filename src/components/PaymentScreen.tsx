@@ -564,12 +564,12 @@ export function PaymentScreen({
               </div>
             </div>
 
-            <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border">
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Warranty Disclaimer:</strong> Warranties are provided by the contractor and administered by ServiceHub. Coverage terms vary by service type. Review full terms and conditions before purchase. Warranties do not cover pre-existing conditions, improper use, or natural disasters unless explicitly stated.
-              </p>
-            </div>
-          </Card>
+                <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    <strong className="text-foreground">Warranty Disclaimer:</strong> Warranties are provided by the contractor and administered by ServiceHub. Coverage terms vary by service type. Review full terms and conditions before purchase. Warranties do not cover pre-existing conditions, improper use, or natural disasters unless explicitly stated.
+                  </p>
+                </div>
+              </Card>
             </>
           )}
         </div>
