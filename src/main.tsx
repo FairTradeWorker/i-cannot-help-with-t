@@ -14,12 +14,19 @@ import "./index.css"
 const redirectPath = sessionStorage.getItem('redirect_path');
 if (redirectPath) {
   sessionStorage.removeItem('redirect_path');
-  // Only allow relative paths starting with / and no protocol/external URLs
-  const isValidPath = redirectPath.startsWith('/') && 
-    !redirectPath.includes('//') && 
-    !redirectPath.includes(':');
-  if (isValidPath) {
-    window.history.replaceState(null, '', redirectPath);
+  try {
+    // Decode and validate to catch encoded malicious characters
+    const decodedPath = decodeURIComponent(redirectPath);
+    // Only allow relative paths starting with / and no protocol/external URLs
+    const isValidPath = decodedPath.startsWith('/') && 
+      !decodedPath.includes('//') && 
+      !decodedPath.includes(':') &&
+      !/[<>"']/.test(decodedPath);
+    if (isValidPath) {
+      window.history.replaceState(null, '', redirectPath);
+    }
+  } catch {
+    // If decoding fails, ignore the redirect path
   }
 }
 

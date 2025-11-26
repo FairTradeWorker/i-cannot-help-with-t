@@ -14,12 +14,31 @@
         
         // Redirect to index.html with the original path as a query parameter
         // Validate path to prevent XSS - only allow safe relative paths
-        if (path !== '/' && path.startsWith('/') && !path.includes('//') && !path.includes(':')) {
-            const redirectPath = path + search + hash;
-            // Additional validation: ensure no script injection
-            if (!/[<>"']/.test(redirectPath)) {
-                sessionStorage.setItem('redirect_path', redirectPath);
+        // Decode the path first to catch encoded malicious characters
+        try {
+            const decodedPath = decodeURIComponent(path);
+            const decodedSearch = decodeURIComponent(search);
+            const decodedHash = decodeURIComponent(hash);
+            
+            // Validate decoded path
+            const isValidPath = decodedPath !== '/' && 
+                decodedPath.startsWith('/') && 
+                !decodedPath.includes('//') && 
+                !decodedPath.includes(':');
+            
+            if (isValidPath) {
+                const redirectPath = path + search + hash;
+                // Additional validation: ensure no script injection (check both encoded and decoded)
+                const hasUnsafeChars = /[<>"']/.test(redirectPath) || 
+                    /[<>"']/.test(decodedPath + decodedSearch + decodedHash);
+                
+                if (!hasUnsafeChars) {
+                    sessionStorage.setItem('redirect_path', redirectPath);
+                }
             }
+            window.location.replace('/');
+        } catch (e) {
+            // If decoding fails, redirect without storing the path
             window.location.replace('/');
         }
     </script>
