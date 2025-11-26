@@ -70,7 +70,7 @@ import { UnifiedJobPost } from '@/components/UnifiedJobPost';
 import { NotificationsPage } from '@/components/NotificationsPage';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
-import { toast } from 'sonner';
+import { toast, Toaster } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
 type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'intelligence' | 'browse-jobs';
@@ -152,7 +152,7 @@ function App() {
     
     const timeout = setTimeout(() => {
       if (loading) {
-        console.error('Loading timeout - forcing login screen');
+        console.error('⏱️ Loading timeout - forcing login screen');
         setLoading(false);
         setShowLogin(true);
       }
@@ -163,18 +163,25 @@ function App() {
 
   const initialize = async () => {
     try {
+      console.log('🚀 Initializing app...');
       await initializeDemoData();
+      console.log('✅ Demo data initialized');
+      
       const user = await dataStore.getCurrentUser();
+      console.log('👤 Current user from storage:', user ? `${user.id} (${user.role})` : 'none');
       
       if (!user) {
+        console.log('ℹ️ No user found, showing login screen');
         setShowLogin(true);
       } else {
+        console.log('✅ User found, setting current user');
         setCurrentUser(user);
       }
     } catch (error) {
-      console.error('Initialization error:', error);
+      console.error('❌ Initialization error:', error);
       setShowLogin(true);
     } finally {
+      console.log('✅ Initialization complete, loading = false');
       setLoading(false);
     }
   };
@@ -307,6 +314,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Toaster position="top-right" richColors />
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

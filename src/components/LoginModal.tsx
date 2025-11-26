@@ -32,17 +32,29 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
     e.preventDefault();
     if (isSubmitting) return;
     
+    console.log('🚀 Form submitted:', { email, role: selectedRole, isLogin });
+    
+    if (!email || !password) {
+      console.error('❌ Missing email or password');
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
       if (isLogin) {
+        console.log('📞 Calling onLogin...');
         await onLogin(email, password, selectedRole);
+        console.log('✅ onLogin completed');
       } else {
+        console.log('📞 Calling onSignUp...');
         await onSignUp(email, password, selectedRole);
+        console.log('✅ onSignUp completed');
       }
     } catch (error) {
-      console.error('Login/signup error:', error);
+      console.error('❌ Form submission error:', error);
     } finally {
       setIsSubmitting(false);
+      console.log('🏁 Form submission finished');
     }
   };
 
@@ -162,7 +174,10 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
             transition={{ delay: 0.2 }}
             className="lg:col-span-2 flex flex-col justify-center p-8 bg-primary rounded-l-2xl text-white shadow-2xl"
           >
-            <Tabs defaultValue={isLogin ? 'login' : 'signup'} onValueChange={(v) => setIsLogin(v === 'login')} className="w-full">
+            <Tabs value={isLogin ? 'login' : 'signup'} onValueChange={(v) => {
+              console.log('Tab changed to:', v);
+              setIsLogin(v === 'login');
+            }} className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/10">
                 <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-primary">Sign In</TabsTrigger>
                 <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary">Sign Up</TabsTrigger>
@@ -178,9 +193,12 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
               >
                 <House className="w-10 h-10 text-white" weight="fill" />
               </motion.div>
-              <h2 className="text-4xl font-bold mb-4">Welcome Back</h2>
+              <h2 className="text-4xl font-bold mb-4">{isLogin ? 'Welcome Back' : 'Join ServiceHub'}</h2>
               <p className="text-white/80 text-lg">
-                Sign in to access your dashboard and connect with professionals
+                {isLogin 
+                  ? 'Sign in to access your dashboard and connect with professionals'
+                  : 'Create an account to start posting jobs or finding work'
+                }
               </p>
             </div>
             
@@ -257,6 +275,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                         onChange={(e) => setPassword(e.target.value)}
                         className="pl-10 pr-10"
                         required
+                        minLength={1}
                       />
                       <button
                         type="button"
@@ -329,10 +348,52 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                   type="submit"
                   size="lg"
                   className="w-full shadow-xl"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !email || !password}
                 >
                   {isSubmitting ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
                 </Button>
+
+                {!email && (
+                  <p className="text-xs text-muted-foreground text-center -mt-4">
+                    Please enter your email to continue
+                  </p>
+                )}
+                {email && !password && (
+                  <p className="text-xs text-muted-foreground text-center -mt-4">
+                    Please enter a password to continue
+                  </p>
+                )}
+
+                <div className="pt-4 border-t">
+                  <p className="text-xs text-center text-muted-foreground mb-2">Quick test (for demo)</p>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="w-full"
+                    onClick={async () => {
+                      console.log('🎯 Demo login clicked');
+                      const testEmail = 'test@demo.com';
+                      const testPassword = 'password';
+                      setEmail(testEmail);
+                      setPassword(testPassword);
+                      setIsSubmitting(true);
+                      try {
+                        if (isLogin) {
+                          await onLogin(testEmail, testPassword, selectedRole);
+                        } else {
+                          await onSignUp(testEmail, testPassword, selectedRole);
+                        }
+                      } catch (error) {
+                        console.error('Demo login error:', error);
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                  >
+                    Demo Login as {selectedRole}
+                  </Button>
+                </div>
               </form>
             </CardContent>
           </Card>
