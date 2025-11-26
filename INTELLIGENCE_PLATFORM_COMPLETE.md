@@ -1,8 +1,14 @@
-# 🚀 ServiceHub Intelligence Platform - Complete System
+# 🚀 FairTradeWorker Intelligence Platform - Complete System
+
+> **Death of the Middleman. Birth of the Trade Infrastructure.**
+
+**Website**: FairTradeWorker.com  
+**Launch Date**: November 27, 2025  
+**Intelligence Platform Unlock**: May 27, 2026
 
 ## Overview
 
-I've built a **production-ready Intelligence API platform** with self-learning capabilities, comprehensive user management, admin dashboards, and a foundation for 50 monetizable APIs.
+A **production-ready Intelligence API platform** with self-learning capabilities, comprehensive user management, admin dashboards, and a foundation for 38 monetizable APIs (4 at launch, 34 unlock May 2026).
 
 ## ✅ What's Been Implemented
 
@@ -353,7 +359,7 @@ fetch(webhook.url, {
 ```yaml
 openapi: 3.1.0
 info:
-  title: ServiceHub Intelligence API
+  title: FairTradeWorker Intelligence API
   version: 1.0.0
 paths:
   /api/intelligence/job-scope:
