@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales, Path } from '@phosphor-icons/react';
+import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales, Path, Brain } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,7 @@ import { EarningsDashboard } from './EarningsDashboard';
 import { ComplianceDashboard } from './ComplianceDashboard';
 import { EstimateAccuracyTrend } from './EstimateAccuracyTrend';
 import { RouteOptimizer } from './RouteOptimizer';
+import { AILearningDashboard } from './AILearningDashboard';
 
 interface ContractorDashboardProps {
   user?: User;
@@ -158,7 +159,7 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-5xl grid-cols-6 mb-8">
+          <TabsList className="grid w-full max-w-5xl grid-cols-7 mb-8">
             <TabsTrigger value="browse">Browse Jobs</TabsTrigger>
             <TabsTrigger value="active">Active ({activeJobs.length})</TabsTrigger>
             <TabsTrigger value="route">
@@ -167,6 +168,10 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
             </TabsTrigger>
             <TabsTrigger value="completed">Completed</TabsTrigger>
             <TabsTrigger value="earnings">Earnings</TabsTrigger>
+            <TabsTrigger value="learning">
+              <Brain className="w-4 h-4 mr-2" />
+              AI Learning
+            </TabsTrigger>
             <TabsTrigger value="compliance">
               <Scales className="w-4 h-4 mr-2" />
               Compliance
@@ -304,6 +309,21 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
 
           <TabsContent value="earnings">
             <EarningsDashboard earnings={earnings} user={user} onUpdate={loadData} />
+          </TabsContent>
+
+          <TabsContent value="learning">
+            <Card className="glass-card p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent">
+                  <Brain className="w-7 h-7 text-white" weight="duotone" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold">AI Learning & Accuracy Metrics</h3>
+                  <p className="text-muted-foreground">Platform intelligence and estimation accuracy</p>
+                </div>
+              </div>
+              <AILearningDashboard contractorId={user.id} />
+            </Card>
           </TabsContent>
 
           <TabsContent value="compliance">
