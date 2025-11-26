@@ -570,6 +570,8 @@ export function PaymentScreen({
               </p>
             </div>
           </Card>
+            </>
+          )}
         </div>
 
         <div className="space-y-6">
