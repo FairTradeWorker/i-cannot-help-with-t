@@ -421,9 +421,9 @@ function App() {
                     <Shield className="w-4 h-4 mr-2" />
                     Insurance
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'ai')}>
+                  <DropdownMenuItem onClick={() => handleNavClick('intelligence')}>
                     <Brain className="w-4 h-4 mr-2" />
-                    API - Coming Soon
+                    Intelligence API
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
                     <Bank className="w-4 h-4 mr-2" />
@@ -435,6 +435,22 @@ function App() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              >
+                <Button
+                  variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('intelligence')}
+                  className="button-interactive"
+                  size="sm"
+                >
+                  <Brain className="w-4 h-4 mr-1.5" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
+                  Intelligence API
+                </Button>
+              </motion.div>
 
               <motion.div 
                 whileHover={{ scale: 1.02 }} 
