@@ -221,12 +221,18 @@ async function analyzePricing(jobType, zip, proposedPrice) {
 
 // ============================================
 // EXAMPLE 8: Webhook Handler (Express.js)
+// NOTE: This is example code for documentation purposes.
+// In production, add rate limiting middleware like 'express-rate-limit'.
 // ============================================
 const express = require('express');
 const crypto = require('crypto');
 
 const app = express();
 app.use(express.json());
+
+// Example: Add rate limiting in production
+// const rateLimit = require('express-rate-limit');
+// app.use('/webhook', rateLimit({ windowMs: 60000, max: 100 }));
 
 const WEBHOOK_SECRET = 'your_webhook_secret';
 

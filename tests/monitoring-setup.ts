@@ -11,7 +11,7 @@ export function initSentry() {
     environment: import.meta.env.MODE,
     
     // Performance monitoring
-    tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
+    tracesSampleRate: import.meta.env.MODE === 'production' ? 0.1 : 1.0,
     
     // Session replay for debugging
     replaysSessionSampleRate: 0.1,

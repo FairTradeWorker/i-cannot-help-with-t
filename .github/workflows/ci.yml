@@ -14,10 +14,16 @@ concurrency:
 env:
   NODE_VERSION: '20'
 
+# Default permissions for all jobs
+permissions:
+  contents: read
+
 jobs:
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,6 +48,8 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: lint-and-typecheck
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -68,6 +76,8 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: lint-and-typecheck
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -104,6 +114,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck]
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -132,6 +144,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, integration-tests, e2e-tests]
     if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+    permissions:
+      contents: read
     environment:
       name: staging
       url: https://staging.fairtradeworker.com
@@ -180,6 +194,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, integration-tests, e2e-tests]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
     environment:
       name: production
       url: https://app.fairtradeworker.com
@@ -247,6 +263,8 @@ jobs:
     runs-on: ubuntu-latest
     if: failure() && github.ref == 'refs/heads/main'
     needs: [deploy-production]
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4

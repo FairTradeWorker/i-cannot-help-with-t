@@ -33,11 +33,17 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Default permissions for all jobs
+permissions:
+  contents: read
+
 jobs:
   build-ios:
     name: Build iOS
     runs-on: ubuntu-latest
     if: github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' || github.event_name == 'push'
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -98,6 +104,8 @@ jobs:
     name: Build Android
     runs-on: ubuntu-latest
     if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -156,6 +164,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-ios, build-android]
     if: failure()
+    permissions: {}
     steps:
       - name: Send Failure Notification
         uses: slackapi/slack-github-action@v1.26.0

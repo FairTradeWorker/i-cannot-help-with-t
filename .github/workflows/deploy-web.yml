@@ -26,10 +26,16 @@ concurrency:
 env:
   NODE_VERSION: '20'
 
+# Default permissions for all jobs
+permissions:
+  contents: read
+
 jobs:
   lint-and-test:
     name: Lint and Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -52,6 +58,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-test
     if: github.ref == 'refs/heads/dev' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    permissions:
+      contents: read
     environment:
       name: staging
       url: https://staging.fairtradeworker.com
@@ -111,6 +119,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-test
     if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    permissions:
+      contents: read
     environment:
       name: production
       url: https://app.fairtradeworker.com
@@ -189,6 +199,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-production
     if: failure() && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -231,6 +243,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-staging, deploy-production]
     if: failure()
+    permissions: {}
     steps:
       - name: Send Failure Notification
         uses: slackapi/slack-github-action@v1.26.0

@@ -145,7 +145,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "your-eas-project-id"
+        "projectId": "${EAS_PROJECT_ID}"
       }
     },
     "owner": "fairtradeworker",
@@ -153,7 +153,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/your-eas-project-id"
+      "url": "https://u.expo.dev/${EAS_PROJECT_ID}"
     }
   }
 }
