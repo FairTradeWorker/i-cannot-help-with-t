@@ -261,8 +261,15 @@ function App() {
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                Home
-              </Button>
+                <Button
+                  variant={activeTab === 'home' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('home')}
+                  className="button-interactive"
+                  size="sm"
+                >
+                  Home
+                </Button>
+              </motion.div>
 
               {currentUser?.role !== 'homeowner' && (
                 <Button
@@ -289,20 +296,14 @@ function App() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
+                    variant={activeTab === 'contractor' ? 'default' : 'ghost'}
                     className="button-interactive"
                     size="sm"
                   >
-                    <Button
-                      variant={activeTab === 'contractor' ? 'default' : 'ghost'}
-                      className="button-interactive"
-                      size="sm"
-                    >
-                      <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
-                      Contractor
-                      <CaretDown className="w-3 h-3 ml-1" />
-                    </Button>
-                  </motion.div>
+                    <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
+                    Contractor
+                    <CaretDown className="w-3 h-3 ml-1" />
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="glass-card border-border/50">
                   <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
@@ -342,20 +343,14 @@ function App() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                    variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
                     className="button-interactive"
                     size="sm"
                   >
-                    <Button
-                      variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
-                      className="button-interactive"
-                      size="sm"
-                    >
-                      <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
-                      Homeowner
-                      <CaretDown className="w-3 h-3 ml-1" />
-                    </Button>
-                  </motion.div>
+                    <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
+                    Homeowner
+                    <CaretDown className="w-3 h-3 ml-1" />
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="glass-card border-border/50">
                   <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'profile')}>
@@ -429,16 +424,9 @@ function App() {
                 className="button-interactive"
                 size="sm"
               >
-                <Button
-                  variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('intelligence')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <Brain className="w-4 h-4 mr-1.5" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
-                  Intelligence API
-                </Button>
-              </motion.div>
+                <Brain className="w-4 h-4 mr-1.5" weight={activeTab === 'api' ? 'fill' : 'regular'} />
+                API
+              </Button>
 
               <motion.div 
                 whileHover={{ scale: 1.02 }} 
@@ -678,16 +666,18 @@ function App() {
                             <div className="p-3 rounded-xl bg-primary">
                               <MapTrifold className="w-7 h-7 text-white" weight="fill" />
                             </div>
-                            <p className="text-sm font-semibold mb-1">Territories</p>
-                            <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              <Badge variant="outline" className="text-[10px]">CA</Badge>
-                              <Badge variant="outline" className="text-[10px]">TX</Badge>
-                              <Badge variant="outline" className="text-[10px]">FL</Badge>
-                              <Badge variant="outline" className="text-[10px]">+47 states</Badge>
+                            <div>
+                              <p className="text-sm font-semibold mb-1">Territories</p>
+                              <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
+                              <div className="flex flex-wrap gap-1 mt-2">
+                                <Badge variant="outline" className="text-[10px]">CA</Badge>
+                                <Badge variant="outline" className="text-[10px]">TX</Badge>
+                                <Badge variant="outline" className="text-[10px]">FL</Badge>
+                                <Badge variant="outline" className="text-[10px]">+47 states</Badge>
+                              </div>
                             </div>
-                          </Card>
-                        )}
+                          </div>
+                        </Card>
 
                         {currentUser?.role !== 'homeowner' && (
                           <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('jobs')}>
