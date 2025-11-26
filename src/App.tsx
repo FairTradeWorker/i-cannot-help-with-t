@@ -148,75 +148,34 @@ function App() {
   };
 
   useEffect(() => {
+    const initialize = async () => {
+      try {
+        await initializeDemoData();
+        const user = await dataStore.getCurrentUser();
+        
+        if (user) {
+          setCurrentUser(user);
+          setShowLogin(false);
+        } else {
+          setShowLogin(true);
+        }
+      } catch (error) {
+        console.error('Initialization error:', error);
+        setShowLogin(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     initialize();
   }, []);
-  
-  useEffect(() => {
-    if (loading) {
-      const timeout = setTimeout(() => {
-        console.error('⏱️ Loading timeout - forcing login screen');
-        setLoading(false);
-        setShowLogin(true);
-      }, 5000);
-      
-      return () => clearTimeout(timeout);
-    }
-  }, [loading]);
-  
-  useEffect(() => {
-    console.log('🔄 State change:', { loading, showLogin, currentUser: currentUser?.id });
-  }, [loading, showLogin, currentUser]);
-
-  const initialize = async () => {
-    console.log('🚀🚀🚀 === INITIALIZATION START ===');
-    
-    try {
-      console.log('📦 Initializing demo data...');
-      await initializeDemoData();
-      console.log('✅ Demo data initialized');
-      
-      console.log('👤 Fetching current user from KV store...');
-      const user = await dataStore.getCurrentUser();
-      
-      if (!user) {
-        console.log('⚠️ No user found in storage');
-        console.log('🚪 Setting showLogin = true');
-        setShowLogin(true);
-        setCurrentUser(null);
-      } else {
-        console.log('✅✅ User found in storage!');
-        console.log('   User ID:', user.id);
-        console.log('   User Role:', user.role);
-        console.log('   User Email:', user.email);
-        console.log('🔄 Setting currentUser in state...');
-        setCurrentUser(user);
-        console.log('🚪 Setting showLogin = false');
-        setShowLogin(false);
-        console.log('✅✅✅ User loaded successfully!');
-      }
-    } catch (error) {
-      console.error('❌❌❌ Initialization error:', error);
-      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
-      setShowLogin(true);
-      setCurrentUser(null);
-    } finally {
-      console.log('🏁 Setting loading = false');
-      setLoading(false);
-      console.log('🏁🏁🏁 === INITIALIZATION COMPLETE ===');
-    }
-  };
 
   const handleLogin = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
-    console.log('🔐 handleLogin called:', { email, role });
-    
     try {
       const users = await dataStore.getUsers();
-      console.log('👥 Total users in storage:', users.length);
-      
       let user = users.find(u => u.email === email);
       
       if (!user) {
-        console.log('❌ User not found, creating new user');
         user = {
           id: 'user-' + Date.now(),
           role: role,
@@ -225,37 +184,20 @@ function App() {
           createdAt: new Date(),
         };
         await dataStore.saveUser(user);
-        console.log('✅ New user created and saved:', user.id);
-      } else {
-        console.log('✅ Existing user found:', user.id, user.role);
       }
       
-      console.log('💾 Setting current user in KV store...');
       await dataStore.setCurrentUser(user);
-      console.log('✅ Current user saved to KV store');
-      
-      console.log('🔄 Setting current user in React state...');
       setCurrentUser(user);
-      console.log('✅ React state updated with user:', user.id);
-      
-      console.log('🚪 Closing login modal...');
       setShowLogin(false);
-      console.log('✅ Login modal closed');
-      
-      console.log('🎉 Showing success toast...');
       toast.success(`Welcome, ${user.name}!`);
-      console.log('✅✅✅ Login flow complete!');
-      
     } catch (error) {
-      console.error('❌❌❌ Login error:', error);
+      console.error('Login error:', error);
       toast.error('Failed to sign in. Please try again.');
       throw error;
     }
   };
 
   const handleSignUp = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
-    console.log('📝 handleSignUp called:', { email, role });
-    
     try {
       const newUser: UserType = {
         id: 'user-' + Date.now(),
@@ -265,28 +207,13 @@ function App() {
         createdAt: new Date(),
       };
       
-      console.log('💾 Saving new user...');
       await dataStore.saveUser(newUser);
-      console.log('✅ New user saved:', newUser.id);
-      
-      console.log('💾 Setting current user in KV store...');
       await dataStore.setCurrentUser(newUser);
-      console.log('✅ Current user saved to KV store');
-      
-      console.log('🔄 Setting current user in React state...');
       setCurrentUser(newUser);
-      console.log('✅ React state updated with user:', newUser.id);
-      
-      console.log('🚪 Closing login modal...');
       setShowLogin(false);
-      console.log('✅ Sign up modal closed');
-      
-      console.log('🎉 Showing success toast...');
       toast.success(`Welcome, ${newUser.name}!`);
-      console.log('✅✅✅ Sign up flow complete!');
-      
     } catch (error) {
-      console.error('❌❌❌ Sign up error:', error);
+      console.error('Sign up error:', error);
       toast.error('Failed to create account. Please try again.');
       throw error;
     }
@@ -315,7 +242,6 @@ function App() {
   };
 
   if (loading) {
-    console.log('🔄 RENDERING: Loading screen');
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div
@@ -339,7 +265,6 @@ function App() {
   }
 
   if (showLogin || !currentUser) {
-    console.log('🚪 RENDERING: Login modal (showLogin:', showLogin, ', currentUser:', currentUser ? 'exists' : 'null', ')');
     return (
       <LoginModal
         onLogin={handleLogin}
@@ -347,35 +272,9 @@ function App() {
       />
     );
   }
-
-  console.log('✅ RENDERING: Main app (user:', currentUser?.id, ')');
   return (
     <div className="min-h-screen flex flex-col">
       <Toaster position="top-right" richColors />
-      
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 left-4 z-[100] bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-sm">
-          <div className="font-bold mb-2 text-green-400">🐛 Debug Panel</div>
-          <div className="space-y-1">
-            <div>Loading: <span className={loading ? 'text-yellow-400' : 'text-green-400'}>{loading ? '✅ TRUE' : '❌ FALSE'}</span></div>
-            <div>Show Login: <span className={showLogin ? 'text-yellow-400' : 'text-green-400'}>{showLogin ? '✅ TRUE' : '❌ FALSE'}</span></div>
-            <div>Current User: {currentUser ? (
-              <span className="text-green-400">✅ {currentUser.id} ({currentUser.role})</span>
-            ) : (
-              <span className="text-red-400">❌ NULL</span>
-            )}</div>
-            <div>Active Tab: <span className="text-blue-400">{activeTab}</span></div>
-            <div className="pt-2 border-t border-white/20 mt-2">
-              <div className="text-yellow-400 font-bold mb-1">Expected:</div>
-              <div className="text-xs text-white/70">
-                {loading && "Should show loading screen"}
-                {!loading && showLogin && "Should show login modal"}
-                {!loading && !showLogin && currentUser && "Should show main app"}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
       
       <motion.header
         initial={{ y: -100, opacity: 0 }}

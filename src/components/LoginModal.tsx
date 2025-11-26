@@ -25,9 +25,8 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      console.log('Auto-skipping splash screen...');
       setShowSplash(false);
-    }, 3000);
+    }, 2000);
     
     return () => clearTimeout(timer);
   }, []);
@@ -39,38 +38,20 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) {
-      console.log('⚠️ Already submitting, ignoring duplicate submit');
-      return;
-    }
+    if (isSubmitting) return;
     
-    console.log('🚀🚀🚀 === FORM SUBMIT START ===');
-    console.log('   Email:', email);
-    console.log('   Role:', selectedRole);
-    console.log('   Is Login:', isLogin);
+    if (!email || !password) return;
     
-    if (!email || !password) {
-      console.error('❌ Missing credentials');
-      return;
-    }
-    
-    console.log('🔒 Setting isSubmitting = true');
     setIsSubmitting(true);
     
     try {
       if (isLogin) {
-        console.log('📞 Calling onLogin handler...');
         await onLogin(email, password, selectedRole);
-        console.log('✅✅ onLogin completed successfully');
       } else {
-        console.log('📞 Calling onSignUp handler...');
         await onSignUp(email, password, selectedRole);
-        console.log('✅✅ onSignUp completed successfully');
       }
-      console.log('🎉🎉🎉 === FORM SUBMIT SUCCESS ===');
     } catch (error) {
-      console.error('❌❌❌ Form submission error:', error);
-      console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('Form submission error:', error);
       setIsSubmitting(false);
     }
   };
