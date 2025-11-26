@@ -258,8 +258,8 @@ function App() {
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
-        <div className="w-full px-4">
-          <div className="flex items-center justify-between h-16 py-2 max-w-[1920px] mx-auto gap-4">
+        <div className="w-full px-6">
+          <div className="flex items-center h-16 py-2 max-w-[1800px] mx-auto gap-4">
             <nav className="flex items-center gap-1.5">
               <Button
                 variant={activeTab === 'home' ? 'default' : 'ghost'}
@@ -337,20 +337,18 @@ function App() {
               </DropdownMenu>
             </nav>
 
+            <Button
+              size="lg"
+              onClick={() => handleNavClick('homeowner', 'post-job')}
+              className="bg-black hover:bg-black/90 text-white shadow-lg font-black uppercase px-8 h-12 border-2 border-black ml-8"
+            >
+              <Plus className="w-5 h-5 mr-2" weight="bold" />
+              Post a Job
+            </Button>
+
             <div className="flex-1" />
 
-            <nav className="flex items-center gap-1.5">
-              <Button
-                size="lg"
-                onClick={() => handleNavClick('homeowner', 'post-job')}
-                className="bg-black hover:bg-black/90 text-white shadow-lg font-black uppercase px-8 h-12 border-2 border-black"
-              >
-                <Plus className="w-5 h-5 mr-2" weight="bold" />
-                Post a Job
-              </Button>
-
-              <div className="w-8" />
-
+            <nav className="flex items-center gap-1.5 mr-4">
               <Button
                 variant={activeTab === 'api' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('api')}
