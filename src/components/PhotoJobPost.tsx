@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Image as ImageIcon, Upload, X, ArrowLeft, Camera, Plus } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+
+  onJobCreated: (jobData: { title: string; des
+}
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -14,99 +14,99 @@ interface PhotoJobPostProps {
   onCancel: () => void;
 }
 
-export function PhotoJobPost({ onJobCreated, onCancel }: PhotoJobPostProps) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [address, setAddress] = useState('');
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleFileSelect = (files: FileList | null) => {
-    if (!files) return;
-
-    const fileArray = Array.from(files);
-    const newPhotos: string[] = [];
-
-    fileArray.forEach((file) => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
         reader.onload = (e) => {
-          if (e.target?.result) {
-            newPhotos.push(e.target.result as string);
-            if (newPhotos.length === fileArray.length) {
-              setPhotos((prev) => [...prev, ...newPhotos]);
-              toast.success(`${fileArray.length} photo(s) added`);
+            newPhotos.push(e.target.resul
+              setPhotos((prev) => [...prev, ...newPho
             }
-          }
         };
-        reader.readAsDataURL(file);
       }
-    });
-  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+    setIsDragging(true)
 
-  const handleDragLeave = () => {
+    setIsDragging(false);
+
+
+    handleFileSelect(e.dataTransf
+
+    setPhotos((prev) => prev.filter((_, 
+        reader.onload = (e) => {
+  const handleSubmit = () => {
+      toast.error('Please enter a job title');
+    }
+      toast.error('Please enter a job description');
+    }
+            }
+    }
+        };
+
+      }
+      a
+    
+
+  const handleDragOver = (e: React.DragEvent) => {
+          <h2 className
+        </div>
+
+
+            <CardTitle className=
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFileSelect(e.dataTransfer.files);
-  };
+              <Label htmlFor="title">Job Title
+                id="tit
+                value={ti
+              />
 
-  const removePhoto = (index: number) => {
-    setPhotos((prev) => prev.filter((_, i) => i !== index));
-    toast.success('Photo removed');
-  };
+
+                id="address"
+                value={address}
+              />
+
 
   const handleSubmit = () => {
-    if (!title.trim()) {
+                rows={6}
       toast.error('Please enter a job title');
-      return;
+            <
     }
-    if (!description.trim()) {
+        <Card className="glass
       toast.error('Please enter a job description');
-      return;
+             
     }
-    if (photos.length === 0) {
-      toast.error('Please upload at least one photo');
-      return;
+          <CardContent classNa
+              className={`border-2 border-dashed round
+             
     }
 
-    onJobCreated({ title, description, photos });
-  };
+            >
+    
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
-    >
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={onCancel}>
-          <ArrowLeft className="w-5 h-5" />
+          
+               
+                id="photo-upload"
+              <Button
+                onClick={()
+     
+              </Button>
+
+              <div className="space-y-2">
         </Button>
-        <div>
-          <h2 className="text-3xl font-bold">Photo Job Post</h2>
-          <p className="text-muted-foreground">Upload photos of your project to get accurate estimates</p>
+             
+                        src={photo}
+                        className="w-full h-32 object-cover rounded-lg border-2 border-border"
         </div>
-      </div>
+            
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ImageIcon className="w-6 h-6 text-primary" weight="fill" />
-              Project Details
-            </CardTitle>
-            <CardDescription>Tell us about your project</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+                    </div>
+                </div>
+            )}
+        </Card>
+
+        <CardContent classNam
+            <div>
+              <p className="text-sm text-muted-foreground">
+              </p>
+            <div className="flex gap-3">
             <div className="space-y-2">
               <Label htmlFor="title">Job Title</Label>
               <Input
@@ -216,15 +216,15 @@ export function PhotoJobPost({ onJobCreated, onCancel }: PhotoJobPostProps) {
             </div>
             <div className="flex gap-3">
               <Button variant="outline" onClick={onCancel}>
-                Cancel
+
               </Button>
               <Button size="lg" onClick={handleSubmit}>
                 Post Job
               </Button>
             </div>
-          </div>
+
         </CardContent>
-      </Card>
+
 
       <Card className="glass-card bg-muted/30">
         <CardContent className="pt-6">
@@ -232,18 +232,18 @@ export function PhotoJobPost({ onJobCreated, onCancel }: PhotoJobPostProps) {
             <div>
               <Badge variant="secondary" className="mb-2">Tip 1</Badge>
               <p className="text-sm text-muted-foreground">Include wide shots showing the entire area</p>
-            </div>
+
             <div>
               <Badge variant="secondary" className="mb-2">Tip 2</Badge>
               <p className="text-sm text-muted-foreground">Take close-ups of problem areas or damage</p>
-            </div>
-            <div>
-              <Badge variant="secondary" className="mb-2">Tip 3</Badge>
-              <p className="text-sm text-muted-foreground">Use good lighting for accurate estimates</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-}
+
+
+
+
+
+
+
+
+
+
+
