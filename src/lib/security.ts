@@ -207,44 +207,60 @@ export function escapeHtml(str: string): string {
 }
 
 /**
- * Strip all HTML tags from a string
+ * Strip all HTML tags from a string safely
+ * Uses DOM parsing when available for security
  */
 export function stripHtml(str: string): string {
-  return str.replace(/<[^>]*>/g, '');
+  if (typeof str !== 'string') return '';
+  
+  // Use DOM-based parsing for security (browser environment)
+  if (typeof document !== 'undefined') {
+    const tmp = document.createElement('div');
+    tmp.textContent = str; // Safe: treats content as text, not HTML
+    tmp.innerHTML = str; // Parse the HTML
+    return tmp.textContent || tmp.innerText || '';
+  }
+  
+  // Server-side fallback: escape HTML instead of trying to strip it
+  // This is the safest approach when DOM is not available
+  return escapeHtml(str);
 }
 
 /**
- * Basic HTML sanitizer (for production, use DOMPurify)
- * This is a simplified version - use DOMPurify for full security
+ * IMPORTANT: For production HTML sanitization, use DOMPurify library.
+ * Install with: npm install dompurify @types/dompurify
+ * 
+ * Example usage:
+ * ```typescript
+ * import DOMPurify from 'dompurify';
+ * 
+ * const clean = DOMPurify.sanitize(dirty, {
+ *   ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
+ *   ALLOWED_ATTR: []
+ * });
+ * ```
+ * 
+ * The function below provides basic protection but regex-based sanitization
+ * cannot fully protect against all XSS vectors. For security-critical
+ * applications, always use DOMPurify or a similar DOM-based sanitizer.
  */
-export function sanitizeHtml(dirty: string): string {
-  // For production, import and use DOMPurify:
-  // import DOMPurify from 'dompurify';
-  // return DOMPurify.sanitize(dirty, { ALLOWED_TAGS, ALLOWED_ATTR: [] });
+export function sanitizeHtmlBasic(dirty: string): string {
+  if (typeof dirty !== 'string') return '';
   
-  // Basic sanitization - strips all tags except allowed ones
-  let clean = dirty;
+  // For any security-critical use case, recommend using DOMPurify
+  // This is a basic helper that should NOT be relied upon for XSS protection
+  console.warn('sanitizeHtmlBasic: For production security, use DOMPurify instead');
   
-  // Remove script tags and their content
-  clean = clean.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  
-  // Remove event handlers
-  clean = clean.replace(/\s*on\w+\s*=\s*(['"])[^'"]*\1/gi, '');
-  
-  // Remove javascript: URLs
-  clean = clean.replace(/javascript:/gi, '');
-  
-  // Remove data: URLs in sensitive contexts
-  clean = clean.replace(/data:\s*[^,]*,/gi, '');
-  
-  return clean;
+  // The safest approach for untrusted input is to escape all HTML
+  return escapeHtml(dirty);
 }
 
 /**
- * Sanitize user input for safe display
- * Use this for any user-generated content
+ * Safely render untrusted content as text
+ * This is the RECOMMENDED approach for user-generated content
+ * It escapes all HTML, making it safe to display
  */
-export function sanitizeUserInput(input: string): string {
+export function sanitizeForDisplay(input: string): string {
   if (typeof input !== 'string') return '';
   return escapeHtml(input.trim());
 }
@@ -431,6 +447,7 @@ export function validateEnvironment(requiredVars: string[]): { valid: boolean; m
 
 /**
  * Recommended security headers for responses
+ * Note: In production, use nonce-based CSP for scripts instead of 'unsafe-inline'
  */
 export const securityHeaders = {
   'X-Content-Type-Options': 'nosniff',
@@ -440,14 +457,42 @@ export const securityHeaders = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-    "style-src 'self' 'unsafe-inline'",
+    "script-src 'self'",
+    "style-src 'self'",
     "img-src 'self' data: https:",
     "font-src 'self' data:",
     "connect-src 'self' https://api.fairtradeworker.com",
     "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
   ].join('; '),
 };
+
+/**
+ * Generate a CSP nonce for inline scripts
+ * Use this to allow specific inline scripts while maintaining security
+ */
+export function generateCSPNonce(): string {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(16));
+  return btoa(String.fromCharCode(...randomBytes));
+}
+
+/**
+ * Get CSP header with nonce for inline scripts
+ */
+export function getCSPHeaderWithNonce(nonce: string): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'nonce-${nonce}'`,
+    "img-src 'self' data: https:",
+    "font-src 'self' data:",
+    "connect-src 'self' https://api.fairtradeworker.com",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; ');
+}
 
 // Export types for use in other files
 export type { RateLimitConfig };

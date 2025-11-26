@@ -24,7 +24,7 @@ function SkeletonCard() {
       </div>
       <Skeleton className="h-4 w-full" />
       <Skeleton className="h-4 w-4/5" />
-      <Skeleton className="h-4 w-9/10" />
+      <Skeleton className="h-4 w-11/12" />
       <div className="flex gap-2 pt-2">
         <Skeleton className="h-10 w-24 rounded-lg" />
         <Skeleton className="h-10 w-20 rounded-lg" />
@@ -37,7 +37,7 @@ function SkeletonJobCard() {
   return (
     <div className="p-4 rounded-xl border border-gray-200 space-y-3">
       <div className="flex justify-between items-start">
-        <Skeleton className="h-6 w-7/10" />
+        <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-4 w-16" />
       </div>
       <div className="flex gap-2">
