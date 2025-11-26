@@ -372,7 +372,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                     variant="outline"
                     className="w-full"
                     onClick={async () => {
-                      console.log('🎯 Demo login clicked');
+                      console.log('Demo login clicked');
                       const testEmail = 'test@demo.com';
                       const testPassword = 'password';
                       setEmail(testEmail);
