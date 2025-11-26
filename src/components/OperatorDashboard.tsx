@@ -5,7 +5,6 @@ import {
   TrendUp,
   Users,
   Briefcase,
-  ChartLine,
   Package,
 } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
@@ -20,10 +19,6 @@ interface OperatorDashboardProps {
 }
 
 export function OperatorDashboard({ operatorProfile, territories }: OperatorDashboardProps) {
-  const totalMonthlyVolume = territories.reduce((sum, t) => sum + (t.stats.monthlyJobVolume || 0), 0);
-  const totalMonthlyRevenue = territories.reduce((sum, t) => sum + (t.stats.monthlyRevenue || 0), 0);
-  const operatorMonthlyEarnings = totalMonthlyRevenue * 0.08;
-  const annualProjection = operatorMonthlyEarnings * 12;
   const roi = operatorProfile.totalInvestment > 0 
     ? ((operatorProfile.totalEarnings / operatorProfile.totalInvestment) * 100).toFixed(1)
     : '0';
@@ -54,49 +49,6 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
         >
           <Card className="glass-card p-6 glass-hover cursor-pointer">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <CurrencyDollar className="w-6 h-6 text-primary" weight="fill" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Monthly Earnings</p>
-                <p className="text-2xl font-bold">${operatorMonthlyEarnings.toLocaleString()}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <TrendUp className="w-4 h-4 text-green-600" weight="bold" />
-              <span className="text-green-600 font-semibold">8% of all jobs</span>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.177, delay: 0.088, ease: [0.4, 0, 0.2, 1] }}
-        >
-          <Card className="glass-card p-6 glass-hover cursor-pointer">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                <ChartLine className="w-6 h-6 text-accent" weight="fill" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Annual Projection</p>
-                <p className="text-2xl font-bold">${annualProjection.toLocaleString()}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">Based on current volume</span>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.177, delay: 0.133, ease: [0.4, 0, 0.2, 1] }}
-        >
-          <Card className="glass-card p-6 glass-hover cursor-pointer">
-            <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
                 <TrendUp className="w-6 h-6 text-secondary" weight="fill" />
               </div>
@@ -116,7 +68,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.177, delay: 0.177, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.177, delay: 0.088, ease: [0.4, 0, 0.2, 1] }}
         >
           <Card className="glass-card p-6 glass-hover cursor-pointer">
             <div className="flex items-center gap-3 mb-4">
@@ -166,7 +118,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
                       </div>
                     </div>
                     <Badge className="bg-gradient-to-r from-primary to-accent text-white">
-                      8% Revenue Share
+                      Territory Owner
                     </Badge>
                   </div>
 
@@ -191,9 +143,6 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
                       </div>
                       <p className="text-lg font-bold">
                         ${territory.stats.monthlyRevenue.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-green-600 font-semibold">
-                        ${territory.stats.operatorEarnings.toLocaleString()} to you
                       </p>
                     </div>
 
@@ -264,7 +213,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
               </div>
               <h4 className="font-bold text-lg">Operator (You)</h4>
               <p className="text-sm text-muted-foreground">
-                Owns zip codes, recruits contractors, earns 8% of every job. No physical work required.
+                Owns zip codes, recruits contractors, builds the network. No physical work required.
               </p>
               <ul className="text-sm space-y-2">
                 <li className="flex items-start gap-2">
@@ -273,7 +222,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
                 </li>
                 <li className="flex items-start gap-2">
                   <Package className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" weight="fill" />
-                  <span>Earn 8% passive income</span>
+                  <span>Build the network</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Package className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" weight="fill" />

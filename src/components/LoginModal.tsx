@@ -199,7 +199,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Territory Ownership</h4>
-                  <p className="text-white/70 text-sm">Invest in territories and earn 8% revenue share</p>
+                  <p className="text-white/70 text-sm">Claim territories and build your contractor network</p>
                 </div>
               </div>
             </div>

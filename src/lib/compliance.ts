@@ -44,7 +44,6 @@ export interface TerritoryOwnershipAgreement {
   territoryId: string;
   ownerId: string;
   purchasePrice: number;
-  revenueSharePercentage: number;
   activeParticipationRequired: boolean;
   guaranteedReturns: boolean;
   isPassiveInvestment: boolean;

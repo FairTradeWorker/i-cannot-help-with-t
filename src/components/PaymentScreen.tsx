@@ -59,10 +59,10 @@ export function PaymentScreen({
   const [selectedWarranty, setSelectedWarranty] = useState<'basic' | 'extended' | 'premium'>('basic');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const operatorFee = 20;
+  const platformFee = 20;
   const warrantyPrices = { basic: 75, extended: 299, premium: 499 };
   const warrantyPrice = warrantyPrices[selectedWarranty];
-  const totalAmount = amount + warrantyPrice + operatorFee;
+  const totalAmount = amount + warrantyPrice + platformFee;
 
   const financeOptions = [
     {
@@ -517,7 +517,7 @@ export function PaymentScreen({
                     </TooltipProvider>
                   </div>
                   <span className="text-sm font-semibold text-accent">
-                    +${operatorFee.toLocaleString()}
+                    +${platformFee.toLocaleString()}
                   </span>
                 </div>
 
@@ -576,7 +576,7 @@ export function PaymentScreen({
                   </p>
                   <div className="flex justify-between items-center pt-2 border-t border-primary/20">
                     <span className="font-medium">Your Platform Fee:</span>
-                    <span className="font-bold text-primary">${operatorFee} one-time</span>
+                    <span className="font-bold text-primary">${platformFee} one-time</span>
                   </div>
                 </div>
 
