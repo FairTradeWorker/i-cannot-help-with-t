@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EnvelopeSimple, Lock, Eye, EyeSlash, UserCircle, Hammer, HardHat, House, MapTrifold } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -22,6 +22,15 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log('Auto-skipping splash screen...');
+      setShowSplash(false);
+    }, 3000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const trades = [
     'General Contractor', 'Roofing', 'Plumbing', 'Electrical', 'HVAC',
@@ -52,9 +61,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
       }
     } catch (error) {
       console.error('❌ Form submission error:', error);
-    } finally {
       setIsSubmitting(false);
-      console.log('🏁 Form submission finished');
     }
   };
 
@@ -125,12 +132,18 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
           >
             <Button
               size="lg"
-              onClick={() => setShowSplash(false)}
-              className="px-8 py-6 text-lg shadow-xl"
+              onClick={() => {
+                console.log('Get Started clicked, hiding splash');
+                setShowSplash(false);
+              }}
+              className="px-8 py-6 text-lg shadow-xl hover:scale-105 transition-transform"
             >
               Get Started
               <MapTrifold className="w-5 h-5 ml-2" weight="fill" />
             </Button>
+            <p className="text-xs text-muted-foreground mt-4">
+              Auto-continuing in 3 seconds...
+            </p>
           </motion.div>
           
           <motion.div
@@ -275,7 +288,6 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                         onChange={(e) => setPassword(e.target.value)}
                         className="pl-10 pr-10"
                         required
-                        minLength={1}
                       />
                       <button
                         type="button"
@@ -350,7 +362,18 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                   className="w-full shadow-xl"
                   disabled={isSubmitting || !email || !password}
                 >
-                  {isSubmitting ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
+                  {isSubmitting ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full mr-2"
+                      />
+                      Please wait...
+                    </>
+                  ) : (
+                    isLogin ? 'Sign In' : 'Create Account'
+                  )}
                 </Button>
 
                 {!email && (
@@ -364,13 +387,18 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                   </p>
                 )}
 
-                <div className="pt-4 border-t">
-                  <p className="text-xs text-center text-muted-foreground mb-2">Quick test (for demo)</p>
+                <div className="pt-4 border-t border-dashed">
+                  <div className="flex items-center gap-2 mb-2 justify-center">
+                    <div className="h-px bg-border flex-1"></div>
+                    <p className="text-xs text-center text-muted-foreground font-semibold">Quick Demo Access</p>
+                    <div className="h-px bg-border flex-1"></div>
+                  </div>
                   <Button
                     type="button"
-                    size="sm"
+                    size="lg"
                     variant="outline"
-                    className="w-full"
+                    className="w-full border-2 border-primary/50 hover:bg-primary/5"
+                    disabled={isSubmitting}
                     onClick={async () => {
                       console.log('Demo login clicked');
                       const testEmail = 'test@demo.com';
@@ -386,13 +414,29 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                         }
                       } catch (error) {
                         console.error('Demo login error:', error);
-                      } finally {
                         setIsSubmitting(false);
                       }
                     }}
                   >
-                    Demo Login as {selectedRole}
+                    {isSubmitting ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full mr-2"
+                        />
+                        Logging in...
+                      </>
+                    ) : (
+                      <>
+                        <MapTrifold className="w-4 h-4 mr-2" weight="fill" />
+                        Demo Login as {selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}
+                      </>
+                    )}
                   </Button>
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    Click here to instantly access the platform
+                  </p>
                 </div>
               </form>
             </CardContent>

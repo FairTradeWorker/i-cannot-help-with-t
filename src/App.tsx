@@ -149,21 +149,28 @@ function App() {
 
   useEffect(() => {
     initialize();
-    
-    const timeout = setTimeout(() => {
-      if (loading) {
+  }, []);
+  
+  useEffect(() => {
+    if (loading) {
+      const timeout = setTimeout(() => {
         console.error('⏱️ Loading timeout - forcing login screen');
         setLoading(false);
         setShowLogin(true);
-      }
-    }, 5000);
-    
-    return () => clearTimeout(timeout);
-  }, []);
+      }, 5000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [loading]);
+  
+  useEffect(() => {
+    console.log('🔄 State change:', { loading, showLogin, currentUser: currentUser?.id });
+  }, [loading, showLogin, currentUser]);
 
   const initialize = async () => {
     try {
       console.log('🚀 Initializing app...');
+      
       await initializeDemoData();
       console.log('✅ Demo data initialized');
       
@@ -173,13 +180,16 @@ function App() {
       if (!user) {
         console.log('ℹ️ No user found, showing login screen');
         setShowLogin(true);
+        setCurrentUser(null);
       } else {
         console.log('✅ User found, setting current user');
         setCurrentUser(user);
+        setShowLogin(false);
       }
     } catch (error) {
       console.error('❌ Initialization error:', error);
       setShowLogin(true);
+      setCurrentUser(null);
     } finally {
       console.log('✅ Initialization complete, loading = false');
       setLoading(false);
@@ -219,10 +229,12 @@ function App() {
       
       toast.success(`Welcome back, ${user.name}!`);
       console.log('✅ Login complete');
+      
+      return Promise.resolve();
     } catch (error) {
       console.error('❌ Login error:', error);
       toast.error('Failed to sign in. Please try again.');
-      throw error;
+      return Promise.reject(error);
     }
   };
 
@@ -251,10 +263,12 @@ function App() {
       
       toast.success(`Welcome, ${newUser.name}!`);
       console.log('✅ Sign up complete');
+      
+      return Promise.resolve();
     } catch (error) {
       console.error('❌ Sign up error:', error);
       toast.error('Failed to create account. Please try again.');
-      throw error;
+      return Promise.reject(error);
     }
   };
 
@@ -282,7 +296,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -303,7 +317,7 @@ function App() {
     );
   }
 
-  if (showLogin) {
+  if (showLogin || !currentUser) {
     return (
       <LoginModal
         onLogin={handleLogin}
@@ -315,6 +329,17 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Toaster position="top-right" richColors />
+      
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 left-4 z-[100] bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-xs">
+          <div className="font-bold mb-1">Debug Info:</div>
+          <div>Loading: {loading ? '✅' : '❌'}</div>
+          <div>Show Login: {showLogin ? '✅' : '❌'}</div>
+          <div>Current User: {currentUser ? `${currentUser.id} (${currentUser.role})` : 'null'}</div>
+          <div>Active Tab: {activeTab}</div>
+        </div>
+      )}
+      
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
