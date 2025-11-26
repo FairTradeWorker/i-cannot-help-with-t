@@ -1,16 +1,24 @@
 # FairTradeWorker - Modern Home Services Marketplace Platform
 
-A comprehensive home services marketplace connecting homeowners with verified contractors across all 50 US states. The platform features video-based job creation with AI analysis, territory-based contractor networks, zero-fee structure for contractors (funded by $45/month territory subscriptions), integrated messaging, payment management, and an Intelligence API marketplace for enterprise partners.
+> **Death of the Middleman. Birth of the Trade Infrastructure.**
+
+**Platform**: FairTradeWorker  
+**Website**: FairTradeWorker.com  
+**Launch Date**: November 27, 2025  
+**Intelligence Platform Unlock**: May 27, 2026
+
+A comprehensive home services marketplace connecting homeowners with verified contractors across all 50 US states. The platform features video-based job creation with AI analysis, territory-based contractor networks, zero-fee structure for both contractors AND operators, integrated messaging, payment management, and an Intelligence API marketplace for enterprise partners.
 
 **Experience Qualities**:
 1. **Professional & Trustworthy** - Clean iOS-inspired interface with glass morphism, verified contractors, secure escrow payments
-2. **Zero Fees for Contractors** - Contractors keep 100% of earnings. Territory operators pay $45/month for exclusive lead rights to fund the platform.
+2. **Zero Fees for Contractors AND Operators** - Contractors keep 100% of earnings. Operators pay $0 to build their networks.
 3. **Intelligent & Seamless** - Video job analysis, route optimization, real-time messaging, flexible payment options
 
 **Complexity Level**: Complex Application (multi-role marketplace, real-time features, territory management, API ecosystem)
 - Video-based job creation with AI-powered damage analysis
-- Territory subscription model ($45/month) with exclusive lead rights
+- Territory claiming system with ONE license per Individual/LLC/Corporation
 - Zero-fee structure for all contractors (100% earnings retention)
+- Zero-fee structure for operators ($0 fees - they BUILD, not pay)
 - Multi-role system: Homeowners, Contractors, Subcontractors, Territory Operators, Partners
 - Real-time messaging and notifications
 - Integrated payment processing with financing options
@@ -20,11 +28,15 @@ A comprehensive home services marketplace connecting homeowners with verified co
 ## Essential Features
 
 ### Enhanced Home Dashboard
-- **Functionality**: Comprehensive home screen featuring prominent "Post a Job" call-to-action card, four stat cards showing key metrics (850+ territories available, 2.8K+ active jobs, 3.5K+ verified contractors, API access starting at $99), Territory Teaser section with map preview, Zero Fees explanation card with detailed payment breakdown visualization showing how $10K job splits (100% to contractor, $20 platform fee from homeowner, territory operator pays separate $45/month subscription)
-- **Purpose**: Provide immediate access to core platform features, showcase platform statistics, explain value proposition to contractors (zero fees), encourage territory subscriptions, and highlight API marketplace
+- **Functionality**: Comprehensive home screen featuring:
+  - Prominent "Post a Job" call-to-action card
+  - Four stat cards showing key metrics (850+ territories available, 2.8K+ active jobs, 3.5K+ verified contractors, API access starting at $199)
+  - Territory Teaser section with map preview
+  - Zero Fees explanation card with detailed payment breakdown visualization showing how $10K job splits (100% to contractor, $20 platform fee from homeowner, territory operator pays $0 recurring fees)
+- **Purpose**: Provide immediate access to core platform features, showcase platform statistics, explain value proposition to contractors (zero fees), encourage territory claiming, and highlight API marketplace
 - **Trigger**: User lands on Home tab (default view after login)
-- **Progression**: Home loads → see prominent "Post a New Job" card → review four metric cards (territories, jobs, contractors, API) → scroll to Territory Teaser → explore Zero Fees benefit card with payment breakdown → understand territory subscription model
-- **Success criteria**: All stat cards clickable and navigate to relevant sections, Post a Job card opens UnifiedJobPost modal, zero fees card clearly shows 100% contractor earnings, payment breakdown displays $10K example with $20 homeowner fee and separate territory subscription, Territory Teaser links to territories overview
+- **Progression**: Home loads → see prominent "Post a New Job" card → review four metric cards (territories, jobs, contractors, API) → scroll to Territory Teaser → explore Zero Fees benefit card with payment breakdown → understand zero-fee territory model
+- **Success criteria**: All stat cards clickable and navigate to relevant sections, Post a Job card opens UnifiedJobPost modal, zero fees card clearly shows 100% contractor earnings, payment breakdown displays $10K example with $20 homeowner fee and $0 operator recurring fees, Territory Teaser links to territories overview
 
 ### Service Categories (60 Total)
 The platform supports 60 comprehensive service categories organized into 7 major groups:
@@ -57,19 +69,19 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Progression**: Post a Job clicked → UnifiedJobPost modal opens → select job type (Video/Photo/Text) → upload media or enter description → AI analyzes and extracts key frame → generates scope with confidence score → homeowner reviews and edits → selects service category (60 options across 7 groups) → sets urgency → publishes job → job appears in contractor browse queue
 - **Success criteria**: Modal opens smoothly, all three creation methods available, video frame extraction works in <5s, AI analysis completes in <30s, scope includes materials + labor + cost range + confidence score (75%+), job successfully persists and appears in job browser with correct status
 
-### Territory Subscription System
-- **Functionality**: Territory operators purchase monthly subscriptions ($45/month) for exclusive lead rights in specific zip codes, counties, or regions. Operators recruit and manage local contractors, approve job bids, and receive priority placement in their territory. No revenue sharing or passive investment structure - operators actively manage their territory network.
-- **Purpose**: Fund platform operations through subscription model while maintaining zero fees for contractors. Operators build local contractor networks and provide quality control.
+### Territory Claiming System
+- **Functionality**: Territory operators claim territories with exclusive lead rights in specific zip codes, counties, or regions. Operators recruit and manage local contractors, approve job bids, and receive priority placement in their territory. No fees for operators - they build the network, not pay into it. First 10 territories are FREE. ONE license per Individual/LLC/Corporation.
+- **Purpose**: Build platform's geographic coverage while maintaining zero fees for operators. Operators build local contractor networks and provide quality control.
 - **Trigger**: User navigates to Territories tab from main navigation
-- **Progression**: Territories page loads → browse available territories (map or list view) → search by zip/city/county/state → view territory details (active jobs, contractor count, subscription price) → click "Subscribe" → payment flow ($45/month) → territory activated → operator dashboard unlocked → can recruit contractors and approve bids
-- **Success criteria**: All territories searchable and subscribable, subscriptions persist using useKV, subscription status displayed clearly, operators can manage local contractors, exclusive lead access granted within territory, monthly billing automated
+- **Progression**: Territories page loads → browse available territories (map or list view) → search by zip/city/county/state → view territory details (active jobs, contractor count) → click "Claim" → first 10 FREE or pay one-time fee ($500, $1,000, $1,500, $2,000, or $2,500) → territory activated → operator dashboard unlocked → can recruit contractors and approve bids
+- **Success criteria**: All territories searchable and claimable, claims persist using useKV, claim status displayed clearly, ONE license per Individual/LLC/Corporation enforced, operators can manage local contractors, exclusive lead access granted within territory
 
-### Zero-Fee Contractor Model
-- **Functionality**: All contractors (general and subcontractors) keep 100% of their job earnings with zero platform fees. Homeowners pay a one-time $20 platform fee per job. Territory operators separately pay $45/month subscriptions to access leads in their area, which funds platform operations.
-- **Purpose**: Attract and retain top contractor talent by eliminating percentage-based fees common on competitor platforms (15-30%). Clear separation between contractor earnings and platform funding.
+### Zero-Fee Contractor AND Operator Model
+- **Functionality**: All contractors (general and subcontractors) keep 100% of their job earnings with zero platform fees. Territory operators also pay $0 fees - they build the network, not pay into it. Homeowners pay a one-time $20 platform fee per job. First 10 territories are FREE, then $500, $1,000, $1,500, $2,000, or $2,500 for additional territories.
+- **Purpose**: Attract and retain top contractor talent by eliminating percentage-based fees common on competitor platforms (15-30%). Operators build their networks without ongoing fees. Clear separation between contractor earnings and platform funding.
 - **Trigger**: Job completion and payment release, or when viewing pricing information
-- **Progression**: Job completed → homeowner pays job amount + $20 platform fee → funds held in escrow → contractor confirms completion → full job amount released to contractor (100%) → platform fee and territory subscription are separate revenue streams
-- **Success criteria**: Contractors receive exactly 100% of quoted job amount, no deductions visible on contractor side, homeowner sees clear $20 platform fee on checkout, territory operators billed separately on monthly cycle, payment breakdown displayed accurately on home page card and throughout app
+- **Progression**: Job completed → homeowner pays job amount + $20 platform fee → funds held in escrow → contractor confirms completion → full job amount released to contractor (100%) → operator pays $0 fees
+- **Success criteria**: Contractors receive exactly 100% of quoted job amount, no deductions visible on contractor side, homeowner sees clear $20 platform fee on checkout, territory operators pay $0 recurring fees, payment breakdown displayed accurately on home page card and throughout app
 
 ### Route Optimization for Contractors
 - **Functionality**: Contractors can optimize their daily routes to visit multiple job sites efficiently using the Trueway Routing API, with options to avoid tolls/highways/ferries, automatic route optimization, distance/duration/cost calculations, and visual map display
@@ -86,18 +98,24 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: All sections accessible from navigation, dropdowns work smoothly with clear visual indicators, active state clearly indicated, Messages shows unread count, glass morphism effect renders correctly, navigation responds to hover/click with appropriate micro-animations
 
 ### Territory Management System
-- **Functionality**: Interactive territory browser with map and list views, search by zip/city/county/state, territory details showing job count and contractor network size, subscription purchasing ($45/month), territory dashboard for operators showing active subscriptions, revenue from leads, contractor approvals, and territory performance metrics
-- **Purpose**: Enable territory operators to discover, subscribe to, and manage geographic territories. Provide exclusive lead access within subscribed areas.
+- **Functionality**: Interactive territory browser with map and list views, search by zip/city/county/state, territory details showing job count and contractor network size, territory claiming (first 10 FREE, then $500-$2,500), ONE license per Individual/LLC/Corporation, territory dashboard for operators showing active claims, contractor approvals, and territory performance metrics
+- **Purpose**: Enable territory operators to discover, claim, and manage geographic territories. Provide exclusive lead access within claimed areas with zero recurring fees.
 - **Trigger**: User navigates to Territories tab in main navigation
-- **Progression**: Territories page loads → toggle between map/list view → search territories → click territory → view details (active jobs, contractors, subscription price) → subscribe to territory → payment processed ($45/month) → territory added to operator dashboard → receive exclusive leads → manage contractor network
-- **Success criteria**: All territories searchable and subscribable, subscriptions persist using useKV, operator dashboard displays all active territories, subscription billing automated monthly, operators receive leads only from subscribed territories, territory metrics update in real-time
+- **Progression**: Territories page loads → toggle between map/list view → search territories → click territory → view details (active jobs, contractors) → claim territory (first 10 FREE, then $500-$2,500) → territory added to operator dashboard → receive exclusive leads → manage contractor network
+- **Success criteria**: All territories searchable and claimable, claims persist using useKV, operator dashboard displays all claimed territories, ONE license per Individual/LLC/Corporation enforced, operators receive leads only from claimed territories, territory metrics update in real-time
 
 ### Intelligence API Marketplace
-- **Functionality**: Enterprise API marketplace offering 6 specialized APIs: Pricing Intelligence API ($49/mo - real-time pricing data for 60+ service categories), Job Intelligence API ($89/mo - anonymized job data and market trends), Contractor Network API ($129/mo - contractor availability and capacity data), Warranty Intelligence API ($79/mo - warranty claims analysis), Compliance API ($99/mo - licensing and insurance verification), Territory Intelligence API ($109/mo - geographic market data). Also offers bundled tiers: Starter ($199/mo - 3 APIs), Professional ($449/mo - 5 APIs + priority support), Enterprise ($1,299/mo - all 6 APIs + dedicated support). Includes authentication documentation, request/response examples, rate limits, and usage dashboard.
+- **Functionality**: Enterprise API marketplace offering 4 specialized APIs at launch with 34 more unlocking May 2026:
+  - AI Scope API ($2,499/mo - ENTERPRISE premium deterrent pricing)
+  - Instant Quote API ($499/mo)
+  - Contractor Match API ($299/mo)
+  - Demand Heatmap API ($199/mo)
+  - 34 Premium APIs (TBD - unlock May 2026)
+  Includes authentication documentation, request/response examples, rate limits, and usage dashboard.
 - **Purpose**: Monetize platform intelligence for enterprise partners (PE firms analyzing acquisitions, real estate platforms, insurance companies, material suppliers, competitors) while maintaining data privacy and security
 - **Trigger**: User navigates to API tab in main navigation
-- **Progression**: API page loads → view bundled pricing tiers and individual API products → explore features and endpoints → review authentication documentation → select plan or specific APIs → complete purchase → receive API keys and credentials → access usage dashboard → make API calls
-- **Success criteria**: All 6 individual APIs listed with clear pricing and features, 3 bundled tiers displayed prominently with savings calculations, authentication methods documented (OAuth 2.0, API keys), request/response examples shown for each endpoint, rate limits clearly stated, usage dashboard tracks API calls and remaining quota, payment flow integrated with main payment system
+- **Progression**: API page loads → view individual API products with pricing → explore features and endpoints → review authentication documentation → select API product → complete purchase → receive API keys and credentials → access usage dashboard → make API calls
+- **Success criteria**: All 4 APIs listed with clear pricing and features, 34 Premium APIs marked as locked until May 2026, authentication methods documented (OAuth 2.0, API keys), request/response examples shown for each endpoint, rate limits clearly stated, usage dashboard tracks API calls and remaining quota, payment flow integrated with main payment system
 
 ### Real-Time Messaging System
 - **Functionality**: Built-in chat system enabling direct communication between homeowners and contractors. Features include conversation list with unread indicators, per-job message threads, real-time message delivery, read receipts, online status indicators, message timestamps, and message history persistence using useKV.
@@ -121,11 +139,11 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Success criteria**: Messages saved per conversation using useKV, real-time updates work, unread indicators accurate, both parties can communicate, timestamps display correctly, photo attachments upload and display
 
 ### Payment Management with Finance Options
-- **Functionality**: Comprehensive payment system with full payment, 3-month installments (2% fee), and 12-month 0% financing options. Displays clear payment breakdowns showing job amount, $20 platform fee, contractor receives (100% of job amount), escrow protection status, multiple payment methods (credit card, bank transfer, digital wallet), and secure PCI-compliant payment processing with Stripe integration. Separate territory subscription billing ($45/month) for operators.
-- **Purpose**: Provide flexible payment options for homeowners, increase affordability through financing, track payment history, ensure secure transactions with escrow protection, clearly communicate zero-fee contractor model
+- **Functionality**: Comprehensive payment system with full payment, 3-month installments (2% fee), and 12-month 0% financing options. Displays clear payment breakdowns showing job amount, $20 platform fee, contractor receives (100% of job amount), escrow protection status, multiple payment methods (credit card, bank transfer, digital wallet), and secure PCI-compliant payment processing with Stripe integration. Operators pay $0 recurring fees.
+- **Purpose**: Provide flexible payment options for homeowners, increase affordability through financing, track payment history, ensure secure transactions with escrow protection, clearly communicate zero-fee contractor AND operator model
 - **Trigger**: Job completion, clicking payment icon in navigation, or selecting payment option from job details
 - **Progression**: Payment screen loads → select payment plan (full/3mo/12mo) → choose payment method (card/bank/wallet) → enter payment details → review summary showing job amount + $20 platform fee (homeowner pays) + contractor receives 100% → confirm → process payment → funds held in escrow → job completed → release full amount to contractor → receive confirmation
-- **Success criteria**: All payment methods work correctly, installment tracking accurate, payment history maintained, finance approval process clear, escrow protection displayed prominently, breakdown clearly shows contractor receives 100% of job amount, $20 platform fee itemized separately, secure SSL encryption confirmed, territory subscription billing separate from job payments
+- **Success criteria**: All payment methods work correctly, installment tracking accurate, payment history maintained, finance approval process clear, escrow protection displayed prominently, breakdown clearly shows contractor receives 100% of job amount, $20 platform fee itemized separately, secure SSL encryption confirmed, operators pay $0 fees
 
 ### Partner Dashboard & Integrations
 - **Functionality**: Partnership ecosystem featuring Materials Partners (suppliers like Home Depot, Lowe's offering bulk pricing), Insurance Partners (warranty providers, liability coverage), Technology Partners (API consumers, integration partners), Private Equity Partners (investment firms using market data), and Real Estate Partners (property platforms). Dashboard shows partnership status, commission tracking (for referral partnerships), revenue metrics, active integrations, and API usage statistics.
@@ -224,8 +242,8 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **Invalid video formats** - Validate file type (.mp4, .mov, .avi) and size (<100MB) before upload
 - **AI analysis failures** - Graceful degradation, allow manual scope entry, show retry button
 - **Message ordering** - Ensure messages display chronologically with consistent timestamps
-- **Duplicate territory subscriptions** - Prevent subscribing to same territory twice
-- **Expired subscriptions** - Flag expired territory subscriptions, restrict lead access until renewed
+- **Duplicate territory claims** - Prevent claiming same territory twice, enforce ONE license per Individual/LLC/Corporation
+- **Expired claims** - Flag expired territory claims, restrict lead access until renewed
 - **Concurrent bid acceptance** - Handle race condition if homeowner tries to accept multiple bids simultaneously
 - **Payment processing failures** - Show clear error messages, retry mechanisms, support contact
 - **Notification spam** - Batch related notifications, collapse duplicate types
@@ -238,7 +256,7 @@ The platform supports 60 comprehensive service categories organized into 7 major
 - **License threshold enforcement** - Check job amount against state minimums, require appropriate license level
 - **Independent contractor compliance** - Monitor for activities that could affect classification (mandatory training, price controls, etc.)
 - **Consent withdrawal** - Handle GDPR/CCPA data deletion requests, maintain compliance logs
-- **Territory subscription management** - Clarify active management requirements, prevent passive investment appearance
+- **Territory claiming management** - Clarify active management requirements, ONE license per Individual/LLC/Corporation, prevent passive investment appearance
 - **Multi-state licensing** - Track contractors working across state lines, validate licenses in each state
 - **Trade-specific requirements** - Enforce electrical/plumbing/HVAC license requirements regardless of job size
 - **Payment processor compliance** - Use Stripe Connect to avoid money transmitter licensing issues

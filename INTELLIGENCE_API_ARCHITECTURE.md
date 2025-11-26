@@ -1,7 +1,13 @@
 # FairTradeWorker Intelligence API Platform Architecture
 
+> **Death of the Middleman. Birth of the Trade Infrastructure.**
+
+**Website**: FairTradeWorker.com  
+**Launch Date**: November 27, 2025  
+**Intelligence Platform Unlock**: May 27, 2026
+
 ## Overview
-Production-grade API platform with 50+ intelligence endpoints, self-learning capabilities, and enterprise monetization.
+Production-grade API platform with 38 intelligence endpoints (4 at launch, 34 unlock May 2026), self-learning capabilities, and enterprise monetization.
 
 ## File Structure
 
@@ -91,25 +97,18 @@ src/
 - **Stripe**: Handle API billing and subscriptions
 - **Webhooks**: Real-time alerts for StormAlert, DemandSpike
 
-## Pricing Tiers
+## API Pricing (At Launch)
 
-### Free Tier
-- 100 API calls/month
-- Basic endpoints only
-- Community support
+### Individual API Products
+| API | Price | Status |
+|-----|-------|--------|
+| AI Scope API | $2,499/mo | ✅ Available |
+| Instant Quote API | $499/mo | ✅ Available |
+| Contractor Match API | $299/mo | ✅ Available |
+| Demand Heatmap API | $199/mo | ✅ Available |
+| 34 Premium APIs | TBD | 🔒 Unlock May 2026 |
 
-### Professional ($199/month)
-- 10,000 API calls/month
-- All standard endpoints
-- Email support
-- Webhooks included
-
-### Enterprise ($1,299/month)
-- Unlimited API calls
-- Capital Layer Intelligence APIs
-- Priority support
-- Custom integrations
-- Dedicated account manager
+**Note**: Premium deterrent pricing for enterprise customers. 34 Premium APIs unlock May 27, 2026.
 
 ## Learning Loop
 

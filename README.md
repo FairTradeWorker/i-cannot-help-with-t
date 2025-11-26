@@ -1,6 +1,12 @@
 # FairTradeWorker - Revolutionary Home Services Marketplace Platform
 
-> **A comprehensive platform transforming the $600B home services industry through AI-powered intelligence, video-based job analysis, zero-fee contractor operations, and self-learning APIs.**
+> **Death of the Middleman. Birth of the Trade Infrastructure.**
+
+**Website**: [FairTradeWorker.com](https://FairTradeWorker.com)  
+**Launch Date**: November 27, 2025  
+**Intelligence Platform Unlock**: May 27, 2026
+
+A comprehensive platform transforming the $600B home services industry through AI-powered intelligence, video-based job analysis, zero-fee contractor and operator operations, and self-learning APIs.
 
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript)](https://www.typescriptlang.org/)
@@ -23,43 +29,46 @@ FairTradeWorker is not just another marketplace - it's a **complete ecosystem** 
 - **85%+ Confidence Scores**: Transparent AI confidence metrics
 - **Self-Learning**: System improves from 82% → 99.9% accuracy over 10,000 jobs
 
-### 2. 💰 Zero Fees for All Contractors
+### 2. 💰 Zero Fees for All Contractors AND Operators
 **The Problem**: Other platforms charge contractors 15-30% fees, reducing their take-home pay.  
-**Our Solution**: Contractors keep 100% of every dollar earned. Zero platform fees. Ever.
+**Our Solution**: Contractors keep 100% of every dollar earned. Territory operators pay $0. Zero platform fees. Ever.
 
 - **Contractors**: $0 fees, keep 100% of earnings
 - **Subcontractors**: $0 fees on direct jobs or when hired by GCs
 - **General Contractors**: $0 fees, can hire subs through platform
-- **Territory Operators**: Fund the platform through 8% revenue share on jobs in their territories
+- **Territory Operators**: $0 fees - they build the network, not pay into it
 - **Homeowners**: One-time $20 platform fee per job
 
 **Example: $10,000 Job Payment Flow**
 ```
 Homeowner pays:     $10,020 ($10,000 job + $20 platform fee)
-Territory Operator: $800 (8% of $10,000)
+Territory Operator: $0 (no fees!)
 Contractor receives: $10,000 (100% of job amount)
 ```
 
 ### 3. 🗺️ Territory-Based Operations (First 10 FREE!)
 **The Problem**: Lead generation platforms flood contractors with low-quality leads.  
-**Our Solution**: Territory Operators buy exclusive rights to zip codes, recruit quality contractors, approve workers, and earn 8% on all jobs.
+**Our Solution**: Territory Operators claim exclusive rights to zip codes, recruit quality contractors, approve workers, and build their network without paying into it.
 
 - **First 10 Territories**: FREE (claim now!)
-- **Pricing After First 10**: $500, then $1,000, $1,500... (increases with demand)
-- **Revenue Share**: 8% of all completed jobs in your territories
-- **Passive Income**: Operators earn without doing the work
-- **ROI Calculations**: View projected monthly revenue per territory
+- **Pricing After First 10**: $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
+- **Operator Fees**: $0 - they BUILD the network, not pay into it
+- **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 - **Exit Strategy**: Sell your territory portfolio later
 
-### 4. 🧠 50+ Self-Learning Intelligence APIs
+### 4. 🧠 38 Self-Learning Intelligence APIs
 **The Problem**: Estimation tools give static predictions that never improve.  
 **Our Solution**: Every API call feeds a learning loop. The system gets smarter with every job completed.
 
-- **4 Production APIs**: Job Scope, Instant Quote, Contractor Match, Demand Heatmap
-- **46 Ready to Build**: Full architecture and templates prepared
+- **4 Production APIs at Launch**: AI Scope, Instant Quote, Contractor Match, Demand Heatmap
+- **34 Premium APIs**: Unlock May 27, 2026 (6 months after launch)
 - **Learning Loop**: Predictions improve from 82% → 99%+ accuracy
 - **Compounding Moat**: Creates competitive advantage that can't be replicated
-- **Multiple Revenue Streams**: API subscriptions ($199-$1,299/mo) + individual API products ($49-$129/mo)
+- **API Pricing**:
+  - AI Scope API: $2,499/mo (ENTERPRISE - premium deterrent pricing)
+  - Instant Quote API: $499/mo
+  - Contractor Match API: $299/mo
+  - Demand Heatmap API: $199/mo
 
 ### 5. 🚗 Smart Route Optimization
 **The Problem**: Contractors waste hours driving inefficiently between job sites.  
@@ -73,7 +82,7 @@ Contractor receives: $10,000 (100% of job amount)
 - **Visual Maps**: Interactive route visualization
 
 ### 6. 🏗️ 3-Tier Worker System
-**Operators**: Territory owners who recruit contractors and earn 8% passive income  
+**Operators**: Territory owners who recruit contractors - pay $0 fees  
 **General Contractors**: Project managers who take large multi-trade jobs and hire subcontractors  
 **Subcontractors**: Specialists (plumbers, electricians, roofers) who work directly or under GCs
 
@@ -97,19 +106,20 @@ Contractor receives: $10,000 (100% of job amount)
 6. **Complete & Get Paid** → Mark complete, receive 100% of job payment (no fees!)
 7. **Optimize Routes** → Use route planner to save time and fuel
 
-### For Territory Operators (First 10 FREE!)
+### For Territory Operators (First 10 FREE - $0 Fees!)
 1. **Sign Up** → Select "Territory Owner" role
 2. **Claim Territories** → First 10 completely FREE, then $500 each
 3. **Recruit Contractors** → Build your local network
 4. **Approve Workers** → Verify licenses and credentials
-5. **Earn Passive Income** → Receive 8% on all jobs in your territories
-6. **Scale Your Portfolio** → Add more territories, increase monthly revenue
+5. **Pay NO Fees** → You build the network, not pay into it
+6. **Scale Your Portfolio** → Add more territories, increase network reach
 7. **Exit Strategy** → Sell your portfolio for a profit
+8. **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 
 ### For Developers
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/fairtradeworker.git
+git clone https://github.com/FairTradeWorker/fairtradeworker.git
 
 # Install dependencies
 npm install
@@ -181,11 +191,11 @@ npm run build
 #### 🗺️ For Territory Operators
 - **Territory Map** - Interactive US map with 850+ available territories
 - **Claim System** - First 10 territories FREE, then $500 each
-- **ROI Calculator** - Project monthly revenue per territory
+- **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 - **Contractor Recruitment** - Build your local contractor network
 - **Approval Workflow** - Verify and approve contractors
-- **Revenue Dashboard** - Track 8% earnings from all territory jobs
-- **Territory Analytics** - Jobs completed, active contractors, revenue trends
+- **Zero Fees** - Operators pay $0, they BUILD the network
+- **Territory Analytics** - Jobs completed, active contractors, trends
 - **Portfolio Management** - Manage multiple territories
 - **Resale Value Tracking** - Monitor territory appreciation
 - **Territory Search** - Find territories by zip code, city, county, state
@@ -193,25 +203,26 @@ npm run build
 ### 🧠 Intelligence API Platform
 
 #### API Marketplace
-- **50+ API Endpoints** - 4 complete, 46 ready to build
+- **38 API Endpoints** - 4 available at launch, 34 unlock May 2026
 - **Self-Learning System** - Improves from 82% → 99%+ accuracy
-- **Three Pricing Tiers**:
-  - **Starter** ($199/mo): 10,000 calls, all standard endpoints
-  - **Professional** ($449/mo): 25,000 calls, priority support, webhooks
-  - **Enterprise** ($1,299/mo): Unlimited calls, custom integrations, SLA
+- **API Pricing**:
+  - **AI Scope API**: $2,499/mo (ENTERPRISE - premium deterrent pricing)
+  - **Instant Quote API**: $499/mo
+  - **Contractor Match API**: $299/mo
+  - **Demand Heatmap API**: $199/mo
+  - **34 Premium APIs**: Unlock May 27, 2026
 
-#### Production-Ready APIs (4)
-1. **Job Scope API** - Generate detailed scopes from video/image/text
-2. **Instant Quote API** - Fast pricing estimates with confidence scores
-3. **Contractor Match API** - Match contractors to jobs by skills/location
-4. **Demand Heatmap API** - Regional demand visualization and forecasting
+#### Production-Ready APIs (4 at Launch)
+1. **AI Scope API** - Generate detailed scopes from video/image/text ($2,499/mo)
+2. **Instant Quote API** - Fast pricing estimates with confidence scores ($499/mo)
+3. **Contractor Match API** - Match contractors to jobs by skills/location ($299/mo)
+4. **Demand Heatmap API** - Regional demand visualization and forecasting ($199/mo)
 
-#### Planned APIs (46) - Categories
+#### Locked APIs (34) - Unlock May 27, 2026
 - **Job Intelligence** (10): Storm Alert, Material Price, Permit Prediction, Scope Creep Risk, etc.
 - **Contractor Intelligence** (10): Performance Scoring, Win Probability, Recruitment, etc.
 - **Market Intelligence** (10): Territory Valuation, Market Saturation, Seasonal Demand, etc.
-- **Financial Intelligence** (8): Renovation ROI, Profitability Forecast, Real Estate Flip, etc.
-- **Capital Intelligence** (8): Lumber Futures, Macro Trends, Portfolio Analytics, etc.
+- **Financial Intelligence** (4): Renovation ROI, Profitability Forecast, Real Estate Flip, etc.
 
 #### API Features
 - **API Key Management** - Generate, revoke, regenerate keys
@@ -463,7 +474,7 @@ npm run build
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/fairtradeworker.git
+git clone https://github.com/FairTradeWorker/fairtradeworker.git
 cd fairtradeworker
 
 # Install dependencies
@@ -540,7 +551,7 @@ fairtradeworker/
 │   │       ├── instant-quote.ts ✅
 │   │       ├── contractor-match.ts ✅
 │   │       ├── demand-heatmap.ts ✅
-│   │       └── [46 more] ⏳
+│   │       └── [34 more] 🔒 (Unlocks May 2026)
 │   │
 │   ├── lib/                # Utilities and services
 │   │   ├── intelligence-db.ts  # Learning database
@@ -600,33 +611,24 @@ fairtradeworker/
 
 #### 2. Territory Sales
 - **First 10**: FREE (acquisition strategy)
-- **Next territories**: $500, $1,000, $1,500... (escalating)
+- **Next territories**: $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
+- **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 - **Target**: 500 territories sold in Year 1
 - **Average Price**: $750
 - **Total Revenue**: $375,000
 
-#### 3. Territory Revenue Share (8%)
-- **Operators earn 8%** of all jobs in their territories
-- **Platform takes portion** of operator's 8% (e.g., 2%)
-- **Example**: $10K job → $800 to operator → $200 to platform
-- **At scale (10,000 jobs/mo @ $5K avg)**: $1,000,000/month → $200,000 to platform
-- **Annual**: $2,400,000
+#### 3. Territory Operator Fees
+- **Operators pay $0** - they BUILD the network, not pay into it
+- This is a strategic decision to accelerate network growth
 
 #### 4. Intelligence API Subscriptions
-- **Starter** ($199/mo): Target 100 customers = $19,900/mo
-- **Professional** ($449/mo): Target 50 customers = $22,450/mo
-- **Enterprise** ($1,299/mo): Target 20 customers = $25,980/mo
-- **Monthly Total**: $68,330
-- **Annual**: $819,960
+- **AI Scope API**: $2,499/mo (ENTERPRISE - premium deterrent pricing)
+- **Instant Quote API**: $499/mo
+- **Contractor Match API**: $299/mo
+- **Demand Heatmap API**: $199/mo
+- **34 Premium APIs**: Unlock May 27, 2026 (pricing TBD)
 
-#### 5. Individual API Products
-- 6 standalone APIs at $49-$129/month
-- **Target**: 200 subscriptions across products
-- **Average**: $75/mo
-- **Monthly**: $15,000
-- **Annual**: $180,000
-
-#### 6. Partner Revenue
+#### 5. Partner Revenue
 - **Material Partners**: Referral fees on supplies
 - **Insurance Partners**: Commission on policies
 - **Real Estate Partners**: Lead fees
@@ -650,17 +652,15 @@ fairtradeworker/
 **Per Job:**
 - Homeowner pays: $20 platform fee
 - Average job value: $5,000
-- Territory operator earns: $400 (8%)
-- Platform earns from operator: ~$100 (2% of job)
+- Territory operator pays: $0 (no fees!)
 - Contractor earns: $5,000 (100%, zero fees!)
-- **Total platform revenue per job**: $120
+- **Total platform revenue per job**: $20
 
 **Per Territory:**
 - Initial cost to claim: $0-$500 (first 10 free, then escalating)
 - Average jobs per territory per month: 20
-- Average revenue per territory per month: $2,400 ($120 × 20 jobs)
-- **Operator earns**: $4,000/month (8% of $50K in jobs)
-- **Operator ROI**: 800% annual return on $500 investment
+- **Operator pays**: $0/month (zero fees!)
+- **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 
 **Per Contractor:**
 - Platform fees: $0 (none!)
@@ -692,13 +692,14 @@ fairtradeworker/
 
 ## 🎯 Current Development Status
 
-### ✅ Complete Features (Production Ready)
-- **Core Marketplace** - Job posting, bidding, contractor profiles, messaging
+### ✅ Complete Features (LIVE AT LAUNCH - November 27, 2025)
+- **Full Marketplace** - Job posting, bidding, contractor profiles, messaging
 - **60-Second Video Analysis** - AI-powered job scope generation from video
 - **Route Optimization** - Multi-stop route planning with cost calculations
 - **Territory System** - Interactive map, claiming, first 10 free pricing
-- **Payment System** - Full payment, installments, financing options
-- **Intelligence API Platform** - 4 production APIs + 46 ready to build
+- **Territory Rule**: ONE license per Individual/LLC/Corporation
+- **Payment System** - Homeowner $20 platform fee per job
+- **4 Intelligence APIs** - AI Scope ($2,499/mo), Instant Quote ($499/mo), Contractor Match ($299/mo), Demand Heatmap ($199/mo)
 - **User Dashboards** - Homeowner, Contractor, Operator, Admin views
 - **Legal Framework** - Terms, privacy, consent tracking
 - **50-State Database** - Complete US coverage with licensing info
@@ -706,17 +707,20 @@ fairtradeworker/
 - **Rating System** - 100-point scale contractor ratings
 - **Analytics** - Comprehensive platform metrics
 
-### ⏳ In Development
-- **46 Intelligence APIs** - Architecture complete, awaiting implementation
-- **Stripe Integration** - Payment processing setup
-- **Webhook System** - Real-time notifications
+### 🔒 LOCKED (Unlocks May 27, 2026)
+- **34 Premium Intelligence APIs** - Storm Alert, Material Price, Territory Valuation, etc.
+- **Capital Layer Portal** - Enterprise data licensing
+- **Advanced Enterprise Features** - Custom integrations, white-label solutions
+
+### ⏳ Post-Launch Development
 - **Mobile Apps** - iOS and Android native apps
 - **Partner Integrations** - Material suppliers, insurance providers
+- **Webhook System** - Real-time notifications
 
 ### 📊 Platform Metrics
 
 **Code:**
-- 50,000+ lines of production TypeScript/React code
+- ~84,000 lines of production TypeScript/React code (Web + Mobile planned)
 - 50+ React components
 - 15+ comprehensive documentation files
 - 100% TypeScript type coverage
@@ -725,7 +729,7 @@ fairtradeworker/
 **Features:**
 - 60 service categories across 7 major groups
 - 850+ available territories (all 50 states)
-- 4 production Intelligence APIs
+- 4 production Intelligence APIs (34 more unlock May 2026)
 - 40+ pre-built UI components (shadcn/ui v4)
 - Real-time messaging and notifications
 
@@ -766,27 +770,33 @@ fairtradeworker/
 
 **Zero platform fees - Keep every dollar you earn**
 
-#### 🗺️ Territory Operators - Build Passive Income
+#### 🗺️ Territory Operators - Build Your Network (Zero Fees!)
 1. **Sign up** and select "Territory Owner" role
 2. **Explore the territory map** - View available territories
 3. **Claim your first 10 territories** - Completely FREE
-4. **Additional territories** - $500 each (escalating pricing)
-5. **Recruit contractors** - Build your local network
-6. **Approve workers** - Verify licenses and credentials
-7. **Earn passive income** - 8% on every job in your territories
-8. **Scale your portfolio** - Add more territories, increase revenue
+4. **Additional territories** - $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
+5. **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
+6. **Recruit contractors** - Build your local network
+7. **Approve workers** - Verify licenses and credentials
+8. **Pay NO fees** - You build the network, not pay into it
+9. **Scale your portfolio** - Add more territories, increase network reach
 
-**First 10 territories FREE - Start earning immediately**
+**Operators pay $0 - build your empire without fees**
 
 #### 🤖 API Developers - Integrate Intelligence
 1. **Sign up** for any user role
 2. **Navigate to Intelligence API** tab
-3. **Choose a pricing tier** - Starter ($199), Professional ($449), Enterprise ($1,299)
+3. **View API pricing**:
+   - AI Scope API: $2,499/mo (ENTERPRISE)
+   - Instant Quote API: $499/mo
+   - Contractor Match API: $299/mo
+   - Demand Heatmap API: $199/mo
 4. **Generate an API key** - Instant key creation
 5. **Read the documentation** - Complete API reference with examples
-6. **Make your first call** - Test with Job Scope or Instant Quote API
+6. **Make your first call** - Test with AI Scope or Instant Quote API
 7. **Monitor usage** - Track calls and accuracy in dashboard
 8. **Watch it learn** - System improves from 82% → 99%+ accuracy
+9. **Note**: 34 Premium APIs unlock May 27, 2026
 
 **All APIs include learning loop - Get smarter with every use**
 
@@ -817,8 +827,8 @@ FairTradeWorker's UI is inspired by **iOS 18 Maps + Linear.app + Arc browser** -
 - Interactive SVG US map
 - List/map view toggle
 - Search by zip, city, county, state
-- Dynamic pricing (first 10 free, then escalating)
-- ROI calculations per territory
+- Dynamic pricing (first 10 free, then $500, $1,000, $1,500, $2,000, $2,500+)
+- ⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION
 - Claimed territory tracking
 
 **Job Browser**
@@ -843,10 +853,10 @@ FairTradeWorker's UI is inspired by **iOS 18 Maps + Linear.app + Arc browser** -
 - Documentation browser
 
 **Payment Interface**
-- Clear payment options (full, 3-month, 12-month)
+- Clear payment options (homeowner $20 fee)
 - Payment method selection (card, bank, wallet)
 - Escrow protection indicators
-- Commission breakdown (8% operator fee)
+- Zero fees for contractors AND operators
 - Transaction history
 
 ---
@@ -897,7 +907,7 @@ We welcome contributions from the community! Here's how you can help:
 ### Development Workflow
 ```bash
 # Fork the repository
-git clone https://github.com/yourusername/fairtradeworker.git
+git clone https://github.com/FairTradeWorker/fairtradeworker.git
 
 # Create a feature branch
 git checkout -b feature/your-feature-name
@@ -926,7 +936,7 @@ git push origin feature/your-feature-name
 - Keep commits atomic and well-described
 
 ### Areas Needing Help
-- **Intelligence APIs** - Implement remaining 46 endpoints
+- **Intelligence APIs** - 34 premium endpoints unlock May 2026
 - **Mobile Apps** - Native iOS/Android development
 - **Testing** - Expand test coverage
 - **Documentation** - More examples and tutorials
@@ -983,7 +993,7 @@ Thanks to all contributors, testers, and early adopters who helped shape FairTra
 ### Stay Updated
 - **GitHub** - Star and watch this repository
 - **Blog** - Read about new features and updates (coming soon)
-- **Twitter** - Follow @FairTradeWorkerHQ for announcements (coming soon)
+- **Twitter** - Follow @FairTradeWorker for announcements (coming soon)
 - **Newsletter** - Monthly product updates (coming soon)
 
 ### Business Inquiries
@@ -996,81 +1006,73 @@ Thanks to all contributors, testers, and early adopters who helped shape FairTra
 
 ## 🗺️ Roadmap
 
-### Q1 2025
+### 🚀 LAUNCHED - November 27, 2025
 - ✅ Launch core marketplace platform
 - ✅ Implement 60-second video analysis
 - ✅ Release route optimization
-- ✅ Deploy territory claiming system
-- ⏳ Complete 46 Intelligence APIs
-- ⏳ Integrate Stripe payments
+- ✅ Deploy territory claiming system (1 per entity restriction)
+- ✅ 4 Intelligence APIs live (premium priced)
+- ✅ Zero fees for contractors AND operators
 
-### Q2 2025
+### 🔒 May 27, 2026 - Intelligence Platform Unlock
+- 34 Premium Intelligence APIs unlock
+- Capital Layer Portal
+- Enterprise Data Licensing
+- Advanced analytics features
+
+### Q3-Q4 2026
 - Launch mobile apps (iOS & Android)
 - Add webhook system for real-time notifications
 - Implement batch API processing
 - Release SDK libraries (JavaScript, Python, Go)
 - Launch partner marketplace
-- Reach 10,000 users
-
-### Q3 2025
-- Multi-language support (Spanish, French, Portuguese)
-- Advanced analytics dashboard
-- Contractor certification program
-- White-label solution for enterprises
-- API marketplace expansion
 - Reach 50,000 users
 
-### Q4 2025
+### 2027 & Beyond
+- Multi-language support (Spanish, French, Portuguese)
 - International expansion (Canada, UK, Australia)
 - AI accuracy reaches 99%+
 - Voice-based job creation
 - AR measurement tools
-- Reach 200,000 users
-- $10M annual revenue target
-
-### 2026 & Beyond
-- Full international coverage (200+ countries)
-- Autonomous job matching
-- Predictive maintenance recommendations
-- Blockchain-based reputation system
-- Smart contract automation
-- IPO preparation
+- Reach 200,000+ users
 
 ---
 
 ## 💡 Why FairTradeWorker Will Win
 
-### 1. **Network Effects**
+### 1. **Death of the Middleman**
+Territory operators and contractors pay $0 fees.
+Other platforms take 8-30% - we take nothing from operators or workers.
+
+### 2. **Network Effects**
 More jobs → More contractors → Better matches → More jobs  
 Every transaction improves the learning loop, creating a compounding moat.
 
-### 2. **Zero Fees for Workers**
-Contractors keep 100% of earnings, attracting the best talent.  
+### 3. **Zero Fees for Everyone Who Works**
+Contractors keep 100% of earnings.  
+Operators pay $0 to build their networks.  
 Other platforms charge 15-30% - we charge 0%.
 
-### 3. **Territory Model**
-Operators fund the platform while earning passive income.  
-Aligns incentives - operators recruit quality contractors who complete jobs.
+### 4. **Territory Model**
+Operators build the network without paying into it.  
+ONE license per Individual/LLC/Corporation creates real commitment.
 
-### 4. **Self-Learning Intelligence**
+### 5. **Self-Learning Intelligence**
 APIs get smarter with every use, reaching 99%+ accuracy.  
 Competitors can't replicate this without our data.
 
-### 5. **Video-First Approach**
+### 6. **Video-First Approach**
 60-second videos replace 30-minute forms.  
 10x faster job posting = more volume = more data = better learning.
 
-### 6. **First 10 Free Strategy**
+### 7. **First 10 Free Strategy**
 Viral growth as operators claim free territories.  
 Creates land grab mentality, rapid expansion.
-
-### 7. **Multiple Revenue Streams**
-Not dependent on one business model.  
-Homeowner fees + territory sales + revenue share + API subscriptions + partners.
 
 ### 8. **Developer Platform**
 APIs allow others to build on our intelligence.  
 Becomes infrastructure for entire industry.
+34 Premium APIs unlock May 2026.
 
 ---
 
@@ -1100,7 +1102,7 @@ Becomes infrastructure for entire industry.
 
 FairTradeWorker is transforming a $600 billion industry. We're making home services:
 - **Faster** - 60-second video job creation
-- **Fairer** - Zero fees for contractors
+- **Fairer** - Zero fees for contractors AND operators
 - **Smarter** - Self-learning AI that gets better forever
 - **Scalable** - Territory model enables rapid expansion
 
@@ -1112,13 +1114,17 @@ FairTradeWorker is transforming a $600 billion industry. We're making home servi
 
 ### Ready to Get Started?
 
-[**🚀 Launch App**](#) | [**📖 Read Docs**](docs/) | [**💬 Join Community**](#) | [**⭐ Star on GitHub**](https://github.com/yourusername/fairtradeworker)
+[**🚀 Launch App**](https://FairTradeWorker.com) | [**📖 Read Docs**](docs/) | [**💬 Join Community**](#) | [**⭐ Star on GitHub**](https://github.com/FairTradeWorker/fairtradeworker)
 
 ---
 
 **Built with ❤️ by the FairTradeWorker Team**
 
-*Transforming home services, one video at a time.*
+*Death of the Middleman. Birth of the Trade Infrastructure.*
+
+**Website**: [FairTradeWorker.com](https://FairTradeWorker.com)  
+**Launch Date**: November 27, 2025  
+**Intelligence Platform Unlock**: May 27, 2026
 
 </div>
 
