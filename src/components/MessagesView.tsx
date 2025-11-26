@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useKV } from '@github/spark/hooks';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChatCircle, 
@@ -13,6 +14,24 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { toast } from 'sonner';
+
+interface Message {
+  id: string;
+  text: string;
+  sender: 'me' | 'them';
+  time: string;
+}
+
+interface Conversation {
+  id: number;
+  name: string;
+  lastMessage: string;
+  timestamp: string;
+  unread: number;
+  avatar: string;
+  online: boolean;
+}
 
 interface MessagesViewProps {
   userId: string;
@@ -21,8 +40,7 @@ interface MessagesViewProps {
 export function MessagesView({ userId }: MessagesViewProps) {
   const [selectedConversation, setSelectedConversation] = useState<number | null>(0);
   const [messageInput, setMessageInput] = useState('');
-
-  const conversations = [
+  const [conversations, setConversations] = useKV<Conversation[]>('conversations', [
     {
       id: 0,
       name: 'Elite Home Services',
@@ -50,18 +68,54 @@ export function MessagesView({ userId }: MessagesViewProps) {
       avatar: 'C',
       online: true,
     },
-  ];
+  ]);
 
-  const messages = selectedConversation !== null ? [
-    { id: 1, text: 'Hi! I saw your project posting', sender: 'them', time: '10:30 AM' },
-    { id: 2, text: 'Hello! Yes, I need help with kitchen remodeling', sender: 'me', time: '10:32 AM' },
-    { id: 3, text: 'We can start the project next Monday', sender: 'them', time: '10:35 AM' },
-    { id: 4, text: 'That works perfectly! What time?', sender: 'me', time: '10:36 AM' },
-  ] : [];
+  const [messages, setMessages] = useKV<Record<number, Message[]>>('messages', {
+    0: [
+      { id: '1', text: 'Hi! I saw your project posting', sender: 'them', time: '10:30 AM' },
+      { id: '2', text: 'Hello! Yes, I need help with kitchen remodeling', sender: 'me', time: '10:32 AM' },
+      { id: '3', text: 'We can start the project next Monday', sender: 'them', time: '10:35 AM' },
+      { id: '4', text: 'That works perfectly! What time?', sender: 'me', time: '10:36 AM' },
+    ],
+    1: [
+      { id: '1', text: 'Thank you for your quote', sender: 'me', time: '9:15 AM' },
+      { id: '2', text: 'Thanks for choosing us!', sender: 'them', time: '9:20 AM' },
+    ],
+    2: [
+      { id: '1', text: 'What colors do you recommend?', sender: 'me', time: '8:00 AM' },
+      { id: '2', text: 'Color samples are ready', sender: 'them', time: '8:30 AM' },
+    ],
+  });
+
+  const currentMessages = selectedConversation !== null ? ((messages || {})[selectedConversation] || []) : [];
 
   const handleSend = () => {
-    if (messageInput.trim()) {
+    if (messageInput.trim() && selectedConversation !== null) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      
+      const newMessage: Message = {
+        id: `${Date.now()}`,
+        text: messageInput.trim(),
+        sender: 'me',
+        time: timeStr,
+      };
+
+      setMessages((currentMessages) => ({
+        ...(currentMessages || {}),
+        [selectedConversation]: [...((currentMessages || {})[selectedConversation] || []), newMessage],
+      }));
+
+      setConversations((currentConvos) => 
+        (currentConvos || []).map(conv => 
+          conv.id === selectedConversation 
+            ? { ...conv, lastMessage: messageInput.trim(), timestamp: 'Just now' }
+            : conv
+        )
+      );
+
       setMessageInput('');
+      toast.success('Message sent');
     }
   };
 
@@ -86,7 +140,7 @@ export function MessagesView({ userId }: MessagesViewProps) {
 
           <ScrollArea className="flex-1 p-2">
             <div className="space-y-2">
-              {conversations.map((conv, index) => (
+              {(conversations || []).map((conv, index) => (
                 <motion.button
                   key={conv.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -149,13 +203,13 @@ export function MessagesView({ userId }: MessagesViewProps) {
                 <div className="flex items-center gap-3">
                   <Avatar className="w-12 h-12">
                     <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white">
-                      {conversations[selectedConversation].avatar}
+                      {(conversations || [])[selectedConversation]?.avatar || 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold">{conversations[selectedConversation].name}</p>
+                    <p className="font-semibold">{(conversations || [])[selectedConversation]?.name || 'Unknown'}</p>
                     <p className="text-sm text-muted-foreground">
-                      {conversations[selectedConversation].online ? 'Online' : 'Offline'}
+                      {(conversations || [])[selectedConversation]?.online ? 'Online' : 'Offline'}
                     </p>
                   </div>
                 </div>
@@ -169,7 +223,7 @@ export function MessagesView({ userId }: MessagesViewProps) {
               <ScrollArea className="flex-1 p-6">
                 <div className="space-y-4">
                   <AnimatePresence>
-                    {messages.map((message, index) => (
+                    {currentMessages.map((message, index) => (
                       <motion.div
                         key={message.id}
                         initial={{ opacity: 0, y: 20 }}

@@ -70,13 +70,15 @@ import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/Intelligenc
 import { WarrantySection } from '@/components/WarrantySection';
 import { FileAClaim } from '@/components/FileAClaim';
 import { HomeownerProfileForm } from '@/components/HomeownerProfileForm';
+import { PhotoJobPost } from '@/components/PhotoJobPost';
+import { TextJobPost } from '@/components/TextJobPost';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment';
-type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
+type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment';
+type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route' | 'photo-job' | 'text-job';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -87,6 +89,8 @@ function App() {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showVideoCreator, setShowVideoCreator] = useState(false);
+  const [showPhotoJobPost, setShowPhotoJobPost] = useState(false);
+  const [showTextJobPost, setShowTextJobPost] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
 
@@ -205,9 +209,16 @@ function App() {
   const handleCreateJob = (type: 'video' | 'photo' | 'text') => {
     if (type === 'video') {
       setShowVideoCreator(true);
+      setShowPhotoJobPost(false);
+      setShowTextJobPost(false);
+    } else if (type === 'photo') {
+      setShowPhotoJobPost(true);
+      setShowVideoCreator(false);
+      setShowTextJobPost(false);
     } else {
-      setActiveTab('payment');
-      setActiveSubTab(null);
+      setShowTextJobPost(true);
+      setShowVideoCreator(false);
+      setShowPhotoJobPost(false);
     }
   };
 
@@ -335,6 +346,15 @@ function App() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <Button
+                variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('subcontractor', 'dashboard')}
+                className="button-interactive"
+                size="sm"
+              >
+                Subcontractor
+              </Button>
             </nav>
 
             <Button
@@ -552,7 +572,29 @@ function App() {
                   onCancel={() => setShowVideoCreator(false)}
                 />
               )}
-              {!showProfile && !showVideoCreator && (
+              {showPhotoJobPost && (
+                <PhotoJobPost 
+                  onJobCreated={(jobData) => {
+                    toast.success('Job created successfully!');
+                    setShowPhotoJobPost(false);
+                    setActiveTab('homeowner');
+                    setActiveSubTab('my-jobs');
+                  }}
+                  onCancel={() => setShowPhotoJobPost(false)}
+                />
+              )}
+              {showTextJobPost && (
+                <TextJobPost 
+                  onJobCreated={(jobData) => {
+                    toast.success('Job created successfully!');
+                    setShowTextJobPost(false);
+                    setActiveTab('homeowner');
+                    setActiveSubTab('my-jobs');
+                  }}
+                  onCancel={() => setShowTextJobPost(false)}
+                />
+              )}
+              {!showProfile && !showVideoCreator && !showPhotoJobPost && !showTextJobPost && (
                 <>
                   {activeTab === 'payment' && <PaymentScreen onPaymentComplete={() => {
                     setActiveTab('home');
@@ -560,7 +602,10 @@ function App() {
                   }} />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <QuickJobPost onCreateJob={handleCreateJob} />
+                      <QuickJobPost 
+                        onCreateJob={handleCreateJob} 
+                        onExploreMap={() => handleNavClick('territories', 'overview')}
+                      />
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
@@ -731,11 +776,14 @@ function App() {
                   )}
                   {activeTab === 'territories' && activeSubTab !== 'overview' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
+                  {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
                   {activeTab === 'api' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
                   {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
                   {activeTab === 'warranty' && activeSubTab === 'file-claim' && <FileAClaim />}
-                  {activeTab === 'warranty' && activeSubTab !== 'file-claim' && <WarrantySection />}
+                  {activeTab === 'warranty' && activeSubTab !== 'file-claim' && (
+                    <WarrantySection onFileClaimClick={() => handleNavClick('warranty', 'file-claim')} />
+                  )}
                 </>
               )}
             </motion.div>

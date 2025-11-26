@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 
-export function WarrantySection() {
+interface WarrantySectionProps {
+  onFileClaimClick?: () => void;
+}
+
+export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
   const warrantyTiers = [
     {
       name: 'Basic Warranty',
@@ -79,13 +83,9 @@ export function WarrantySection() {
   ];
 
   const handlePurchaseWarranty = (name: string, price: number) => {
-    if (price === 0) {
-      toast.info('Basic warranty is included with every job');
-    } else {
-      toast.success(`${name} added to cart`, {
-        description: `$${price} - Coverage will begin upon job completion`,
-      });
-    }
+    toast.success(`${name} added to cart`, {
+      description: `$${price} - Coverage will begin upon job completion`,
+    });
   };
 
   return (
@@ -102,7 +102,7 @@ export function WarrantySection() {
         </div>
         <h2 className="text-4xl font-bold">Warranty Protection</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Every job includes a basic 1-year warranty. Upgrade to extended coverage for complete peace of mind.
+          Choose warranty coverage for complete peace of mind on your home service projects.
         </p>
       </motion.div>
 
@@ -138,17 +138,8 @@ export function WarrantySection() {
                   <CardDescription className="mt-2">{tier.description}</CardDescription>
                 </div>
                 <div className="pt-2">
-                  {tier.price === 0 ? (
-                    <>
-                      <div className="text-4xl font-bold">Included</div>
-                      <div className="text-sm text-muted-foreground mt-1">Free with every job</div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-4xl font-bold">${tier.price}</div>
-                      <div className="text-sm text-muted-foreground mt-1">One-time payment</div>
-                    </>
-                  )}
+                  <div className="text-4xl font-bold">${tier.price}</div>
+                  <div className="text-sm text-muted-foreground mt-1">One-time payment</div>
                   <Badge variant="outline" className="mt-3">
                     <Clock className="w-3 h-3 mr-1" />
                     {tier.duration} Coverage
@@ -168,10 +159,10 @@ export function WarrantySection() {
                 </div>
                 <Button
                   className="w-full mt-6"
-                  variant={tier.popular ? 'default' : tier.price === 0 ? 'outline' : 'secondary'}
+                  variant={tier.popular ? 'default' : 'secondary'}
                   onClick={() => handlePurchaseWarranty(tier.name, tier.price)}
                 >
-                  {tier.price === 0 ? 'Included' : 'Add to Cart'}
+                  Add to Cart
                 </Button>
               </CardContent>
             </Card>
@@ -272,7 +263,7 @@ export function WarrantySection() {
                   <span>warranty@servicehub.com</span>
                 </div>
               </div>
-              <Button className="w-full mt-4" variant="outline">
+              <Button className="w-full mt-4" variant="outline" onClick={onFileClaimClick}>
                 File a Claim
               </Button>
             </div>
