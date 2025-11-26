@@ -1126,7 +1126,13 @@ export async function permitRequirementCheckerAPI(
     PermitRequirementRequestSchema.parse(request);
     const learningContext = await intelligenceDB.getLearningContext('permit_requirement_checker');
 
-    const permits = [];
+    const permits: Array<{
+      type: string;
+      authority: string;
+      estimatedCost: number;
+      processingDays: number;
+      required: boolean;
+    }> = [];
     
     if (request.scope.structural || request.scope.squareFootage > 500) {
       permits.push({
@@ -1933,7 +1939,14 @@ export async function jobBundleOptimizerAPI(
       landscaping: 2000,
     };
 
-    const bundles = [];
+    const bundles: Array<{
+      bundle: string;
+      services: string[];
+      individualCost: number;
+      bundledCost: number;
+      savings: number;
+      customerValue: string;
+    }> = [];
     const needs = request.customerNeeds.map(n => n.toLowerCase());
     
     if (needs.length >= 2) {
