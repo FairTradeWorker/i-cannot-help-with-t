@@ -105,7 +105,7 @@ export function EmptyState({
           {actionLabel && onAction && (
             <Button
               onClick={onAction}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:shadow-lg transform hover:scale-105 transition-all"
+              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white hover:shadow-lg transform hover:scale-105 transition-all"
             >
               {actionLabel}
             </Button>

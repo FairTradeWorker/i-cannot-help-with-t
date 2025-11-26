@@ -338,7 +338,7 @@ button.success-pulse {
 
 .btn-interactive:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 0 4px oklch(var(--ring) / 0.3);
 }
 
 .card-interactive {
@@ -354,7 +354,7 @@ button.success-pulse {
   box-shadow: 
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  border-color: rgba(59, 130, 246, 0.4);
+  border-color: oklch(var(--primary) / 0.4);
 }
 
 .input-interactive {
@@ -366,8 +366,8 @@ button.success-pulse {
 
 .input-interactive:focus {
   transform: scale(1.01);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 4px oklch(var(--ring) / 0.2);
+  border-color: var(--primary);
 }
 
 /* ============================================
