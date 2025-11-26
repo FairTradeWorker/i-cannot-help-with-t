@@ -17,12 +17,14 @@ if (redirectPath) {
   try {
     // Decode and validate to catch encoded malicious characters
     const decodedPath = decodeURIComponent(redirectPath);
-    // Only allow relative paths starting with / and no protocol/external URLs
-    const isValidPath = decodedPath.startsWith('/') && 
+    // Only allow relative paths starting with / (not just /) and no protocol/external URLs
+    const isValidPath = decodedPath !== '/' &&
+      decodedPath.startsWith('/') && 
       !decodedPath.includes('//') && 
       !decodedPath.includes(':') &&
       !/[<>"']/.test(decodedPath);
     if (isValidPath) {
+      // Use original path to preserve legitimate URL encoding
       window.history.replaceState(null, '', redirectPath);
     }
   } catch {
