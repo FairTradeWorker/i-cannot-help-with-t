@@ -60,6 +60,7 @@ import { JobBrowser } from '@/components/JobBrowser';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
+import { PriorityLeadsVisual } from '@/components/PriorityLeadsVisual';
 import { PaymentModal } from '@/components/PaymentModal';
 import { PaymentScreen } from '@/components/PaymentScreen';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
@@ -676,7 +677,7 @@ function App() {
                         </Card>
                       </div>
 
-                      <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
+                      <PriorityLeadsVisual onExplore={() => handleNavClick('territories', 'overview')} />
                       
                       <Card className="glass-card p-8 border-2 border-primary/20">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
