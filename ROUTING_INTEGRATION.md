@@ -1,6 +1,6 @@
 # Trueway Routing API Integration
 
-This document describes the integration of the Trueway Routing API into the ServiceHub platform.
+This document describes the integration of the Trueway Routing API into the FairTradeWorker platform.
 
 ## Overview
 

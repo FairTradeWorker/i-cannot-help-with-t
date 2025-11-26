@@ -1,5 +1,6 @@
 {
-    "name": "spark-template",
+    "name": "fairtradeworker",
+    "description": "Death of the Middleman.  Birth of the Trade Infrastructure.",
     "private": true,
     "version": "0.0.0",
     "type": "module",

@@ -1,4 +1,4 @@
-# ServiceHub Intelligence API - Quick Start Guide
+# FairTradeWorker Intelligence API - Quick Start Guide
 
 ## 🚀 What You Have Now
 

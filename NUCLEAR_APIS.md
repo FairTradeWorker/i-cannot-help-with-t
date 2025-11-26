@@ -1,7 +1,7 @@
 # Nuclear Intelligence APIs - Documentation
 
 ## Overview
-10 high-powered intelligence endpoints integrated into the existing ServiceHub platform. Every API call feeds the `learning_feedback` table for continuous improvement.
+10 high-powered intelligence endpoints integrated into the existing FairTradeWorker platform. Every API call feeds the `learning_feedback` table for continuous improvement.
 
 ## Authentication
 All endpoints require API key authentication via Bearer token:

@@ -1,4 +1,4 @@
-# ServiceHub Intelligence API Platform - Implementation Summary
+# FairTradeWorker Intelligence API Platform - Implementation Summary
 
 ## ✅ What Has Been Built
 

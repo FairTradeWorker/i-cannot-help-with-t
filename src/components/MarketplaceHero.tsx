@@ -51,7 +51,7 @@ export function MarketplaceHero() {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6"
         >
           <Sparkle className="w-4 h-4 text-accent" weight="fill" />
-          <span className="text-sm font-medium">Welcome to ServiceHub</span>
+          <span className="text-sm font-medium">Welcome to FairTradeWorker</span>
         </motion.div>
 
         <motion.h1

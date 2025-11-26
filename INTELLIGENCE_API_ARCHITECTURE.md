@@ -1,4 +1,4 @@
-# ServiceHub Intelligence API Platform Architecture
+# FairTradeWorker Intelligence API Platform Architecture
 
 ## Overview
 Production-grade API platform with 50+ intelligence endpoints, self-learning capabilities, and enterprise monetization.

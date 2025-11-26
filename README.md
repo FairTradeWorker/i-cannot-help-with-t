@@ -1,4 +1,4 @@
-# ServiceHub - Revolutionary Home Services Marketplace Platform
+# FairTradeWorker - Revolutionary Home Services Marketplace Platform
 
 > **A comprehensive platform transforming the $600B home services industry through AI-powered intelligence, video-based job analysis, zero-fee contractor operations, and self-learning APIs.**
 
@@ -9,9 +9,9 @@
 
 ---
 
-## 🌟 What Makes ServiceHub Revolutionary
+## 🌟 What Makes FairTradeWorker Revolutionary
 
-ServiceHub is not just another marketplace - it's a **complete ecosystem** that fundamentally reimagines how home services work:
+FairTradeWorker is not just another marketplace - it's a **complete ecosystem** that fundamentally reimagines how home services work:
 
 ### 1. 🎥 60-Second Video Job Creation
 **The Problem**: Traditional job posting requires 30+ minutes of form filling, descriptions, and back-and-forth.  
@@ -109,7 +109,7 @@ Contractor receives: $10,000 (100% of job amount)
 ### For Developers
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/servicehub.git
+git clone https://github.com/yourusername/fairtradeworker.git
 
 # Install dependencies
 npm install
@@ -463,8 +463,8 @@ npm run build
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/servicehub.git
-cd servicehub
+git clone https://github.com/yourusername/fairtradeworker.git
+cd fairtradeworker
 
 # Install dependencies
 npm install
@@ -518,7 +518,7 @@ VITE_SENTRY_DSN=your_sentry_dsn
 ## 🏗️ Project Structure
 
 ```
-servicehub/
+fairtradeworker/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── ui/             # shadcn/ui components (40+)
@@ -795,7 +795,7 @@ servicehub/
 ## 📱 User Interface Highlights
 
 ### Design Philosophy
-ServiceHub's UI is inspired by **iOS 18 Maps + Linear.app + Arc browser** - precise, expensive-feeling, and mechanical. We use:
+FairTradeWorker's UI is inspired by **iOS 18 Maps + Linear.app + Arc browser** - precise, expensive-feeling, and mechanical. We use:
 
 - **Glass Morphism** - 40px blur with 180% saturation
 - **Professional Blue Palette** - Communicates intelligence and trust
@@ -897,7 +897,7 @@ We welcome contributions from the community! Here's how you can help:
 ### Development Workflow
 ```bash
 # Fork the repository
-git clone https://github.com/yourusername/servicehub.git
+git clone https://github.com/yourusername/fairtradeworker.git
 
 # Create a feature branch
 git checkout -b feature/your-feature-name
@@ -946,7 +946,7 @@ You are free to use this software for commercial purposes, including:
 - Integrating into existing platforms
 - Building derivative products
 
-**Attribution Required**: Please credit ServiceHub in your documentation or about page.
+**Attribution Required**: Please credit FairTradeWorker in your documentation or about page.
 
 ---
 
@@ -968,7 +968,7 @@ You are free to use this software for commercial purposes, including:
 - **Notion** - Comprehensive documentation approach
 
 ### Community
-Thanks to all contributors, testers, and early adopters who helped shape ServiceHub into what it is today.
+Thanks to all contributors, testers, and early adopters who helped shape FairTradeWorker into what it is today.
 
 ---
 
@@ -978,19 +978,19 @@ Thanks to all contributors, testers, and early adopters who helped shape Service
 - **Documentation** - Read the comprehensive guides in `/docs`
 - **GitHub Issues** - Report bugs or request features
 - **Community Discord** - Join our developer community (coming soon)
-- **Email Support** - support@servicehub.com (for Enterprise customers)
+- **Email Support** - support@fairtradeworker.com (for Enterprise customers)
 
 ### Stay Updated
 - **GitHub** - Star and watch this repository
 - **Blog** - Read about new features and updates (coming soon)
-- **Twitter** - Follow @ServiceHubHQ for announcements (coming soon)
+- **Twitter** - Follow @FairTradeWorkerHQ for announcements (coming soon)
 - **Newsletter** - Monthly product updates (coming soon)
 
 ### Business Inquiries
-- **Partnerships** - partners@servicehub.com
-- **Enterprise Sales** - enterprise@servicehub.com
-- **Press & Media** - press@servicehub.com
-- **Careers** - We're hiring! careers@servicehub.com
+- **Partnerships** - partners@fairtradeworker.com
+- **Enterprise Sales** - enterprise@fairtradeworker.com
+- **Press & Media** - press@fairtradeworker.com
+- **Careers** - We're hiring! careers@fairtradeworker.com
 
 ---
 
@@ -1038,7 +1038,7 @@ Thanks to all contributors, testers, and early adopters who helped shape Service
 
 ---
 
-## 💡 Why ServiceHub Will Win
+## 💡 Why FairTradeWorker Will Win
 
 ### 1. **Network Effects**
 More jobs → More contractors → Better matches → More jobs  
@@ -1098,13 +1098,13 @@ Becomes infrastructure for entire industry.
 
 ## 🌟 Join the Revolution
 
-ServiceHub is transforming a $600 billion industry. We're making home services:
+FairTradeWorker is transforming a $600 billion industry. We're making home services:
 - **Faster** - 60-second video job creation
 - **Fairer** - Zero fees for contractors
 - **Smarter** - Self-learning AI that gets better forever
 - **Scalable** - Territory model enables rapid expansion
 
-**Whether you're a homeowner, contractor, territory operator, or developer - there's a place for you in the ServiceHub ecosystem.**
+**Whether you're a homeowner, contractor, territory operator, or developer - there's a place for you in the FairTradeWorker ecosystem.**
 
 ---
 
@@ -1112,11 +1112,11 @@ ServiceHub is transforming a $600 billion industry. We're making home services:
 
 ### Ready to Get Started?
 
-[**🚀 Launch App**](#) | [**📖 Read Docs**](docs/) | [**💬 Join Community**](#) | [**⭐ Star on GitHub**](https://github.com/yourusername/servicehub)
+[**🚀 Launch App**](#) | [**📖 Read Docs**](docs/) | [**💬 Join Community**](#) | [**⭐ Star on GitHub**](https://github.com/yourusername/fairtradeworker)
 
 ---
 
-**Built with ❤️ by the ServiceHub Team**
+**Built with ❤️ by the FairTradeWorker Team**
 
 *Transforming home services, one video at a time.*
 

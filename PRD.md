@@ -1,4 +1,4 @@
-# ServiceHub - Modern Home Services Marketplace Platform
+# FairTradeWorker - Modern Home Services Marketplace Platform
 
 A comprehensive home services marketplace connecting homeowners with verified contractors across all 50 US states. The platform features video-based job creation with AI analysis, territory-based contractor networks, zero-fee structure for contractors (funded by $45/month territory subscriptions), integrated messaging, payment management, and an Intelligence API marketplace for enterprise partners.
 

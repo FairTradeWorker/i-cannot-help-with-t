@@ -260,7 +260,7 @@ export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Lightning className="w-4 h-4 text-primary" weight="fill" />
-                  <span>warranty@servicehub.com</span>
+                  <span>warranty@fairtradeworker.com</span>
                 </div>
               </div>
               <Button className="w-full mt-4" variant="outline" onClick={onFileClaimClick}>
