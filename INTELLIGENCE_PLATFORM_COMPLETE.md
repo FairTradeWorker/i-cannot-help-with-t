@@ -1,4 +1,4 @@
-# 🚀 ServiceHub Intelligence Platform - Complete System
+# 🚀 FairTradeWorker Intelligence Platform - Complete System
 
 ## Overview
 
@@ -353,7 +353,7 @@ fetch(webhook.url, {
 ```yaml
 openapi: 3.1.0
 info:
-  title: ServiceHub Intelligence API
+  title: FairTradeWorker Intelligence API
   version: 1.0.0
 paths:
   /api/intelligence/job-scope:

@@ -144,7 +144,7 @@ function App() {
       <footer className="border-t-2 border-border py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-sm text-muted-foreground font-semibold">
-            © 2024 ServiceHub. 45 Years of Experience. Built for the Trades.
+            © 2025 FairTradeWorker. All rights reserved.
           </p>
         </div>
       </footer>

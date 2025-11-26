@@ -97,7 +97,7 @@ export function APILicense({ activeView }: APILicenseProps) {
         </div>
         <div>
           <h1 className="text-4xl font-bold tracking-tight">API Licenses</h1>
-          <p className="text-muted-foreground text-lg">Integrate ServiceHub into your applications</p>
+          <p className="text-muted-foreground text-lg">Integrate FairTradeWorker into your applications</p>
         </div>
       </motion.div>
 
@@ -121,7 +121,7 @@ export function APILicense({ activeView }: APILicenseProps) {
           <Card className="p-6">
             <h2 className="text-2xl font-bold mb-4">API Documentation</h2>
             <p className="text-muted-foreground mb-6">
-              The ServiceHub API provides programmatic access to our job estimation, contractor matching, 
+              The FairTradeWorker API provides programmatic access to our job estimation, contractor matching, 
               and territory management systems. All endpoints use REST principles and return JSON responses.
             </p>
 
@@ -129,7 +129,7 @@ export function APILicense({ activeView }: APILicenseProps) {
               <div>
                 <h3 className="text-lg font-semibold mb-3">Base URL</h3>
                 <code className="block bg-muted p-3 rounded text-sm">
-                  https://api.servicehub.com/v1
+                  https://api.fairtradeworker.com/v1
                 </code>
               </div>
 

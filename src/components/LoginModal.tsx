@@ -84,7 +84,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
             transition={{ delay: 0.4 }}
             className="text-5xl font-bold mb-3"
           >
-            ServiceHub
+            FairTradeWorker
           </motion.h1>
           
           <motion.p
