@@ -13,6 +13,7 @@ export async function initializeDemoData(): Promise<void> {
     role: 'contractor',
     email: 'mike@construction.com',
     name: 'Mike Johnson',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike&backgroundColor=b6e3f4',
     phone: '(555) 123-4567',
     createdAt: new Date('2023-01-15'),
     contractorProfile: {
@@ -21,6 +22,7 @@ export async function initializeDemoData(): Promise<void> {
       rating: 92,
       completedJobs: 47,
       skills: ['Roofing', 'Siding', 'Gutters', 'Waterproofing'],
+      specialties: ['Residential Roofing', 'Commercial Roofing'],
       serviceRadius: 25,
       location: {
         lat: 40.7128,
@@ -54,6 +56,7 @@ export async function initializeDemoData(): Promise<void> {
     role: 'contractor',
     email: 'sarah@renovations.com',
     name: 'Sarah Martinez',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=ffd5dc',
     phone: '(555) 234-5678',
     createdAt: new Date('2023-03-20'),
     contractorProfile: {
@@ -96,6 +99,7 @@ export async function initializeDemoData(): Promise<void> {
     role: 'homeowner',
     email: 'john@email.com',
     name: 'John Smith',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John&backgroundColor=c0aede',
     phone: '(555) 987-6543',
     createdAt: new Date('2023-06-10'),
     homeownerProfile: {
@@ -115,9 +119,97 @@ export async function initializeDemoData(): Promise<void> {
     }
   };
 
+  const demoContractor3: User = {
+    id: 'contractor-3',
+    role: 'contractor',
+    email: 'david@roofpros.com',
+    name: 'David Chen',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David&backgroundColor=ffdfbf',
+    phone: '(555) 345-6789',
+    createdAt: new Date('2022-11-05'),
+    contractorProfile: {
+      userId: 'contractor-3',
+      contractorType: 'general_contractor',
+      rating: 96,
+      completedJobs: 89,
+      skills: ['Roofing', 'Waterproofing', 'Structural Repair', 'Storm Damage'],
+      specialties: ['Emergency Repairs', 'Storm Damage'],
+      serviceRadius: 30,
+      location: {
+        lat: 40.7589,
+        lng: -73.9851,
+        address: 'Manhattan, NY'
+      },
+      hourlyRate: 95,
+      availability: 'available',
+      verified: true,
+      licenses: [
+        {
+          type: 'Master Roofer',
+          number: 'MR-987654',
+          state: 'NY',
+          expiryDate: new Date('2026-03-31'),
+          verified: true
+        }
+      ],
+      insurance: {
+        provider: 'Liberty Mutual',
+        policyNumber: 'LM-123789',
+        expiryDate: new Date('2025-08-31'),
+        coverageAmount: 3000000,
+        verified: true
+      }
+    }
+  };
+
+  const demoContractor4: User = {
+    id: 'contractor-4',
+    role: 'contractor',
+    email: 'emma@homefixers.com',
+    name: 'Emma Rodriguez',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma&backgroundColor=d1d4f9',
+    phone: '(555) 456-7890',
+    createdAt: new Date('2023-05-12'),
+    contractorProfile: {
+      userId: 'contractor-4',
+      contractorType: 'subcontractor',
+      rating: 78,
+      completedJobs: 23,
+      skills: ['Roofing', 'Gutter Installation', 'Minor Repairs'],
+      specialties: ['Gutter Systems'],
+      serviceRadius: 15,
+      location: {
+        lat: 40.7489,
+        lng: -73.9680,
+        address: 'Queens, NY'
+      },
+      hourlyRate: 65,
+      availability: 'busy',
+      verified: false,
+      licenses: [
+        {
+          type: 'Home Improvement',
+          number: 'HI-567890',
+          state: 'NY',
+          expiryDate: new Date('2025-04-30'),
+          verified: true
+        }
+      ],
+      insurance: {
+        provider: 'Progressive',
+        policyNumber: 'PR-789456',
+        expiryDate: new Date('2025-02-28'),
+        coverageAmount: 500000,
+        verified: true
+      }
+    }
+  };
+
   await dataStore.saveUser(demoContractor);
   await dataStore.saveUser(demoContractor2);
   await dataStore.saveUser(demoHomeowner);
+  await dataStore.saveUser(demoContractor3);
+  await dataStore.saveUser(demoContractor4);
 
   const demoJob: Job = {
     id: 'job-' + Date.now(),

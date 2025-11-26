@@ -58,6 +58,7 @@ import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
+import { ContractorBrowser } from '@/components/ContractorBrowser';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
 import { PaymentModal } from '@/components/PaymentModal';
@@ -72,7 +73,7 @@ import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications';
+type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications';
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
@@ -279,6 +280,15 @@ function App() {
                 size="sm"
               >
                 Jobs
+              </Button>
+
+              <Button
+                variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('contractors-browse')}
+                className="button-interactive"
+                size="sm"
+              >
+                Contractors
               </Button>
 
               <DropdownMenu>
@@ -639,7 +649,7 @@ function App() {
                           </div>
                         </Card>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('contractors-browse')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-secondary">
                               <Hammer className="w-7 h-7 text-white" weight="fill" />
@@ -650,10 +660,10 @@ function App() {
                             </div>
                           </div>
                           <p className="text-sm font-semibold mb-1">Verified Contractors</p>
-                          <p className="text-xs text-muted-foreground mb-2">Join our professional network</p>
+                          <p className="text-xs text-muted-foreground mb-2">Browse professional profiles</p>
                           <div className="flex items-center gap-1 mt-2 text-xs">
                             <CheckCircle className="w-3 h-3 text-secondary" weight="fill" />
-                            <span className="text-muted-foreground">Zero platform fees</span>
+                            <span className="text-muted-foreground">View ratings & reviews</span>
                           </div>
                         </Card>
 
@@ -758,6 +768,7 @@ function App() {
                     </div>
                   )}
                   {activeTab === 'jobs' && <JobBrowser />}
+                  {activeTab === 'contractors-browse' && <ContractorBrowser />}
                   {activeTab === 'homeowner' && currentUser && <HomeownerDashboard user={currentUser} activeSubTab={activeSubTab} />}
                   {activeTab === 'territories' && activeSubTab === 'overview' && (
                     <TerritoriesOverview 

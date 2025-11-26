@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, MapPin, Clock, CurrencyDollar, ChatCircle, PaperPlane, Calendar, CheckCircle, Package, Toolbox } from '@phosphor-icons/react';
+import { X, MapPin, Clock, CurrencyDollar, ChatCircle, PaperPlane, Calendar, CheckCircle, Package, Toolbox, Star } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { dataStore } from '@/lib/store';
 import { JobFeedbackModal } from '@/components/JobFeedbackModal';
@@ -523,35 +524,76 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
             ) : (
               <div className="space-y-4">
                 {job.bids.map(bid => (
-                  <Card key={bid.id} className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-semibold">{bid.contractor.name}</h4>
-                          <Badge variant={bid.status === 'accepted' ? 'default' : 'secondary'}>
-                            {bid.status}
-                          </Badge>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <CheckCircle className="w-4 h-4" />
-                            <span>{bid.contractor.completedJobs} jobs</span>
+                  <Card key={bid.id} className="p-6 hover:border-primary/50 transition-colors">
+                    <div className="flex items-start gap-4">
+                      <div className="relative flex-shrink-0">
+                        <Avatar className="w-14 h-14 border-2 border-border">
+                          <AvatarImage src={bid.contractor.avatar} alt={bid.contractor.name} />
+                          <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                            {bid.contractor.name[0]?.toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        {bid.contractor.rating >= 90 && (
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-accent rounded-full border-2 border-card flex items-center justify-center">
+                            <CheckCircle className="w-3 h-3 text-white" weight="fill" />
                           </div>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <span>★ {bid.contractor.rating}/100</span>
-                          </div>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">{bid.message}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>Start: {new Date(bid.timeline.start).toLocaleDateString()}</span>
-                          <span>End: {new Date(bid.timeline.end).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                      <div className="text-right flex-shrink-0 ml-6">
-                        <p className="text-2xl font-bold font-mono mb-2">${bid.amount.toLocaleString()}</p>
-                        {isHomeowner && bid.status === 'pending' && job.status === 'posted' && (
-                          <Button onClick={() => handleAcceptBid(bid.id)} disabled={submitting}>
-                            Accept Bid
-                          </Button>
                         )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4 mb-2">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-semibold text-lg">{bid.contractor.name}</h4>
+                              <Badge variant={bid.status === 'accepted' ? 'default' : 'secondary'} className="text-xs">
+                                {bid.status}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 text-accent" weight="fill" />
+                                <span className="font-semibold">{bid.contractor.rating}</span>
+                                <span className="text-muted-foreground">/100</span>
+                              </div>
+                              <div className="h-4 w-px bg-border"></div>
+                              <div className="flex items-center gap-1 text-muted-foreground">
+                                <CheckCircle className="w-4 h-4" />
+                                <span>{bid.contractor.completedJobs} jobs completed</span>
+                              </div>
+                              <div className="h-4 w-px bg-border"></div>
+                              <div className="flex items-center gap-1 text-muted-foreground">
+                                <CurrencyDollar className="w-4 h-4" />
+                                <span>${bid.contractor.hourlyRate}/hr</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-3xl font-bold font-mono">${bid.amount.toLocaleString()}</p>
+                            {bid.breakdown && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Labor: ${bid.breakdown.labor.toLocaleString()} • Materials: ${bid.breakdown.materials.toLocaleString()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{bid.message}</p>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Calendar className="w-4 h-4" />
+                              <span>Start: {new Date(bid.timeline.start).toLocaleDateString()}</span>
+                            </div>
+                            <span>•</span>
+                            <span>End: {new Date(bid.timeline.end).toLocaleDateString()}</span>
+                          </div>
+                          {isHomeowner && bid.status === 'pending' && job.status === 'posted' && (
+                            <Button onClick={() => handleAcceptBid(bid.id)} disabled={submitting} size="lg">
+                              Accept Bid
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Card>

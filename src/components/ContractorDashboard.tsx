@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { dataStore } from '@/lib/store';
 import type { Job, User, Earnings } from '@/lib/types';
 import { JobBrowser } from './JobBrowser';
@@ -70,9 +70,19 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Avatar className="w-16 h-16 bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">{user.name[0]}</span>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="w-16 h-16 border-2 border-border shadow-lg">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
+                    {user.name[0]?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                {profile.verified && (
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full border-2 border-card flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-white" weight="fill" />
+                  </div>
+                )}
+              </div>
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">{user.name}</h1>
                 <div className="flex items-center gap-4 mt-1">
@@ -85,12 +95,6 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
                     <CheckCircle className="w-4 h-4" />
                     <span>{profile.completedJobs} jobs completed</span>
                   </div>
-                  {profile.verified && (
-                    <Badge variant="outline" className="bg-accent/10 border-accent/30 text-accent-foreground">
-                      <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
-                      Verified
-                    </Badge>
-                  )}
                 </div>
               </div>
             </div>
