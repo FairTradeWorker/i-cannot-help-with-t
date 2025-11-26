@@ -180,33 +180,50 @@ function App() {
   };
 
   const handleLogin = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
-    const newUser: UserType = {
-      id: 'user-' + Date.now(),
-      role: role,
-      email: email,
-      name: email.split('@')[0],
-      createdAt: new Date(),
-    };
-    
-    await dataStore.saveUser(newUser);
-    await dataStore.setCurrentUser(newUser);
-    setCurrentUser(newUser);
-    setShowLogin(false);
+    try {
+      const users = await dataStore.getUsers();
+      let user = users.find(u => u.email === email);
+      
+      if (!user) {
+        user = {
+          id: 'user-' + Date.now(),
+          role: role,
+          email: email,
+          name: email.split('@')[0],
+          createdAt: new Date(),
+        };
+        await dataStore.saveUser(user);
+      }
+      
+      await dataStore.setCurrentUser(user);
+      setCurrentUser(user);
+      setShowLogin(false);
+      toast.success('Welcome back!');
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Failed to sign in. Please try again.');
+    }
   };
 
   const handleSignUp = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
-    const newUser: UserType = {
-      id: 'user-' + Date.now(),
-      role: role,
-      email: email,
-      name: email.split('@')[0],
-      createdAt: new Date(),
-    };
-    
-    await dataStore.saveUser(newUser);
-    await dataStore.setCurrentUser(newUser);
-    setCurrentUser(newUser);
-    setShowLogin(false);
+    try {
+      const newUser: UserType = {
+        id: 'user-' + Date.now(),
+        role: role,
+        email: email,
+        name: email.split('@')[0],
+        createdAt: new Date(),
+      };
+      
+      await dataStore.saveUser(newUser);
+      await dataStore.setCurrentUser(newUser);
+      setCurrentUser(newUser);
+      setShowLogin(false);
+      toast.success('Account created successfully!');
+    } catch (error) {
+      console.error('Sign up error:', error);
+      toast.error('Failed to create account. Please try again.');
+    }
   };
 
   const handleNavClick = (tab: MainTab, subTab?: SubTab) => {
