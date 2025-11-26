@@ -1,11 +1,10 @@
 import { Star, CheckCircle, MapPin, CurrencyDollar, Briefcase } from '@phosphor-icons/react';
-import { Badge } from '@/components/ui/badge
-import { Button } from '@/components/ui/button
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-  contractor: {
-    name: string;
-
-    hourlyRate?: number;
+interface ContractorCardProps {
   contractor: {
     id: string;
     name: string;
@@ -14,21 +13,21 @@ import { Button } from '@/components/ui/button
     completedJobs: number;
     hourlyRate?: number;
     specialties?: string[];
-  const getRatingBadge
-    if (rating >= 85) r
-    
+    location?: string;
+    verified?: boolean;
+  };
+  compact?: boolean;
+  showActions?: boolean;
+  onSelect?: () => void;
+}
 
-    return (
-        <div classNa
- 
-
-          </Avatar>
-            <div className="absolute -bottom-1
-            </div>
-        </div>
-          <div className="flex items-center 
-            {contractor.verified &&
-    
+export function ContractorCard({ contractor, compact = false, showActions = true, onSelect }: ContractorCardProps) {
+  const getRatingColor = (rating: number) => {
+    if (rating >= 95) return 'text-secondary';
+    if (rating >= 85) return 'text-primary';
+    if (rating >= 75) return 'text-yellow-500';
+    return 'text-muted-foreground';
+  };
 
   const getRatingBadge = (rating: number) => {
     if (rating >= 95) return { label: 'Exceptional', variant: 'default' as const };
@@ -50,8 +49,9 @@ import { Button } from '@/components/ui/button
           {contractor.verified && (
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-accent rounded-full border-2 border-card flex items-center justify-center">
               <CheckCircle className="w-3 h-3 text-white" weight="fill" />
-            </Avat
+            </div>
           )}
+        </div>
               
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ import { Button } from '@/components/ui/button
           </div>
         </div>
       </div>
-      
+    );
   }
 
   const ratingBadge = getRatingBadge(contractor.rating);
@@ -84,23 +84,23 @@ import { Button } from '@/components/ui/button
             <AvatarFallback className="bg-primary/10 text-primary font-bold text-xl">
               {contractor.name[0]?.toUpperCase()}
             </AvatarFallback>
-                <Ba
+          </Avatar>
           {contractor.verified && (
             <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full border-2 border-card flex items-center justify-center">
               <CheckCircle className="w-4 h-4 text-white" weight="fill" />
-                  
+            </div>
           )}
-            </
+        </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-4 mb-2">
-              <sp
+            <div>
               <h3 className="text-xl font-bold mb-1">{contractor.name}</h3>
               <Badge variant={ratingBadge.variant} className="mb-2">
                 {ratingBadge.label}
-              View Pro
+              </Badge>
             </div>
-        </div>
+          </div>
 
           <div className="flex items-center gap-4 mb-3 text-sm flex-wrap">
             <div className="flex items-center gap-1.5">
@@ -110,31 +110,31 @@ import { Button } from '@/components/ui/button
             </div>
             <div className="h-4 w-px bg-border"></div>
             <div className="flex items-center gap-1.5 text-muted-foreground">
-
+              <Briefcase className="w-4 h-4" />
               <span>{contractor.completedJobs} jobs completed</span>
-
+            </div>
             {contractor.hourlyRate && (
-
+              <>
                 <div className="h-4 w-px bg-border"></div>
-
+                <div className="flex items-center gap-1.5 text-muted-foreground">
                   <CurrencyDollar className="w-4 h-4" />
                   <span>${contractor.hourlyRate}/hr</span>
                 </div>
               </>
             )}
-
+          </div>
 
           {contractor.specialties && contractor.specialties.length > 0 && (
             <div className="flex items-center gap-2 mb-3">
-
+              {contractor.specialties.slice(0, 3).map((specialty, i) => (
                 <Badge key={i} variant="outline" className="text-xs">
-
+                  {specialty}
                 </Badge>
-
+              ))}
               {contractor.specialties.length > 3 && (
                 <Badge variant="outline" className="text-xs">
                   +{contractor.specialties.length - 3} more
-
+                </Badge>
               )}
             </div>
           )}
@@ -148,11 +148,11 @@ import { Button } from '@/components/ui/button
 
           {showActions && (
             <Button size="sm" className="mt-2">
-
+              View Profile
             </Button>
           )}
         </div>
       </div>
     </Card>
-
+  );
 }
