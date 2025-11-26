@@ -304,7 +304,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
           </div>
           <div>
             <h2 className="text-3xl font-bold">Private Equity & Investment</h2>
-            <p className="text-muted-foreground">Explore investment opportunities with ServiceHub</p>
+            <p className="text-muted-foreground">Explore investment opportunities with FairTradeWorker</p>
           </div>
         </div>
       </motion.div>
@@ -317,7 +317,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
           <div>
             <h3 className="text-2xl font-bold mb-2">Investment Opportunities</h3>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              ServiceHub is revolutionizing the home services industry. Learn about partnership opportunities, 
+              FairTradeWorker is revolutionizing the home services industry. Learn about partnership opportunities, 
               territory acquisition programs, and investment options.
             </p>
           </div>
@@ -613,7 +613,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
               value={contactForm.message}
               onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
               required
-              placeholder="What type of business do you operate? How do you envision partnering with ServiceHub? What value can you provide to our contractor and homeowner network?"
+              placeholder="What type of business do you operate? How do you envision partnering with FairTradeWorker? What value can you provide to our contractor and homeowner network?"
               className="glass-card"
             />
           </div>

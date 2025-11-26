@@ -59,10 +59,10 @@ export function PaymentScreen({
   const [selectedWarranty, setSelectedWarranty] = useState<'basic' | 'extended' | 'premium'>('basic');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const operatorFee = 20;
+  const platformFee = 20;
   const warrantyPrices = { basic: 75, extended: 299, premium: 499 };
   const warrantyPrice = warrantyPrices[selectedWarranty];
-  const totalAmount = amount + warrantyPrice + operatorFee;
+  const totalAmount = amount + warrantyPrice + platformFee;
 
   const financeOptions = [
     {
@@ -338,7 +338,7 @@ export function PaymentScreen({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Account Name:</span>
-                        <span className="font-semibold">ServiceHub Escrow</span>
+                        <span className="font-semibold">FairTradeWorker Escrow</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Routing Number:</span>
@@ -511,13 +511,13 @@ export function PaymentScreen({
                           <Info className="w-3 h-3 text-muted-foreground cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p className="text-xs">One-time platform fee that supports ServiceHub operations</p>
+                          <p className="text-xs">One-time platform fee that supports FairTradeWorker operations</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
                   <span className="text-sm font-semibold text-accent">
-                    +${operatorFee.toLocaleString()}
+                    +${platformFee.toLocaleString()}
                   </span>
                 </div>
 
@@ -572,11 +572,11 @@ export function PaymentScreen({
                     Platform Fee Breakdown
                   </h4>
                   <p className="text-muted-foreground">
-                    A one-time ${operatorFee} platform fee per job helps maintain ServiceHub infrastructure, secure payments, and support services. Territory operators separately pay $45/month for exclusive lead rights in their area.
+                    A one-time ${operatorFee} platform fee per job helps maintain FairTradeWorker infrastructure, secure payments, and support services. Territory operators separately pay $45/month for exclusive lead rights in their area.
                   </p>
                   <div className="flex justify-between items-center pt-2 border-t border-primary/20">
                     <span className="font-medium">Your Platform Fee:</span>
-                    <span className="font-bold text-primary">${operatorFee} one-time</span>
+                    <span className="font-bold text-primary">${platformFee} one-time</span>
                   </div>
                 </div>
 

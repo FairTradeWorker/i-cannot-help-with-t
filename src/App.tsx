@@ -229,7 +229,7 @@ function App() {
             />
           </div>
           <div className="loading-bar mb-3" />
-          <p className="text-sm text-muted-foreground font-medium">Loading ServiceHub...</p>
+          <p className="text-sm text-muted-foreground font-medium">Loading FairTradeWorker...</p>
         </motion.div>
       </div>
     );
@@ -694,7 +694,7 @@ function App() {
                             <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
                             <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
                             <p className="text-muted-foreground mb-6">
-                              Unlike other platforms that charge 15-30% fees, ServiceHub contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
+                              Unlike other platforms that charge 15-30% fees, FairTradeWorker contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
                             </p>
                             <div className="space-y-3">
                               <div className="flex items-center gap-3">

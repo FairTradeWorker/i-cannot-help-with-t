@@ -28,8 +28,8 @@ export function ReferralSystem({ userId, referrals, activeView = 'program' }: Re
   const [email, setEmail] = useState('');
   const [sending, setSending] = useState(false);
 
-  const referralCode = `SH-${userId.slice(0, 8).toUpperCase()}`;
-  const referralLink = `https://servicehub.app/join?ref=${referralCode}`;
+  const referralCode = `FTW-${userId.slice(0, 8).toUpperCase()}`;
+  const referralLink = `https://fairtradeworker.app/join?ref=${referralCode}`;
 
   const totalEarnings = referrals
     .filter((r) => r.status === 'rewarded')
@@ -94,7 +94,7 @@ export function ReferralSystem({ userId, referrals, activeView = 'program' }: Re
           <h2 className="text-3xl font-bold">Referral Program</h2>
         </div>
         <p className="text-muted-foreground">
-          Earn rewards by inviting friends and contractors to ServiceHub
+          Earn rewards by inviting friends and contractors to FairTradeWorker
         </p>
       </motion.div>
 
