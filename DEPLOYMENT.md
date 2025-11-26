@@ -172,9 +172,9 @@ As of the latest documentation:
 | A      | @    | 185.199.109.153               |
 | A      | @    | 185.199.110.153               |
 | A      | @    | 185.199.111.153               |
-| CNAME  | www  | fairtradeworker.github.io     |
+| CNAME  | www  | FairTradeWorker.github.io     |
 
-**Note:** Create a `CNAME` file in the repository root with your domain:
+**Note:** The `CNAME` file is already included in the `public/` directory and will be deployed with the site. It contains:
 ```
 www.fairtradeworker.com
 ```
