@@ -40,7 +40,7 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
     e.preventDefault();
     if (isSubmitting) {
       console.log('⚠️ Already submitting, ignoring duplicate submit');
-      return;;
+      return;
     }
     
     console.log('🚀🚀🚀 === FORM SUBMIT START ===');
