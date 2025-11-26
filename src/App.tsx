@@ -149,19 +149,34 @@ function App() {
 
   useEffect(() => {
     initialize();
+    
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.error('Loading timeout - forcing login screen');
+        setLoading(false);
+        setShowLogin(true);
+      }
+    }, 5000);
+    
+    return () => clearTimeout(timeout);
   }, []);
 
   const initialize = async () => {
-    await initializeDemoData();
-    const user = await dataStore.getCurrentUser();
-    
-    if (!user) {
+    try {
+      await initializeDemoData();
+      const user = await dataStore.getCurrentUser();
+      
+      if (!user) {
+        setShowLogin(true);
+      } else {
+        setCurrentUser(user);
+      }
+    } catch (error) {
+      console.error('Initialization error:', error);
       setShowLogin(true);
-    } else {
-      setCurrentUser(user);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const handleLogin = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
@@ -174,6 +189,7 @@ function App() {
     };
     
     await dataStore.saveUser(newUser);
+    await dataStore.setCurrentUser(newUser);
     setCurrentUser(newUser);
     setShowLogin(false);
   };
@@ -188,6 +204,7 @@ function App() {
     };
     
     await dataStore.saveUser(newUser);
+    await dataStore.setCurrentUser(newUser);
     setCurrentUser(newUser);
     setShowLogin(false);
   };
@@ -205,7 +222,8 @@ function App() {
     setActiveSubTab('post-job');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await window.spark.kv.delete('current-user');
     setCurrentUser(null);
     setShowLogin(true);
     setActiveTab('home');

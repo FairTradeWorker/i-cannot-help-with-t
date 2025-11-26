@@ -2,10 +2,14 @@ import type { User, Job, ContractorProfile, HomeownerProfile } from './types';
 import { dataStore } from './store';
 
 export async function initializeDemoData(): Promise<void> {
-  const users = await dataStore.getUsers();
-  
-  if (users.length > 0) {
-    return;
+  try {
+    const users = await dataStore.getUsers();
+    
+    if (users.length > 0) {
+      return;
+    }
+  } catch (error) {
+    console.error('Error checking users:', error);
   }
 
   const demoContractor: User = {
@@ -115,37 +119,41 @@ export async function initializeDemoData(): Promise<void> {
     }
   };
 
-  await dataStore.saveUser(demoContractor);
-  await dataStore.saveUser(demoContractor2);
-  await dataStore.saveUser(demoHomeowner);
+  try {
+    await dataStore.saveUser(demoContractor);
+    await dataStore.saveUser(demoContractor2);
+    await dataStore.saveUser(demoHomeowner);
 
-  const demoJob: Job = {
-    id: 'job-' + Date.now(),
-    title: 'Roof Leak Repair Needed',
-    description: 'Water stains appearing on ceiling after recent storms. Need professional assessment and repair.',
-    status: 'posted',
-    homeownerId: 'homeowner-1',
-    address: {
-      street: '123 Main Street',
-      city: 'Brooklyn',
-      state: 'NY',
-      zip: '11201',
-      lat: 40.6782,
-      lng: -73.9442
-    },
-    urgency: 'urgent',
-    estimatedCost: { min: 800, max: 1500 },
-    laborHours: 8,
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(),
-    bids: [],
-    messages: [],
-    milestones: []
-  };
+    const demoJob: Job = {
+      id: 'job-' + Date.now(),
+      title: 'Roof Leak Repair Needed',
+      description: 'Water stains appearing on ceiling after recent storms. Need professional assessment and repair.',
+      status: 'posted',
+      homeownerId: 'homeowner-1',
+      address: {
+        street: '123 Main Street',
+        city: 'Brooklyn',
+        state: 'NY',
+        zip: '11201',
+        lat: 40.6782,
+        lng: -73.9442
+      },
+      urgency: 'urgent',
+      estimatedCost: { min: 800, max: 1500 },
+      laborHours: 8,
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date(),
+      bids: [],
+      messages: [],
+      milestones: []
+    };
 
-  await dataStore.saveJob(demoJob);
+    await dataStore.saveJob(demoJob);
 
-  console.log('✅ Demo data initialized');
+    console.log('✅ Demo data initialized');
+  } catch (error) {
+    console.error('Error saving demo data:', error);
+  }
 }
 
 export async function switchUserRole(role: 'contractor' | 'homeowner'): Promise<User> {
