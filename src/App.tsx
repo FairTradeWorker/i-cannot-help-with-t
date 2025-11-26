@@ -69,6 +69,7 @@ import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { WarrantySection } from '@/components/WarrantySection';
 import { FileAClaim } from '@/components/FileAClaim';
+import { HomeownerProfileForm } from '@/components/HomeownerProfileForm';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
@@ -336,16 +337,16 @@ function App() {
               </DropdownMenu>
             </nav>
 
-            <Button
-              size="lg"
-              onClick={() => handleNavClick('homeowner', 'post-job')}
-              className="absolute left-1/2 -translate-x-1/2 bg-black hover:bg-black/90 text-white shadow-lg font-black uppercase px-8 h-12 border-2 border-black"
-            >
-              <Plus className="w-5 h-5 mr-2" weight="bold" />
-              Post a Job
-            </Button>
-
             <nav className="flex items-center gap-1.5">
+              <Button
+                size="lg"
+                onClick={() => handleNavClick('homeowner', 'post-job')}
+                className="bg-black hover:bg-black/90 text-white shadow-lg font-black uppercase px-8 h-12 border-2 border-black"
+              >
+                <Plus className="w-5 h-5 mr-2" weight="bold" />
+                Post a Job
+              </Button>
+
               <Button
                 variant={activeTab === 'api' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('api')}

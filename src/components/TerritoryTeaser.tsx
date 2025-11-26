@@ -37,7 +37,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
   ];
 
   const benefits = [
-    'Exclusive Rights to Our Leads',
+    'Priority Access to First Leads',
     'Demand forecasting',
     'Automated lead generation',
     'Priority job routing',
@@ -62,7 +62,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
                   <span className="block text-2xl text-primary font-mono mt-2">$45/month</span>
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Secure exclusive rights to service entire zip codes. Build a sustainable business with intelligent platform features and guaranteed lead flow.
+                  Priority Access to first Leads in your zip codes. Build a sustainable business with intelligent platform features and guaranteed lead flow.
                 </p>
               </div>
 

@@ -10,6 +10,7 @@ import { VideoUploader } from './VideoUploader';
 import { JobDetails } from './JobDetails';
 import { QuickJobPost } from './QuickJobPost';
 import { UserProfile } from './UserProfile';
+import { HomeownerProfileForm } from './HomeownerProfileForm';
 
 interface HomeownerDashboardProps {
   user: User;
@@ -121,7 +122,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
           </TabsList>
 
           <TabsContent value="profile">
-            <UserProfile user={user} />
+            <HomeownerProfileForm />
           </TabsContent>
 
           <TabsContent value="my-jobs">
