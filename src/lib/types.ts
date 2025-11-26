@@ -285,7 +285,6 @@ export interface OperatorProfile {
   userId: string;
   territories: string[];
   totalInvestment: number;
-  monthlyEarnings: number;
   totalEarnings: number;
   approvedContractors: number;
 }

@@ -19,8 +19,6 @@ interface OperatorDashboardProps {
 }
 
 export function OperatorDashboard({ operatorProfile, territories }: OperatorDashboardProps) {
-  const totalMonthlyVolume = territories.reduce((sum, t) => sum + (t.stats.monthlyJobVolume || 0), 0);
-  const totalMonthlyRevenue = territories.reduce((sum, t) => sum + (t.stats.monthlyRevenue || 0), 0);
   const roi = operatorProfile.totalInvestment > 0 
     ? ((operatorProfile.totalEarnings / operatorProfile.totalInvestment) * 100).toFixed(1)
     : '0';
