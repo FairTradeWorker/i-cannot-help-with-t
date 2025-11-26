@@ -402,3 +402,14 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
     </div>
   );
 }
+
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
