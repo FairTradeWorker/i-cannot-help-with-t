@@ -1,23 +1,24 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Lightning, Crosshair, Users, TrendUp, CheckCircle } from '@phosphor-icons/react';
 
+interface PriorityLeadsVisualProps {
   onExplore: () => void;
+}
 
+export function PriorityLeadsVisual({ onExplore }: PriorityLeadsVisualProps) {
   const hotZones = [
-    { id: 2, x: 45, y: 2
- 
+    { id: 1, x: 25, y: 35, intensity: 'high' },
+    { id: 2, x: 45, y: 20, intensity: 'medium' },
+    { id: 3, x: 65, y: 55, intensity: 'high' },
+    { id: 4, x: 80, y: 30, intensity: 'low' },
+    { id: 5, x: 15, y: 65, intensity: 'medium' },
+  ];
 
   return (
-      <div className
-          <div>
-              <Lightning className="w-4 h-4 mr-2" weight="fill" />
-            </Badge>
-            <p className="text-muted-foreground text-lg">
-            </p>
-
-
-          
-                animate={{ scale: 1, opacity: 1 }}
+    <Card className="glass-card p-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <div>
@@ -38,49 +39,15 @@ import { Card } from '@/components/ui/card';
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: idx * 0.15, duration: 0.4 }}
-
-                  animat
-                    opacity: [0.4, 0,
-                  transition={{
-                    repeat: Infinity,
-                  
-               
+                className="absolute"
+                style={{
+                  left: `${zone.x}%`,
+                  top: `${zone.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
                 <motion.div
                   animate={{
-                <div className="w-2 h-2
-              </div>
-              <div c
-          </div>
-          <div className="grid g
-              <div className="text-2x
-            </div>
-              <div c
-            </div>
-              <div classNa
-            </div>
-        </div>
-        <div classNa
-            <h4 cl
-            {[
-              { icon: Lightning, label: 'Demand
-              { icon: TrendUp, label: 'Growth Analytics', desc: 'Track territory performance metrics' },
-              const Icon = benefit.icon;
-                <div key={benefit.label} className="flex items-start gap-3 p-3 
-                    <Icon className="w-4 h-4 text-primary" weight="bold" />
-                  <div>
-                      {benefit.label}
-                    </div>
-                  </div>
-              );
-          </div>
-      </div>
-  );
-
-
-
-
-
-
                     scale: [1, 1.5, 1],
                     opacity: [0.4, 0, 0.4],
                   }}
@@ -91,6 +58,7 @@ import { Card } from '@/components/ui/card';
                   }}
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-2 border-accent rounded-full"
                 />
+                <div className="w-3 h-3 bg-accent rounded-full shadow-lg relative z-10" />
               </motion.div>
             ))}
 
@@ -147,6 +115,14 @@ import { Card } from '@/components/ui/card';
               );
             })}
           </div>
+
+          <Button 
+            onClick={onExplore}
+            className="w-full"
+            size="lg"
+          >
+            Explore Territories
+          </Button>
         </div>
       </div>
     </Card>
