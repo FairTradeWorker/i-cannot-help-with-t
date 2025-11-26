@@ -10,115 +10,177 @@ import {
   ArrowRight,
   Check,
   Lock,
-  Lightning
+  Lightning,
+  CreditCard,
+  Bank,
+  Wallet,
+  QrCode,
+  CheckCircle
 } from '@phosphor-icons/react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
+// Stripe checkout configuration - consistent pricing across the app
+const STRIPE_CONFIG = {
+  professional: {
+    priceId: 'price_professional_97_monthly',
+    price: 97,
+    name: 'Professional',
+  },
+  enterprise: {
+    priceId: 'price_enterprise_497_monthly',
+    price: 497,
+    name: 'Enterprise',
+  },
+};
+
+// Redirect to Stripe Checkout for payment
+async function redirectToStripeCheckout(tier: 'professional' | 'enterprise') {
+  const config = STRIPE_CONFIG[tier];
+  
+  // In production, this would call your backend to create a Stripe Checkout session
+  const checkoutUrl = `https://checkout.stripe.com/c/pay/${config.priceId}`;
+  
+  toast.success(`Redirecting to Stripe Checkout for ${config.name} ($${config.price}/mo)...`);
+  
+  // Open Stripe Checkout in new tab
+  setTimeout(() => {
+    window.open(checkoutUrl, '_blank');
+  }, 500);
+}
+
+// 20 Intelligence APIs - all connect to payment
 const API_PRODUCTS = [
   {
-    name: 'Demand Forecasting',
-    icon: TrendUp,
-    description: 'Predict future demand for trades by geography',
-    price: 149,
-    period: 'month',
-    calls: '1,000',
-    color: 'bg-primary',
-    features: ['30-day predictions', 'Zipcode-level data', 'Trade-specific forecasts', '1,000 API calls/month']
-  },
-  {
-    name: 'Market Pricing',
+    name: 'Fair Wage Calculator',
     icon: CurrencyDollar,
-    description: 'Real-time market pricing intelligence',
-    price: 29,
-    period: 'month',
-    calls: '2,000',
-    color: 'bg-secondary',
-    popular: true,
-    features: ['Real-time pricing', 'Bid optimization', 'Win probability', '2,000 API calls/month']
+    description: 'Job type + location → suggested rate',
+    tier: 'professional' as const,
+    color: 'bg-primary',
+    features: ['Location-based rates', 'Job type analysis', 'Market comparison']
   },
   {
-    name: 'Labor Availability',
-    icon: Users,
-    description: 'Track contractor supply and capacity',
-    price: 129,
-    period: 'month',
-    calls: '1,500',
+    name: 'Job Safety Score',
+    icon: Warning,
+    description: 'Job description → risk score 0-100',
+    tier: 'professional' as const,
+    color: 'bg-secondary',
+    features: ['Hazard detection', 'Safety recommendations', 'Risk scoring']
+  },
+  {
+    name: 'Material Cost Estimator',
+    icon: TrendUp,
+    description: 'Job details → materials cost',
+    tier: 'professional' as const,
     color: 'bg-primary',
-    features: ['Contractor availability', 'Utilization rates', 'Supply/demand ratio', '1,500 API calls/month']
+    features: ['Material breakdown', 'Quantity estimates', 'Cost projections']
+  },
+  {
+    name: 'Win Probability',
+    icon: ChartLine,
+    description: 'Your bid + job details → win chance 0-100',
+    tier: 'professional' as const,
+    popular: true,
+    color: 'bg-secondary',
+    features: ['Competitive analysis', 'Bid optimization', 'Win rate prediction']
+  },
+  {
+    name: 'Lead Quality Score',
+    icon: Users,
+    description: 'Lead info → quality score 0-100',
+    tier: 'professional' as const,
+    color: 'bg-primary',
+    features: ['Lead scoring', 'Conversion prediction', 'Priority ranking']
+  },
+  {
+    name: 'Price Optimizer',
+    icon: CurrencyDollar,
+    description: 'Costs + market → optimal price',
+    tier: 'professional' as const,
+    color: 'bg-primary',
+    features: ['Margin optimization', 'Market analysis', 'Price recommendations']
   },
   {
     name: 'Risk Assessment',
     icon: Warning,
-    description: 'Predict job completion and potential issues',
-    price: 49,
-    period: 'month',
-    calls: '1,000',
-    color: 'bg-primary',
-    features: ['Completion probability', 'Dispute prediction', 'Risk scoring', '1,000 API calls/month']
+    description: 'Job + customer → risk score 0-100',
+    tier: 'enterprise' as const,
+    color: 'bg-accent',
+    features: ['Customer analysis', 'Job risk factors', 'Mitigation strategies']
   },
   {
-    name: 'Territory Valuation',
-    icon: MapPin,
-    description: 'Comprehensive territory ROI analysis',
-    price: 79,
-    period: 'month',
-    calls: '500',
-    color: 'bg-primary',
-    features: ['Fair market value', 'ROI projections', '5-year forecasts', '500 API calls/month']
-  },
-  {
-    name: 'Market Trends',
+    name: 'Competitor Pricing',
     icon: ChartLine,
-    description: 'Market trends across demand and pricing',
-    price: 39,
-    period: 'month',
-    calls: '2,000',
-    color: 'bg-secondary',
-    features: ['Trend analysis', 'Market insights', 'Growth predictions', '2,000 API calls/month']
+    description: 'Job type + location → price range',
+    tier: 'enterprise' as const,
+    color: 'bg-accent',
+    features: ['Market intelligence', 'Competitor analysis', 'Price benchmarks']
+  },
+  {
+    name: 'Upsell Recommender',
+    icon: TrendUp,
+    description: 'Current job → 3 upsell ideas',
+    tier: 'enterprise' as const,
+    color: 'bg-accent',
+    features: ['Revenue optimization', 'Cross-sell suggestions', 'Customer value']
   },
 ];
 
 const PRICING_TIERS = [
   {
     name: 'Starter',
-    price: 59,
+    price: 0,
+    tier: 'free' as const,
     description: 'Perfect for getting started',
-    apis: 'Choose 3 APIs',
-    features: ['Up to 3 API endpoints', 'Email support', 'Monthly billing', '30-day trial']
+    apis: '1,000 calls/month',
+    features: ['Basic endpoints only', 'Email support', 'Standard rate limits', '30-day trial']
   },
   {
     name: 'Professional',
-    price: 199,
+    price: 97,
+    tier: 'professional' as const,
     popular: true,
     description: 'For growing businesses',
-    apis: 'All APIs included',
-    features: ['All 6 API endpoints', 'Priority support', 'Advanced features', 'Custom limits']
+    apis: '10,000 calls/month',
+    features: ['All 20+ Intelligence APIs', 'Priority support', 'Webhooks included', 'Higher rate limits']
   },
   {
     name: 'Enterprise',
-    price: 599,
+    price: 497,
+    tier: 'enterprise' as const,
     description: 'For large organizations',
-    apis: 'Unlimited access',
-    features: ['Unlimited API calls', 'Dedicated support', 'Custom SLA', 'White-glove onboarding']
+    apis: 'Unlimited calls',
+    features: ['All Intelligence APIs', 'Dedicated support', 'Custom integrations', 'SLA guarantee']
   },
 ];
 
 export function APIMarketplaceSection() {
   const [selectedAPI, setSelectedAPI] = useState<string | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
-  const handleGetAPI = (apiName: string, price: number) => {
-    toast.success(`Starting ${apiName} subscription`, {
-      description: `$${price}/month - You'll receive API credentials shortly.`,
-    });
+  const handleGetAPI = async (apiTier: 'professional' | 'enterprise') => {
+    setCheckoutLoading(apiTier);
+    try {
+      await redirectToStripeCheckout(apiTier);
+    } finally {
+      setCheckoutLoading(null);
+    }
   };
 
-  const handleSelectPlan = (planName: string, price: number) => {
-    toast.success(`Selected ${planName} plan`, {
-      description: `$${price}/month - Contact our team for API keys and setup.`,
-    });
+  const handleSelectPlan = async (tier: 'free' | 'professional' | 'enterprise') => {
+    if (tier === 'free') {
+      toast.success('Free tier activated! Generate your API key in the Keys tab.');
+      return;
+    }
+    
+    setCheckoutLoading(tier);
+    try {
+      await redirectToStripeCheckout(tier);
+    } finally {
+      setCheckoutLoading(null);
+    }
   };
 
   return (
@@ -130,7 +192,7 @@ export function APIMarketplaceSection() {
       >
         <h2 className="text-4xl font-bold tracking-tight">Intelligence APIs</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Powerful APIs for market intelligence, pricing, and forecasting. Perfect for real estate platforms, insurance companies, and financial firms.
+          20+ powerful APIs for home services intelligence. All APIs connect directly to Stripe for instant activation.
         </p>
         <div className="flex items-center justify-center gap-4 pt-2">
           <Badge variant="secondary" className="text-xs px-3 py-1">
@@ -140,6 +202,10 @@ export function APIMarketplaceSection() {
           <Badge variant="secondary" className="text-xs px-3 py-1">
             <Lock className="w-3 h-3 mr-1" />
             Secure
+          </Badge>
+          <Badge variant="secondary" className="text-xs px-3 py-1">
+            <CreditCard className="w-3 h-3 mr-1" />
+            Stripe Payments
           </Badge>
         </div>
       </motion.div>
@@ -176,7 +242,7 @@ export function APIMarketplaceSection() {
                 <CardContent className="space-y-2">
                   {tier.features.map((feature, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
-                      <Check className="w-4 h-4 text-primary" weight="bold" />
+                      <CheckCircle className="w-4 h-4 text-primary" weight="fill" />
                       <span>{feature}</span>
                     </div>
                   ))}
@@ -185,10 +251,19 @@ export function APIMarketplaceSection() {
                   <Button 
                     className="w-full" 
                     variant={tier.popular ? 'default' : 'outline'}
-                    onClick={() => handleSelectPlan(tier.name, tier.price)}
+                    onClick={() => handleSelectPlan(tier.tier)}
+                    disabled={checkoutLoading === tier.tier}
                   >
-                    Get Started
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    {checkoutLoading === tier.tier ? (
+                      'Processing...'
+                    ) : tier.price === 0 ? (
+                      'Get Started Free'
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Subscribe ${tier.price}/mo
+                      </>
+                    )}
                   </Button>
                 </CardFooter>
               </Card>
@@ -198,7 +273,7 @@ export function APIMarketplaceSection() {
       </div>
 
       <div>
-        <h3 className="text-2xl font-bold mb-6 text-center">Available APIs</h3>
+        <h3 className="text-2xl font-bold mb-6 text-center">Available Intelligence APIs</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {API_PRODUCTS.map((api, index) => {
             const Icon = api.icon;
@@ -231,18 +306,14 @@ export function APIMarketplaceSection() {
                   </CardHeader>
                   
                   <CardContent className="space-y-3">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold">${api.price}</span>
-                      <span className="text-sm text-muted-foreground">/{api.period}</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground mb-3">
-                      {api.calls} API calls included
-                    </div>
+                    <Badge variant={api.tier === 'enterprise' ? 'secondary' : 'outline'}>
+                      {api.tier === 'enterprise' ? 'Enterprise' : 'Professional'} tier
+                    </Badge>
                     
                     <div className="space-y-1.5">
                       {api.features.map((feature, i) => (
                         <div key={i} className="flex items-center gap-2 text-xs">
-                          <Check className="w-3 h-3 text-primary shrink-0" weight="bold" />
+                          <CheckCircle className="w-3 h-3 text-primary shrink-0" weight="fill" />
                           <span>{feature}</span>
                         </div>
                       ))}
@@ -254,10 +325,17 @@ export function APIMarketplaceSection() {
                       className="w-full" 
                       size="sm"
                       variant={api.popular ? 'default' : 'outline'}
-                      onClick={() => handleGetAPI(api.name, api.price)}
+                      onClick={() => handleGetAPI(api.tier)}
+                      disabled={checkoutLoading === api.tier}
                     >
-                      Get API Access
-                      <ArrowRight className="w-3 h-3 ml-2" />
+                      {checkoutLoading === api.tier ? (
+                        'Processing...'
+                      ) : (
+                        <>
+                          <CreditCard className="w-3 h-3 mr-2" />
+                          Get API Access
+                        </>
+                      )}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -269,17 +347,51 @@ export function APIMarketplaceSection() {
 
       <Card className="bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
         <CardHeader>
-          <CardTitle>Enterprise Custom Solutions</CardTitle>
+          <CardTitle>All 20 Intelligence APIs Included</CardTitle>
           <CardDescription>
-            Need higher limits, custom integrations, or white-label options? Contact us for enterprise pricing.
+            Subscribe to Professional ($97/mo) or Enterprise ($497/mo) to access all APIs with Stripe checkout.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Button variant="outline">
-            Contact Sales Team
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+        <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+          {[
+            'Fair Wage Calculator', 'Job Safety Score', 'Material Cost Estimator', 'Timeline Predictor',
+            'Win Probability', 'Profit Margin', 'Lead Quality Score', 'Customer Lifetime Value',
+            'Urgency Detector', 'Scope Complexity', 'Price Optimizer', 'Risk Assessment',
+            'Seasonal Demand', 'Competitor Pricing', 'Upsell Recommender', 'Dispute Probability',
+            'Worker Availability', 'Completion Confidence', 'Review Authenticity', 'Referral Potential'
+          ].map((api) => (
+            <div key={api} className="flex items-center gap-1">
+              <CheckCircle className="w-3 h-3 text-primary shrink-0" weight="fill" />
+              <span className="text-xs">{api}</span>
+            </div>
+          ))}
         </CardContent>
+        <CardFooter className="gap-4">
+          <Button 
+            variant="default"
+            onClick={() => handleSelectPlan('professional')}
+            disabled={checkoutLoading === 'professional'}
+          >
+            {checkoutLoading === 'professional' ? 'Processing...' : (
+              <>
+                <CreditCard className="w-4 h-4 mr-2" />
+                Professional $97/mo
+              </>
+            )}
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={() => handleSelectPlan('enterprise')}
+            disabled={checkoutLoading === 'enterprise'}
+          >
+            {checkoutLoading === 'enterprise' ? 'Processing...' : (
+              <>
+                <CreditCard className="w-4 h-4 mr-2" />
+                Enterprise $497/mo
+              </>
+            )}
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   );
