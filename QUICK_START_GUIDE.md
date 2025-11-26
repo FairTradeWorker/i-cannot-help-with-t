@@ -1,4 +1,10 @@
-# ServiceHub Intelligence API - Quick Start Guide
+# FairTradeWorker Intelligence API - Quick Start Guide
+
+> **Death of the Middleman. Birth of the Trade Infrastructure.**
+
+**Website**: FairTradeWorker.com  
+**Launch Date**: November 27, 2025  
+**Intelligence Platform Unlock**: May 27, 2026
 
 ## 🚀 What You Have Now
 
@@ -7,11 +13,12 @@ A **production-ready foundation** for a self-learning Intelligence API platform 
 ### ✅ Completed Features
 1. **Intelligence Database System** - Full CRUD for API keys, usage tracking, learning feedback
 2. **Learning Loop Infrastructure** - Every API call feeds the learning system
-3. **4 Working API Endpoints** - Job Scope, Instant Quote, Contractor Match, Demand Heatmap
-4. **User Dashboard** - API key management, usage metrics, documentation
-5. **Admin Dashboard** - Learning metrics, accuracy tracking, compounding visualization
-6. **Navigation Integration** - "Intelligence API" tab in main app
-7. **Type Safety** - Complete TypeScript definitions for all 50 endpoints
+3. **4 Working API Endpoints** - AI Scope, Instant Quote, Contractor Match, Demand Heatmap
+4. **34 Premium APIs** - Locked until May 27, 2026
+5. **User Dashboard** - API key management, usage metrics, documentation
+6. **Admin Dashboard** - Learning metrics, accuracy tracking, compounding visualization
+7. **Navigation Integration** - "Intelligence API" tab in main app
+8. **Type Safety** - Complete TypeScript definitions for all endpoints
 
 ### 🎯 Core Innovation: The Learning Loop
 
@@ -26,6 +33,14 @@ Save Feedback → Track Outcome → Improve Future Predictions
 ## 📊 How to Use
 
 ### For Users
+
+#### Understanding the Payment Model
+- **Homeowners**: Pay $20 one-time platform fee per job
+- **Contractors**: Pay $0 - keep 100% of earnings
+- **Territory Operators**: Pay $0 - build the network, don't pay into it
+- **First 10 Territories**: FREE
+- **Additional Territories**: $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
+- **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 
 #### 1. Generate an API Key
 ```
@@ -164,26 +179,41 @@ const metrics = await intelligenceDB.getGlobalLearningMetrics();
 
 ## 📈 API Tiers & Pricing
 
-### Free Tier
-- 100 API calls/month
-- Basic endpoints only
-- Community support
-- **Price**: $0
+### Available at Launch (4 APIs)
+| API | Price | Description |
+|-----|-------|-------------|
+| AI Scope API | $2,499/mo | ENTERPRISE - premium deterrent pricing |
+| Instant Quote API | $499/mo | Fast pricing estimates with confidence |
+| Contractor Match API | $299/mo | Match contractors to jobs |
+| Demand Heatmap API | $199/mo | Regional demand visualization |
 
-### Professional Tier
-- 10,000 API calls/month
-- All standard endpoints
-- Email support
-- Webhooks included
-- **Price**: $199/month
+### Locked Until May 27, 2026 (34 APIs)
+- Job Intelligence APIs (10)
+- Contractor Intelligence APIs (10)
+- Market Intelligence APIs (10)
+- Financial Intelligence APIs (4)
 
-### Enterprise Tier
-- Unlimited API calls
-- Capital Intelligence APIs
-- Priority support
-- Custom integrations
-- Dedicated account manager
-- **Price**: $1,299/month
+**Note**: 34 Premium Intelligence APIs unlock May 27, 2026 (6 months after launch)
+
+## 🎯 Territory Claiming for Operators
+
+### How It Works
+1. **Sign Up** as Territory Operator
+2. **First 10 Territories**: Completely FREE
+3. **Additional Territories**:
+   - #11: $500
+   - #12: $1,000
+   - #13: $1,500
+   - #14: $2,000
+   - #15+: $2,500 each
+4. **Operators pay $0 fees** - you BUILD the network, not pay into it
+5. **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
+
+### What You Get
+- Exclusive lead access in your territories
+- Contractor recruitment tools
+- Territory analytics
+- Zero recurring fees
 
 ## 🎨 UI Components Explained
 
@@ -294,23 +324,31 @@ await stripe.subscriptionItems.createUsageRecord(
 
 ## 🚀 Next Steps
 
-### Immediate (Next Session)
-1. ✅ Complete remaining 46 API endpoints
-2. ✅ Add Stripe billing integration
-3. ✅ Implement webhook system
-4. ✅ Generate OpenAPI spec
+### Immediate (Available at Launch - November 27, 2025)
+1. ✅ 4 Premium APIs live
+2. ✅ Territory claiming system
+3. ✅ Zero fees for contractors AND operators
+4. ✅ $20 homeowner platform fee
 
-### Short Term (This Week)
+### May 27, 2026 (6 Months After Launch)
+1. 🔒 34 Premium Intelligence APIs unlock
+2. 🔒 Capital Layer Portal
+3. 🔒 Enterprise Data Licensing
+4. 🔒 Advanced analytics features
+
+### Post-Launch Development
 1. Add batch processing for high-volume users
 2. Create API playground for testing
 3. Implement usage alerts (90% quota)
 4. Add response caching
+5. Launch mobile apps (iOS & Android)
 
-### Long Term (This Month)
+### Future Development
 1. Build SDKs (JavaScript, Python, Go)
 2. White-label solutions for enterprises
 3. Custom model training for large customers
 4. Real-time collaboration features
+5. International expansion
 
 ## 💡 Tips & Best Practices
 
@@ -349,9 +387,16 @@ You now have a production-ready foundation for an Intelligence API platform that
 - ✅ Learns from every API call
 - ✅ Improves accuracy over time
 - ✅ Tracks all metrics transparently
-- ✅ Scales with usage tiers
-- ✅ Monetizes through subscriptions
+- ✅ Premium priced APIs ($199-$2,499/mo)
+- ✅ Zero fees for contractors AND operators
+- ✅ 34 Premium APIs unlock May 2026
 
 The key is the **learning loop** - it creates a moat that compounds over time. The more it's used, the better it gets, the more valuable it becomes.
 
-**Build the remaining 46 endpoints and you'll have a complete, revenue-generating Intelligence API platform!**
+---
+
+**FairTradeWorker - Launching November 27, 2025**
+
+*Death of the Middleman. Birth of the Trade Infrastructure.*
+
+**Website**: FairTradeWorker.com
