@@ -267,7 +267,6 @@ export interface Territory {
   zipCodes: string[];
   operatorId: string;
   purchasePrice: number;
-  operatorRevenueShare: number;
   approvedContractors: string[];
   generalContractors: string[];
   subcontractors: string[];
@@ -278,7 +277,6 @@ export interface Territory {
     averageRating: number;
     totalRevenue: number;
     monthlyRevenue: number;
-    operatorEarnings: number;
   };
   purchasedAt: Date;
 }
@@ -287,7 +285,6 @@ export interface OperatorProfile {
   userId: string;
   territories: string[];
   totalInvestment: number;
-  monthlyEarnings: number;
   totalEarnings: number;
   approvedContractors: number;
 }
