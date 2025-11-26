@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Image as ImageIcon, Upload, X, ArrowLeft, Camera, Plus } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-
-  onJobCreated: (jobData: { title: string; des
-}
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -14,99 +14,100 @@ interface PhotoJobPostProps {
   onCancel: () => void;
 }
 
+export function PhotoJobPost({ onJobCreated, onCancel }: PhotoJobPostProps) {
+  const [title, setTitle] = useState('');
+  const [address, setAddress] = useState('');
+  const [description, setDescription] = useState('');
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileSelect = (files: FileList | null) => {
+    if (!files) return;
+
+    const newPhotos: string[] = [];
+    const filesArray = Array.from(files);
+
+    filesArray.forEach((file) => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
         reader.onload = (e) => {
-            newPhotos.push(e.target.resul
-              setPhotos((prev) => [...prev, ...newPho
+          if (e.target?.result) {
+            newPhotos.push(e.target.result as string);
+            if (newPhotos.length === filesArray.length) {
+              setPhotos((prev) => [...prev, ...newPhotos]);
             }
+          }
         };
+        reader.readAsDataURL(file);
       }
+    });
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    setIsDragging(true)
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
-    setIsDragging(false);
-
-
-    handleFileSelect(e.dataTransf
-
-    setPhotos((prev) => prev.filter((_, 
-        reader.onload = (e) => {
-  const handleSubmit = () => {
-      toast.error('Please enter a job title');
-    }
-      toast.error('Please enter a job description');
-    }
-            }
-    }
-        };
-
-      }
-      a
-    
-
-  const handleDragOver = (e: React.DragEvent) => {
-          <h2 className
-        </div>
-
-
-            <CardTitle className=
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
     setIsDragging(false);
   };
 
-              <Label htmlFor="title">Job Title
-                id="tit
-                value={ti
-              />
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFileSelect(e.dataTransfer.files);
+  };
 
-
-                id="address"
-                value={address}
-              />
-
+  const removePhoto = (index: number) => {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = () => {
-                rows={6}
+    if (!title.trim()) {
       toast.error('Please enter a job title');
-            <
+      return;
     }
-        <Card className="glass
+    if (!description.trim()) {
       toast.error('Please enter a job description');
-             
+      return;
     }
-          <CardContent classNa
-              className={`border-2 border-dashed round
-             
+    if (photos.length === 0) {
+      toast.error('Please upload at least one photo');
+      return;
     }
 
-            >
-    
+    onJobCreated({
+      title,
+      description,
+      photos,
+    });
+  };
 
-          
-               
-                id="photo-upload"
-              <Button
-                onClick={()
-     
-              </Button>
-
-              <div className="space-y-2">
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-6"
+    >
+      <div className="flex items-center gap-4 mb-6">
+        <Button variant="ghost" size="icon" onClick={onCancel}>
+          <ArrowLeft className="w-5 h-5" />
         </Button>
-             
-                        src={photo}
-                        className="w-full h-32 object-cover rounded-lg border-2 border-border"
+        <div>
+          <h2 className="text-2xl font-bold">Post a Job with Photos</h2>
+          <p className="text-muted-foreground">Upload images to help contractors understand your project</p>
         </div>
-            
+      </div>
 
-                    </div>
-                </div>
-            )}
-        </Card>
-
-        <CardContent classNam
-            <div>
-              <p className="text-sm text-muted-foreground">
-              </p>
-            <div className="flex gap-3">
+      <div className="space-y-6">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Job Details</CardTitle>
+            <CardDescription>Tell contractors about the work you need done</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Job Title</Label>
               <Input
@@ -216,15 +217,15 @@ interface PhotoJobPostProps {
             </div>
             <div className="flex gap-3">
               <Button variant="outline" onClick={onCancel}>
-
+                Cancel
               </Button>
               <Button size="lg" onClick={handleSubmit}>
                 Post Job
               </Button>
             </div>
-
+          </div>
         </CardContent>
-
+      </Card>
 
       <Card className="glass-card bg-muted/30">
         <CardContent className="pt-6">
@@ -232,18 +233,18 @@ interface PhotoJobPostProps {
             <div>
               <Badge variant="secondary" className="mb-2">Tip 1</Badge>
               <p className="text-sm text-muted-foreground">Include wide shots showing the entire area</p>
-
+            </div>
             <div>
               <Badge variant="secondary" className="mb-2">Tip 2</Badge>
               <p className="text-sm text-muted-foreground">Take close-ups of problem areas or damage</p>
-
-
-
-
-
-
-
-
-
-
-
+            </div>
+            <div>
+              <Badge variant="secondary" className="mb-2">Tip 3</Badge>
+              <p className="text-sm text-muted-foreground">Good lighting helps contractors assess accurately</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
