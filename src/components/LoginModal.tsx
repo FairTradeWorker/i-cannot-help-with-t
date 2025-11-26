@@ -72,32 +72,32 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
       console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
       setIsSubmitting(false);
     }
-  };  id: 'subcontractor' as const,
+  };
 
   const roles = [
-    { description: 'Browse location-based opportunities',
+    {
       id: 'homeowner' as const,
       label: 'Homeowner',
       icon: House,
       description: 'Post jobs and hire contractors',
       color: 'bg-primary',
     },
-    {enter justify-center">
+    {
       id: 'contractor' as const,
       label: 'Contractor',
       icon: Hammer,
       description: 'Find work and grow your business',
-      color: 'bg-accent',-center"
+      color: 'bg-accent',
     },
-          <motion.div
+    {
       id: 'subcontractor' as const,
       label: 'Subcontractor',
-      icon: HardHat,ing", stiffness: 200, damping: 15 }}
-      description: 'Browse location-based opportunities',justify-center mb-8 shadow-2xl"
+      icon: HardHat,
+      description: 'Browse location-based opportunities',
       color: 'bg-secondary',
-          
-  ]; <motion.h1
-l={{ opacity: 0, y: 20 }}
+    },
+  ];
+
   if (showSplash) {
     return (
       <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
@@ -115,22 +115,22 @@ l={{ opacity: 0, y: 20 }}
           >
             <House className="w-20 h-20 text-white" weight="fill" />
           </motion.div>
-           20 }}
-          <motion.h1: 0 }}
+          
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="text-5xl font-bold mb-3"
           >
-            ServiceHub'Get Started clicked, hiding splash');
+            ServiceHub
           </motion.h1>
           
-          <motion.p:scale-105 transition-transform"
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             className="text-xl text-muted-foreground mb-8"
-          >s text-muted-foreground mt-4">
+          >
             Connect. Build. Transform.
           </motion.p>
           
@@ -138,15 +138,31 @@ l={{ opacity: 0, y: 20 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-          >0.8 }}
-            <Buttonstify-center gap-8"
+          >
+            <Button
               size="lg"
               onClick={() => {
-                console.log('Get Started clicked, hiding splash');>
-                setShowSplash(false);t-muted-foreground">Users</div>
-              }}v>
+                console.log('Get Started clicked, hiding splash');
+                setShowSplash(false);
+              }}
               className="px-8 py-6 text-lg shadow-xl hover:scale-105 transition-transform"
             >
+              Get Started
+            </Button>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="flex items-center justify-center gap-8 mt-12"
+          >
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">15K+</div>
+              <div className="text-sm text-muted-foreground">Users</div>
+            </div>
+            <div className="h-12 w-px bg-border"></div>
+            <div className="text-center">
               <div className="text-2xl font-bold text-accent">3.5K+</div>
               <div className="text-sm text-muted-foreground">Contractors</div>
             </div>
