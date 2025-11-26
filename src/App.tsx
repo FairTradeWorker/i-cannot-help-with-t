@@ -68,6 +68,9 @@ import { PaymentScreen } from '@/components/PaymentScreen';
 import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { WarrantySection } from '@/components/WarrantySection';
+import { OnboardingTutorial, useOnboarding } from '@/components/OnboardingTutorial';
+import { CelebrationOverlay } from '@/components/SuccessAnimations';
+import { UsageBanner } from '@/components/UsageWarnings';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
@@ -87,6 +90,19 @@ function App() {
   const [showVideoCreator, setShowVideoCreator] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [showUsageBanner, setShowUsageBanner] = useState(true);
+  
+  // Onboarding tutorial state
+  const { 
+    isOnboardingOpen, 
+    completeOnboarding, 
+    closeOnboarding,
+    openOnboarding 
+  } = useOnboarding('ftw_onboarding_complete');
+  
+  // Demo API usage data (in production, this would come from the backend)
+  const [apiUsage] = useState({ used: 8500, limit: 10000 });
 
   const mockReferrals: Referral[] = [
     {
@@ -875,6 +891,41 @@ function App() {
             </div>
           </div>
         </motion.div>
+      )}
+
+      {/* Onboarding Tutorial for first-time users */}
+      <OnboardingTutorial
+        isOpen={isOnboardingOpen}
+        onClose={closeOnboarding}
+        onComplete={() => {
+          completeOnboarding();
+          setShowCelebration(true);
+          toast.success('Welcome aboard! You\'re all set to start using FairTradeWorker.');
+        }}
+      />
+
+      {/* Celebration overlay after completing onboarding */}
+      <CelebrationOverlay
+        show={showCelebration}
+        title="Welcome to FairTradeWorker!"
+        subtitle="You're ready to access 50+ Intelligence APIs"
+        onComplete={() => setShowCelebration(false)}
+        duration={3000}
+      />
+
+      {/* Usage banner for API quota warnings */}
+      {showUsageBanner && apiUsage.used / apiUsage.limit >= 0.8 && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <UsageBanner
+            used={apiUsage.used}
+            limit={apiUsage.limit}
+            onUpgrade={() => {
+              handleNavClick('intelligence');
+              setShowUsageBanner(false);
+            }}
+            onDismiss={() => setShowUsageBanner(false)}
+          />
+        </div>
       )}
     </div>
   );

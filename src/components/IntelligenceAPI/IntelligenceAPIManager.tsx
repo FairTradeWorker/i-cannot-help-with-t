@@ -18,6 +18,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { intelligenceDB } from '@/lib/intelligence-db';
 import { toast } from 'sonner';
 import { APIMarketplaceSection } from '@/components/APIMarketplaceSection';
+import { APIKeyInput } from '@/components/APIKeyInput';
+import { UsageWarnings, useUsageWarnings } from '@/components/UsageWarnings';
+import { RateLimitWarning } from '@/components/RateLimitMessaging';
+import { CardSkeleton, StatsSkeleton, Spinner, ButtonContent } from '@/components/LoadingStates';
+import { SuccessCheck, CelebrationOverlay } from '@/components/SuccessAnimations';
 import type { APIKey } from '@/types/intelligence-api';
 
 interface IntelligenceAPIManagerProps {
@@ -29,8 +34,31 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
   const [newKeyName, setNewKeyName] = useState('');
   const [newKeyTier, setNewKeyTier] = useState<'free' | 'professional' | 'enterprise'>('free');
   const [loading, setLoading] = useState(false);
+  const [keysLoading, setKeysLoading] = useState(true);
+  const [usageLoading, setUsageLoading] = useState(true);
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
   const [usageMetrics, setUsageMetrics] = useState<any>(null);
+  const [showKeyGeneratedSuccess, setShowKeyGeneratedSuccess] = useState(false);
+  const [regeneratingKeyId, setRegeneratingKeyId] = useState<string | null>(null);
+  
+  // Calculate total usage across all keys
+  const totalUsed = apiKeys.reduce((sum, key) => sum + key.callsUsed, 0);
+  const totalLimit = apiKeys.reduce((sum, key) => sum + key.callsLimit, 0);
+  
+  // Determine the highest tier among all keys (for display purposes)
+  const tierPriority = { free: 0, professional: 1, enterprise: 2 };
+  const highestTierKey = apiKeys.reduce((highest, key) => {
+    if (!highest) return key;
+    return tierPriority[key.tier] > tierPriority[highest.tier] ? key : highest;
+  }, apiKeys[0] as APIKey | undefined);
+  
+  // Find the earliest reset date across all keys
+  const earliestResetDate = apiKeys.length > 0 
+    ? new Date(Math.min(...apiKeys.map(k => new Date(k.resetDate).getTime())))
+    : undefined;
+  
+  // Usage warnings hook
+  const { dismissedThresholds, dismiss: dismissUsageWarning } = useUsageWarnings(totalUsed, totalLimit || 1);
 
   useEffect(() => {
     loadAPIKeys();
@@ -38,14 +66,24 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
   }, [userId]);
 
   const loadAPIKeys = async () => {
-    const allKeys = await window.spark.kv.get<APIKey[]>('intelligence-api-keys') || [];
-    const userKeys = allKeys.filter(k => k.userId === userId);
-    setApiKeys(userKeys);
+    setKeysLoading(true);
+    try {
+      const allKeys = await window.spark.kv.get<APIKey[]>('intelligence-api-keys') || [];
+      const userKeys = allKeys.filter(k => k.userId === userId);
+      setApiKeys(userKeys);
+    } finally {
+      setKeysLoading(false);
+    }
   };
 
   const loadUsageMetrics = async () => {
-    const metrics = await intelligenceDB.getUserUsageMetrics(userId);
-    setUsageMetrics(metrics);
+    setUsageLoading(true);
+    try {
+      const metrics = await intelligenceDB.getUserUsageMetrics(userId);
+      setUsageMetrics(metrics);
+    } finally {
+      setUsageLoading(false);
+    }
   };
 
   const generateNewKey = async () => {
@@ -59,14 +97,49 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
       const newKey = await intelligenceDB.generateAPIKey(userId, newKeyName, newKeyTier);
       setApiKeys([...apiKeys, newKey]);
       setNewKeyName('');
+      setShowKeyGeneratedSuccess(true);
       toast.success(`API key "${newKeyName}" generated successfully!`);
+      setTimeout(() => setShowKeyGeneratedSuccess(false), 2500);
     } catch (error) {
       toast.error('Failed to generate API key');
     } finally {
       setLoading(false);
     }
   };
+  
+  const regenerateKey = async (keyId: string) => {
+    setRegeneratingKeyId(keyId);
+    try {
+      // In production, this would call the backend API
+      // For now, simulate by generating a new key value
+      const updatedKeys = apiKeys.map(k => 
+        k.id === keyId 
+          ? { ...k, key: `sk_${k.tier}_${crypto.randomUUID().replace(/-/g, '')}` }
+          : k
+      );
+      setApiKeys(updatedKeys);
+      toast.success('API key regenerated successfully!');
+    } catch (error) {
+      toast.error('Failed to regenerate API key');
+    } finally {
+      setRegeneratingKeyId(null);
+    }
+  };
+  
+  const deleteKey = async (keyId: string) => {
+    try {
+      setApiKeys(apiKeys.filter(k => k.id !== keyId));
+      toast.success('API key deleted successfully');
+    } catch (error) {
+      toast.error('Failed to delete API key');
+    }
+  };
 
+  const handleUpgrade = () => {
+    // Navigate to pricing tab
+    toast.info('Redirecting to pricing...');
+  };
+  
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success('Copied to clipboard!');
@@ -134,9 +207,27 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
         </TabsContent>
 
         <TabsContent value="keys" className="space-y-6 mt-6">
+          {/* Usage Warnings at the top when approaching limits */}
+          {totalLimit > 0 && (
+            <UsageWarnings
+              used={totalUsed}
+              limit={totalLimit}
+              plan={highestTierKey?.tier 
+                ? highestTierKey.tier.charAt(0).toUpperCase() + highestTierKey.tier.slice(1) 
+                : 'Free'}
+              resetDate={earliestResetDate}
+              onUpgrade={handleUpgrade}
+              onDismiss={dismissUsageWarning}
+              dismissedThresholds={dismissedThresholds}
+            />
+          )}
+          
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Generate New API Key</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                Generate New API Key
+                {showKeyGeneratedSuccess && <SuccessCheck show={true} size="sm" />}
+              </CardTitle>
               <CardDescription>
                 Create a new API key to access our intelligence endpoints
               </CardDescription>
@@ -165,101 +256,118 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                 </Select>
               </div>
               <Button onClick={generateNewKey} disabled={loading} className="w-full">
-                <Key className="w-4 h-4 mr-2" />
-                Generate API Key
+                <ButtonContent loading={loading} loadingText="Generating...">
+                  <Key className="w-4 h-4 mr-2" />
+                  Generate API Key
+                </ButtonContent>
               </Button>
             </CardContent>
           </Card>
 
-          <div className="grid gap-4">
-            {apiKeys.map((key) => (
-              <motion.div
-                key={key.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                whileHover={{ y: -8 }}
-                transition={{ 
-                  duration: 0.11, 
-                  ease: [0.32, 0, 0.67, 0],
-                  y: { type: "spring", stiffness: 300, damping: 30 }
-                }}
-              >
-                <Card className="glass-card">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-lg">{key.name}</h3>
-                          <Badge className={getTierColor(key.tier)}>
-                            {key.tier.charAt(0).toUpperCase() + key.tier.slice(1)}
-                          </Badge>
-                          {key.status === 'active' && (
-                            <Badge variant="outline" className="border-green-500 text-green-600">
-                              <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
-                              Active
+          {keysLoading ? (
+            <CardSkeleton count={2} />
+          ) : (
+            <div className="grid gap-4">
+              {apiKeys.map((key) => (
+                <motion.div
+                  key={key.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -8 }}
+                  transition={{ 
+                    duration: 0.11, 
+                    ease: [0.32, 0, 0.67, 0],
+                    y: { type: "spring", stiffness: 300, damping: 30 }
+                  }}
+                >
+                  <Card className="glass-card">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold text-lg">{key.name}</h3>
+                            <Badge className={getTierColor(key.tier)}>
+                              {key.tier.charAt(0).toUpperCase() + key.tier.slice(1)}
                             </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 font-mono text-sm bg-muted px-3 py-2 rounded">
-                          <Lock className="w-4 h-4 text-muted-foreground" />
-                          <span className="flex-1">
-                            {showKeys[key.id] ? key.key : key.key.substring(0, 20) + '••••••••••••'}
-                          </span>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => toggleKeyVisibility(key.id)}
-                          >
-                            {showKeys[key.id] ? (
-                              <EyeSlash className="w-4 h-4" />
-                            ) : (
-                              <Eye className="w-4 h-4" />
+                            {key.status === 'active' && (
+                              <Badge variant="outline" className="border-green-500 text-green-600">
+                                <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
+                                Active
+                              </Badge>
                             )}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => copyToClipboard(key.key)}
-                          >
-                            <Copy className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground mb-1">Usage</p>
-                        <p className="font-semibold">
-                          {key.callsUsed.toLocaleString()} / {key.callsLimit.toLocaleString()}
-                        </p>
-                        <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-                          <div
-                            className="bg-primary h-1.5 rounded-full transition-all"
-                            style={{ width: `${(key.callsUsed / key.callsLimit) * 100}%` }}
+                          </div>
+                          
+                          {/* Use the new APIKeyInput component */}
+                          <APIKeyInput
+                            apiKey={key.key}
+                            onRegenerate={() => regenerateKey(key.id)}
+                            onDelete={() => deleteKey(key.id)}
+                            isLoading={regeneratingKeyId === key.id}
+                            createdAt={new Date(key.createdAt)}
+                            lastUsed={key.lastUsed ? new Date(key.lastUsed) : undefined}
                           />
                         </div>
                       </div>
-                      <div>
-                        <p className="text-muted-foreground mb-1">Resets</p>
-                        <p className="font-semibold">
-                          {new Date(key.resetDate).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground mb-1">Created</p>
-                        <p className="font-semibold">
-                          {new Date(key.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
 
-          {apiKeys.length === 0 && (
+                      <div className="grid grid-cols-3 gap-4 text-sm mt-4">
+                        <div>
+                          <p className="text-muted-foreground mb-1">Usage</p>
+                          <p className="font-semibold">
+                            {key.callsUsed.toLocaleString()} / {key.callsLimit.toLocaleString()}
+                          </p>
+                          <div className="w-full bg-muted rounded-full h-1.5 mt-2">
+                            <div
+                              className={`h-1.5 rounded-full transition-all ${
+                                (key.callsUsed / key.callsLimit) >= 0.9 
+                                  ? 'bg-orange-500' 
+                                  : (key.callsUsed / key.callsLimit) >= 0.8 
+                                    ? 'bg-yellow-500' 
+                                    : 'bg-primary'
+                              }`}
+                              style={{ width: `${(key.callsUsed / key.callsLimit) * 100}%` }}
+                            />
+                          </div>
+                          {(key.callsUsed / key.callsLimit) >= 0.8 && (
+                            <p className="text-xs text-orange-600 mt-1">
+                              {(key.callsUsed / key.callsLimit) >= 0.9 
+                                ? '⚠️ Almost at limit!' 
+                                : '⚠️ Approaching limit'}
+                            </p>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground mb-1">Resets</p>
+                          <p className="font-semibold">
+                            {new Date(key.resetDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground mb-1">Created</p>
+                          <p className="font-semibold">
+                            {new Date(key.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Rate limit warning for individual key */}
+                      {(key.callsUsed / key.callsLimit) >= 0.9 && (
+                        <div className="mt-4">
+                          <RateLimitWarning
+                            used={key.callsUsed}
+                            limit={key.callsLimit}
+                            resetDate={new Date(key.resetDate)}
+                            onUpgrade={handleUpgrade}
+                          />
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+
+          {!keysLoading && apiKeys.length === 0 && (
             <Card className="glass-card">
               <CardContent className="py-12 text-center">
                 <Key className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
@@ -277,36 +385,40 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
         </TabsContent>
 
         <TabsContent value="usage" className="space-y-6 mt-6">
-          <div className="grid grid-cols-4 gap-4">
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Total Calls</p>
-                <p className="text-3xl font-bold">{usageMetrics?.totalCalls.toLocaleString() || 0}</p>
-              </CardContent>
-            </Card>
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Avg Response Time</p>
-                <p className="text-3xl font-bold">{usageMetrics?.avgResponseTime.toFixed(0) || 0}ms</p>
-              </CardContent>
-            </Card>
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
-                <p className="text-3xl font-bold">
-                  {((1 - (usageMetrics?.errorRate || 0)) * 100).toFixed(1)}%
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Endpoints Used</p>
-                <p className="text-3xl font-bold">
-                  {Object.keys(usageMetrics?.callsByEndpoint || {}).length}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          {usageLoading ? (
+            <StatsSkeleton count={4} />
+          ) : (
+            <div className="grid grid-cols-4 gap-4">
+              <Card className="glass-card">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Total Calls</p>
+                  <p className="text-3xl font-bold">{usageMetrics?.totalCalls.toLocaleString() || 0}</p>
+                </CardContent>
+              </Card>
+              <Card className="glass-card">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Avg Response Time</p>
+                  <p className="text-3xl font-bold">{usageMetrics?.avgResponseTime.toFixed(0) || 0}ms</p>
+                </CardContent>
+              </Card>
+              <Card className="glass-card">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
+                  <p className="text-3xl font-bold">
+                    {((1 - (usageMetrics?.errorRate || 0)) * 100).toFixed(1)}%
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="glass-card">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Endpoints Used</p>
+                  <p className="text-3xl font-bold">
+                    {Object.keys(usageMetrics?.callsByEndpoint || {}).length}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           <Card className="glass-card">
             <CardHeader>
@@ -314,14 +426,25 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
               <CardDescription>Breakdown of your API calls across different endpoints</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {Object.entries(usageMetrics?.callsByEndpoint || {}).map(([endpoint, calls]: [string, any]) => (
-                  <div key={endpoint} className="flex items-center justify-between">
-                    <span className="font-mono text-sm">{endpoint}</span>
-                    <Badge variant="secondary">{calls} calls</Badge>
-                  </div>
-                ))}
-              </div>
+              {usageLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Spinner size="md" />
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {Object.entries(usageMetrics?.callsByEndpoint || {}).map(([endpoint, calls]: [string, any]) => (
+                    <div key={endpoint} className="flex items-center justify-between">
+                      <span className="font-mono text-sm">{endpoint}</span>
+                      <Badge variant="secondary">{calls} calls</Badge>
+                    </div>
+                  ))}
+                  {Object.keys(usageMetrics?.callsByEndpoint || {}).length === 0 && (
+                    <p className="text-center text-muted-foreground py-4">
+                      No API calls recorded yet. Start making requests to see your usage breakdown.
+                    </p>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
