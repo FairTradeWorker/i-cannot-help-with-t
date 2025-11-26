@@ -9,6 +9,29 @@ import "./main.css"
 import "./styles/theme.css"
 import "./index.css"
 
+// Handle SPA redirect from 404.html (GitHub Pages)
+// Validate path to prevent open redirect vulnerabilities
+const redirectPath = sessionStorage.getItem('redirect_path');
+if (redirectPath) {
+  sessionStorage.removeItem('redirect_path');
+  try {
+    // Decode and validate to catch encoded malicious characters
+    const decodedPath = decodeURIComponent(redirectPath);
+    // Only allow relative paths starting with / (not just /) and no protocol/external URLs
+    const isValidPath = decodedPath !== '/' &&
+      decodedPath.startsWith('/') && 
+      !decodedPath.includes('//') && 
+      !decodedPath.includes(':') &&
+      !/[<>"']/.test(decodedPath);
+    if (isValidPath) {
+      // Use original path to preserve legitimate URL encoding
+      window.history.replaceState(null, '', redirectPath);
+    }
+  } catch {
+    // If decoding fails, ignore the redirect path
+  }
+}
+
 createRoot(document.getElementById('root')!).render(
   <ErrorBoundary FallbackComponent={ErrorFallback}>
     <App />
