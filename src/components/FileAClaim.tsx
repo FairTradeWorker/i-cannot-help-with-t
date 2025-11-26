@@ -1,30 +1,23 @@
-// 1. Emotion in first 0.8s: Trust and clarity — "this is easy"
-// 3. This is flat, hard, no gradients — correct? YES.
-// 3. This is flat, hard, no gradients — correct? YES.
-// 4. Would a roofer screenshot and send with zero caption? YES — clean form, zero bullshit
-// 5. I explored 3 directions. This is the hardest one.
-// 6. THIS CODE IS BULLETPROOF. I DID NOT FUCK THIS UP.
-
 import { useState } from 'react';
-import { Input } from '@/components/ui/
+import { motion } from 'framer-motion';
 import { ShieldCheck, Upload, FileText, User, MapPin, Calendar, Phone } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 export function FileAClaim() {
-  });
+  const [formData, setFormData] = useState({
     claimantName: '',
-
     email: '',
-    toast.succes
+    phone: '',
     warrantyNumber: '',
-      phone: '',
+    jobAddress: '',
+    issueDate: '',
+    jobType: '',
     description: '',
-      warrantyNu
   });
 
   const [files, setFiles] = useState<File[]>([]);
@@ -32,15 +25,15 @@ export function FileAClaim() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast.success('Claim submitted successfully! We\'ll review within 24 hours.');
-  };
+    setFormData({
       claimantName: '',
-    <div classNa
       email: '',
-        animate={{
+      phone: '',
       warrantyNumber: '',
+      jobAddress: '',
       issueDate: '',
-      description: '',
       jobType: '',
+      description: '',
     });
     setFiles([]);
   };
@@ -48,7 +41,7 @@ export function FileAClaim() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFiles(Array.from(e.target.files));
-     
+    }
   };
 
   return (
@@ -62,11 +55,11 @@ export function FileAClaim() {
           <div className="p-3 bg-black rounded-lg">
             <ShieldCheck className="w-8 h-8 text-white" weight="fill" />
           </div>
-               
+          <div>
             <h1 className="text-3xl font-black uppercase tracking-tight">FILE A CLAIM</h1>
             <p className="text-muted-foreground">Submit your warranty claim in minutes</p>
           </div>
-
+        </div>
       </motion.div>
 
       <Card className="border-2 border-border p-8">
@@ -76,7 +69,7 @@ export function FileAClaim() {
               <Label htmlFor="claimantName" className="text-sm font-bold uppercase">
                 <User className="w-4 h-4 inline mr-2" />
                 Your Name
-            <div class
+              </Label>
               <Input
                 id="claimantName"
                 value={formData.claimantName}
@@ -92,11 +85,11 @@ export function FileAClaim() {
                 Phone Number
               </Label>
               <Input
-                className=
+                id="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                <Calenda
+                required
                 className="border-2 h-12"
               />
             </div>
@@ -106,11 +99,11 @@ export function FileAClaim() {
                 Email
               </Label>
               <Input
-                Job Type
+                id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placehol
+                required
                 className="border-2 h-12"
               />
             </div>
@@ -118,11 +111,11 @@ export function FileAClaim() {
             <div className="space-y-2">
               <Label htmlFor="warrantyNumber" className="text-sm font-bold uppercase">
                 <FileText className="w-4 h-4 inline mr-2" />
-              id="description"
+                Warranty Number
               </Label>
-              placeh
+              <Input
                 id="warrantyNumber"
-              className="border-2"
+                value={formData.warrantyNumber}
                 onChange={(e) => setFormData({ ...formData, warrantyNumber: e.target.value })}
                 required
                 className="border-2 h-12"
@@ -130,137 +123,91 @@ export function FileAClaim() {
             </div>
 
             <div className="space-y-2">
-                type="file"
+              <Label htmlFor="jobAddress" className="text-sm font-bold uppercase">
                 <MapPin className="w-4 h-4 inline mr-2" />
                 Job Address
               </Label>
-                  ))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              <Input
+                id="jobAddress"
+                value={formData.jobAddress}
+                onChange={(e) => setFormData({ ...formData, jobAddress: e.target.value })}
+                required
+                className="border-2 h-12"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="issueDate" className="text-sm font-bold uppercase">
+                <Calendar className="w-4 h-4 inline mr-2" />
+                Issue Date
+              </Label>
+              <Input
+                id="issueDate"
+                type="date"
+                value={formData.issueDate}
+                onChange={(e) => setFormData({ ...formData, issueDate: e.target.value })}
+                required
+                className="border-2 h-12"
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="jobType" className="text-sm font-bold uppercase">
+                Job Type
+              </Label>
+              <Input
+                id="jobType"
+                value={formData.jobType}
+                onChange={(e) => setFormData({ ...formData, jobType: e.target.value })}
+                placeholder="e.g., Roofing, HVAC, Plumbing"
+                required
+                className="border-2 h-12"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description" className="text-sm font-bold uppercase">
+              Description of Issue
+            </Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Please describe the issue in detail..."
+              required
+              className="border-2 min-h-32"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="files" className="text-sm font-bold uppercase">
+              <Upload className="w-4 h-4 inline mr-2" />
+              Upload Photos/Documents
+            </Label>
+            <Input
+              id="files"
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              className="border-2 h-12"
+            />
+            {files.length > 0 && (
+              <p className="text-sm text-muted-foreground">
+                {files.length} file(s) selected
+              </p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full bg-black hover:bg-black/90 text-white font-black uppercase h-14 text-base"
+          >
+            Submit Claim
+          </Button>
+        </form>
+      </Card>
+    </div>
+  );
+}
