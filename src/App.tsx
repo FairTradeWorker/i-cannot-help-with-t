@@ -221,7 +221,7 @@ function App() {
 
   const handleSignUp = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
     try {
-      console.log('Sign up attempt:', { email, role });
+      console.log('📝 Sign up attempt:', { email, role });
       const newUser: UserType = {
         id: 'user-' + Date.now(),
         role: role,
@@ -231,14 +231,21 @@ function App() {
       };
       
       await dataStore.saveUser(newUser);
-      console.log('New user saved:', newUser.id);
+      console.log('✅ New user saved:', newUser.id);
+      
       await dataStore.setCurrentUser(newUser);
-      console.log('Current user set:', newUser.id);
+      console.log('✅ Current user set in storage');
+      
       setCurrentUser(newUser);
+      console.log('✅ Current user set in state');
+      
       setShowLogin(false);
-      toast.success('Account created successfully!');
+      console.log('✅ Sign up modal closed');
+      
+      toast.success(`Welcome, ${newUser.name}!`);
+      console.log('✅ Sign up complete');
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error('❌ Sign up error:', error);
       toast.error('Failed to create account. Please try again.');
       throw error;
     }
