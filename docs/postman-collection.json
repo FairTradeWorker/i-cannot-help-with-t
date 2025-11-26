@@ -1,0 +1,487 @@
+{
+  "info": {
+    "name": "FairTradeWorker API",
+    "description": "Self-learning Intelligence APIs for Home Services\n\nAPI Documentation: https://docs.fairtradeworker.com\nSupport: support@fairtradeworker.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.fairtradeworker.com/v1",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "YOUR_API_KEY",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Quotes",
+      "item": [
+        {
+          "name": "Instant Quote",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobType\": \"roof_replacement\",\n  \"squareFootage\": 2500,\n  \"location\": {\n    \"zip\": \"78701\"\n  },\n  \"materialGrade\": \"standard\",\n  \"options\": {\n    \"includeWarranty\": true,\n    \"urgency\": \"normal\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/quotes/instant",
+              "host": ["{{base_url}}"],
+              "path": ["quotes", "instant"]
+            },
+            "description": "Generate an instant quote for a home service job."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"quote\": {\n    \"totalCost\": 12450,\n    \"breakdown\": {\n      \"labor\": 7200,\n      \"materials\": 4750,\n      \"permits\": 300,\n      \"warranty\": 200\n    },\n    \"timeline\": {\n      \"estimatedDays\": 3,\n      \"startAvailability\": \"2024-12-20\"\n    },\n    \"confidence\": 0.94\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Market Rates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pricing/market-rates?zip=78701&jobType=roof_replacement",
+              "host": ["{{base_url}}"],
+              "path": ["pricing", "market-rates"],
+              "query": [
+                {
+                  "key": "zip",
+                  "value": "78701"
+                },
+                {
+                  "key": "jobType",
+                  "value": "roof_replacement"
+                }
+              ]
+            },
+            "description": "Get current market rates for a location and job type."
+          }
+        },
+        {
+          "name": "Competitive Analysis",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobType\": \"hvac_installation\",\n  \"location\": {\n    \"zip\": \"78701\"\n  },\n  \"proposedPrice\": 8500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pricing/competitive-analysis",
+              "host": ["{{base_url}}"],
+              "path": ["pricing", "competitive-analysis"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Analyze Job",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"photo\",\n  \"url\": \"https://example.com/roof-damage.jpg\",\n  \"jobType\": \"roof_repair\",\n  \"location\": {\n    \"zip\": \"78701\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/analyze",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", "analyze"]
+            },
+            "description": "Analyze a job from photo, video, or description."
+          }
+        },
+        {
+          "name": "Generate Scope",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Replace 30-year-old shingles on 2500 sq ft roof\",\n  \"jobType\": \"roof_replacement\",\n  \"location\": {\n    \"zip\": \"78701\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/scope",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", "scope"]
+            }
+          }
+        },
+        {
+          "name": "Get Job",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "job_123"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contractors",
+      "item": [
+        {
+          "name": "Match Contractors",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobType\": \"electrical_work\",\n  \"location\": {\n    \"zip\": \"78701\",\n    \"radius\": 25\n  },\n  \"requirements\": [\"licensed\", \"insured\"],\n  \"urgency\": \"normal\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/contractors/match",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", "match"]
+            }
+          }
+        },
+        {
+          "name": "Contractor Availability",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/contractors/:contractorId/availability?date=2024-12-20",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":contractorId", "availability"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2024-12-20"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "contractorId",
+                  "value": "con_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Contractor Performance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/contractors/:contractorId/performance",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":contractorId", "performance"],
+              "variable": [
+                {
+                  "key": "contractorId",
+                  "value": "con_123"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Territory Intelligence",
+      "item": [
+        {
+          "name": "Demand Heatmap",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/territories/:territoryId/heatmap",
+              "host": ["{{base_url}}"],
+              "path": ["territories", ":territoryId", "heatmap"],
+              "variable": [
+                {
+                  "key": "territoryId",
+                  "value": "TX-78701"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Demand Forecast",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/territories/:territoryId/demand-forecast?days=30",
+              "host": ["{{base_url}}"],
+              "path": ["territories", ":territoryId", "demand-forecast"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "territoryId",
+                  "value": "TX-78701"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Optimize Route",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stops\": [\n    {\"address\": \"123 Main St, Austin, TX 78701\"},\n    {\"address\": \"456 Oak Ave, Austin, TX 78702\"},\n    {\"address\": \"789 Pine Rd, Austin, TX 78703\"}\n  ],\n  \"returnToStart\": true,\n  \"avoidTolls\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/routes/optimize",
+              "host": ["{{base_url}}"],
+              "path": ["routes", "optimize"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Market Intelligence",
+      "item": [
+        {
+          "name": "Market Trends",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/market/trends?region=TX&period=30d",
+              "host": ["{{base_url}}"],
+              "path": ["market", "trends"],
+              "query": [
+                {
+                  "key": "region",
+                  "value": "TX"
+                },
+                {
+                  "key": "period",
+                  "value": "30d"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pricing Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/market/pricing-analytics?jobType=roof_replacement&region=TX",
+              "host": ["{{base_url}}"],
+              "path": ["market", "pricing-analytics"],
+              "query": [
+                {
+                  "key": "jobType",
+                  "value": "roof_replacement"
+                },
+                {
+                  "key": "region",
+                  "value": "TX"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Capital Intelligence",
+      "item": [
+        {
+          "name": "Portfolio Valuation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companies\": [\"company_123\", \"company_456\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/capital/portfolio-valuation",
+              "host": ["{{base_url}}"],
+              "path": ["capital", "portfolio-valuation"]
+            },
+            "description": "Enterprise API - requires Enterprise plan"
+          }
+        },
+        {
+          "name": "Market Opportunity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/capital/market-opportunity?region=TX&category=roofing",
+              "host": ["{{base_url}}"],
+              "path": ["capital", "market-opportunity"],
+              "query": [
+                {
+                  "key": "region",
+                  "value": "TX"
+                },
+                {
+                  "key": "category",
+                  "value": "roofing"
+                }
+              ]
+            },
+            "description": "Enterprise API - requires Enterprise plan"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Register Webhook",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://your-app.com/webhook\",\n  \"events\": [\"job.completed\", \"quote.generated\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/webhooks",
+              "host": ["{{base_url}}"],
+              "path": ["webhooks"]
+            }
+          }
+        },
+        {
+          "name": "List Webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/webhooks",
+              "host": ["{{base_url}}"],
+              "path": ["webhooks"]
+            }
+          }
+        },
+        {
+          "name": "Delete Webhook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/webhooks/:webhookId",
+              "host": ["{{base_url}}"],
+              "path": ["webhooks", ":webhookId"],
+              "variable": [
+                {
+                  "key": "webhookId",
+                  "value": "wh_123"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usage",
+      "item": [
+        {
+          "name": "Get Usage",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/usage",
+              "host": ["{{base_url}}"],
+              "path": ["usage"]
+            },
+            "description": "Get current API usage statistics"
+          }
+        }
+      ]
+    }
+  ]
+}

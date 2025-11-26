@@ -1,0 +1,945 @@
+openapi: 3.1.0
+info:
+  title: FairTradeWorker Intelligence API
+  description: |
+    Self-learning Intelligence APIs for the home services industry.
+    
+    ## Overview
+    FairTradeWorker provides 50+ AI-powered endpoints that get smarter with every API call.
+    Our machine learning models analyze outcomes and continuously improve predictions.
+    
+    ## Authentication
+    All API requests require Bearer token authentication:
+    ```
+    Authorization: Bearer YOUR_API_KEY
+    ```
+    
+    ## Rate Limits
+    - Free: 100 calls/month
+    - Professional: 10,000 calls/month  
+    - Enterprise: Unlimited
+    
+    ## Support
+    - Email: support@fairtradeworker.com
+    - Docs: https://docs.fairtradeworker.com
+  version: 1.0.0
+  contact:
+    name: FairTradeWorker Support
+    email: support@fairtradeworker.com
+    url: https://fairtradeworker.com
+  license:
+    name: Proprietary
+    url: https://fairtradeworker.com/terms
+  x-logo:
+    url: https://fairtradeworker.com/logo.png
+    altText: FairTradeWorker
+
+servers:
+  - url: https://api.fairtradeworker.com/v1
+    description: Production
+  - url: https://sandbox.fairtradeworker.com/v1
+    description: Sandbox
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Quotes
+    description: Instant quote generation and pricing
+  - name: Jobs
+    description: Job analysis and scope generation
+  - name: Contractors
+    description: Contractor matching and management
+  - name: Territories
+    description: Territory intelligence and routing
+  - name: Market
+    description: Market intelligence and analytics
+  - name: Capital
+    description: Capital intelligence (Enterprise)
+  - name: Webhooks
+    description: Webhook management
+
+paths:
+  /quotes/instant:
+    post:
+      tags:
+        - Quotes
+      summary: Generate Instant Quote
+      description: Generate an instant, AI-powered quote for a home service job
+      operationId: generateInstantQuote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstantQuoteRequest'
+            example:
+              jobType: roof_replacement
+              squareFootage: 2500
+              location:
+                zip: "78701"
+              materialGrade: standard
+      responses:
+        '200':
+          description: Quote generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstantQuoteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /pricing/market-rates:
+    get:
+      tags:
+        - Quotes
+      summary: Get Market Rates
+      description: Get current market rates for a location and job type
+      operationId: getMarketRates
+      parameters:
+        - name: zip
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: jobType
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Market rates retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketRatesResponse'
+
+  /pricing/competitive-analysis:
+    post:
+      tags:
+        - Quotes
+      summary: Competitive Pricing Analysis
+      description: Analyze how your pricing compares to the market
+      operationId: analyzeCompetitivePricing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - jobType
+                - location
+                - proposedPrice
+              properties:
+                jobType:
+                  type: string
+                location:
+                  $ref: '#/components/schemas/Location'
+                proposedPrice:
+                  type: number
+      responses:
+        '200':
+          description: Analysis complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitiveAnalysisResponse'
+
+  /jobs/analyze:
+    post:
+      tags:
+        - Jobs
+      summary: Analyze Job
+      description: Analyze a job from photo, video, or text description
+      operationId: analyzeJob
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobAnalysisRequest'
+      responses:
+        '200':
+          description: Analysis complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAnalysisResponse'
+
+  /jobs/scope:
+    post:
+      tags:
+        - Jobs
+      summary: Generate Scope
+      description: Generate detailed scope from text description
+      operationId: generateScope
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScopeRequest'
+      responses:
+        '200':
+          description: Scope generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScopeResponse'
+
+  /jobs/{jobId}:
+    get:
+      tags:
+        - Jobs
+      summary: Get Job
+      description: Retrieve job details by ID
+      operationId: getJob
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /contractors/match:
+    post:
+      tags:
+        - Contractors
+      summary: Match Contractors
+      description: Find matching contractors for a job
+      operationId: matchContractors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractorMatchRequest'
+      responses:
+        '200':
+          description: Matches found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractorMatchResponse'
+
+  /contractors/{contractorId}/availability:
+    get:
+      tags:
+        - Contractors
+      summary: Check Availability
+      description: Check contractor availability for a date
+      operationId: checkAvailability
+      parameters:
+        - name: contractorId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Availability retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityResponse'
+
+  /territories/{territoryId}/heatmap:
+    get:
+      tags:
+        - Territories
+      summary: Get Demand Heatmap
+      description: Get demand heatmap for a territory
+      operationId: getDemandHeatmap
+      parameters:
+        - name: territoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Heatmap data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeatmapResponse'
+
+  /territories/{territoryId}/demand-forecast:
+    get:
+      tags:
+        - Territories
+      summary: Get Demand Forecast
+      description: Get demand forecast for a territory
+      operationId: getDemandForecast
+      parameters:
+        - name: territoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        '200':
+          description: Forecast data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForecastResponse'
+
+  /routes/optimize:
+    post:
+      tags:
+        - Territories
+      summary: Optimize Route
+      description: Optimize route between multiple stops
+      operationId: optimizeRoute
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouteOptimizeRequest'
+      responses:
+        '200':
+          description: Route optimized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteOptimizeResponse'
+
+  /market/trends:
+    get:
+      tags:
+        - Market
+      summary: Get Market Trends
+      description: Get market trends for a region
+      operationId: getMarketTrends
+      parameters:
+        - name: region
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            default: 30d
+      responses:
+        '200':
+          description: Trends data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrendsResponse'
+
+  /market/pricing-analytics:
+    get:
+      tags:
+        - Market
+      summary: Get Pricing Analytics
+      description: Get pricing analytics for a job type and region
+      operationId: getPricingAnalytics
+      parameters:
+        - name: jobType
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: region
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingAnalyticsResponse'
+
+  /capital/portfolio-valuation:
+    post:
+      tags:
+        - Capital
+      summary: Portfolio Valuation
+      description: Value a portfolio of home service companies (Enterprise only)
+      operationId: getPortfolioValuation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companies:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Valuation complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValuationResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /webhooks:
+    get:
+      tags:
+        - Webhooks
+      summary: List Webhooks
+      description: List all registered webhooks
+      operationId: listWebhooks
+      responses:
+        '200':
+          description: Webhooks list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhooks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+    post:
+      tags:
+        - Webhooks
+      summary: Register Webhook
+      description: Register a new webhook
+      operationId: registerWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRequest'
+      responses:
+        '201':
+          description: Webhook created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+
+  /usage:
+    get:
+      tags:
+        - Usage
+      summary: Get Usage
+      description: Get current API usage statistics
+      operationId: getUsage
+      responses:
+        '200':
+          description: Usage statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: API key authentication
+
+  schemas:
+    Location:
+      type: object
+      properties:
+        zip:
+          type: string
+        radius:
+          type: integer
+          description: Search radius in miles
+
+    InstantQuoteRequest:
+      type: object
+      required:
+        - jobType
+        - location
+      properties:
+        jobType:
+          type: string
+          enum: [roof_replacement, roof_repair, plumbing_repair, hvac_installation, electrical_work, painting, flooring, kitchen_remodel, bathroom_remodel, deck_construction]
+        squareFootage:
+          type: integer
+        location:
+          $ref: '#/components/schemas/Location'
+        materialGrade:
+          type: string
+          enum: [economy, standard, premium]
+        options:
+          type: object
+          properties:
+            includeWarranty:
+              type: boolean
+            urgency:
+              type: string
+              enum: [urgent, normal, flexible]
+
+    InstantQuoteResponse:
+      type: object
+      properties:
+        quote:
+          type: object
+          properties:
+            totalCost:
+              type: number
+            breakdown:
+              type: object
+              properties:
+                labor:
+                  type: number
+                materials:
+                  type: number
+                permits:
+                  type: number
+                warranty:
+                  type: number
+            timeline:
+              type: object
+              properties:
+                estimatedDays:
+                  type: integer
+                startAvailability:
+                  type: string
+                  format: date
+            confidence:
+              type: number
+              format: float
+
+    MarketRatesResponse:
+      type: object
+      properties:
+        rates:
+          type: object
+          properties:
+            laborRate:
+              type: number
+            materialMultiplier:
+              type: number
+            averageJobCost:
+              type: number
+            priceRange:
+              type: object
+              properties:
+                min:
+                  type: number
+                max:
+                  type: number
+
+    CompetitiveAnalysisResponse:
+      type: object
+      properties:
+        analysis:
+          type: object
+          properties:
+            marketPosition:
+              type: string
+              enum: [below_market, competitive, above_market]
+            recommendedRange:
+              type: object
+              properties:
+                min:
+                  type: number
+                max:
+                  type: number
+            winProbability:
+              type: number
+              format: float
+
+    JobAnalysisRequest:
+      type: object
+      required:
+        - type
+        - jobType
+        - location
+      properties:
+        type:
+          type: string
+          enum: [photo, video, description]
+        url:
+          type: string
+          format: uri
+        description:
+          type: string
+        jobType:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+
+    JobAnalysisResponse:
+      type: object
+      properties:
+        analysis:
+          type: object
+          properties:
+            scope:
+              type: object
+              properties:
+                summary:
+                  type: string
+                tasks:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      hours:
+                        type: number
+            materials:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  quantity:
+                    type: number
+                  unit:
+                    type: string
+            estimatedHours:
+              type: number
+            complexity:
+              type: string
+              enum: [simple, medium, complex]
+            confidence:
+              type: number
+              format: float
+
+    ScopeRequest:
+      type: object
+      required:
+        - description
+        - jobType
+        - location
+      properties:
+        description:
+          type: string
+        jobType:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+
+    ScopeResponse:
+      type: object
+      properties:
+        scope:
+          type: object
+          properties:
+            tasks:
+              type: array
+              items:
+                type: object
+            materials:
+              type: array
+              items:
+                type: object
+            estimatedHours:
+              type: number
+
+    Job:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        scope:
+          type: object
+        quote:
+          type: object
+
+    ContractorMatchRequest:
+      type: object
+      required:
+        - jobType
+        - location
+      properties:
+        jobType:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        requirements:
+          type: array
+          items:
+            type: string
+        urgency:
+          type: string
+          enum: [urgent, normal, flexible]
+
+    ContractorMatchResponse:
+      type: object
+      properties:
+        matches:
+          type: array
+          items:
+            type: object
+            properties:
+              contractor:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  rating:
+                    type: number
+                  reviewCount:
+                    type: integer
+                  yearsExperience:
+                    type: integer
+              matchScore:
+                type: number
+                format: float
+              availability:
+                type: string
+                format: date
+              distance:
+                type: number
+
+    AvailabilityResponse:
+      type: object
+      properties:
+        available:
+          type: boolean
+        nextAvailable:
+          type: string
+          format: date
+
+    HeatmapResponse:
+      type: object
+      properties:
+        heatmap:
+          type: object
+          properties:
+            cells:
+              type: array
+              items:
+                type: object
+                properties:
+                  area:
+                    type: string
+                  demand:
+                    type: number
+                  coordinates:
+                    type: object
+
+    ForecastResponse:
+      type: object
+      properties:
+        forecast:
+          type: object
+          properties:
+            predictions:
+              type: array
+              items:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    format: date
+                  demand:
+                    type: number
+
+    RouteOptimizeRequest:
+      type: object
+      required:
+        - stops
+      properties:
+        stops:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                type: string
+        returnToStart:
+          type: boolean
+          default: true
+        avoidTolls:
+          type: boolean
+          default: false
+
+    RouteOptimizeResponse:
+      type: object
+      properties:
+        route:
+          type: object
+          properties:
+            optimizedOrder:
+              type: array
+              items:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  arrivalTime:
+                    type: string
+            totalDistance:
+              type: number
+            totalDuration:
+              type: number
+            estimatedCost:
+              type: number
+
+    TrendsResponse:
+      type: object
+      properties:
+        trends:
+          type: object
+
+    PricingAnalyticsResponse:
+      type: object
+      properties:
+        analytics:
+          type: object
+          properties:
+            averagePrice:
+              type: number
+            priceRange:
+              type: object
+            trends:
+              type: object
+
+    ValuationResponse:
+      type: object
+      properties:
+        valuation:
+          type: object
+
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    WebhookRequest:
+      type: object
+      required:
+        - url
+        - events
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+            enum: [job.created, job.completed, quote.generated, contractor.matched, payment.completed]
+
+    UsageResponse:
+      type: object
+      properties:
+        used:
+          type: integer
+        limit:
+          type: integer
+        plan:
+          type: string
+        resetDate:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden - Enterprise plan required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          schema:
+            type: integer

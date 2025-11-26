@@ -1,0 +1,25 @@
+{
+  "name": "fairtradeworker-tests",
+  "version": "1.0.0",
+  "description": "Test suite for FairTradeWorker Intelligence APIs",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:e2e": "playwright test",
+    "test:load": "k6 run load/load-test.js",
+    "test:load:smoke": "k6 run --vus 10 --duration 30s load/load-test.js",
+    "test:load:stress": "k6 run --vus 1000 --duration 5m load/load-test.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.14.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
