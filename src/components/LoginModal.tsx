@@ -39,28 +39,38 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
-    
-    console.log('🚀 Form submitted:', { email, role: selectedRole, isLogin });
-    
-    if (!email || !password) {
-      console.error('❌ Missing email or password');
+    if (isSubmitting) {
+      console.log('⚠️ Already submitting, ignoring duplicate submit');
       return;
     }
     
+    console.log('🚀🚀🚀 === FORM SUBMIT START ===');
+    console.log('   Email:', email);
+    console.log('   Role:', selectedRole);
+    console.log('   Is Login:', isLogin);
+    
+    if (!email || !password) {
+      console.error('❌ Missing credentials');
+      return;
+    }
+    
+    console.log('🔒 Setting isSubmitting = true');
     setIsSubmitting(true);
+    
     try {
       if (isLogin) {
-        console.log('📞 Calling onLogin...');
+        console.log('📞 Calling onLogin handler...');
         await onLogin(email, password, selectedRole);
-        console.log('✅ onLogin completed');
+        console.log('✅✅ onLogin completed successfully');
       } else {
-        console.log('📞 Calling onSignUp...');
+        console.log('📞 Calling onSignUp handler...');
         await onSignUp(email, password, selectedRole);
-        console.log('✅ onSignUp completed');
+        console.log('✅✅ onSignUp completed successfully');
       }
+      console.log('🎉🎉🎉 === FORM SUBMIT SUCCESS ===');
     } catch (error) {
-      console.error('❌ Form submission error:', error);
+      console.error('❌❌❌ Form submission error:', error);
+      console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
       setIsSubmitting(false);
     }
   };
@@ -400,20 +410,38 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                     className="w-full border-2 border-primary/50 hover:bg-primary/5"
                     disabled={isSubmitting}
                     onClick={async () => {
-                      console.log('Demo login clicked');
+                      if (isSubmitting) {
+                        console.log('⚠️ Already submitting, ignoring duplicate click');
+                        return;
+                      }
+                      
+                      console.log('🎮🎮🎮 === DEMO LOGIN START ===');
+                      console.log('   Selected Role:', selectedRole);
+                      
                       const testEmail = 'test@demo.com';
                       const testPassword = 'password';
+                      
+                      console.log('📝 Setting email and password in form...');
                       setEmail(testEmail);
                       setPassword(testPassword);
+                      
+                      console.log('🔒 Setting isSubmitting = true');
                       setIsSubmitting(true);
+                      
                       try {
                         if (isLogin) {
+                          console.log('📞 Calling onLogin...');
                           await onLogin(testEmail, testPassword, selectedRole);
+                          console.log('✅✅ Demo login completed');
                         } else {
+                          console.log('📞 Calling onSignUp...');
                           await onSignUp(testEmail, testPassword, selectedRole);
+                          console.log('✅✅ Demo signup completed');
                         }
+                        console.log('🎉🎉🎉 === DEMO LOGIN SUCCESS ===');
                       } catch (error) {
-                        console.error('Demo login error:', error);
+                        console.error('❌❌❌ Demo login error:', error);
+                        console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
                         setIsSubmitting(false);
                       }
                     }}

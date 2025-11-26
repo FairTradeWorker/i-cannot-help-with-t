@@ -168,39 +168,51 @@ function App() {
   }, [loading, showLogin, currentUser]);
 
   const initialize = async () => {
+    console.log('🚀🚀🚀 === INITIALIZATION START ===');
+    
     try {
-      console.log('🚀 Initializing app...');
-      
+      console.log('📦 Initializing demo data...');
       await initializeDemoData();
       console.log('✅ Demo data initialized');
       
+      console.log('👤 Fetching current user from KV store...');
       const user = await dataStore.getCurrentUser();
-      console.log('👤 Current user from storage:', user ? `${user.id} (${user.role})` : 'none');
       
       if (!user) {
-        console.log('ℹ️ No user found, showing login screen');
+        console.log('⚠️ No user found in storage');
+        console.log('🚪 Setting showLogin = true');
         setShowLogin(true);
         setCurrentUser(null);
       } else {
-        console.log('✅ User found, setting current user');
+        console.log('✅✅ User found in storage!');
+        console.log('   User ID:', user.id);
+        console.log('   User Role:', user.role);
+        console.log('   User Email:', user.email);
+        console.log('🔄 Setting currentUser in state...');
         setCurrentUser(user);
+        console.log('🚪 Setting showLogin = false');
         setShowLogin(false);
+        console.log('✅✅✅ User loaded successfully!');
       }
     } catch (error) {
-      console.error('❌ Initialization error:', error);
+      console.error('❌❌❌ Initialization error:', error);
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
       setShowLogin(true);
       setCurrentUser(null);
     } finally {
-      console.log('✅ Initialization complete, loading = false');
+      console.log('🏁 Setting loading = false');
       setLoading(false);
+      console.log('🏁🏁🏁 === INITIALIZATION COMPLETE ===');
     }
   };
 
   const handleLogin = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
+    console.log('🔐 handleLogin called:', { email, role });
+    
     try {
-      console.log('🔐 Login attempt:', { email, role });
       const users = await dataStore.getUsers();
-      console.log('👥 Found users:', users.length);
+      console.log('👥 Total users in storage:', users.length);
+      
       let user = users.find(u => u.email === email);
       
       if (!user) {
@@ -213,34 +225,38 @@ function App() {
           createdAt: new Date(),
         };
         await dataStore.saveUser(user);
-        console.log('✅ New user saved:', user.id);
+        console.log('✅ New user created and saved:', user.id);
       } else {
-        console.log('✅ User found:', user.id, user.role);
+        console.log('✅ Existing user found:', user.id, user.role);
       }
       
+      console.log('💾 Setting current user in KV store...');
       await dataStore.setCurrentUser(user);
-      console.log('✅ Current user set in storage');
+      console.log('✅ Current user saved to KV store');
       
+      console.log('🔄 Setting current user in React state...');
       setCurrentUser(user);
-      console.log('✅ Current user set in state');
+      console.log('✅ React state updated with user:', user.id);
       
+      console.log('🚪 Closing login modal...');
       setShowLogin(false);
       console.log('✅ Login modal closed');
       
-      toast.success(`Welcome back, ${user.name}!`);
-      console.log('✅ Login complete');
+      console.log('🎉 Showing success toast...');
+      toast.success(`Welcome, ${user.name}!`);
+      console.log('✅✅✅ Login flow complete!');
       
-      return Promise.resolve();
     } catch (error) {
-      console.error('❌ Login error:', error);
+      console.error('❌❌❌ Login error:', error);
       toast.error('Failed to sign in. Please try again.');
-      return Promise.reject(error);
+      throw error;
     }
   };
 
   const handleSignUp = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
+    console.log('📝 handleSignUp called:', { email, role });
+    
     try {
-      console.log('📝 Sign up attempt:', { email, role });
       const newUser: UserType = {
         id: 'user-' + Date.now(),
         role: role,
@@ -249,26 +265,30 @@ function App() {
         createdAt: new Date(),
       };
       
+      console.log('💾 Saving new user...');
       await dataStore.saveUser(newUser);
       console.log('✅ New user saved:', newUser.id);
       
+      console.log('💾 Setting current user in KV store...');
       await dataStore.setCurrentUser(newUser);
-      console.log('✅ Current user set in storage');
+      console.log('✅ Current user saved to KV store');
       
+      console.log('🔄 Setting current user in React state...');
       setCurrentUser(newUser);
-      console.log('✅ Current user set in state');
+      console.log('✅ React state updated with user:', newUser.id);
       
+      console.log('🚪 Closing login modal...');
       setShowLogin(false);
       console.log('✅ Sign up modal closed');
       
+      console.log('🎉 Showing success toast...');
       toast.success(`Welcome, ${newUser.name}!`);
-      console.log('✅ Sign up complete');
+      console.log('✅✅✅ Sign up flow complete!');
       
-      return Promise.resolve();
     } catch (error) {
-      console.error('❌ Sign up error:', error);
+      console.error('❌❌❌ Sign up error:', error);
       toast.error('Failed to create account. Please try again.');
-      return Promise.reject(error);
+      throw error;
     }
   };
 
@@ -295,6 +315,7 @@ function App() {
   };
 
   if (loading) {
+    console.log('🔄 RENDERING: Loading screen');
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <motion.div
@@ -318,6 +339,7 @@ function App() {
   }
 
   if (showLogin || !currentUser) {
+    console.log('🚪 RENDERING: Login modal (showLogin:', showLogin, ', currentUser:', currentUser ? 'exists' : 'null', ')');
     return (
       <LoginModal
         onLogin={handleLogin}
@@ -326,17 +348,32 @@ function App() {
     );
   }
 
+  console.log('✅ RENDERING: Main app (user:', currentUser?.id, ')');
   return (
     <div className="min-h-screen flex flex-col">
       <Toaster position="top-right" richColors />
       
       {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 left-4 z-[100] bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-xs">
-          <div className="font-bold mb-1">Debug Info:</div>
-          <div>Loading: {loading ? '✅' : '❌'}</div>
-          <div>Show Login: {showLogin ? '✅' : '❌'}</div>
-          <div>Current User: {currentUser ? `${currentUser.id} (${currentUser.role})` : 'null'}</div>
-          <div>Active Tab: {activeTab}</div>
+        <div className="fixed bottom-4 left-4 z-[100] bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-sm">
+          <div className="font-bold mb-2 text-green-400">🐛 Debug Panel</div>
+          <div className="space-y-1">
+            <div>Loading: <span className={loading ? 'text-yellow-400' : 'text-green-400'}>{loading ? '✅ TRUE' : '❌ FALSE'}</span></div>
+            <div>Show Login: <span className={showLogin ? 'text-yellow-400' : 'text-green-400'}>{showLogin ? '✅ TRUE' : '❌ FALSE'}</span></div>
+            <div>Current User: {currentUser ? (
+              <span className="text-green-400">✅ {currentUser.id} ({currentUser.role})</span>
+            ) : (
+              <span className="text-red-400">❌ NULL</span>
+            )}</div>
+            <div>Active Tab: <span className="text-blue-400">{activeTab}</span></div>
+            <div className="pt-2 border-t border-white/20 mt-2">
+              <div className="text-yellow-400 font-bold mb-1">Expected:</div>
+              <div className="text-xs text-white/70">
+                {loading && "Should show loading screen"}
+                {!loading && showLogin && "Should show login modal"}
+                {!loading && !showLogin && currentUser && "Should show main app"}
+              </div>
+            </div>
+          </div>
         </div>
       )}
       
