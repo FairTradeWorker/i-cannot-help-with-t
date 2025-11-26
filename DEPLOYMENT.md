@@ -134,7 +134,7 @@ GitHub Pages is a free hosting option that works well for static sites.
 ### Prerequisites
 
 1. Your repository must be public (or you need GitHub Pro for private repos)
-2. Install gh-pages: `npm install gh-pages --save-dev` (already included)
+2. The `gh-pages` package is already included in devDependencies
 
 ### Deploy Using npm Script
 
