@@ -572,7 +572,7 @@ export function PaymentScreen({
               </Card>
             </>
           )}
-        </div>
+          </div>
 
         <div className="space-y-6">
           <Card className="glass-card p-6 sticky top-24">
