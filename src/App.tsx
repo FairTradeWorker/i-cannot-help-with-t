@@ -68,13 +68,14 @@ import { PaymentScreen } from '@/components/PaymentScreen';
 import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { WarrantySection } from '@/components/WarrantySection';
+import { FileAClaim } from '@/components/FileAClaim';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'browse-jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral' | 'payment' | 'warranty';
-type SubTab = 'overview' | 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings' | 'my-jobs' | 'post-job' | 'profile';
+type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment';
+type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -258,218 +259,131 @@ function App() {
       >
         <div className="w-full px-4">
           <div className="flex items-center justify-between h-16 py-2 max-w-[1920px] mx-auto gap-4">
-            <nav className="flex items-center gap-2">
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+            <nav className="flex items-center gap-1.5">
+              <Button
+                variant={activeTab === 'home' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('home')}
+                className="button-interactive"
+                size="sm"
               >
-                <Button
-                  variant={activeTab === 'home' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('home')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <House className="w-4 h-4 mr-1.5" weight={activeTab === 'home' ? 'fill' : 'regular'} />
-                  Home
-                </Button>
-              </motion.div>
+                Home
+              </Button>
 
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              <Button
+                variant={activeTab === 'territories' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('territories', 'overview')}
+                className="button-interactive"
+                size="sm"
               >
-                <Button
-                  variant={activeTab === 'territories' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('territories', 'overview')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <MapTrifold className="w-4 h-4 mr-1.5" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
-                  Territories
-                </Button>
-              </motion.div>
+                Territories
+              </Button>
 
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              <Button
+                variant={activeTab === 'jobs' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('jobs')}
+                className="button-interactive"
+                size="sm"
               >
-                <Button
-                  variant={activeTab === 'browse-jobs' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('browse-jobs')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <Briefcase className="w-4 h-4 mr-1.5" weight={activeTab === 'browse-jobs' ? 'fill' : 'regular'} />
-                  Jobs
-                </Button>
-              </motion.div>
+                Jobs
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  <Button
+                    variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
+                    className="button-interactive"
+                    size="sm"
                   >
-                    <Button
-                      variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
-                      className="button-interactive"
-                      size="sm"
-                    >
-                      <House className="w-4 h-4 mr-1.5" weight={activeTab === 'homeowner' ? 'fill' : 'regular'} />
-                      Homeowner
-                      <CaretDown className="w-3 h-3 ml-1" />
-                    </Button>
-                  </motion.div>
+                    Homeowner
+                    <CaretDown className="w-3 h-3 ml-1" />
+                  </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="glass-card border-border/50">
+                <DropdownMenuContent className="border-2 border-black">
                   <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'profile')}>
-                    <UserCircle className="w-4 h-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'my-jobs')}>
-                    <Package className="w-4 h-4 mr-2" />
                     Job Status
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('homeowner', 'post-job')}>
-                    <Briefcase className="w-4 h-4 mr-2" />
                     Post a Job
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                    className="button-interactive"
+                    size="sm"
+                  >
+                    Contractor
+                    <CaretDown className="w-3 h-3 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="border-2 border-black">
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'my-jobs')}>
+                    My Estimates
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
+                    Route Planner
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </nav>
 
-            <motion.div
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              className="absolute left-1/2 -translate-x-1/2"
+            <Button
+              size="lg"
+              onClick={() => handleNavClick('homeowner', 'post-job')}
+              className="absolute left-1/2 -translate-x-1/2 bg-black hover:bg-black/90 text-white shadow-lg font-black uppercase px-8 h-12 border-2 border-black"
             >
+              <Plus className="w-5 h-5 mr-2" weight="bold" />
+              Post a Job
+            </Button>
+
+            <nav className="flex items-center gap-1.5">
               <Button
-                size="lg"
-                onClick={() => handleNavClick('homeowner', 'post-job')}
-                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg font-bold px-8"
+                variant={activeTab === 'api' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('api')}
+                className="button-interactive"
+                size="sm"
               >
-                <Plus className="w-5 h-5 mr-2" weight="bold" />
-                Post a Job
+                API
               </Button>
-            </motion.div>
 
-            <nav className="flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-                  >
-                    <Button
-                      variant={activeTab === 'contractor' ? 'default' : 'ghost'}
-                      className="button-interactive"
-                      size="sm"
-                    >
-                      <Hammer className="w-4 h-4 mr-1.5" weight={activeTab === 'contractor' ? 'fill' : 'regular'} />
-                      Contractor
-                      <CaretDown className="w-3 h-3 ml-1" />
-                    </Button>
-                  </motion.div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
-                    <Briefcase className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'jobs')}>
-                    <Package className="w-4 h-4 mr-2" />
-                    My Jobs
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Route Planner
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+              <Button
+                variant={activeTab === 'partners' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('partners')}
+                className="button-interactive"
+                size="sm"
               >
-                <Button
-                  variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('intelligence')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <Lightning className="w-4 h-4 mr-1.5" weight={activeTab === 'intelligence' ? 'fill' : 'regular'} />
-                  API
-                </Button>
-              </motion.div>
+                Partners
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  <Button
+                    variant={activeTab === 'warranty' ? 'default' : 'ghost'}
+                    className="button-interactive"
+                    size="sm"
                   >
-                    <Button
-                      variant={activeTab === 'partners' ? 'default' : 'ghost'}
-                      className="button-interactive"
-                      size="sm"
-                    >
-                      <Handshake className="w-4 h-4 mr-1.5" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
-                      Partners
-                      <CaretDown className="w-3 h-3 ml-1" />
-                    </Button>
-                  </motion.div>
+                    Warranty
+                    <CaretDown className="w-3 h-3 ml-1" />
+                  </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="glass-card border-border/50">
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', undefined)}>
-                    <Briefcase className="w-4 h-4 mr-2" />
-                    Overview
+                <DropdownMenuContent className="border-2 border-black">
+                  <DropdownMenuItem onClick={() => handleNavClick('warranty', undefined)}>
+                    Coverage
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'materials')}>
-                    <Package className="w-4 h-4 mr-2" />
-                    Materials Vendors
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'insurance')}>
-                    <Shield className="w-4 h-4 mr-2" />
-                    Insurance
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'ai')}>
-                    <Brain className="w-4 h-4 mr-2" />
-                    Technology
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
-                    <Bank className="w-4 h-4 mr-2" />
-                    Private Equity
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'real_estate')}>
-                    <Buildings className="w-4 h-4 mr-2" />
-                    Real Estate
+                  <DropdownMenuItem onClick={() => handleNavClick('warranty', 'file-claim')}>
+                    File a Claim
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              >
-                <Button
-                  variant={activeTab === 'warranty' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('warranty')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <ShieldCheck className="w-4 h-4 mr-1.5" weight={activeTab === 'warranty' ? 'fill' : 'regular'} />
-                  Warranty
-                </Button>
-              </motion.div>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -667,7 +581,7 @@ function App() {
                           </div>
                         </Card>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('browse-jobs')}>
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('jobs')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-accent">
                               <Briefcase className="w-7 h-7 text-white" weight="fill" />
@@ -704,7 +618,7 @@ function App() {
                           </div>
                         </Card>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('intelligence')}>
+                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('api')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-primary">
                               <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
@@ -804,7 +718,7 @@ function App() {
                       </Card>
                     </div>
                   )}
-                  {activeTab === 'browse-jobs' && <JobBrowser />}
+                  {activeTab === 'jobs' && <JobBrowser />}
                   {activeTab === 'homeowner' && currentUser && <HomeownerDashboard user={currentUser} activeSubTab={activeSubTab} />}
                   {activeTab === 'territories' && activeSubTab === 'overview' && (
                     <TerritoriesOverview 
@@ -815,19 +729,11 @@ function App() {
                   )}
                   {activeTab === 'territories' && activeSubTab !== 'overview' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
-                  {activeTab === 'subcontractor' && activeSubTab === 'browse' && <LocationJobBrowser userId={currentUser?.id} />}
-                  {activeTab === 'subcontractor' && activeSubTab !== 'browse' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
-                  {activeTab === 'intelligence' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
+                  {activeTab === 'api' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
                   {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
-                  {activeTab === 'referral' && (
-                    <ReferralSystem 
-                      userId={currentUser?.id || ''} 
-                      referrals={mockReferrals}
-                      activeView={activeSubTab === 'my_referrals' ? 'referrals' : 'program'}
-                    />
-                  )}
-                  {activeTab === 'warranty' && <WarrantySection />}
+                  {activeTab === 'warranty' && activeSubTab === 'file-claim' && <FileAClaim />}
+                  {activeTab === 'warranty' && activeSubTab !== 'file-claim' && <WarrantySection />}
                 </>
               )}
             </motion.div>
