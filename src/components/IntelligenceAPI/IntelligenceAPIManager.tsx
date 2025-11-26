@@ -344,13 +344,31 @@ const STRIPE_CONFIG = {
   },
 };
 
+// Stripe webhook event types
+interface StripeSubscriptionItem {
+  price?: { id?: string };
+}
+
+interface StripeSubscription {
+  client_reference_id?: string;
+  items?: { data?: StripeSubscriptionItem[] };
+}
+
+interface StripeWebhookEvent {
+  type: string;
+  data: { object: StripeSubscription };
+}
+
 // Redirect to Stripe Checkout
 async function redirectToStripeCheckout(tier: 'professional' | 'enterprise', userId: string) {
   const config = STRIPE_CONFIG[tier];
   
+  // Properly encode URL parameters
+  const encodedUserId = encodeURIComponent(userId);
+  
   // In production, this would call your backend to create a Stripe Checkout session
-  // For now, we'll simulate the redirect with a mock URL
-  const checkoutUrl = `https://checkout.stripe.com/c/pay/${config.priceId}?client_reference_id=${userId}&prefilled_email=user@example.com`;
+  // The backend would handle email collection during checkout
+  const checkoutUrl = `https://checkout.stripe.com/c/pay/${config.priceId}?client_reference_id=${encodedUserId}`;
   
   toast.success(`Redirecting to Stripe Checkout for ${config.name} ($${config.price}/mo)...`);
   
@@ -361,16 +379,25 @@ async function redirectToStripeCheckout(tier: 'professional' | 'enterprise', use
 }
 
 // Handle Stripe webhook for subscription.created
-export async function handleStripeWebhook(event: { type: string; data: { object: any } }) {
+export async function handleStripeWebhook(event: StripeWebhookEvent): Promise<{ success: boolean; apiKey?: APIKey; message?: string }> {
   if (event.type === 'subscription.created') {
     const subscription = event.data.object;
     const userId = subscription.client_reference_id;
     const priceId = subscription.items?.data?.[0]?.price?.id;
     
-    // Determine tier from price ID
-    let tier: 'professional' | 'enterprise' = 'professional';
+    // Validate required fields
+    if (!userId) {
+      return { success: false, message: 'Missing client_reference_id in subscription' };
+    }
+    
+    // Determine tier from price ID with proper validation
+    let tier: 'professional' | 'enterprise';
     if (priceId === STRIPE_CONFIG.enterprise.priceId) {
       tier = 'enterprise';
+    } else if (priceId === STRIPE_CONFIG.professional.priceId) {
+      tier = 'professional';
+    } else {
+      return { success: false, message: `Unknown price ID: ${priceId}` };
     }
     
     // Generate API key for the new subscription
@@ -389,7 +416,7 @@ export async function handleStripeWebhook(event: { type: string; data: { object:
   return { success: false, message: 'Unhandled event type' };
 }
 
-function PricingPlans() {
+function PricingPlans({ userId }: { userId: string }) {
   const plans = [
     {
       name: 'Starter',
@@ -452,7 +479,7 @@ function PricingPlans() {
     
     setCheckoutLoading(tier);
     try {
-      await redirectToStripeCheckout(tier, 'user_' + Date.now());
+      await redirectToStripeCheckout(tier, userId);
     } finally {
       setCheckoutLoading(null);
     }
