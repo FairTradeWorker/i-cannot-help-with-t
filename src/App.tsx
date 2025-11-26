@@ -229,7 +229,7 @@ function App() {
             />
           </div>
           <div className="loading-bar mb-3" />
-          <p className="text-sm text-muted-foreground font-medium">Loading ServiceHub...</p>
+          <p className="text-sm text-muted-foreground font-medium">Loading FairTradeWorker...</p>
         </motion.div>
       </div>
     );
@@ -264,23 +264,27 @@ function App() {
                 Home
               </Button>
 
-              <Button
-                variant={activeTab === 'territories' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('territories', 'overview')}
-                className="button-interactive"
-                size="sm"
-              >
-                Territories
-              </Button>
+              {currentUser?.role !== 'homeowner' && (
+                <Button
+                  variant={activeTab === 'territories' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('territories', 'overview')}
+                  className="button-interactive"
+                  size="sm"
+                >
+                  Territories
+                </Button>
+              )}
 
-              <Button
-                variant={activeTab === 'jobs' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('jobs')}
-                className="button-interactive"
-                size="sm"
-              >
-                Jobs
-              </Button>
+              {currentUser?.role !== 'homeowner' && (
+                <Button
+                  variant={activeTab === 'jobs' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('jobs')}
+                  className="button-interactive"
+                  size="sm"
+                >
+                  Jobs
+                </Button>
+              )}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -583,62 +587,82 @@ function App() {
                   {activeTab === 'notifications' && <NotificationsPage />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all" onClick={handleCreateJob}>
-                        <div className="flex items-center justify-between">
+                      <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all relative overflow-hidden group" onClick={handleCreateJob}>
+                        <motion.div 
+                          className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5"
+                          animate={{
+                            x: ['-100%', '100%'],
+                          }}
+                          transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "linear"
+                          }}
+                        />
+                        <div className="flex items-center justify-between relative z-10">
                           <div className="flex items-center gap-4">
-                            <div className="p-4 rounded-xl bg-primary">
+                            <motion.div 
+                              className="p-4 rounded-xl bg-primary"
+                              whileHover={{ scale: 1.05, rotate: 5 }}
+                              transition={{ type: "spring", stiffness: 300 }}
+                            >
                               <Plus className="w-8 h-8 text-white" weight="bold" />
-                            </div>
+                            </motion.div>
                             <div>
                               <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
                               <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
                             </div>
                           </div>
-                          <Button size="lg">
+                          <Button size="lg" className="group-hover:scale-105 transition-transform">
                             Get Started
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                           </Button>
                         </div>
                       </Card>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-primary">
-                              <MapTrifold className="w-7 h-7 text-white" weight="fill" />
+                        {currentUser?.role !== 'homeowner' && (
+                          <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-primary">
+                                <MapTrifold className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Available</p>
+                                <p className="text-2xl font-bold">850+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Available</p>
-                              <p className="text-2xl font-bold">850+</p>
+                            <p className="text-sm font-semibold mb-1">Territories</p>
+                            <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              <Badge variant="outline" className="text-[10px]">CA</Badge>
+                              <Badge variant="outline" className="text-[10px]">TX</Badge>
+                              <Badge variant="outline" className="text-[10px]">FL</Badge>
+                              <Badge variant="outline" className="text-[10px]">+47 states</Badge>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">Territories</p>
-                          <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            <Badge variant="outline" className="text-[10px]">CA</Badge>
-                            <Badge variant="outline" className="text-[10px]">TX</Badge>
-                            <Badge variant="outline" className="text-[10px]">FL</Badge>
-                            <Badge variant="outline" className="text-[10px]">+47 states</Badge>
-                          </div>
-                        </Card>
+                          </Card>
+                        )}
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('jobs')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-accent">
-                              <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                        {currentUser?.role !== 'homeowner' && (
+                          <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('jobs')}>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-accent">
+                                <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Active</p>
+                                <p className="text-2xl font-bold">2.8K+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Active</p>
-                              <p className="text-2xl font-bold">2.8K+</p>
+                            <p className="text-sm font-semibold mb-1">Jobs Available</p>
+                            <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
+                              <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
+                              <Badge variant="secondary" className="text-[10px]">+12</Badge>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">Jobs Available</p>
-                          <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
-                            <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
-                            <Badge variant="secondary" className="text-[10px]">+12</Badge>
-                          </div>
-                        </Card>
+                          </Card>
+                        )}
 
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('contractor', 'dashboard')}>
                           <div className="flex items-center gap-4 mb-3">

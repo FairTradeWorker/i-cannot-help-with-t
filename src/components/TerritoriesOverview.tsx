@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface Territory {
   id: string;
@@ -55,6 +56,12 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
     setClaimedTerritories((current) => {
       if (current?.includes(stateCode)) {
         return current.filter(s => s !== stateCode);
+      }
+      if (current && current.length >= 1) {
+        toast.error('Territory Limit Reached', {
+          description: 'You can only own one territory. Please release your current territory before claiming a new one.',
+        });
+        return current;
       }
       return [...(current || []), stateCode];
     });

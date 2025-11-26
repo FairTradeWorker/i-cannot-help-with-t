@@ -1,4 +1,4 @@
-# Home Services Marketplace with Self-Learning Vision System
+# FairTradeWorker - Home Services Marketplace with Self-Learning Vision System
 
 A revolutionary 3-tier marketplace platform where homeowners upload 60-second videos of home repairs, platform analyzes and estimates jobs with precision, and three types of workers collaborate: Operators (territory investors earning 8%), General Contractors (project managers), and Subcontractors (specialists). The system learns from every completed job, improving from 82% accuracy to 99.9%+ over 10,000 jobs.
 
@@ -10,9 +10,22 @@ A revolutionary 3-tier marketplace platform where homeowners upload 60-second vi
 **Complexity Level**: Complex Application (advanced vision analysis, self-learning system, 3-tier marketplace)
 - Video-to-job creation with frame extraction and analysis
 - Self-learning system that tracks predictions vs. reality and improves accuracy over time
-- 3-tier worker system: Operators (passive investors), General Contractors (project managers), Subcontractors (specialists)
+- 3-tier worker system: Operators (passive investors), General Contractors (project managers), and Subcontractors (specialists)
 - Territory ownership with 8% revenue share for operators - First 10 territories FREE, then $500 each
 - Worker-friendly: $0 fees for all contractors, operators fund the platform
+
+## Business Rules
+
+### Territory Ownership
+- **One Territory Per User**: Contractors, Subcontractors, and Homeowners can only hold ONE territory maximum
+- **Territory Assignment**: Each user profile can have a single `territoryId` assigned to their contractor profile
+- **Purchase Restrictions**: System enforces one-territory limit during territory claiming process
+
+### Role-Based Access Control
+- **Homeowners**: Cannot see Territories tab or Job Browser (they post jobs, not browse them)
+- **Contractors & Subcontractors**: Can see and access both Territories tab and Job Browser
+- **Navigation Visibility**: Top navigation conditionally renders based on user role
+- **Home Page Cards**: Territory and Job cards only visible to contractor/subcontractor roles
 
 ## Essential Features
 

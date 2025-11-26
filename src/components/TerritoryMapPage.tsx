@@ -59,12 +59,27 @@ export function TerritoryMapPage() {
   });
 
   const handleClaimTerritory = (territory: TerritoryZip) => {
+    if (claimedTerritories && claimedTerritories.length >= 1) {
+      toast.error('Territory Limit Reached', {
+        description: 'You can only own one territory. Please release your current territory before claiming a new one.',
+      });
+      return;
+    }
     setSelectedTerritory(territory);
     setShowClaimDialog(true);
   };
 
   const confirmClaim = () => {
     if (selectedTerritory) {
+      if (claimedTerritories && claimedTerritories.length >= 1) {
+        toast.error('Territory Limit Reached', {
+          description: 'You can only own one territory. Please release your current territory before claiming a new one.',
+        });
+        setShowClaimDialog(false);
+        setSelectedTerritory(null);
+        return;
+      }
+
       setClaimedTerritories(current => [...(current || []), selectedTerritory.zip]);
       
       toast.success('Territory Claimed!', {
