@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Upload, X, Camera, VideoCamera, FileText, MapPin, CalendarBlank, Plus } from '@phosphor-icons/react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { ArrowLeft, Upload, X, Camera, VideoCamera } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,19 +9,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 interface UnifiedJobPostProps {
   onJobCreated: (jobData: any) => void;
   onCancel: () => void;
-  defaultTab?: 'text' | 'photo' | 'video';
 }
 
-export function UnifiedJobPost({ onJobCreated, onCancel, defaultTab = 'text' }: UnifiedJobPostProps) {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) {
+  const [activeTab, setActiveTab] = useState<'photo' | 'video' | 'text'>('photo');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
-  const [address, setAddress] = useState('');
   const [timeline, setTimeline] = useState('');
   const [budget, setBudget] = useState('');
   const [photos, setPhotos] = useState<string[]>([]);
@@ -102,7 +100,7 @@ export function UnifiedJobPost({ onJobCreated, onCancel, defaultTab = 'text' }: 
       return;
     }
     if (!category) {
-      toast.error('Please select a job category');
+      toast.error('Please select a category');
       return;
     }
     if (!timeline) {
@@ -120,9 +118,8 @@ export function UnifiedJobPost({ onJobCreated, onCancel, defaultTab = 'text' }: 
       category,
       timeline,
       budget,
-      address,
       photos: activeTab === 'photo' ? photos : [],
-      type: activeTab,
+      createdAt: new Date(),
     });
   };
 
@@ -130,55 +127,152 @@ export function UnifiedJobPost({ onJobCreated, onCancel, defaultTab = 'text' }: 
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      exit={{ opacity: 0, y: -20 }}
       className="space-y-6"
     >
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={onCancel}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h2 className="text-2xl font-bold">Post a Job</h2>
-          <p className="text-muted-foreground">Choose your preferred method and provide job details</p>
+          <h1 className="text-3xl font-bold">Post a New Job</h1>
+          <p className="text-muted-foreground">Get estimates from qualified contractors</p>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as any)} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
-          <TabsTrigger value="text" className="gap-2">
-            <FileText className="w-4 h-4" />
-            Text Description
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="photo">
+            <Camera className="w-4 h-4 mr-2" />
+            Photos
           </TabsTrigger>
-          <TabsTrigger value="photo" className="gap-2">
-            <Camera className="w-4 h-4" />
-            With Photos
+          <TabsTrigger value="video">
+            <VideoCamera className="w-4 h-4 mr-2" />
+            Video
           </TabsTrigger>
-          <TabsTrigger value="video" className="gap-2">
-            <VideoCamera className="w-4 h-4" />
-            Video (Coming Soon)
+          <TabsTrigger value="text">
+            Text Only
           </TabsTrigger>
         </TabsList>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
+            <TabsContent value="photo" className="mt-0">
+              <Card className="glass-card">
+                <CardHeader>
+                  <h3 className="text-xl font-bold">Upload Photos</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Add photos of the area or issue that needs work
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                      isDragging
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border hover:border-primary/50'
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
+                    <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Drag and drop photos here, or click to browse
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleFileSelect(e.target.files)}
+                      className="hidden"
+                      id="photo-upload"
+                    />
+                    <Button variant="outline" asChild>
+                      <label htmlFor="photo-upload" className="cursor-pointer">
+                        Choose Files
+                      </label>
+                    </Button>
+                  </div>
+                  {photos.length > 0 && (
+                    <div className="mt-4">
+                      <Label>Uploaded Photos ({photos.length})</Label>
+                      <div className="grid grid-cols-3 gap-3 mt-2">
+                        {photos.map((photo, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={photo}
+                              alt={`Upload ${index + 1}`}
+                              className="w-full h-24 object-cover rounded-lg"
+                            />
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6"
+                              onClick={() => removePhoto(index)}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="video" className="mt-0">
+              <Card className="glass-card">
+                <CardContent className="p-8 text-center">
+                  <VideoCamera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-bold mb-2">Video Walkthrough</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Record a quick video walkthrough of your project
+                  </p>
+                  <Badge variant="secondary">Coming Soon</Badge>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="text" className="mt-0">
+              <Card className="glass-card">
+                <CardContent className="p-8">
+                  <p className="text-sm text-muted-foreground">
+                    Describe your project in detail below
+                  </p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <Card className="glass-card">
               <CardHeader>
-                <CardTitle>Job Information</CardTitle>
-                <CardDescription>Provide details about the work you need done</CardDescription>
+                <h3 className="text-xl font-bold">Job Details</h3>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
+                <div>
                   <Label htmlFor="title">Job Title *</Label>
                   <Input
                     id="title"
-                    placeholder="e.g., Kitchen Renovation, Roof Repair, Install New AC Unit"
+                    placeholder="e.g., Roof Repair Needed"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                <div>
+                  <Label htmlFor="description">Description *</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Describe what work you need done..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={4}
+                  />
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
                     <Label htmlFor="category">Category *</Label>
                     <Select value={category} onValueChange={setCategory}>
                       <SelectTrigger id="category">
@@ -194,16 +288,16 @@ export function UnifiedJobPost({ onJobCreated, onCancel, defaultTab = 'text' }: 
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
+                  <div>
                     <Label htmlFor="timeline">Timeline *</Label>
                     <Select value={timeline} onValueChange={setTimeline}>
                       <SelectTrigger id="timeline">
-                        <SelectValue placeholder="When do you need this?" />
+                        <SelectValue placeholder="Select timeline" />
                       </SelectTrigger>
                       <SelectContent>
-                        {timelines.map((t) => (
-                          <SelectItem key={t} value={t}>
-                            {t}
+                        {timelines.map((time) => (
+                          <SelectItem key={time} value={time}>
+                            {time}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -211,175 +305,67 @@ export function UnifiedJobPost({ onJobCreated, onCancel, defaultTab = 'text' }: 
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="description">Detailed Description *</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Describe the work needed, any specific requirements, materials, access considerations, etc."
-                    rows={8}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    The more detail you provide, the more accurate the estimates will be
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="address">Property Address *</Label>
-                  <Input
-                    id="address"
-                    placeholder="Enter your address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="budget">Budget Range (Optional)</Label>
+                <div>
+                  <Label htmlFor="budget">Budget (Optional)</Label>
                   <Input
                     id="budget"
-                    placeholder="e.g., $500 - $1,000"
+                    type="text"
+                    placeholder="e.g., $5,000 - $8,000"
                     value={budget}
                     onChange={(e) => setBudget(e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Providing a budget range helps contractors submit relevant bids
-                  </p>
                 </div>
               </CardContent>
             </Card>
-
-            <TabsContent value="photo" className="mt-0">
-              <Card className="glass-card">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Camera className="w-6 h-6 text-primary" weight="fill" />
-                    Upload Photos
-                  </CardTitle>
-                  <CardDescription>Add images showing the work area</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div
-                    className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all ${
-                      isDragging
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-primary hover:bg-muted/50'
-                    }`}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                  >
-                    <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" weight="duotone" />
-                    <h4 className="font-semibold mb-2">Drop photos here</h4>
-                    <p className="text-sm text-muted-foreground mb-4">or click to browse</p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={(e) => handleFileSelect(e.target.files)}
-                      className="hidden"
-                      id="photo-upload"
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => document.getElementById('photo-upload')?.click()}
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Select Photos
-                    </Button>
-                  </div>
-
-                  {photos.length > 0 && (
-                    <div className="space-y-2">
-                      <Label>Uploaded Photos ({photos.length})</Label>
-                      <div className="grid grid-cols-3 gap-3">
-                        {photos.map((photo, index) => (
-                          <div key={index} className="relative group">
-                            <img
-                              src={photo}
-                              alt={`Upload ${index + 1}`}
-                              className="w-full h-32 object-cover rounded-lg border-2 border-border"
-                            />
-                            <button
-                              onClick={() => removePhoto(index)}
-                              className="absolute top-2 right-2 p-1 rounded-full bg-destructive text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="video" className="mt-0">
-              <Card className="glass-card border-2 border-primary/20">
-                <CardContent className="pt-6 text-center py-12">
-                  <VideoCamera className="w-16 h-16 mx-auto mb-4 text-primary" weight="duotone" />
-                  <h3 className="text-xl font-bold mb-2">Video Job Posts Coming Soon</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Record a quick video walkthrough of your project for the most accurate estimates
-                  </p>
-                  <Badge variant="secondary">Under Development</Badge>
-                </CardContent>
-              </Card>
-            </TabsContent>
           </div>
 
           <div className="space-y-6">
             <Card className="glass-card">
               <CardHeader>
-                <CardTitle>What Happens Next?</CardTitle>
+                <h3 className="text-lg font-bold">How it Works</h3>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                     1
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm mb-1">Post Your Job</h4>
+                    <p className="font-semibold text-sm">Post Your Job</p>
                     <p className="text-xs text-muted-foreground">
-                      Your job will be visible to contractors in your area
+                      Describe your project with photos or video
                     </p>
                   </div>
                 </div>
-
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                     2
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm mb-1">Receive Estimates</h4>
+                    <p className="font-semibold text-sm">Get Estimates</p>
                     <p className="text-xs text-muted-foreground">
-                      Get multiple bids within 24-48 hours
+                      Receive competitive bids from contractors
                     </p>
                   </div>
                 </div>
-
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                     3
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm mb-1">Compare & Choose</h4>
+                    <p className="font-semibold text-sm">Compare & Choose</p>
                     <p className="text-xs text-muted-foreground">
-                      Review profiles, ratings, and prices
+                      Review profiles and select the best contractor
                     </p>
                   </div>
                 </div>
-
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                     4
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm mb-1">Get Work Done</h4>
+                    <p className="font-semibold text-sm">Complete Project</p>
                     <p className="text-xs text-muted-foreground">
-                      Work begins once you accept a bid
+                      Work begins and payment is released upon completion
                     </p>
                   </div>
                 </div>
@@ -387,45 +373,47 @@ export function UnifiedJobPost({ onJobCreated, onCancel, defaultTab = 'text' }: 
             </Card>
 
             {activeTab === 'photo' && (
-              <Card className="glass-card bg-muted/30">
-                <CardContent className="pt-6">
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Camera className="w-5 h-5 text-primary" weight="fill" />
+              <Card className="glass-card">
+                <CardHeader>
+                  <h4 className="font-bold flex items-center gap-2">
+                    <Camera className="w-5 h-5" />
                     Photo Tips
                   </h4>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-xs text-muted-foreground space-y-2">
                     <li>• Include wide shots showing the entire area</li>
-                    <li>• Take close-ups of problem areas or damage</li>
-                    <li>• Good lighting helps contractors assess accurately</li>
-                    <li>• Multiple angles provide better context</li>
+                    <li>• Good lighting helps contractors assess the work</li>
+                    <li>• Capture multiple angles of the problem</li>
+                    <li>• Include close-ups of specific issues</li>
                   </ul>
                 </CardContent>
               </Card>
             )}
           </div>
         </div>
-      </Tabs>
 
-      <Card className="glass-card border-2 border-primary/20">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold mb-1">Ready to post?</h3>
-              <p className="text-sm text-muted-foreground">
-                Your job will be sent to qualified contractors in your area
-              </p>
+        <Card className="glass-card border-2 border-primary/20 mt-6">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold mb-1">Ready to Post?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Your job will be visible to contractors in your area
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={onCancel}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSubmit} size="lg">
+                  Post Job
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={onCancel}>
-                Cancel
-              </Button>
-              <Button size="lg" onClick={handleSubmit}>
-                Post Job
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </Tabs>
     </motion.div>
   );
 }
