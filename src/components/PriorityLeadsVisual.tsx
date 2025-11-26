@@ -1,23 +1,23 @@
 import { motion } from 'framer-motion';
-import { MapPin, TrendUp, Lightning, Users, Crosshair, CheckCircle } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
-interface PriorityLeadsVisualProps {
   onExplore: () => void;
-}
 
-export function PriorityLeadsVisual({ onExplore }: PriorityLeadsVisualProps) {
   const hotZones = [
-    { id: 1, x: 15, y: 30, intensity: 95, label: 'Austin, TX', jobs: 142 },
-    { id: 2, x: 45, y: 25, intensity: 88, label: 'Dallas, TX', jobs: 128 },
-    { id: 3, x: 75, y: 35, intensity: 92, label: 'Houston, TX', jobs: 156 },
-    { id: 4, x: 30, y: 60, intensity: 78, label: 'San Antonio, TX', jobs: 94 },
-    { id: 5, x: 60, y: 70, intensity: 85, label: 'Phoenix, AZ', jobs: 118 },
-  ];
+    { id: 2, x: 45, y: 2
+ 
 
   return (
-    <Card className="glass-card p-8 border-2 border-primary/20 cursor-pointer hover:border-primary transition-all" onClick={onExplore}>
+      <div className
+          <div>
+              <Lightning className="w-4 h-4 mr-2" weight="fill" />
+            </Badge>
+            <p className="text-muted-foreground text-lg">
+            </p>
+
+
+          
+                animate={{ scale: 1, opacity: 1 }}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <div>
@@ -38,49 +38,49 @@ export function PriorityLeadsVisual({ onExplore }: PriorityLeadsVisualProps) {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: idx * 0.15, duration: 0.4 }}
-                className="absolute"
-                style={{
-                  left: `${zone.x}%`,
-                  top: `${zone.y}%`,
-                  transform: 'translate(-50%, -50%)',
-                }}
-              >
+
+                  animat
+                    opacity: [0.4, 0,
+                  transition={{
+                    repeat: Infinity,
+                  
+               
                 <motion.div
                   animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.6, 0.8, 0.6],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: idx * 0.3,
-                  }}
-                  className="absolute inset-0 rounded-full bg-accent blur-xl"
-                  style={{
-                    width: `${zone.intensity}px`,
-                    height: `${zone.intensity}px`,
-                  }}
-                />
-                
-                <div className="relative z-10">
-                  <div className="bg-card border-2 border-primary rounded-lg shadow-lg p-3 min-w-[140px]">
-                    <div className="flex items-center gap-2 mb-1">
-                      <MapPin className="w-4 h-4 text-primary" weight="fill" />
-                      <span className="text-xs font-bold">{zone.label}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-accent">{zone.jobs}</span>
-                      <span className="text-xs text-muted-foreground">active leads</span>
-                    </div>
-                    <div className="flex items-center gap-1 mt-1">
-                      <TrendUp className="w-3 h-3 text-secondary" weight="bold" />
-                      <span className="text-[10px] text-secondary font-semibold">+{zone.intensity}%</span>
+                <div className="w-2 h-2
+              </div>
+              <div c
+          </div>
+          <div className="grid g
+              <div className="text-2x
+            </div>
+              <div c
+            </div>
+              <div classNa
+            </div>
+        </div>
+        <div classNa
+            <h4 cl
+            {[
+              { icon: Lightning, label: 'Demand
+              { icon: TrendUp, label: 'Growth Analytics', desc: 'Track territory performance metrics' },
+              const Icon = benefit.icon;
+                <div key={benefit.label} className="flex items-start gap-3 p-3 
+                    <Icon className="w-4 h-4 text-primary" weight="bold" />
+                  <div>
+                      {benefit.label}
                     </div>
                   </div>
-                </div>
+              );
+          </div>
+      </div>
+  );
 
-                <motion.div
-                  animate={{
+
+
+
+
+
                     scale: [1, 1.5, 1],
                     opacity: [0.4, 0, 0.4],
                   }}
