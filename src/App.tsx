@@ -181,10 +181,13 @@ function App() {
 
   const handleLogin = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
     try {
+      console.log('Login attempt:', { email, role });
       const users = await dataStore.getUsers();
+      console.log('Found users:', users.length);
       let user = users.find(u => u.email === email);
       
       if (!user) {
+        console.log('User not found, creating new user');
         user = {
           id: 'user-' + Date.now(),
           role: role,
@@ -193,20 +196,24 @@ function App() {
           createdAt: new Date(),
         };
         await dataStore.saveUser(user);
+        console.log('New user saved:', user.id);
       }
       
       await dataStore.setCurrentUser(user);
+      console.log('Current user set:', user.id);
       setCurrentUser(user);
       setShowLogin(false);
       toast.success('Welcome back!');
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Failed to sign in. Please try again.');
+      throw error;
     }
   };
 
   const handleSignUp = async (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => {
     try {
+      console.log('Sign up attempt:', { email, role });
       const newUser: UserType = {
         id: 'user-' + Date.now(),
         role: role,
@@ -216,13 +223,16 @@ function App() {
       };
       
       await dataStore.saveUser(newUser);
+      console.log('New user saved:', newUser.id);
       await dataStore.setCurrentUser(newUser);
+      console.log('Current user set:', newUser.id);
       setCurrentUser(newUser);
       setShowLogin(false);
       toast.success('Account created successfully!');
     } catch (error) {
       console.error('Sign up error:', error);
       toast.error('Failed to create account. Please try again.');
+      throw error;
     }
   };
 

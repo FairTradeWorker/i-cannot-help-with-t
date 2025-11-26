@@ -9,8 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface LoginModalProps {
-  onLogin: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => void;
-  onSignUp: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => void;
+  onLogin: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => Promise<void>;
+  onSignUp: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => Promise<void>;
 }
 
 export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
@@ -21,18 +21,28 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
   const [selectedTrade, setSelectedTrade] = useState<string>('General Contractor');
   const [isLogin, setIsLogin] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const trades = [
     'General Contractor', 'Roofing', 'Plumbing', 'Electrical', 'HVAC',
     'Carpentry', 'Painting', 'Flooring', 'Landscaping', 'Concrete'
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLogin) {
-      onLogin(email, password, selectedRole);
-    } else {
-      onSignUp(email, password, selectedRole);
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
+    try {
+      if (isLogin) {
+        await onLogin(email, password, selectedRole);
+      } else {
+        await onSignUp(email, password, selectedRole);
+      }
+    } catch (error) {
+      console.error('Login/signup error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -319,8 +329,9 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
                   type="submit"
                   size="lg"
                   className="w-full shadow-xl"
+                  disabled={isSubmitting}
                 >
-                  {isLogin ? 'Sign In' : 'Create Account'}
+                  {isSubmitting ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
                 </Button>
               </form>
             </CardContent>
