@@ -340,7 +340,7 @@ function App() {
             <Button
               size="lg"
               onClick={() => handleNavClick('homeowner', 'post-job')}
-              className="bg-black hover:bg-black/90 text-white shadow-lg font-black uppercase px-8 h-12 border-2 border-black ml-8"
+              className="hover:bg-black/90 shadow-lg font-black uppercase px-8 h-12 border-2 ml-8 text-slate-50 bg-blue-800 border-blue-700"
             >
               <Plus className="w-5 h-5 mr-2" weight="bold" />
               Post a Job
@@ -532,7 +532,6 @@ function App() {
           </div>
         </div>
       </motion.header>
-
       <main className="flex-1 py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
@@ -743,9 +742,7 @@ function App() {
           </AnimatePresence>
         </div>
       </main>
-
       <LegalFooter />
-
       {paymentJobData && (
         <PaymentModal
           open={showPaymentModal}
@@ -758,7 +755,6 @@ function App() {
           }}
         />
       )}
-
       {showAdminPanel && currentUser?.role === 'admin' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
