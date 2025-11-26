@@ -38,48 +38,66 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting) {
+      console.log('⚠️ Already submitting, ignoring duplicate submit');
+      return;;
+    }
     
-    if (!email || !password) return;
+    console.log('🚀🚀🚀 === FORM SUBMIT START ===');
+    console.log('   Email:', email);
+    console.log('   Role:', selectedRole);
+    console.log('   Is Login:', isLogin);
     
+    if (!email || !password) {
+      console.error('❌ Missing credentials');
+      return;
+    }
+    
+    console.log('🔒 Setting isSubmitting = true');
     setIsSubmitting(true);
     
     try {
       if (isLogin) {
+        console.log('📞 Calling onLogin handler...');
         await onLogin(email, password, selectedRole);
+        console.log('✅✅ onLogin completed successfully');
       } else {
+        console.log('📞 Calling onSignUp handler...');
         await onSignUp(email, password, selectedRole);
+        console.log('✅✅ onSignUp completed successfully');
       }
+      console.log('🎉🎉🎉 === FORM SUBMIT SUCCESS ===');
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error('❌❌❌ Form submission error:', error);
+      console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
       setIsSubmitting(false);
     }
-  };
+  };  id: 'subcontractor' as const,
 
   const roles = [
-    {
+    { description: 'Browse location-based opportunities',
       id: 'homeowner' as const,
       label: 'Homeowner',
       icon: House,
       description: 'Post jobs and hire contractors',
       color: 'bg-primary',
     },
-    {
+    {enter justify-center">
       id: 'contractor' as const,
       label: 'Contractor',
       icon: Hammer,
       description: 'Find work and grow your business',
-      color: 'bg-accent',
+      color: 'bg-accent',-center"
     },
-    {
+          <motion.div
       id: 'subcontractor' as const,
       label: 'Subcontractor',
-      icon: HardHat,
-      description: 'Browse location-based opportunities',
+      icon: HardHat,ing", stiffness: 200, damping: 15 }}
+      description: 'Browse location-based opportunities',justify-center mb-8 shadow-2xl"
       color: 'bg-secondary',
-    },
-  ];
-
+          
+  ]; <motion.h1
+l={{ opacity: 0, y: 20 }}
   if (showSplash) {
     return (
       <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
@@ -97,22 +115,22 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
           >
             <House className="w-20 h-20 text-white" weight="fill" />
           </motion.div>
-          
-          <motion.h1
+           20 }}
+          <motion.h1: 0 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="text-5xl font-bold mb-3"
           >
-            ServiceHub
+            ServiceHub'Get Started clicked, hiding splash');
           </motion.h1>
           
-          <motion.p
+          <motion.p:scale-105 transition-transform"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             className="text-xl text-muted-foreground mb-8"
-          >
+          >s text-muted-foreground mt-4">
             Connect. Build. Transform.
           </motion.p>
           
@@ -120,35 +138,15 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-          >
-            <Button
+          >0.8 }}
+            <Buttonstify-center gap-8"
               size="lg"
               onClick={() => {
-                console.log('Get Started clicked, hiding splash');
-                setShowSplash(false);
-              }}
+                console.log('Get Started clicked, hiding splash');>
+                setShowSplash(false);t-muted-foreground">Users</div>
+              }}v>
               className="px-8 py-6 text-lg shadow-xl hover:scale-105 transition-transform"
             >
-              Get Started
-              <MapTrifold className="w-5 h-5 ml-2" weight="fill" />
-            </Button>
-            <p className="text-xs text-muted-foreground mt-4">
-              Auto-continuing in 3 seconds...
-            </p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-12 flex items-center justify-center gap-8"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">15K+</div>
-              <div className="text-sm text-muted-foreground">Users</div>
-            </div>
-            <div className="h-12 w-px bg-border"></div>
-            <div className="text-center">
               <div className="text-2xl font-bold text-accent">3.5K+</div>
               <div className="text-sm text-muted-foreground">Contractors</div>
             </div>
