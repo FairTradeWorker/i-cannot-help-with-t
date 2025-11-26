@@ -58,23 +58,23 @@ import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
-import { QuickJobPost } from '@/components/QuickJobPost';
-import { VideoJobCreator } from '@/components/VideoJobCreator';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
 import { TerritoryTeaser } from '@/components/TerritoryTeaser';
-import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
+import { PriorityLeadsVisual } from '@/components/PriorityLeadsVisual';
 import { PaymentModal } from '@/components/PaymentModal';
 import { PaymentScreen } from '@/components/PaymentScreen';
-import { LocationJobBrowser } from '@/components/LocationJobBrowser';
 import { IntelligenceAPIManager } from '@/components/IntelligenceAPI/IntelligenceAPIManager';
 import { WarrantySection } from '@/components/WarrantySection';
+import { FileAClaim } from '@/components/FileAClaim';
+import { UnifiedJobPost } from '@/components/UnifiedJobPost';
+import { NotificationsPage } from '@/components/NotificationsPage';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'browse-jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'intelligence' | 'messages' | 'partners' | 'referral' | 'payment' | 'warranty';
-type SubTab = 'overview' | 'browse' | 'payment' | 'materials' | 'insurance' | 'ai' | 'private_equity' | 'real_estate' | 'contact' | 'analytics' | 'program' | 'my_referrals' | 'dashboard' | 'jobs' | 'route' | 'earnings' | 'my-jobs' | 'post-job' | 'profile';
+type MainTab = 'home' | 'territories' | 'jobs' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications';
+type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -84,7 +84,7 @@ function App() {
   const [activeSubTab, setActiveSubTab] = useState<SubTab | null>(null);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [showVideoCreator, setShowVideoCreator] = useState(false);
+  const [showJobPost, setShowJobPost] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
 
@@ -197,7 +197,7 @@ function App() {
     setActiveSubTab(subTab || null);
     setShowAdminPanel(false);
     setShowProfile(false);
-    setShowVideoCreator(false);
+    setShowJobPost(false);
   };
 
   const handleCreateJob = (type: 'video' | 'photo' | 'text') => {
@@ -210,6 +210,7 @@ function App() {
     setShowLogin(true);
     setActiveTab('home');
     setActiveSubTab(null);
+    setShowJobPost(false);
   };
 
   if (loading) {
@@ -229,7 +230,7 @@ function App() {
             />
           </div>
           <div className="loading-bar mb-3" />
-          <p className="text-sm text-muted-foreground font-medium">Loading ServiceHub...</p>
+          <p className="text-sm text-muted-foreground font-medium">Loading FairTradeWorker...</p>
         </motion.div>
       </div>
     );
@@ -260,55 +261,37 @@ function App() {
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                <Button
-                  variant={activeTab === 'home' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('home')}
-                  className="button-interactive"
-                  size="sm"
-                >
-                  <House className="w-4 h-4 mr-1.5" weight={activeTab === 'home' ? 'fill' : 'regular'} />
-                  Home
-                </Button>
-              </motion.div>
+                Home
+              </Button>
 
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              >
+              {currentUser?.role !== 'homeowner' && (
                 <Button
                   variant={activeTab === 'territories' ? 'default' : 'ghost'}
                   onClick={() => handleNavClick('territories', 'overview')}
                   className="button-interactive"
                   size="sm"
                 >
-                  <MapTrifold className="w-4 h-4 mr-1.5" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
                   Territories
                 </Button>
-              </motion.div>
+              )}
 
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-              >
+              {currentUser?.role !== 'homeowner' && (
                 <Button
-                  variant={activeTab === 'browse-jobs' ? 'default' : 'ghost'}
-                  onClick={() => handleNavClick('browse-jobs')}
+                  variant={activeTab === 'jobs' ? 'default' : 'ghost'}
+                  onClick={() => handleNavClick('jobs')}
                   className="button-interactive"
                   size="sm"
                 >
-                  <Briefcase className="w-4 h-4 mr-1.5" weight={activeTab === 'browse-jobs' ? 'fill' : 'regular'} />
                   Jobs
                 </Button>
-              </motion.div>
+              )}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  <Button
+                    variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
+                    className="button-interactive"
+                    size="sm"
                   >
                     <Button
                       variant={activeTab === 'contractor' ? 'default' : 'ghost'}
@@ -358,10 +341,10 @@ function App() {
             <nav className="flex items-center gap-2 flex-1 justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  <Button
+                    variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                    className="button-interactive"
+                    size="sm"
                   >
                     <Button
                       variant={activeTab === 'homeowner' ? 'default' : 'ghost'}
@@ -392,21 +375,14 @@ function App() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                  <Button
+                    variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
+                    className="button-interactive"
+                    size="sm"
                   >
-                    <Button
-                      variant={activeTab === 'partners' ? 'default' : 'ghost'}
-                      className="button-interactive"
-                      size="sm"
-                    >
-                      <Handshake className="w-4 h-4 mr-1.5" weight={activeTab === 'partners' ? 'fill' : 'regular'} />
-                      Partners
-                      <CaretDown className="w-3 h-3 ml-1" />
-                    </Button>
-                  </motion.div>
+                    Subcontractor
+                    <CaretDown className="w-3 h-3 ml-1" />
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="glass-card border-border/50">
                   <DropdownMenuItem onClick={() => handleNavClick('partners', undefined)}>
@@ -425,21 +401,33 @@ function App() {
                     <Brain className="w-4 h-4 mr-2" />
                     Intelligence API
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'private_equity')}>
-                    <Bank className="w-4 h-4 mr-2" />
-                    Private Equity
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'my-jobs')}>
+                    My Estimates
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNavClick('partners', 'real_estate')}>
-                    <Buildings className="w-4 h-4 mr-2" />
-                    Real Estate
+                  <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'route')}>
+                    Route Planner
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            </nav>
 
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+            <Button
+              size="lg"
+              onClick={handleCreateJob}
+              className="hover:bg-black/90 shadow-lg font-black uppercase px-6 h-12 border-2 ml-4 text-slate-50 bg-blue-800 border-blue-700"
+            >
+              <Plus className="w-5 h-5 mr-2" weight="bold" />
+              Post a Job
+            </Button>
+
+            <div className="flex-1" />
+
+            <nav className="flex items-center gap-1.5 mr-4">
+              <Button
+                variant={activeTab === 'api' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('api')}
+                className="button-interactive"
+                size="sm"
               >
                 <Button
                   variant={activeTab === 'intelligence' ? 'default' : 'ghost'}
@@ -491,7 +479,12 @@ function App() {
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
               >
-                <Button variant="ghost" size="icon" className="button-interactive relative h-8 w-8">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="button-interactive relative h-8 w-8"
+                  onClick={() => handleNavClick('notifications')}
+                >
                   <BellRinging className="w-4 h-4" />
                   <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
                 </Button>
@@ -611,20 +604,19 @@ function App() {
           </div>
         </div>
       </motion.header>
-
       <main className="flex-1 py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
-              key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}`}
+              key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}-${showJobPost}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
               {showProfile && <UserProfile user={currentUser} />}
-              {showVideoCreator && (
-                <VideoJobCreator 
+              {showJobPost && (
+                <UnifiedJobPost 
                   onJobCreated={(jobData) => {
                     toast.success('Job created successfully!');
                     setShowVideoCreator(false);
@@ -638,15 +630,47 @@ function App() {
                   }}
                 />
               )}
-              {!showProfile && !showVideoCreator && (
+              {!showProfile && !showJobPost && (
                 <>
                   {activeTab === 'payment' && <PaymentScreen onPaymentComplete={() => {
                     setActiveTab('home');
                     toast.success('Payment completed successfully!');
                   }} />}
+                  {activeTab === 'notifications' && <NotificationsPage />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <QuickJobPost onCreateJob={handleCreateJob} />
+                      <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all relative overflow-hidden group" onClick={handleCreateJob}>
+                        <motion.div 
+                          className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5"
+                          animate={{
+                            x: ['-100%', '100%'],
+                          }}
+                          transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "linear"
+                          }}
+                        />
+                        <div className="flex items-center justify-between relative z-10">
+                          <div className="flex items-center gap-4">
+                            <motion.div 
+                              className="p-4 rounded-xl bg-primary"
+                              whileHover={{ scale: 1.05, rotate: 5 }}
+                              transition={{ type: "spring", stiffness: 300 }}
+                            >
+                              <Plus className="w-8 h-8 text-white" weight="bold" />
+                            </motion.div>
+                            <div>
+                              <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
+                              <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
+                            </div>
+                          </div>
+                          <Button size="lg" className="group-hover:scale-105 transition-transform">
+                            Get Started
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                          </Button>
+                        </div>
+                      </Card>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
@@ -654,39 +678,37 @@ function App() {
                             <div className="p-3 rounded-xl bg-primary">
                               <MapTrifold className="w-7 h-7 text-white" weight="fill" />
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Available</p>
-                              <p className="text-2xl font-bold">850+</p>
+                            <p className="text-sm font-semibold mb-1">Territories</p>
+                            <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              <Badge variant="outline" className="text-[10px]">CA</Badge>
+                              <Badge variant="outline" className="text-[10px]">TX</Badge>
+                              <Badge variant="outline" className="text-[10px]">FL</Badge>
+                              <Badge variant="outline" className="text-[10px]">+47 states</Badge>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">Territories</p>
-                          <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            <Badge variant="outline" className="text-[10px]">CA</Badge>
-                            <Badge variant="outline" className="text-[10px]">TX</Badge>
-                            <Badge variant="outline" className="text-[10px]">FL</Badge>
-                            <Badge variant="outline" className="text-[10px]">+47 states</Badge>
-                          </div>
-                        </Card>
+                          </Card>
+                        )}
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('browse-jobs')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-accent">
-                              <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                        {currentUser?.role !== 'homeowner' && (
+                          <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('jobs')}>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-accent">
+                                <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Active</p>
+                                <p className="text-2xl font-bold">2.8K+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Active</p>
-                              <p className="text-2xl font-bold">2.8K+</p>
+                            <p className="text-sm font-semibold mb-1">Jobs Available</p>
+                            <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
+                              <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
+                              <Badge variant="secondary" className="text-[10px]">+12</Badge>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">Jobs Available</p>
-                          <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
-                            <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
-                            <Badge variant="secondary" className="text-[10px]">+12</Badge>
-                          </div>
-                        </Card>
+                          </Card>
+                        )}
 
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('contractor', 'dashboard')}>
                           <div className="flex items-center gap-4 mb-3">
@@ -707,7 +729,7 @@ function App() {
                         </Card>
                       </div>
 
-                      <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
+                      <PriorityLeadsVisual onExplore={() => handleNavClick('territories', 'overview')} />
                       
                       <Card className="glass-card p-10 border-2 border-primary/20">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -820,7 +842,7 @@ function App() {
                       </Card>
                     </div>
                   )}
-                  {activeTab === 'browse-jobs' && <JobBrowser />}
+                  {activeTab === 'jobs' && <JobBrowser />}
                   {activeTab === 'homeowner' && currentUser && <HomeownerDashboard user={currentUser} activeSubTab={activeSubTab} />}
                   {activeTab === 'territories' && activeSubTab === 'overview' && (
                     <TerritoriesOverview 
@@ -831,28 +853,21 @@ function App() {
                   )}
                   {activeTab === 'territories' && activeSubTab !== 'overview' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
-                  {activeTab === 'subcontractor' && activeSubTab === 'browse' && <LocationJobBrowser userId={currentUser?.id} />}
-                  {activeTab === 'subcontractor' && activeSubTab !== 'browse' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} isSubcontractor />}
+                  {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
-                  {activeTab === 'intelligence' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
+                  {activeTab === 'api' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
                   {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
-                  {activeTab === 'referral' && (
-                    <ReferralSystem 
-                      userId={currentUser?.id || ''} 
-                      referrals={mockReferrals}
-                      activeView={activeSubTab === 'my_referrals' ? 'referrals' : 'program'}
-                    />
+                  {activeTab === 'warranty' && activeSubTab === 'file-claim' && <FileAClaim />}
+                  {activeTab === 'warranty' && activeSubTab !== 'file-claim' && (
+                    <WarrantySection onFileClaimClick={() => handleNavClick('warranty', 'file-claim')} />
                   )}
-                  {activeTab === 'warranty' && <WarrantySection />}
                 </>
               )}
             </motion.div>
           </AnimatePresence>
         </div>
       </main>
-
       <LegalFooter />
-
       {paymentJobData && (
         <PaymentModal
           open={showPaymentModal}
@@ -865,7 +880,6 @@ function App() {
           }}
         />
       )}
-
       {showAdminPanel && currentUser?.role === 'admin' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   CreditCard,
   Money,
@@ -33,13 +34,18 @@ import {
   Phone,
   House,
   Question,
+  Brain,
+  MapTrifold,
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
+
+type PaymentType = 'job' | 'territory' | 'api';
 
 interface PaymentScreenProps {
   jobId?: string;
   amount?: number;
   jobTitle?: string;
+  paymentType?: PaymentType;
   onPaymentComplete?: () => void;
 }
 
@@ -47,6 +53,7 @@ export function PaymentScreen({
   jobId = 'demo-job-123', 
   amount = 8500, 
   jobTitle = 'Roof Repair and Replacement',
+  paymentType = 'job',
   onPaymentComplete 
 }: PaymentScreenProps) {
   const [selectedOption, setSelectedOption] = useState<'full' | '3month' | '12month'>('full');
@@ -70,7 +77,7 @@ export function PaymentScreen({
       name: 'Full Payment',
       icon: Money,
       description: 'Pay the total amount today',
-      amount: amount,
+      amount: baseAmount,
       savings: 0,
       highlight: 'Best Value',
     },
@@ -79,9 +86,9 @@ export function PaymentScreen({
       name: '3 Month Installments',
       icon: Calendar,
       description: 'Split into 3 monthly payments',
-      amount: (amount + (amount * 0.02)) / 3,
-      totalAmount: amount + (amount * 0.02),
-      fee: amount * 0.02,
+      amount: (baseAmount + (baseAmount * 0.02)) / 3,
+      totalAmount: baseAmount + (baseAmount * 0.02),
+      fee: baseAmount * 0.02,
       highlight: '2% Processing Fee',
     },
     {
@@ -89,7 +96,7 @@ export function PaymentScreen({
       name: '12 Month Financing',
       icon: Bank,
       description: '0% APR for qualified customers',
-      amount: amount / 12,
+      amount: baseAmount / 12,
       apr: 0,
       highlight: '0% APR',
     },
@@ -157,12 +164,106 @@ export function PaymentScreen({
       >
         <div>
           <h2 className="text-3xl font-bold">Complete Payment</h2>
-          <p className="text-muted-foreground mt-1">{jobTitle}</p>
+          <p className="text-muted-foreground mt-1">
+            {paymentType === 'job' && jobTitle}
+            {paymentType === 'territory' && 'Territory Subscription'}
+            {paymentType === 'api' && 'API Access License'}
+          </p>
         </div>
         <Badge variant="secondary" className="text-2xl px-6 py-3">
-          ${amount.toLocaleString()}
+          ${baseAmount.toLocaleString()}
         </Badge>
       </motion.div>
+
+      {paymentType === 'territory' && (
+        <Card className="glass-card p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <MapTrifold className="w-6 h-6 text-primary" weight="fill" />
+            Territory Selection
+          </h3>
+          <Separator className="mb-4" />
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="territory-count">Number of Territories</Label>
+              <Select
+                value={selectedTerritoryCount.toString()}
+                onValueChange={(v) => setSelectedTerritoryCount(parseInt(v))}
+              >
+                <SelectTrigger className="h-12">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1, 2, 3, 4, 5, 10, 20].map((count) => (
+                    <SelectItem key={count} value={count.toString()}>
+                      {count} {count === 1 ? 'Territory' : 'Territories'} - ${territoryPricePerMonth * count}/month
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold">Monthly Total</span>
+                <span className="text-2xl font-bold text-primary">${(territoryPricePerMonth * selectedTerritoryCount).toLocaleString()}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Exclusive lead rights in {selectedTerritoryCount} {selectedTerritoryCount === 1 ? 'territory' : 'territories'}. Priority access to all incoming leads.
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {paymentType === 'api' && (
+        <Card className="glass-card p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Brain className="w-6 h-6 text-primary" weight="fill" />
+            API Plan Selection
+          </h3>
+          <Separator className="mb-4" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { id: 'starter' as const, name: 'Starter', price: 99, requests: '10K', desc: 'Basic intelligence access' },
+              { id: 'professional' as const, name: 'Professional', price: 299, requests: '50K', desc: 'Advanced analytics included' },
+              { id: 'enterprise' as const, name: 'Enterprise', price: 999, requests: 'Unlimited', desc: 'Full platform access' },
+            ].map((plan) => {
+              const isSelected = selectedApiPlan === plan.id;
+              return (
+                <motion.div
+                  key={plan.id}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ duration: 0.11 }}
+                >
+                  <Card
+                    className={`p-5 cursor-pointer transition-all ${
+                      isSelected
+                        ? 'ring-2 ring-primary bg-primary/5 shadow-lg'
+                        : 'hover:shadow-md border-2'
+                    }`}
+                    onClick={() => setSelectedApiPlan(plan.id)}
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold">{plan.name}</h4>
+                        {isSelected && (
+                          <CheckCircle className="w-5 h-5 text-primary" weight="fill" />
+                        )}
+                      </div>
+                      <div className="text-3xl font-bold text-primary">${plan.price}</div>
+                      <p className="text-xs text-muted-foreground">{plan.requests} requests/month</p>
+                      <p className="text-xs text-muted-foreground">{plan.desc}</p>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -377,57 +478,59 @@ export function PaymentScreen({
             </Tabs>
           </Card>
 
-          <Card className="glass-card p-6">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <House className="w-6 h-6 text-primary" weight="fill" />
-              Job Details
-            </h3>
-            <Separator className="mb-4" />
+          {paymentType === 'job' && (
+            <>
+              <Card className="glass-card p-6">
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <House className="w-6 h-6 text-primary" weight="fill" />
+                  Job Details
+                </h3>
+                <Separator className="mb-4" />
 
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-muted-foreground" weight="duotone" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Service Address</p>
-                  <p className="font-semibold">123 Main St, Austin, TX 78701</p>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Service Address</p>
+                      <p className="font-semibold">123 Main St, Austin, TX 78701</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <User className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Contractor</p>
+                      <p className="font-semibold">Elite Roofing Solutions</p>
+                      <Badge variant="outline" className="mt-1 text-xs">
+                        <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
+                        Verified
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Estimated Start</p>
+                      <p className="font-semibold">Within 3-5 business days</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-5 h-5 text-muted-foreground" weight="duotone" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Project Duration</p>
+                      <p className="font-semibold">3-4 days</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <User className="w-5 h-5 text-muted-foreground" weight="duotone" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Contractor</p>
-                  <p className="font-semibold">Elite Roofing Solutions</p>
-                  <Badge variant="outline" className="mt-1 text-xs">
-                    <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
-                    Verified
-                  </Badge>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-muted-foreground" weight="duotone" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Estimated Start</p>
-                  <p className="font-semibold">Within 3-5 business days</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-muted-foreground" weight="duotone" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Project Duration</p>
-                  <p className="font-semibold">3-4 days</p>
-                </div>
-              </div>
-            </div>
-          </Card>
+              </Card>
 
-          <Card className="glass-card p-6">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Shield className="w-6 h-6 text-primary" weight="fill" />
-              Warranty Protection
-            </h3>
-            <Separator className="mb-4" />
+              <Card className="glass-card p-6">
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <Shield className="w-6 h-6 text-primary" weight="fill" />
+                  Warranty Protection
+                </h3>
+                <Separator className="mb-4" />
 
-            <div className="space-y-3">
+                <div className="space-y-3">
               <div
                 onClick={() => setSelectedWarranty('extended')}
                 className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
@@ -479,37 +582,51 @@ export function PaymentScreen({
 
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-2">Job Details</p>
-                <p className="font-semibold">{jobTitle}</p>
-                <p className="text-xs text-muted-foreground">Job ID: {jobId}</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {paymentType === 'job' && 'Job Details'}
+                  {paymentType === 'territory' && 'Territory Subscription'}
+                  {paymentType === 'api' && 'API License'}
+                </p>
+                <p className="font-semibold">
+                  {paymentType === 'job' && jobTitle}
+                  {paymentType === 'territory' && `${selectedTerritoryCount} ${selectedTerritoryCount === 1 ? 'Territory' : 'Territories'}`}
+                  {paymentType === 'api' && `${selectedApiPlan.charAt(0).toUpperCase() + selectedApiPlan.slice(1)} Plan`}
+                </p>
+                {paymentType === 'job' && <p className="text-xs text-muted-foreground">Job ID: {jobId}</p>}
               </div>
 
               <Separator />
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Job Amount</span>
-                  <span className="font-semibold">${amount.toLocaleString()}</span>
+                  <span className="text-sm">
+                    {paymentType === 'job' && 'Job Amount'}
+                    {paymentType === 'territory' && 'Monthly Subscription'}
+                    {paymentType === 'api' && 'Monthly License Fee'}
+                  </span>
+                  <span className="font-semibold">${baseAmount.toLocaleString()}</span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Platform Fee</span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-3 h-3 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-xs">One-time platform fee that supports ServiceHub operations</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                {paymentType === 'job' && operatorFee > 0 && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">Platform Fee</span>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-3 h-3 text-muted-foreground cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs">One-time platform fee that supports ServiceHub operations</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <span className="text-sm font-semibold text-accent">
+                      +${operatorFee.toLocaleString()}
+                    </span>
                   </div>
-                  <span className="text-sm font-semibold text-accent">
-                    +${operatorFee.toLocaleString()}
-                  </span>
-                </div>
+                )}
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
@@ -551,34 +668,72 @@ export function PaymentScreen({
               <Separator />
 
               <div className="space-y-3">
-                <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                  <p>Funds held in escrow until job completion</p>
-                </div>
+                {paymentType === 'job' && (
+                  <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <p>Funds held in escrow until job completion</p>
+                  </div>
+                )}
                 
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-2 text-xs">
-                  <h4 className="font-semibold text-sm flex items-center gap-2">
-                    <MapPin className="w-4 h-4" weight="fill" />
-                    Platform Fee Breakdown
-                  </h4>
-                  <p className="text-muted-foreground">
-                    A one-time ${operatorFee} platform fee per job helps maintain ServiceHub infrastructure, secure payments, and support services. Territory operators separately pay $45/month for exclusive lead rights in their area.
-                  </p>
-                  <div className="flex justify-between items-center pt-2 border-t border-primary/20">
-                    <span className="font-medium">Your Platform Fee:</span>
-                    <span className="font-bold text-primary">${operatorFee} one-time</span>
-                  </div>
-                </div>
+                {paymentType === 'job' && (
+                  <>
+                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-2 text-xs">
+                      <h4 className="font-semibold text-sm flex items-center gap-2">
+                        <MapPin className="w-4 h-4" weight="fill" />
+                        Platform Fee Breakdown
+                      </h4>
+                      <p className="text-muted-foreground">
+                        A one-time ${operatorFee} platform fee per job helps maintain ServiceHub infrastructure, secure payments, and support services. Territory operators separately pay $45/month for exclusive lead rights in their area.
+                      </p>
+                      <div className="flex justify-between items-center pt-2 border-t border-primary/20">
+                        <span className="font-medium">Your Platform Fee:</span>
+                        <span className="font-bold text-primary">${operatorFee} one-time</span>
+                      </div>
+                    </div>
 
-                <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Payment to Contractor</span>
-                    <span className="font-semibold">${amount.toLocaleString()}</span>
+                    <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Payment to Contractor</span>
+                        <span className="font-semibold">${baseAmount.toLocaleString()}</span>
+                      </div>
+                      <div className="text-muted-foreground text-[10px] leading-tight">
+                        Contractor receives 100% of job payment. No platform fees deducted.
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {paymentType === 'territory' && (
+                  <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 space-y-2 text-xs">
+                    <h4 className="font-semibold text-sm flex items-center gap-2">
+                      <MapTrifold className="w-4 h-4" weight="fill" />
+                      Territory Benefits
+                    </h4>
+                    <p className="text-muted-foreground">
+                      Get priority access to all leads in your claimed territories. Exclusive rights mean no other operators receive these leads.
+                    </p>
+                    <div className="flex justify-between items-center pt-2 border-t border-accent/20">
+                      <span className="font-medium">Monthly Subscription:</span>
+                      <span className="font-bold text-accent">${baseAmount}/month</span>
+                    </div>
                   </div>
-                  <div className="text-muted-foreground text-[10px] leading-tight">
-                    Contractor receives 100% of job payment. No platform fees deducted.
+                )}
+
+                {paymentType === 'api' && (
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-2 text-xs">
+                    <h4 className="font-semibold text-sm flex items-center gap-2">
+                      <Brain className="w-4 h-4" weight="fill" />
+                      API Access Details
+                    </h4>
+                    <p className="text-muted-foreground">
+                      Access our intelligence API for pricing estimates, contractor matching, and market insights. Full documentation provided upon subscription.
+                    </p>
+                    <div className="flex justify-between items-center pt-2 border-t border-primary/20">
+                      <span className="font-medium">Monthly License:</span>
+                      <span className="font-bold text-primary">${baseAmount}/month</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <Separator />
