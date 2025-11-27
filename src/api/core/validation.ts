@@ -18,6 +18,9 @@ export const emailSchema = z.string().email('Invalid email address');
 
 /**
  * Password validation (minimum 8 chars, at least one number and letter)
+ * 
+ * Use this schema for general password requirements.
+ * For high-security contexts (admin accounts, API keys), use strongPasswordSchema.
  */
 export const passwordSchema = z
   .string()

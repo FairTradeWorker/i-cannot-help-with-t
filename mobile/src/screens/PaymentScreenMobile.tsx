@@ -16,6 +16,27 @@ import {
   Star
 } from 'lucide-react-native';
 
+/**
+ * Detect card brand from card number prefix
+ */
+function detectCardBrand(cardNumber: string): string {
+  const cleaned = cardNumber.replace(/\s/g, '');
+  
+  // Visa: starts with 4
+  if (/^4/.test(cleaned)) return 'Visa';
+  
+  // Mastercard: starts with 51-55 or 2221-2720
+  if (/^5[1-5]/.test(cleaned) || /^2[2-7]/.test(cleaned)) return 'Mastercard';
+  
+  // American Express: starts with 34 or 37
+  if (/^3[47]/.test(cleaned)) return 'Amex';
+  
+  // Discover: starts with 6011, 622126-622925, 644-649, 65
+  if (/^6011|^62|^64[4-9]|^65/.test(cleaned)) return 'Discover';
+  
+  return 'Card';
+}
+
 interface PaymentMethod {
   id: string;
   type: 'card' | 'bank';
@@ -127,7 +148,7 @@ export default function PaymentScreenMobile() {
       id: Date.now().toString(),
       type: 'card',
       last4: cardNumber.slice(-4),
-      brand: 'Visa', // In real app, detect from number
+      brand: detectCardBrand(cardNumber), // Detect from card number prefix
       isDefault: paymentMethods.length === 0,
       expiryMonth: parseInt(expiry.split('/')[0]),
       expiryYear: parseInt('20' + expiry.split('/')[1]),

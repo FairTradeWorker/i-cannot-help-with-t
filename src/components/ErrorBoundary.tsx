@@ -112,6 +112,9 @@ interface ErrorFallbackProps {
   onRetry?: () => void;
 }
 
+// Support configuration
+const SUPPORT_EMAIL = 'support@fairtradeworker.com';
+
 export function PageErrorFallback({ error, onRetry }: ErrorFallbackProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -156,7 +159,7 @@ export function PageErrorFallback({ error, onRetry }: ErrorFallbackProps) {
           </Button>
           <Button
             variant="ghost"
-            onClick={() => window.location.href = 'mailto:support@fairtradeworker.com'}
+            onClick={() => window.location.href = `mailto:${SUPPORT_EMAIL}`}
             className="w-full"
           >
             <Mail className="w-4 h-4 mr-2" />

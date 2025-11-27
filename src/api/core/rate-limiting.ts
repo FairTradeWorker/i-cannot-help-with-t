@@ -6,6 +6,25 @@
  */
 
 // ============================================================================
+// Configuration Constants
+// ============================================================================
+
+/** Default window for standard rate limiting (1 minute in milliseconds) */
+const DEFAULT_WINDOW_MS = 60000;
+
+/** Default maximum requests per window for standard rate limiting */
+const DEFAULT_MAX_REQUESTS = 100;
+
+/** Default token bucket capacity */
+const DEFAULT_BUCKET_CAPACITY = 100;
+
+/** Default token bucket refill rate (tokens per second) */
+const DEFAULT_BUCKET_REFILL_RATE = 10;
+
+/** Default token bucket refill amount */
+const DEFAULT_BUCKET_REFILL_AMOUNT = 1;
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -34,7 +53,7 @@ export class RateLimiter {
   private limits: Map<string, RateLimitState> = new Map();
   private config: RateLimitConfig;
 
-  constructor(config: RateLimitConfig = { windowMs: 60000, maxRequests: 100 }) {
+  constructor(config: RateLimitConfig = { windowMs: DEFAULT_WINDOW_MS, maxRequests: DEFAULT_MAX_REQUESTS }) {
     this.config = config;
   }
 
@@ -102,8 +121,8 @@ export class RateLimiter {
 
 // Standard API rate limiter: 100 requests per minute
 export const standardRateLimiter = new RateLimiter({
-  windowMs: 60000,
-  maxRequests: 100,
+  windowMs: DEFAULT_WINDOW_MS,
+  maxRequests: DEFAULT_MAX_REQUESTS,
 });
 
 // Strict rate limiter for sensitive endpoints: 10 requests per minute
@@ -183,7 +202,7 @@ export class TokenBucketLimiter {
   private buckets: Map<string, { tokens: number; lastRefill: number }> = new Map();
   private config: TokenBucketConfig;
 
-  constructor(config: TokenBucketConfig = { capacity: 100, refillRate: 10, refillAmount: 1 }) {
+  constructor(config: TokenBucketConfig = { capacity: DEFAULT_BUCKET_CAPACITY, refillRate: DEFAULT_BUCKET_REFILL_RATE, refillAmount: DEFAULT_BUCKET_REFILL_AMOUNT }) {
     this.config = config;
   }
 
@@ -240,7 +259,7 @@ export class SlidingWindowLimiter {
   private requests: Map<string, number[]> = new Map();
   private config: SlidingWindowConfig;
 
-  constructor(config: SlidingWindowConfig = { windowMs: 60000, maxRequests: 100 }) {
+  constructor(config: SlidingWindowConfig = { windowMs: DEFAULT_WINDOW_MS, maxRequests: DEFAULT_MAX_REQUESTS }) {
     this.config = config;
   }
 
