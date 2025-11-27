@@ -492,6 +492,8 @@ function App() {
                 </Button>
               </motion.div>
 
+              <ThemeToggle />
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
