@@ -105,7 +105,7 @@ const checkNativeModuleAvailable = (): boolean => {
   
   try {
     // Check for the legacy AirMapModule (used by react-native-maps 1.20.1)
-    const hasAirMapModule = NativeModules && NativeModules.AirMapModule !== undefined && NativeModules.AirMapModule !== null;
+    const hasAirMapModule = NativeModules?.AirMapModule != null;
     if (__DEV__) {
       console.log('[MapViewWrapper] NativeModules.AirMapModule available:', hasAirMapModule);
     }
