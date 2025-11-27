@@ -140,7 +140,7 @@ const emailTemplates: Record<EmailTemplate, { subject: string; content: string }
       <h1>Job Posted Successfully</h1>
       <p>Hi {{name}},</p>
       <p>Your job "{{jobTitle}}" has been posted and is now visible to contractors.</p>
-      <p><strong>Estimated Cost:</strong> ${{estimatedCostMin}} - ${{estimatedCostMax}}</p>
+      <p><strong>Estimated Cost:</strong> \${{estimatedCostMin}} - \${{estimatedCostMax}}</p>
       <p><strong>Location:</strong> {{location}}</p>
       <p>You'll receive notifications as contractors submit bids.</p>
       <p><a href="{{jobUrl}}">View Job Details</a></p>
@@ -153,7 +153,7 @@ const emailTemplates: Record<EmailTemplate, { subject: string; content: string }
       <h1>New Bid Received</h1>
       <p>Hi {{name}},</p>
       <p>{{contractorName}} has submitted a bid for "{{jobTitle}}".</p>
-      <p><strong>Bid Amount:</strong> ${{bidAmount}}</p>
+      <p><strong>Bid Amount:</strong> \${{bidAmount}}</p>
       <p><strong>Contractor Rating:</strong> {{contractorRating}}/5 stars</p>
       <p><strong>Completed Jobs:</strong> {{completedJobs}}</p>
       <p><a href="{{bidUrl}}">Review Bid</a></p>
@@ -165,7 +165,7 @@ const emailTemplates: Record<EmailTemplate, { subject: string; content: string }
     content: `
       <h1>Congratulations! Bid Accepted</h1>
       <p>Hi {{name}},</p>
-      <p>Your bid of ${{bidAmount}} for "{{jobTitle}}" has been accepted!</p>
+      <p>Your bid of \${{bidAmount}} for "{{jobTitle}}" has been accepted!</p>
       <p><strong>Client:</strong> {{clientName}}</p>
       <p><strong>Location:</strong> {{location}}</p>
       <p><strong>Start Date:</strong> {{startDate}}</p>
@@ -190,9 +190,9 @@ const emailTemplates: Record<EmailTemplate, { subject: string; content: string }
     content: `
       <h1>Payment Received</h1>
       <p>Hi {{name}},</p>
-      <p>You've received a payment of <strong>${{amount}}</strong> for "{{jobTitle}}".</p>
+      <p>You've received a payment of <strong>\${{amount}}</strong> for "{{jobTitle}}".</p>
       <p><strong>Platform Fee:</strong> $0 (Zero fees!)</p>
-      <p><strong>You Received:</strong> ${{amount}} (100%)</p>
+      <p><strong>You Received:</strong> \${{amount}} (100%)</p>
       <p>Funds are available in your account.</p>
       <p><a href="{{earningsUrl}}">View Earnings</a></p>
     `,
@@ -203,7 +203,7 @@ const emailTemplates: Record<EmailTemplate, { subject: string; content: string }
     content: `
       <h1>Payment Confirmed</h1>
       <p>Hi {{name}},</p>
-      <p>Your payment of <strong>${{amount}}</strong> for "{{jobTitle}}" has been processed.</p>
+      <p>Your payment of <strong>\${{amount}}</strong> for "{{jobTitle}}" has been processed.</p>
       <p><strong>Contractor:</strong> {{contractorName}}</p>
       <p><strong>Receipt ID:</strong> {{receiptId}}</p>
       <p><a href="{{receiptUrl}}">View Receipt</a></p>
