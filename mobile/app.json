@@ -44,13 +44,7 @@
       "expo-camera",
       "expo-av",
       "expo-location",
-      "expo-notifications",
-      [
-        "react-native-maps",
-        {
-          "googleMapsApiKey": ""
-        }
-      ]
+      "expo-notifications"
     ]
   }
 }
