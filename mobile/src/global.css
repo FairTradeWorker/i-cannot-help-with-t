@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Mobile Dark Mode Theme Variables */
+:root {
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-primary: #00c3ff;
+  --color-primary-foreground: #0f172a;
+  --color-secondary: #00e6a8;
+  --color-secondary-foreground: #0f172a;
+  --color-accent: #9900ff;
+  --color-accent-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-border: #e2e8f0;
+}
+
+.dark {
+  --color-background: #1a1a2e;
+  --color-foreground: #f8fafc;
+  --color-card: #25253a;
+  --color-card-foreground: #f8fafc;
+  --color-primary: #00c3ff;
+  --color-primary-foreground: #1a1a2e;
+  --color-secondary: #00e6a8;
+  --color-secondary-foreground: #1a1a2e;
+  --color-accent: #9900ff;
+  --color-accent-foreground: #1a1a2e;
+  --color-muted: #3a3a52;
+  --color-muted-foreground: #94a3b8;
+  --color-border: #4a4a68;
+}
+
