@@ -68,13 +68,13 @@ import { WarrantySection } from '@/components/WarrantySection';
 import { FileAClaim } from '@/components/FileAClaim';
 import { UnifiedJobPost } from '@/components/UnifiedJobPost';
 import { NotificationsPage } from '@/components/NotificationsPage';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { DispatchMap } from '@/components/DispatchMap';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 
-type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications';
+type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch';
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
@@ -333,6 +333,9 @@ function App() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNavClick('contractor', 'route')}>
                     Route Planner
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleNavClick('dispatch')}>
+                    Dispatch Map
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -783,6 +786,7 @@ function App() {
                   {activeTab === 'territories' && activeSubTab !== 'overview' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
+                  {activeTab === 'dispatch' && <DispatchMap />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
                   {activeTab === 'api' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
                   {activeTab === 'partners' && <PartnerDashboard activeSubTab={activeSubTab} />}
