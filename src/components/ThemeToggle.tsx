@@ -2,11 +2,28 @@ import { useState, useEffect } from 'react'
 import { Sun, Moon } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 
+// Safe localStorage access helper
+const getStoredTheme = (): string | null => {
+  try {
+    return localStorage.getItem('theme')
+  } catch {
+    return null
+  }
+}
+
+const setStoredTheme = (theme: string): void => {
+  try {
+    localStorage.setItem('theme', theme)
+  } catch {
+    // localStorage unavailable (SSR, private browsing, etc.)
+  }
+}
+
 export function ThemeToggle() {
   const [theme, setThemeState] = useState<'light' | 'dark'>('light')
 
   useEffect(() => {
-    const stored = localStorage.getItem('theme')
+    const stored = getStoredTheme()
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     const initialTheme = (stored as 'light' | 'dark') || (prefersDark ? 'dark' : 'light')
     
@@ -16,7 +33,7 @@ export function ThemeToggle() {
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('theme')) {
+      if (!getStoredTheme()) {
         const newTheme = e.matches ? 'dark' : 'light'
         setThemeState(newTheme)
         applyTheme(newTheme)
@@ -40,7 +57,7 @@ export function ThemeToggle() {
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark'
     setThemeState(newTheme)
-    localStorage.setItem('theme', newTheme)
+    setStoredTheme(newTheme)
     applyTheme(newTheme)
   }
 
