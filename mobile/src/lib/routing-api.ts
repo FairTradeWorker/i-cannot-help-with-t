@@ -1,6 +1,11 @@
 const API_BASE_URL = 'https://prod.api.market/api/v1/trueway/routing';
-// In React Native, we use environment variables differently
+// In React Native, we use environment variables via Expo's Constants
 const API_KEY = process.env.EXPO_PUBLIC_TRUEWAY_API_KEY || '';
+
+// Development warning for missing API key
+if (__DEV__ && !API_KEY) {
+  console.warn('[RoutingAPI] EXPO_PUBLIC_TRUEWAY_API_KEY is not set. API calls will fail.');
+}
 
 export interface GeoPoint {
   lat: number;

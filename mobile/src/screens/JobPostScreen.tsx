@@ -90,7 +90,10 @@ export default function JobPostScreen() {
   const analyzeVideo = async () => {
     setIsAnalyzing(true);
     
-    // Simulated AI analysis - in production this would call the actual API
+    // TODO: Replace with actual API integration when backend is ready
+    // This mock implementation simulates the AI video analysis feature
+    // In production, this would POST the video to the FairTradeWorker API
+    // and receive a JobScope response from the AI analysis service
     await new Promise(resolve => setTimeout(resolve, 3000));
     
     const mockScope: JobScope = {

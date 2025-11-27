@@ -99,8 +99,10 @@ export default function RouteScreen() {
     setIsOptimizing(true);
 
     try {
-      // In production, this would call the actual routing API
-      // For demo, we'll simulate the optimization
+      // TODO: Replace with actual routing API integration
+      // This mock implementation demonstrates the route optimization UI
+      // In production, this would call routingAPI.optimizeJobRoute() with real job data
+      // and receive optimized route coordinates from the TrueWay Routing API
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Simulated optimized route
