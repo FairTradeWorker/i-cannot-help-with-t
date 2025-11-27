@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, Polygon, Region, PROVIDER_GOOGLE } from 'react-native-maps';
+import type { Region } from 'react-native-maps';
+import { MapViewWrapper, Marker, Polygon } from '@/components/MapViewWrapper';
 import { MapPin, DollarSign, Users, TrendingUp, Check, Lock } from 'lucide-react-native';
 import type { Territory } from '@/types';
 
@@ -80,7 +81,7 @@ const INITIAL_REGION: Region = {
 
 export default function TerritoriesScreen() {
   const [selectedTerritory, setSelectedTerritory] = useState<TerritoryData | null>(null);
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<any>(null);
 
   const handleTerritoryPress = (territory: TerritoryData) => {
     setSelectedTerritory(territory);
@@ -116,7 +117,7 @@ export default function TerritoriesScreen() {
     <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
       <View className="flex-1">
         {/* Map */}
-        <MapView
+        <MapViewWrapper
           ref={mapRef}
           style={{ width, height: height * 0.5 }}
           initialRegion={INITIAL_REGION}
@@ -155,7 +156,7 @@ export default function TerritoriesScreen() {
               </Marker>
             </React.Fragment>
           ))}
-        </MapView>
+        </MapViewWrapper>
 
         {/* Territory List / Details */}
         <ScrollView className="flex-1 bg-white rounded-t-3xl -mt-6 pt-4">

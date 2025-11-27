@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, Polyline, Region, LatLng } from 'react-native-maps';
+import type { Region } from 'react-native-maps';
+import { MapViewWrapper, Marker, Polyline } from '@/components/MapViewWrapper';
 import * as Location from 'expo-location';
 import { Navigation, MapPin, Clock, DollarSign, Fuel, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react-native';
 import { routingAPI, type JobLocation, type OptimizedRoute } from '@/lib/routing-api';
@@ -65,7 +66,7 @@ export default function RouteScreen() {
   const [optimizedRoute, setOptimizedRoute] = useState<OptimizedRoute | null>(null);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<any>(null);
 
   useEffect(() => {
     requestLocationPermission();
@@ -166,7 +167,7 @@ export default function RouteScreen() {
     <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
       <View className="flex-1">
         {/* Map */}
-        <MapView
+        <MapViewWrapper
           ref={mapRef}
           style={{ width, height: height * 0.45 }}
           initialRegion={INITIAL_REGION}
@@ -224,7 +225,7 @@ export default function RouteScreen() {
               strokeWidth={4}
             />
           )}
-        </MapView>
+        </MapViewWrapper>
 
         {/* Route Details */}
         <ScrollView className="flex-1 bg-white rounded-t-3xl -mt-6 pt-4">
