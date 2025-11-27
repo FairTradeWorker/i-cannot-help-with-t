@@ -32,3 +32,16 @@ pids
 .devcontainer/
 
 .spark-workbench-id
+
+# Expo / React Native
+mobile/.expo/
+mobile/ios/
+mobile/android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+.expo-shared/
