@@ -1,5 +1,5 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { useRef, ReactNode, useState, useCallback, MouseEvent } from 'react';
+import { useRef, ReactNode, useState, useCallback, MouseEvent, useEffect } from 'react';
 
 interface AnimatedCardProps {
   children: ReactNode;
@@ -93,6 +93,16 @@ interface RippleContainerProps {
 export function RippleContainer({ children, className = '', disabled = false }: RippleContainerProps) {
   const [ripples, setRipples] = useState<RippleProps[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<number | null>(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const createRipple = useCallback((e: MouseEvent<HTMLDivElement>) => {
     if (disabled) return;
@@ -108,7 +118,11 @@ export function RippleContainer({ children, className = '', disabled = false }: 
     const newRipple = { x, y, size };
     setRipples(prev => [...prev, newRipple]);
 
-    setTimeout(() => {
+    // Clear previous timeout and set new one
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = window.setTimeout(() => {
       setRipples(prev => prev.slice(1));
     }, 600);
   }, [disabled]);
