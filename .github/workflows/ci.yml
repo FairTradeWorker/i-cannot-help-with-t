@@ -26,6 +26,8 @@ jobs:
   quality:
     name: Quality Checks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout
@@ -54,6 +56,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: quality
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout
@@ -86,6 +90,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
     
     steps:
       - name: Download build artifacts
@@ -141,6 +147,8 @@ jobs:
   mobile-check:
     name: Mobile App Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     defaults:
       run:

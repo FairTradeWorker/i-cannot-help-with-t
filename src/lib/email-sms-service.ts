@@ -439,10 +439,20 @@ export async function sendSMS(options: SMSOptions): Promise<SendResult> {
 }
 
 /**
+ * Generate a cryptographically secure verification code
+ */
+function generateSecureCode(length: number = 6): string {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  const code = (array[0] % Math.pow(10, length)).toString().padStart(length, '0');
+  return code;
+}
+
+/**
  * Send a verification code via SMS
  */
 export async function sendVerificationCode(phone: string): Promise<{ success: boolean; code?: string; error?: string }> {
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const code = generateSecureCode(6);
   
   const result = await sendSMS({
     to: phone,

@@ -5,7 +5,7 @@
  * to ensure WCAG 2.1 AA compliance throughout the application.
  */
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 
 // ============================================================================
 // Focus Management
@@ -248,26 +248,25 @@ export function prefersReducedMotion(): boolean {
  * Hook for reduced motion preference
  */
 export function useReducedMotion(): boolean {
-  const mediaQuery = typeof window !== 'undefined'
-    ? window.matchMedia('(prefers-reduced-motion: reduce)')
-    : null;
-
-  const getInitialState = () => mediaQuery?.matches ?? false;
-
-  const ref = useRef(getInitialState());
+  const [prefersReduced, setPrefersReduced] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
 
   useEffect(() => {
-    if (!mediaQuery) return;
+    if (typeof window === 'undefined') return;
+    
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const handler = (e: MediaQueryListEvent) => {
-      ref.current = e.matches;
+      setPrefersReduced(e.matches);
     };
 
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
-  }, [mediaQuery]);
+  }, []);
 
-  return ref.current;
+  return prefersReduced;
 }
 
 // ============================================================================

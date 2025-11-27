@@ -430,10 +430,13 @@ export function setTag(key: string, value: string): void {
 // ============================================================================
 
 /**
- * Generate a unique report ID
+ * Generate a unique report ID using crypto for better randomness
  */
 function generateReportId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const array = new Uint8Array(8);
+  crypto.getRandomValues(array);
+  const randomPart = Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+  return `${Date.now()}-${randomPart}`;
 }
 
 /**
