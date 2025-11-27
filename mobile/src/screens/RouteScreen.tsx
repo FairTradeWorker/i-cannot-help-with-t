@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { Region } from 'react-native-maps';
-import { MapViewWrapper, Marker, Polyline } from '@/components/MapViewWrapper';
+import { MapViewWrapper, Marker, Polyline, type Region } from '@/components/MapViewWrapper';
 import * as Location from 'expo-location';
 import { Navigation, MapPin, Clock, DollarSign, Fuel, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react-native';
 import { routingAPI, type JobLocation, type OptimizedRoute } from '@/lib/routing-api';

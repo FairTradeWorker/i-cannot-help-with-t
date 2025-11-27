@@ -1,7 +1,58 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import type { MapViewProps, MapMarkerProps, MapPolygonProps, MapPolylineProps } from 'react-native-maps';
+import Constants from 'expo-constants';
 import { MapPin } from 'lucide-react-native';
+
+// Define prop types locally to avoid importing from react-native-maps at module level
+export interface Region {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+}
+
+interface MapViewProps {
+  style?: any;
+  initialRegion?: {
+    latitude: number;
+    longitude: number;
+    latitudeDelta: number;
+    longitudeDelta: number;
+  };
+  showsUserLocation?: boolean;
+  showsMyLocationButton?: boolean;
+  children?: React.ReactNode;
+  [key: string]: any;
+}
+
+interface MapMarkerProps {
+  coordinate: { latitude: number; longitude: number };
+  title?: string;
+  description?: string;
+  children?: React.ReactNode;
+  onPress?: () => void;
+  [key: string]: any;
+}
+
+interface MapPolygonProps {
+  coordinates: { latitude: number; longitude: number }[];
+  fillColor?: string;
+  strokeColor?: string;
+  strokeWidth?: number;
+  tappable?: boolean;
+  onPress?: () => void;
+  [key: string]: any;
+}
+
+interface MapPolylineProps {
+  coordinates: { latitude: number; longitude: number }[];
+  strokeColor?: string;
+  strokeWidth?: number;
+  [key: string]: any;
+}
+
+// Check if running in Expo Go (where native modules aren't available)
+const isExpoGo = Constants.appOwnership === 'expo';
 
 // Lazy load MapView to handle cases where native module is not available
 let MapViewComponent: any = null;
@@ -9,15 +60,17 @@ let MarkerComponent: React.ComponentType<any> | null = null;
 let PolygonComponent: React.ComponentType<any> | null = null;
 let PolylineComponent: React.ComponentType<any> | null = null;
 
-// Try to load react-native-maps components
-try {
-  const maps = require('react-native-maps');
-  MapViewComponent = maps.default;
-  MarkerComponent = maps.Marker;
-  PolygonComponent = maps.Polygon;
-  PolylineComponent = maps.Polyline;
-} catch (error) {
-  console.log('react-native-maps not available, using fallback');
+// Only try to load react-native-maps if not in Expo Go
+if (!isExpoGo) {
+  try {
+    const maps = require('react-native-maps');
+    MapViewComponent = maps.default;
+    MarkerComponent = maps.Marker;
+    PolygonComponent = maps.Polygon;
+    PolylineComponent = maps.Polyline;
+  } catch (error) {
+    console.log('react-native-maps not available, using fallback');
+  }
 }
 
 interface MapFallbackProps {
@@ -40,12 +93,15 @@ const MapFallback: React.FC<MapFallbackProps> = ({ style }) => (
 
 // Check if maps are available at runtime
 export const isMapsAvailable = (): boolean => {
+  // If in Expo Go, maps are never available
+  if (isExpoGo) return false;
+  
   if (!MapViewComponent) return false;
   
   // Additional runtime check for native module
   try {
     const { TurboModuleRegistry } = require('react-native');
-    // Check if the native module is registered
+    // Check if the native module is registered (using get, not getEnforcing)
     const nativeModule = TurboModuleRegistry.get('RNMapsAirModule');
     return nativeModule !== null;
   } catch {

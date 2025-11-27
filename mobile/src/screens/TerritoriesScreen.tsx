@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { Region } from 'react-native-maps';
-import { MapViewWrapper, Marker, Polygon } from '@/components/MapViewWrapper';
+import { MapViewWrapper, Marker, Polygon, type Region } from '@/components/MapViewWrapper';
 import { MapPin, DollarSign, Users, TrendingUp, Check, Lock } from 'lucide-react-native';
 import type { Territory } from '@/types';
 
