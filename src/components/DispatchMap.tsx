@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin,
@@ -33,6 +33,16 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+// Configuration constants
+const MAP_PADDING = 60;
+const SIMULATION_INTERVAL_MS = 3000;
+const MOVEMENT_SPEED_FACTOR = 0.1;
+const PULSE_ANIMATION_SPEED = 200;
+const PULSE_AMPLITUDE = 5;
+const PULSE_BASE_OFFSET = 15;
+const ARROW_LENGTH = 15;
+const MARKER_HIT_RADIUS = 30;
 
 // Types for dispatch tracking
 interface Worker {
@@ -237,6 +247,57 @@ const jobStatusColors: Record<DispatchJob['status'], { bg: string; text: string 
   completed: { bg: 'bg-green-100', text: 'text-green-700' },
 };
 
+// Helper function to calculate coordinate transformation for map rendering
+interface MapBounds {
+  minLng: number;
+  maxLng: number;
+  minLat: number;
+  maxLat: number;
+  scale: number;
+  offsetX: number;
+  offsetY: number;
+  toCanvasX: (lng: number) => number;
+  toCanvasY: (lat: number) => number;
+}
+
+function calculateMapBounds(
+  points: Array<{ lat: number; lng: number }>,
+  canvasWidth: number,
+  canvasHeight: number
+): MapBounds | null {
+  if (points.length === 0) return null;
+
+  const lngs = points.map(p => p.lng);
+  const lats = points.map(p => p.lat);
+
+  const minLng = Math.min(...lngs) - 0.02;
+  const maxLng = Math.max(...lngs) + 0.02;
+  const minLat = Math.min(...lats) - 0.02;
+  const maxLat = Math.max(...lats) + 0.02;
+
+  const lngRange = maxLng - minLng || 0.1;
+  const latRange = maxLat - minLat || 0.1;
+
+  const scaleX = (canvasWidth - 2 * MAP_PADDING) / lngRange;
+  const scaleY = (canvasHeight - 2 * MAP_PADDING) / latRange;
+  const scale = Math.min(scaleX, scaleY);
+
+  const offsetX = (canvasWidth - lngRange * scale) / 2;
+  const offsetY = (canvasHeight - latRange * scale) / 2;
+
+  return {
+    minLng,
+    maxLng,
+    minLat,
+    maxLat,
+    scale,
+    offsetX,
+    offsetY,
+    toCanvasX: (lng: number) => (lng - minLng) * scale + offsetX,
+    toCanvasY: (lat: number) => canvasHeight - ((lat - minLat) * scale + offsetY),
+  };
+}
+
 export function DispatchMap() {
   const [workers, setWorkers] = useState<Worker[]>(mockWorkers);
   const [jobs, setJobs] = useState<DispatchJob[]>(mockJobs);
@@ -258,23 +319,25 @@ export function DispatchMap() {
     const interval = setInterval(() => {
       setWorkers(prev => prev.map(worker => {
         if (worker.status === 'on-route') {
-          // Simulate movement towards job
+          // Simulate movement towards job using interpolation
           const job = jobs.find(j => j.id === worker.currentJobId);
           if (job) {
-            const dx = (job.location.lng - worker.location.lng) * 0.1;
-            const dy = (job.location.lat - worker.location.lat) * 0.1;
+            const dx = (job.location.lng - worker.location.lng) * MOVEMENT_SPEED_FACTOR;
+            const dy = (job.location.lat - worker.location.lat) * MOVEMENT_SPEED_FACTOR;
+            // Add slight randomness for more realistic movement
+            const jitter = 0.5 + Math.random() * 0.5;
             return {
               ...worker,
               location: {
-                lat: worker.location.lat + dy * (Math.random() * 0.5 + 0.5),
-                lng: worker.location.lng + dx * (Math.random() * 0.5 + 0.5),
+                lat: worker.location.lat + dy * jitter,
+                lng: worker.location.lng + dx * jitter,
               },
             };
           }
         }
         return worker;
       }));
-    }, 3000);
+    }, SIMULATION_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, [isLive, jobs]);
@@ -293,35 +356,16 @@ export function DispatchMap() {
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
-    // Calculate bounds
+    // Calculate bounds using helper function
     const allPoints = [
       ...workers.map(w => w.location),
       ...jobs.map(j => j.location),
     ];
 
-    if (allPoints.length === 0) return;
+    const bounds = calculateMapBounds(allPoints, width, height);
+    if (!bounds) return;
 
-    const lngs = allPoints.map(p => p.lng);
-    const lats = allPoints.map(p => p.lat);
-
-    const minLng = Math.min(...lngs) - 0.02;
-    const maxLng = Math.max(...lngs) + 0.02;
-    const minLat = Math.min(...lats) - 0.02;
-    const maxLat = Math.max(...lats) + 0.02;
-
-    const padding = 60;
-    const lngRange = maxLng - minLng || 0.1;
-    const latRange = maxLat - minLat || 0.1;
-
-    const scaleX = (width - 2 * padding) / lngRange;
-    const scaleY = (height - 2 * padding) / latRange;
-    const scale = Math.min(scaleX, scaleY);
-
-    const offsetX = (width - lngRange * scale) / 2;
-    const offsetY = (height - latRange * scale) / 2;
-
-    const toCanvasX = (lng: number) => (lng - minLng) * scale + offsetX;
-    const toCanvasY = (lat: number) => height - ((lat - minLat) * scale + offsetY);
+    const { toCanvasX, toCanvasY } = bounds;
 
     // Draw grid
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.03)';
@@ -370,18 +414,17 @@ export function DispatchMap() {
         const y2 = toCanvasY(route.polyline[lastIdx][1]);
 
         const angle = Math.atan2(y2 - y1, x2 - x1);
-        const arrowLen = 15;
 
         ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
         ctx.beginPath();
         ctx.moveTo(x2, y2);
         ctx.lineTo(
-          x2 - arrowLen * Math.cos(angle - Math.PI / 6),
-          y2 - arrowLen * Math.sin(angle - Math.PI / 6)
+          x2 - ARROW_LENGTH * Math.cos(angle - Math.PI / 6),
+          y2 - ARROW_LENGTH * Math.sin(angle - Math.PI / 6)
         );
         ctx.lineTo(
-          x2 - arrowLen * Math.cos(angle + Math.PI / 6),
-          y2 - arrowLen * Math.sin(angle + Math.PI / 6)
+          x2 - ARROW_LENGTH * Math.cos(angle + Math.PI / 6),
+          y2 - ARROW_LENGTH * Math.sin(angle + Math.PI / 6)
         );
         ctx.closePath();
         ctx.fill();
@@ -398,7 +441,7 @@ export function DispatchMap() {
 
       // Draw pulse for emergency jobs
       if (job.urgency === 'emergency') {
-        const pulseSize = size + 15 + Math.sin(Date.now() / 200) * 5;
+        const pulseSize = size + PULSE_BASE_OFFSET + Math.sin(Date.now() / PULSE_ANIMATION_SPEED) * PULSE_AMPLITUDE;
         ctx.beginPath();
         ctx.arc(x, y, pulseSize, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
@@ -493,44 +536,23 @@ export function DispatchMap() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Calculate same bounds as in drawing
+    // Calculate bounds using helper function
     const allPoints = [
       ...workers.map(w => w.location),
       ...jobs.map(j => j.location),
     ];
 
-    if (allPoints.length === 0) return;
+    const bounds = calculateMapBounds(allPoints, canvas.width, canvas.height);
+    if (!bounds) return;
 
-    const lngs = allPoints.map(p => p.lng);
-    const lats = allPoints.map(p => p.lat);
-
-    const minLng = Math.min(...lngs) - 0.02;
-    const maxLng = Math.max(...lngs) + 0.02;
-    const minLat = Math.min(...lats) - 0.02;
-    const maxLat = Math.max(...lats) + 0.02;
-
-    const padding = 60;
-    const width = canvas.width;
-    const height = canvas.height;
-    const lngRange = maxLng - minLng || 0.1;
-    const latRange = maxLat - minLat || 0.1;
-
-    const scaleX = (width - 2 * padding) / lngRange;
-    const scaleY = (height - 2 * padding) / latRange;
-    const scale = Math.min(scaleX, scaleY);
-
-    const offsetX = (width - lngRange * scale) / 2;
-    const offsetY = (height - latRange * scale) / 2;
-
-    const toCanvasX = (lng: number) => (lng - minLng) * scale + offsetX;
-    const toCanvasY = (lat: number) => height - ((lat - minLat) * scale + offsetY);
+    const { toCanvasX, toCanvasY } = bounds;
 
     // Check if clicked on a worker
     for (const worker of workers) {
       const wx = toCanvasX(worker.location.lng);
       const wy = toCanvasY(worker.location.lat);
       const distance = Math.sqrt((x - wx) ** 2 + (y - wy) ** 2);
-      if (distance < 30) {
+      if (distance < MARKER_HIT_RADIUS) {
         setSelectedWorker(worker);
         setSelectedJob(null);
         return;
@@ -542,7 +564,7 @@ export function DispatchMap() {
       const jx = toCanvasX(job.location.lng);
       const jy = toCanvasY(job.location.lat);
       const distance = Math.sqrt((x - jx) ** 2 + (y - jy) ** 2);
-      if (distance < 30) {
+      if (distance < MARKER_HIT_RADIUS) {
         setSelectedJob(job);
         setSelectedWorker(null);
         return;
@@ -563,37 +585,16 @@ export function DispatchMap() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Calculate same bounds as in drawing
+    // Calculate bounds using helper function
     const allPoints = [
       ...workers.map(w => w.location),
       ...jobs.map(j => j.location),
     ];
 
-    if (allPoints.length === 0) return;
+    const bounds = calculateMapBounds(allPoints, canvas.width, canvas.height);
+    if (!bounds) return;
 
-    const lngs = allPoints.map(p => p.lng);
-    const lats = allPoints.map(p => p.lat);
-
-    const minLng = Math.min(...lngs) - 0.02;
-    const maxLng = Math.max(...lngs) + 0.02;
-    const minLat = Math.min(...lats) - 0.02;
-    const maxLat = Math.max(...lats) + 0.02;
-
-    const padding = 60;
-    const width = canvas.width;
-    const height = canvas.height;
-    const lngRange = maxLng - minLng || 0.1;
-    const latRange = maxLat - minLat || 0.1;
-
-    const scaleX = (width - 2 * padding) / lngRange;
-    const scaleY = (height - 2 * padding) / latRange;
-    const scale = Math.min(scaleX, scaleY);
-
-    const offsetX = (width - lngRange * scale) / 2;
-    const offsetY = (height - latRange * scale) / 2;
-
-    const toCanvasX = (lng: number) => (lng - minLng) * scale + offsetX;
-    const toCanvasY = (lat: number) => height - ((lat - minLat) * scale + offsetY);
+    const { toCanvasX, toCanvasY } = bounds;
 
     let newHovered: string | null = null;
 
@@ -602,7 +603,7 @@ export function DispatchMap() {
       const wx = toCanvasX(worker.location.lng);
       const wy = toCanvasY(worker.location.lat);
       const distance = Math.sqrt((x - wx) ** 2 + (y - wy) ** 2);
-      if (distance < 30) {
+      if (distance < MARKER_HIT_RADIUS) {
         newHovered = `worker-${worker.id}`;
         break;
       }
@@ -614,7 +615,7 @@ export function DispatchMap() {
         const jx = toCanvasX(job.location.lng);
         const jy = toCanvasY(job.location.lat);
         const distance = Math.sqrt((x - jx) ** 2 + (y - jy) ** 2);
-        if (distance < 30) {
+        if (distance < MARKER_HIT_RADIUS) {
           newHovered = `job-${job.id}`;
           break;
         }
