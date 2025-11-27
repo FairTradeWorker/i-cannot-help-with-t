@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import type { MapViewProps } from 'react-native-maps';
+import type { MapViewProps, MapMarkerProps, MapPolygonProps, MapPolylineProps } from 'react-native-maps';
 import { MapPin } from 'lucide-react-native';
 
 // Lazy load MapView to handle cases where native module is not available
@@ -85,17 +85,17 @@ export const MapViewWrapper = forwardRef<any, MapViewProps>((props, ref) => {
 MapViewWrapper.displayName = 'MapViewWrapper';
 
 // Re-export map components with fallback wrappers
-export const Marker: React.FC<any> = (props) => {
+export const Marker: React.FC<MapMarkerProps> = (props) => {
   if (!MarkerComponent) return null;
   return <MarkerComponent {...props} />;
 };
 
-export const Polygon: React.FC<any> = (props) => {
+export const Polygon: React.FC<MapPolygonProps> = (props) => {
   if (!PolygonComponent) return null;
   return <PolygonComponent {...props} />;
 };
 
-export const Polyline: React.FC<any> = (props) => {
+export const Polyline: React.FC<MapPolylineProps> = (props) => {
   if (!PolylineComponent) return null;
   return <PolylineComponent {...props} />;
 };
