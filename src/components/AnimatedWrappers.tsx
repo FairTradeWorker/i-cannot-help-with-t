@@ -202,8 +202,8 @@ export function StaggeredContainer({ children, staggerDelay = 0.1, className = '
       animate={isInView ? "visible" : "hidden"}
       className={className}
     >
-      {Children.map(children, (child) => (
-        <motion.div variants={itemVariants}>
+      {Children.map(children, (child, index) => (
+        <motion.div key={index} variants={itemVariants}>
           {child}
         </motion.div>
       ))}

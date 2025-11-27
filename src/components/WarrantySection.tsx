@@ -100,11 +100,7 @@ export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
   return (
     <div className="space-y-8">
       <SectionReveal>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-4"
-        >
+        <div className="text-center space-y-4">
           <div className="flex items-center justify-center mb-4">
             <div className="p-4 rounded-2xl bg-primary/10">
               <Shield className="w-12 h-12 text-primary" weight="fill" />
@@ -116,7 +112,7 @@ export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Choose warranty coverage for complete peace of mind on your home service projects.
           </p>
-        </motion.div>
+        </div>
       </SectionReveal>
 
       <StaggeredContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-6">
