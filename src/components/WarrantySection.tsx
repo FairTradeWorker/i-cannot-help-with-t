@@ -5,6 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import { 
+  SectionReveal, 
+  StaggeredContainer, 
+  HeadlineReveal, 
+  CTAReveal,
+  SlideInFromLeft,
+  SlideInFromRight,
+  AnimatedCard
+} from '@/components/AnimatedWrappers';
 
 interface WarrantySectionProps {
   onFileClaimClick?: () => void;
@@ -90,29 +99,30 @@ export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
 
   return (
     <div className="space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-4"
-      >
-        <div className="flex items-center justify-center mb-4">
-          <div className="p-4 rounded-2xl bg-primary/10">
-            <Shield className="w-12 h-12 text-primary" weight="fill" />
+      <SectionReveal>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-4"
+        >
+          <div className="flex items-center justify-center mb-4">
+            <div className="p-4 rounded-2xl bg-primary/10">
+              <Shield className="w-12 h-12 text-primary" weight="fill" />
+            </div>
           </div>
-        </div>
-        <h2 className="text-4xl font-bold">Warranty Protection</h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Choose warranty coverage for complete peace of mind on your home service projects.
-        </p>
-      </motion.div>
+          <HeadlineReveal>
+            <h2 className="text-4xl font-bold">Warranty Protection</h2>
+          </HeadlineReveal>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Choose warranty coverage for complete peace of mind on your home service projects.
+          </p>
+        </motion.div>
+      </SectionReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <StaggeredContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {warrantyTiers.map((tier, index) => (
           <motion.div
             key={tier.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
             whileHover={{ y: -8 }}
             className="h-full"
           >
@@ -157,153 +167,171 @@ export function WarrantySection({ onFileClaimClick }: WarrantySectionProps) {
                     </div>
                   ))}
                 </div>
-                <Button
-                  className="w-full mt-6"
-                  variant={tier.popular ? 'default' : 'secondary'}
-                  onClick={() => handlePurchaseWarranty(tier.name, tier.price)}
-                >
-                  Add to Cart
-                </Button>
+                <CTAReveal delay={0.2 + index * 0.1}>
+                  <Button
+                    className="w-full mt-6"
+                    variant={tier.popular ? 'default' : 'secondary'}
+                    onClick={() => handlePurchaseWarranty(tier.name, tier.price)}
+                  >
+                    Add to Cart
+                  </Button>
+                </CTAReveal>
               </CardContent>
             </Card>
           </motion.div>
         ))}
-      </div>
+      </StaggeredContainer>
 
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Hammer className="w-6 h-6 text-primary" weight="fill" />
-            What's Covered
-          </CardTitle>
-          <CardDescription>
-            Our warranties cover a wide range of home services and repairs
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {coveredServices.map((service) => {
-              const Icon = service.icon;
-              return (
-                <Card key={service.name} className="bg-muted/30">
-                  <CardContent className="pt-6">
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <Icon className="w-6 h-6 text-primary" weight="duotone" />
+      <SectionReveal delay={0.2}>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Hammer className="w-6 h-6 text-primary" weight="fill" />
+              What's Covered
+            </CardTitle>
+            <CardDescription>
+              Our warranties cover a wide range of home services and repairs
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <StaggeredContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {coveredServices.map((service) => {
+                const Icon = service.icon;
+                return (
+                  <Card key={service.name} className="bg-muted/30">
+                    <CardContent className="pt-6">
+                      <div className="flex flex-col items-center text-center space-y-3">
+                        <div className="p-3 rounded-lg bg-primary/10">
+                          <Icon className="w-6 h-6 text-primary" weight="duotone" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">{service.name}</h4>
+                          <p className="text-xs text-muted-foreground">{service.description}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </StaggeredContainer>
+          </CardContent>
+        </Card>
+      </SectionReveal>
+
+      <SectionReveal delay={0.3}>
+        <Card className="glass-card border-2 border-primary/20">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <SlideInFromLeft>
+                <div>
+                  <HeadlineReveal>
+                    <h3 className="text-2xl font-bold mb-4">How Warranties Work</h3>
+                  </HeadlineReveal>
+                  <StaggeredContainer staggerDelay={0.12} className="space-y-4">
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                        1
                       </div>
                       <div>
-                        <h4 className="font-semibold mb-1">{service.name}</h4>
-                        <p className="text-xs text-muted-foreground">{service.description}</p>
+                        <h4 className="font-semibold mb-1">Coverage Begins</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Your warranty activates immediately upon job completion and inspection
+                        </p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                        2
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Issue Arises</h4>
+                        <p className="text-sm text-muted-foreground">
+                          If you experience any covered issues, contact our warranty team
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                        3
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Quick Resolution</h4>
+                        <p className="text-sm text-muted-foreground">
+                          We dispatch a qualified contractor to fix the issue at no cost to you
+                        </p>
+                      </div>
+                    </div>
+                  </StaggeredContainer>
+                </div>
+              </SlideInFromLeft>
+              <SlideInFromRight delay={0.2}>
+                <div className="bg-primary/5 rounded-2xl p-6 border-2 border-primary/20">
+                  <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+                    <Phone className="w-5 h-5" weight="fill" />
+                    Need Help?
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Our warranty team is available 24/7 for Extended and Premium warranty holders
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-primary" weight="fill" />
+                      <span className="font-semibold">1-800-WARRANTY</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Lightning className="w-4 h-4 text-primary" weight="fill" />
+                      <span>warranty@fairtradeworker.com</span>
+                    </div>
+                  </div>
+                  <CTAReveal delay={0.4}>
+                    <Button className="w-full mt-4" variant="outline" onClick={onFileClaimClick}>
+                      File a Claim
+                    </Button>
+                  </CTAReveal>
+                </div>
+              </SlideInFromRight>
+            </div>
+          </CardContent>
+        </Card>
+      </SectionReveal>
 
-      <Card className="glass-card border-2 border-primary/20">
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-            <div>
-              <h3 className="text-2xl font-bold mb-4">How Warranties Work</h3>
-              <div className="space-y-4">
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
-                    1
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Coverage Begins</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Your warranty activates immediately upon job completion and inspection
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
-                    2
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Issue Arises</h4>
-                    <p className="text-sm text-muted-foreground">
-                      If you experience any covered issues, contact our warranty team
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
-                    3
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Quick Resolution</h4>
-                    <p className="text-sm text-muted-foreground">
-                      We dispatch a qualified contractor to fix the issue at no cost to you
-                    </p>
-                  </div>
-                </div>
+      <SectionReveal delay={0.4}>
+        <Card className="glass-card bg-muted/30">
+          <CardHeader>
+            <HeadlineReveal>
+              <CardTitle>Frequently Asked Questions</CardTitle>
+            </HeadlineReveal>
+          </CardHeader>
+          <CardContent>
+            <StaggeredContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold mb-2">What's not covered?</h4>
+                <p className="text-sm text-muted-foreground">
+                  Normal wear and tear, damage from misuse, and issues caused by acts of nature (unless you have Premium coverage) are not covered.
+                </p>
               </div>
-            </div>
-            <div className="bg-primary/5 rounded-2xl p-6 border-2 border-primary/20">
-              <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <Phone className="w-5 h-5" weight="fill" />
-                Need Help?
-              </h4>
-              <p className="text-sm text-muted-foreground mb-4">
-                Our warranty team is available 24/7 for Extended and Premium warranty holders
-              </p>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-primary" weight="fill" />
-                  <span className="font-semibold">1-800-WARRANTY</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Lightning className="w-4 h-4 text-primary" weight="fill" />
-                  <span>warranty@fairtradeworker.com</span>
-                </div>
+              <div>
+                <h4 className="font-semibold mb-2">Can I transfer my warranty?</h4>
+                <p className="text-sm text-muted-foreground">
+                  Premium warranties are fully transferable. Extended warranties can be transferred for a $50 fee.
+                </p>
               </div>
-              <Button className="w-full mt-4" variant="outline" onClick={onFileClaimClick}>
-                File a Claim
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="glass-card bg-muted/30">
-        <CardHeader>
-          <CardTitle>Frequently Asked Questions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold mb-2">What's not covered?</h4>
-              <p className="text-sm text-muted-foreground">
-                Normal wear and tear, damage from misuse, and issues caused by acts of nature (unless you have Premium coverage) are not covered.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2">Can I transfer my warranty?</h4>
-              <p className="text-sm text-muted-foreground">
-                Premium warranties are fully transferable. Extended warranties can be transferred for a $50 fee.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2">How do I file a claim?</h4>
-              <p className="text-sm text-muted-foreground">
-                Call our warranty hotline or submit a claim through your dashboard. Response time depends on your warranty tier.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2">Are inspections required?</h4>
-              <p className="text-sm text-muted-foreground">
-                Extended and Premium warranties include free annual inspections to catch issues early and maintain coverage.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+              <div>
+                <h4 className="font-semibold mb-2">How do I file a claim?</h4>
+                <p className="text-sm text-muted-foreground">
+                  Call our warranty hotline or submit a claim through your dashboard. Response time depends on your warranty tier.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Are inspections required?</h4>
+                <p className="text-sm text-muted-foreground">
+                  Extended and Premium warranties include free annual inspections to catch issues early and maintain coverage.
+                </p>
+              </div>
+            </StaggeredContainer>
+          </CardContent>
+        </Card>
+      </SectionReveal>
     </div>
   );
 }

@@ -32,6 +32,15 @@ import {
   ShieldCheck,
   Plus,
 } from '@phosphor-icons/react';
+import { 
+  SectionReveal, 
+  StaggeredContainer, 
+  HeadlineReveal, 
+  CTAReveal,
+  SlideInFromLeft,
+  SlideInFromRight,
+  AnimatedCard
+} from '@/components/AnimatedWrappers';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -592,24 +601,30 @@ function App() {
                   {activeTab === 'notifications' && <NotificationsPage />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all" onClick={handleCreateJob}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="p-4 rounded-xl bg-primary">
-                              <Plus className="w-8 h-8 text-white" weight="bold" />
+                      <SectionReveal direction="up">
+                        <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all" onClick={handleCreateJob}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="p-4 rounded-xl bg-primary">
+                                <Plus className="w-8 h-8 text-white" weight="bold" />
+                              </div>
+                              <div>
+                                <HeadlineReveal>
+                                  <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
+                                </HeadlineReveal>
+                                <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
+                              </div>
                             </div>
-                            <div>
-                              <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
-                              <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
-                            </div>
+                            <CTAReveal delay={0.2}>
+                              <Button size="lg">
+                                Get Started
+                              </Button>
+                            </CTAReveal>
                           </div>
-                          <Button size="lg">
-                            Get Started
-                          </Button>
-                        </div>
-                      </Card>
+                        </Card>
+                      </SectionReveal>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <StaggeredContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
                           <div className="flex items-center gap-4 mb-3">
                             <div className="p-3 rounded-xl bg-primary">
@@ -684,87 +699,99 @@ function App() {
                             <span className="text-muted-foreground">Real-time data</span>
                           </div>
                         </Card>
-                      </div>
+                      </StaggeredContainer>
 
-                      <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
+                      <SectionReveal delay={0.1}>
+                        <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
+                      </SectionReveal>
                       
-                      <Card className="glass-card p-8 border-2 border-primary/20">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                          <div>
-                            <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
-                            <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
-                            <p className="text-muted-foreground mb-6">
-                              Unlike other platforms that charge 15-30% fees, FairTradeWorker contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
-                            </p>
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
-                                <div>
-                                  <p className="text-sm font-semibold">No platform fees for contractors</p>
-                                  <p className="text-xs text-muted-foreground">Never lose a percentage of your earnings</p>
+                      <SectionReveal delay={0.15}>
+                        <Card className="glass-card p-8 border-2 border-primary/20">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            <SlideInFromLeft>
+                              <div>
+                                <HeadlineReveal>
+                                  <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
+                                </HeadlineReveal>
+                                <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
+                                <p className="text-muted-foreground mb-6">
+                                  Unlike other platforms that charge 15-30% fees, FairTradeWorker contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
+                                </p>
+                                <StaggeredContainer staggerDelay={0.1} className="space-y-3">
+                                  <div className="flex items-center gap-3">
+                                    <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                                    <div>
+                                      <p className="text-sm font-semibold">No platform fees for contractors</p>
+                                      <p className="text-xs text-muted-foreground">Never lose a percentage of your earnings</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                                    <div>
+                                      <p className="text-sm font-semibold">Keep 100% of job payments</p>
+                                      <p className="text-xs text-muted-foreground">Full payment released upon completion</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                                    <div>
+                                      <p className="text-sm font-semibold">Instant payouts available</p>
+                                      <p className="text-xs text-muted-foreground">Get paid immediately after job approval</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-3">
+                                    <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
+                                    <div>
+                                      <p className="text-sm font-semibold">Secure escrow protection</p>
+                                      <p className="text-xs text-muted-foreground">Funds guaranteed before starting work</p>
+                                    </div>
+                                  </div>
+                                </StaggeredContainer>
+                                <CTAReveal delay={0.4}>
+                                  <Button size="lg" className="mt-6" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                                    Join as Contractor
+                                    <ArrowRight className="w-5 h-5 ml-2" />
+                                  </Button>
+                                </CTAReveal>
+                              </div>
+                            </SlideInFromLeft>
+                            <SlideInFromRight delay={0.2}>
+                              <div className="bg-white rounded-2xl p-6 shadow-2xl border-2 border-muted">
+                                <h4 className="font-bold mb-2 text-center">$10,000 Job Payment Example</h4>
+                                <p className="text-xs text-muted-foreground text-center mb-4">How the money flows</p>
+                                <div className="space-y-3">
+                                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                                    <div>
+                                      <span className="text-sm font-semibold">Job Payment</span>
+                                      <p className="text-xs text-muted-foreground">From homeowner</p>
+                                    </div>
+                                    <span className="font-bold">$10,000</span>
+                                  </div>
+                                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <div>
+                                      <span className="text-sm font-semibold">Platform Fee</span>
+                                      <p className="text-xs text-muted-foreground">One-time charge</p>
+                                    </div>
+                                    <span className="font-bold text-blue-600">$20</span>
+                                  </div>
+                                  <div className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg border-2 border-secondary/30">
+                                    <div>
+                                      <span className="text-sm font-semibold">Contractor Receives</span>
+                                      <p className="text-xs text-muted-foreground">100% of job amount</p>
+                                    </div>
+                                    <span className="font-bold text-secondary text-lg">$10,000</span>
+                                  </div>
+                                </div>
+                                <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                                  <p className="text-xs text-muted-foreground">
+                                    <span className="font-semibold text-foreground">Territory operators</span> separately pay $45/month for exclusive lead rights in their area. This monthly fee funds platform operations.
+                                  </p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
-                                <div>
-                                  <p className="text-sm font-semibold">Keep 100% of job payments</p>
-                                  <p className="text-xs text-muted-foreground">Full payment released upon completion</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
-                                <div>
-                                  <p className="text-sm font-semibold">Instant payouts available</p>
-                                  <p className="text-xs text-muted-foreground">Get paid immediately after job approval</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" weight="fill" />
-                                <div>
-                                  <p className="text-sm font-semibold">Secure escrow protection</p>
-                                  <p className="text-xs text-muted-foreground">Funds guaranteed before starting work</p>
-                                </div>
-                              </div>
-                            </div>
-                            <Button size="lg" className="mt-6" onClick={() => handleNavClick('contractor', 'dashboard')}>
-                              Join as Contractor
-                              <ArrowRight className="w-5 h-5 ml-2" />
-                            </Button>
+                            </SlideInFromRight>
                           </div>
-                          <div className="bg-white rounded-2xl p-6 shadow-2xl border-2 border-muted">
-                            <h4 className="font-bold mb-2 text-center">$10,000 Job Payment Example</h4>
-                            <p className="text-xs text-muted-foreground text-center mb-4">How the money flows</p>
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                                <div>
-                                  <span className="text-sm font-semibold">Job Payment</span>
-                                  <p className="text-xs text-muted-foreground">From homeowner</p>
-                                </div>
-                                <span className="font-bold">$10,000</span>
-                              </div>
-                              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <div>
-                                  <span className="text-sm font-semibold">Platform Fee</span>
-                                  <p className="text-xs text-muted-foreground">One-time charge</p>
-                                </div>
-                                <span className="font-bold text-blue-600">$20</span>
-                              </div>
-                              <div className="flex items-center justify-between p-3 bg-secondary/10 rounded-lg border-2 border-secondary/30">
-                                <div>
-                                  <span className="text-sm font-semibold">Contractor Receives</span>
-                                  <p className="text-xs text-muted-foreground">100% of job amount</p>
-                                </div>
-                                <span className="font-bold text-secondary text-lg">$10,000</span>
-                              </div>
-                            </div>
-                            <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                              <p className="text-xs text-muted-foreground">
-                                <span className="font-semibold text-foreground">Territory operators</span> separately pay $45/month for exclusive lead rights in their area. This monthly fee funds platform operations.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </Card>
+                        </Card>
+                      </SectionReveal>
                     </div>
                   )}
                   {activeTab === 'jobs' && <JobBrowser />}
