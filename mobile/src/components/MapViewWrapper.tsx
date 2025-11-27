@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, NativeModules } from 'react-native';
 import Constants from 'expo-constants';
 import { MapPin } from 'lucide-react-native';
 
@@ -49,14 +49,46 @@ interface MapPolylineProps {
 // Check if running in Expo Go (where native modules aren't available)
 const isExpoGo = Constants.appOwnership === 'expo';
 
+// Check if the native maps module is available BEFORE attempting to load react-native-maps
+// This prevents the TurboModuleRegistry.getEnforcing error from being thrown
+const checkNativeModuleAvailable = (): boolean => {
+  if (isExpoGo) return false;
+  
+  try {
+    // Try to access TurboModuleRegistry to check if maps module exists
+    // Using get() instead of getEnforcing() to avoid throwing an error
+    const { TurboModuleRegistry } = require('react-native');
+    if (TurboModuleRegistry && typeof TurboModuleRegistry.get === 'function') {
+      const turboModule = TurboModuleRegistry.get('RNMapsAirModule');
+      if (turboModule) return true;
+    }
+  } catch {
+    // TurboModuleRegistry check failed, try legacy NativeModules
+  }
+  
+  try {
+    // Fallback to legacy NativeModules check
+    if (NativeModules && (NativeModules.AirMapModule || NativeModules.RNMapsAirModule)) {
+      return true;
+    }
+  } catch {
+    // Legacy check also failed
+  }
+  
+  return false;
+};
+
 // Lazy load MapView to handle cases where native module is not available
 let MapViewComponent: any = null;
 let MarkerComponent: React.ComponentType<any> | null = null;
 let PolygonComponent: React.ComponentType<any> | null = null;
 let PolylineComponent: React.ComponentType<any> | null = null;
 
-// Only try to load react-native-maps if not in Expo Go
-if (!isExpoGo) {
+// Check native module availability first, before any require
+const nativeModuleAvailable = checkNativeModuleAvailable();
+
+// Only try to load react-native-maps if native module is confirmed available
+if (nativeModuleAvailable) {
   try {
     const maps = require('react-native-maps');
     MapViewComponent = maps.default;
@@ -64,7 +96,7 @@ if (!isExpoGo) {
     PolygonComponent = maps.Polygon;
     PolylineComponent = maps.Polyline;
   } catch (error) {
-    console.log('react-native-maps not available, using fallback');
+    console.log('react-native-maps failed to load, using fallback:', error);
   }
 }
 
@@ -88,26 +120,8 @@ const MapFallback: React.FC<MapFallbackProps> = ({ style }) => (
 
 // Check if maps are available at runtime
 export const isMapsAvailable = (): boolean => {
-  // If in Expo Go, maps are never available
-  if (isExpoGo) return false;
-  
-  if (!MapViewComponent) return false;
-  
-  // Additional runtime check for native module
-  try {
-    const { TurboModuleRegistry } = require('react-native');
-    // Check if the native module is registered (using get, not getEnforcing)
-    const nativeModule = TurboModuleRegistry.get('RNMapsAirModule');
-    return nativeModule !== null;
-  } catch {
-    // If TurboModuleRegistry is not available or throws, try legacy check
-    try {
-      const { NativeModules } = require('react-native');
-      return !!NativeModules.AirMapModule || !!NativeModules.RNMapsAirModule;
-    } catch {
-      return false;
-    }
-  }
+  // Use the cached result from module initialization
+  return nativeModuleAvailable && MapViewComponent !== null;
 };
 
 // Wrapper component that handles the availability check
