@@ -13,12 +13,7 @@ export interface Region {
 
 interface MapViewProps {
   style?: any;
-  initialRegion?: {
-    latitude: number;
-    longitude: number;
-    latitudeDelta: number;
-    longitudeDelta: number;
-  };
+  initialRegion?: Region;
   showsUserLocation?: boolean;
   showsMyLocationButton?: boolean;
   children?: React.ReactNode;
