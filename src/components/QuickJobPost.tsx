@@ -11,12 +11,6 @@ import { Plus, VideoCamera, Image as ImageIcon, FileText, MapPin } from '@phosph
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  SectionReveal, 
-  StaggeredContainer, 
-  HeadlineReveal, 
-  FadeInWhenVisible 
-} from '@/components/AnimatedWrappers';
 
 interface QuickJobPostProps {
   onCreateJob: (type: 'video' | 'photo' | 'text') => void;
@@ -76,108 +70,103 @@ export function QuickJobPost({ onCreateJob, onExploreMap }: QuickJobPostProps) {
   };
 
   return (
-    <SectionReveal>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-3"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <HeadlineReveal>
-              <h3 className="text-2xl font-bold">Post a Job</h3>
-            </HeadlineReveal>
-            <FadeInWhenVisible delay={0.1}>
-              <p className="text-sm text-muted-foreground mt-1">Choose how you'd like to create your job listing</p>
-            </FadeInWhenVisible>
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-3"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-2xl font-bold">Post a Job</h3>
+          <p className="text-sm text-muted-foreground mt-1">Choose how you'd like to create your job listing</p>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <StaggeredContainer staggerDelay={0.08} className="lg:col-span-2 grid grid-cols-3 gap-3">
-            {postOptions.map((option, index) => {
-              const Icon = option.icon;
-              return (
-                <motion.div
-                  key={option.id}
-                  whileHover={{ y: -8 }}
-                  whileTap={{ scale: 0.96 }}
-                  onHoverStart={() => setHoveredCard(option.id)}
-                  onHoverEnd={() => setHoveredCard(null)}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 grid grid-cols-3 gap-3">
+          {postOptions.map((option, index) => {
+            const Icon = option.icon;
+            return (
+              <motion.div
+                key={option.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ y: -8 }}
+                whileTap={{ scale: 0.96 }}
+                onHoverStart={() => setHoveredCard(option.id)}
+                onHoverEnd={() => setHoveredCard(null)}
+              >
+                <Card 
+                  className={`glass-card relative overflow-hidden cursor-pointer transition-all border-2 h-full ${
+                    hoveredCard === option.id ? 'border-primary shadow-lg' : 'border-border/50'
+                  }`}
+                  onClick={() => onCreateJob(option.id as 'video' | 'photo' | 'text')}
                 >
-                  <Card 
-                    className={`glass-card relative overflow-hidden cursor-pointer transition-all border-2 h-full ${
-                      hoveredCard === option.id ? 'border-primary shadow-lg' : 'border-border/50'
-                    }`}
-                    onClick={() => onCreateJob(option.id as 'video' | 'photo' | 'text')}
-                  >
-                    <CardContent className="relative p-6 text-center space-y-3">
-                      <motion.div 
-                        className={`mx-auto w-14 h-14 ${option.color} flex items-center justify-center rounded-xl`}
-                        animate={{ 
-                          y: hoveredCard === option.id ? -4 : 0
-                        }}
-                        transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-                      >
-                        <Icon className="w-7 h-7 text-white" weight="fill" />
-                      </motion.div>
-                      
-                      <div>
-                        <div className="font-bold text-sm mb-1">{option.title}</div>
-                        <p className="text-xs text-muted-foreground">{option.description}</p>
-                        {option.badge && (
-                          <Badge variant="secondary" className="mt-2 text-xs">
-                            {option.badge}
-                          </Badge>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </StaggeredContainer>
-
-          <FadeInWhenVisible delay={0.3}>
-            <Card 
-              className="glass-card border-2 border-border/50 cursor-pointer transition-all hover:border-primary hover:shadow-lg" 
-              onClick={onExploreMap}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-bold">Priority Leads Map</h4>
-                  <MapPin className="w-5 h-5 text-primary" weight="fill" />
-                </div>
-                
-                <svg viewBox="0 0 200 120" className="w-full h-auto mb-3">
-                  <rect x="10" y="20" width="30" height="25" fill={getHeatColor(stateHeatData['CA'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('CA')} onMouseLeave={() => setHoveredState(null)} />
-                  <text x="25" y="35" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">CA</text>
-
-                  <rect x="80" y="50" width="25" height="30" fill={getHeatColor(stateHeatData['TX'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('TX')} onMouseLeave={() => setHoveredState(null)} />
-                  <text x="92" y="67" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">TX</text>
-
-                  <rect x="145" y="60" width="20" height="25" fill={getHeatColor(stateHeatData['FL'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('FL')} onMouseLeave={() => setHoveredState(null)} />
-                  <text x="155" y="74" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">FL</text>
-
-                  <rect x="160" y="20" width="25" height="20" fill={getHeatColor(stateHeatData['NY'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('NY')} onMouseLeave={() => setHoveredState(null)} />
-                  <text x="172" y="32" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">NY</text>
-
-                  <rect x="115" y="30" width="25" height="22" fill={getHeatColor(stateHeatData['IL'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('IL')} onMouseLeave={() => setHoveredState(null)} />
-                  <text x="127" y="43" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">IL</text>
-                </svg>
-
-                <div className="text-xs text-muted-foreground">
-                  {hoveredState ? `${hoveredState}: ${stateHeatData[hoveredState]}% active` : 'Hover states for activity'}
-                </div>
-                <Button variant="outline" size="sm" className="w-full mt-2">
-                  View Full Map
-                </Button>
-              </CardContent>
-            </Card>
-          </FadeInWhenVisible>
+                  <CardContent className="relative p-6 text-center space-y-3">
+                    <motion.div 
+                      className={`mx-auto w-14 h-14 ${option.color} flex items-center justify-center rounded-xl`}
+                      animate={{ 
+                        y: hoveredCard === option.id ? -4 : 0
+                      }}
+                      transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
+                    >
+                      <Icon className="w-7 h-7 text-white" weight="fill" />
+                    </motion.div>
+                    
+                    <div>
+                      <div className="font-bold text-sm mb-1">{option.title}</div>
+                      <p className="text-xs text-muted-foreground">{option.description}</p>
+                      {option.badge && (
+                        <Badge variant="secondary" className="mt-2 text-xs">
+                          {option.badge}
+                        </Badge>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
-      </motion.div>
-    </SectionReveal>
+
+        <Card 
+          className="glass-card border-2 border-border/50 cursor-pointer transition-all hover:border-primary hover:shadow-lg" 
+          onClick={onExploreMap}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-bold">Priority Leads Map</h4>
+              <MapPin className="w-5 h-5 text-primary" weight="fill" />
+            </div>
+            
+            <svg viewBox="0 0 200 120" className="w-full h-auto mb-3">
+              <rect x="10" y="20" width="30" height="25" fill={getHeatColor(stateHeatData['CA'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('CA')} onMouseLeave={() => setHoveredState(null)} />
+              <text x="25" y="35" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">CA</text>
+
+              <rect x="80" y="50" width="25" height="30" fill={getHeatColor(stateHeatData['TX'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('TX')} onMouseLeave={() => setHoveredState(null)} />
+              <text x="92" y="67" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">TX</text>
+
+              <rect x="145" y="60" width="20" height="25" fill={getHeatColor(stateHeatData['FL'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('FL')} onMouseLeave={() => setHoveredState(null)} />
+              <text x="155" y="74" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">FL</text>
+
+              <rect x="160" y="20" width="25" height="20" fill={getHeatColor(stateHeatData['NY'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('NY')} onMouseLeave={() => setHoveredState(null)} />
+              <text x="172" y="32" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">NY</text>
+
+              <rect x="115" y="30" width="25" height="22" fill={getHeatColor(stateHeatData['IL'] || 0)} stroke="#000" strokeWidth="1" onMouseEnter={() => setHoveredState('IL')} onMouseLeave={() => setHoveredState(null)} />
+              <text x="127" y="43" textAnchor="middle" className="text-[6px] fill-black font-black pointer-events-none">IL</text>
+            </svg>
+
+            <div className="text-xs text-muted-foreground">
+              {hoveredState ? `${hoveredState}: ${stateHeatData[hoveredState]}% active` : 'Hover states for activity'}
+            </div>
+            <Button variant="outline" size="sm" className="w-full mt-2">
+              View Full Map
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </motion.div>
   );
 }
 

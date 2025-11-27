@@ -9,14 +9,6 @@ import { MapTrifold, TrendUp, CurrencyDollar, Users, Lightning, ArrowRight, Chec
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  SlideInFromLeft, 
-  SlideInFromRight, 
-  StaggeredContainer, 
-  HeadlineReveal, 
-  CTAReveal,
-  FadeInWhenVisible
-} from '@/components/AnimatedWrappers';
 
 interface TerritoryTeaserProps {
   onExplore: () => void;
@@ -56,31 +48,25 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
       <Card className="glass-card border-2 border-primary/20">
         <CardContent className="relative p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <SlideInFromLeft className="space-y-6">
-              <FadeInWhenVisible>
-                <div className="inline-flex">
-                  <Badge className="px-4 py-2 text-sm bg-primary border-0">
-                    <Lightning className="w-4 h-4 mr-2" weight="fill" />
-                    Limited Territories Available
-                  </Badge>
-                </div>
-              </FadeInWhenVisible>
-
-              <div className="space-y-4">
-                <HeadlineReveal>
-                  <h2 className="text-4xl font-bold tracking-tight">
-                    Own Your Territory
-                    <span className="block text-2xl text-primary font-mono mt-2">$45/month</span>
-                  </h2>
-                </HeadlineReveal>
-                <FadeInWhenVisible delay={0.1}>
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    Priority Access to first Leads in your zip codes. Build a sustainable business with intelligent platform features and guaranteed lead flow.
-                  </p>
-                </FadeInWhenVisible>
+            <div className="space-y-6">
+              <div className="inline-flex">
+                <Badge className="px-4 py-2 text-sm bg-primary border-0">
+                  <Lightning className="w-4 h-4 mr-2" weight="fill" />
+                  Limited Territories Available
+                </Badge>
               </div>
 
-              <StaggeredContainer staggerDelay={0.08} className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <h2 className="text-4xl font-bold tracking-tight">
+                  Own Your Territory
+                  <span className="block text-2xl text-primary font-mono mt-2">$45/month</span>
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Priority Access to first Leads in your zip codes. Build a sustainable business with intelligent platform features and guaranteed lead flow.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 {benefits.map((benefit) => (
                   <div
                     key={benefit}
@@ -90,23 +76,21 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
                     <span className="text-sm">{benefit}</span>
                   </div>
                 ))}
-              </StaggeredContainer>
+              </div>
 
-              <CTAReveal delay={0.3}>
-                <Button 
-                  size="lg" 
-                  onClick={onExplore}
-                  className="w-full sm:w-auto px-8 py-6 text-lg"
-                >
-                  <MapTrifold className="w-5 h-5 mr-2" weight="fill" />
-                  Explore Territories
-                  <ArrowRight className="w-5 h-5 ml-2" weight="bold" />
-                </Button>
-              </CTAReveal>
-            </SlideInFromLeft>
+              <Button 
+                size="lg" 
+                onClick={onExplore}
+                className="w-full sm:w-auto px-8 py-6 text-lg"
+              >
+                <MapTrifold className="w-5 h-5 mr-2" weight="fill" />
+                Explore Territories
+                <ArrowRight className="w-5 h-5 ml-2" weight="bold" />
+              </Button>
+            </div>
 
-            <SlideInFromRight className="space-y-4">
-              <StaggeredContainer staggerDelay={0.1} className="grid grid-cols-1 gap-4">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4">
                 {stats.map((stat) => {
                   const Icon = stat.icon;
                   return (
@@ -128,26 +112,24 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
                     </Card>
                   );
                 })}
-              </StaggeredContainer>
+              </div>
 
-              <FadeInWhenVisible delay={0.4}>
-                <Card className="bg-accent/20 border-accent/30">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 rounded-lg bg-accent">
-                        <CurrencyDollar className="w-5 h-5 text-white" weight="fill" />
-                      </div>
-                      <div className="space-y-1">
-                        <h4 className="font-semibold">Simple Monthly Pricing</h4>
-                        <p className="text-sm text-muted-foreground">
-                          Just $45/month to own exclusive lead rights in your territory. No hidden fees.
-                        </p>
-                      </div>
+              <Card className="bg-accent/20 border-accent/30">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-lg bg-accent">
+                      <CurrencyDollar className="w-5 h-5 text-white" weight="fill" />
                     </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-            </SlideInFromRight>
+                    <div className="space-y-1">
+                      <h4 className="font-semibold">Simple Monthly Pricing</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Just $45/month to own exclusive lead rights in your territory. No hidden fees.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </CardContent>
       </Card>
