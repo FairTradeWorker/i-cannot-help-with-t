@@ -130,7 +130,7 @@ function isRetryable(status: number): boolean {
     HTTP_STATUS.TOO_MANY_REQUESTS,
     HTTP_STATUS.SERVICE_UNAVAILABLE,
     HTTP_STATUS.INTERNAL_SERVER_ERROR,
-  ].includes(status);
+  ].some(s => s === status);
 }
 
 // ============================================================================
