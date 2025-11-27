@@ -37,7 +37,9 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@babel/core": "^7.27.1",
     "@types/react": "~19.1.0",
+    "babel-preset-expo": "~13.2.1",
     "typescript": "~5.9.2"
   },
   "private": true
