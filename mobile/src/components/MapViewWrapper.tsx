@@ -1,6 +1,6 @@
-import React, { forwardRef, useState, useEffect } from 'react';
+import React, { forwardRef, useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, NativeModules } from 'react-native';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { MapPin } from 'lucide-react-native';
 
 // Define prop types locally to avoid importing from react-native-maps at module level
@@ -46,13 +46,62 @@ interface MapPolylineProps {
   [key: string]: any;
 }
 
+// Constant for Expo Go execution environment string value
+const EXPO_GO_EXECUTION_ENV = 'storeClient';
+
 // Check if running in Expo Go (where native modules aren't available)
-const isExpoGo = Constants.appOwnership === 'expo';
+// Use executionEnvironment for SDK 54+, with fallback to appOwnership for older SDKs
+const isExpoGo = (() => {
+  try {
+    // Debug logging in development
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Constants.executionEnvironment:', Constants.executionEnvironment);
+      console.log('[MapViewWrapper] ExecutionEnvironment.StoreClient value:', ExecutionEnvironment.StoreClient);
+      console.log('[MapViewWrapper] Constants.appOwnership:', Constants.appOwnership);
+    }
+    
+    // Primary check: executionEnvironment (recommended for SDK 54+)
+    // Cast to string for comparison to handle any type mismatches
+    const execEnv = String(Constants.executionEnvironment || '');
+    const storeClientValue = String(ExecutionEnvironment.StoreClient || EXPO_GO_EXECUTION_ENV);
+    
+    if (execEnv === storeClientValue || execEnv === EXPO_GO_EXECUTION_ENV) {
+      if (__DEV__) {
+        console.log('[MapViewWrapper] Detected Expo Go via executionEnvironment');
+      }
+      return true;
+    }
+    
+    // Fallback check: appOwnership for older SDKs or edge cases
+    // Note: appOwnership is deprecated and may be null in EAS builds
+    if (Constants.appOwnership === 'expo') {
+      if (__DEV__) {
+        console.log('[MapViewWrapper] Detected Expo Go via appOwnership');
+      }
+      return true;
+    }
+  } catch (e) {
+    // If Constants access fails, log the error in dev mode
+    // Assume Expo Go to prevent crashes from TurboModuleRegistry.getEnforcing
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Error checking environment:', e);
+    }
+    // Be conservative: assume Expo Go if we can't determine, to prevent native module errors
+    return true;
+  }
+  return false;
+})();
 
 // Check if the native maps module is available BEFORE attempting to load react-native-maps
 // This prevents the TurboModuleRegistry.getEnforcing error from being thrown
 const checkNativeModuleAvailable = (): boolean => {
-  if (isExpoGo) return false;
+  // Always return false for Expo Go - maps are never available there
+  if (isExpoGo) {
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Detected Expo Go environment, maps unavailable');
+    }
+    return false;
+  }
   
   try {
     // Try to access TurboModuleRegistry to check if maps module exists
@@ -60,45 +109,97 @@ const checkNativeModuleAvailable = (): boolean => {
     const { TurboModuleRegistry } = require('react-native');
     if (TurboModuleRegistry && typeof TurboModuleRegistry.get === 'function') {
       const turboModule = TurboModuleRegistry.get('RNMapsAirModule');
-      if (turboModule) return true;
+      if (__DEV__) {
+        console.log('[MapViewWrapper] TurboModuleRegistry.get result:', turboModule !== null && turboModule !== undefined);
+      }
+      if (turboModule !== null && turboModule !== undefined) {
+        return true;
+      }
     }
-  } catch {
+  } catch (e) {
     // TurboModuleRegistry check failed, try legacy NativeModules
+    if (__DEV__) {
+      console.log('[MapViewWrapper] TurboModuleRegistry check failed:', e);
+    }
   }
   
   try {
     // Fallback to legacy NativeModules check
-    if (NativeModules && (NativeModules.AirMapModule || NativeModules.RNMapsAirModule)) {
+    const hasAirMapModule = NativeModules && NativeModules.AirMapModule !== undefined && NativeModules.AirMapModule !== null;
+    const hasRNMapsAirModule = NativeModules && NativeModules.RNMapsAirModule !== undefined && NativeModules.RNMapsAirModule !== null;
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Legacy NativeModules check - AirMapModule:', hasAirMapModule, 'RNMapsAirModule:', hasRNMapsAirModule);
+    }
+    if (hasAirMapModule || hasRNMapsAirModule) {
       return true;
     }
-  } catch {
+  } catch (e) {
     // Legacy check also failed
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Legacy NativeModules check failed:', e);
+    }
   }
   
   return false;
 };
 
-// Lazy load MapView to handle cases where native module is not available
-let MapViewComponent: any = null;
-let MarkerComponent: React.ComponentType<any> | null = null;
-let PolygonComponent: React.ComponentType<any> | null = null;
-let PolylineComponent: React.ComponentType<any> | null = null;
+// Cache for loaded map components - loaded lazily on first use
+interface MapComponents {
+  MapView: any;
+  Marker: React.ComponentType<any>;
+  Polygon: React.ComponentType<any>;
+  Polyline: React.ComponentType<any>;
+}
 
-// Check native module availability first, before any require
-const nativeModuleAvailable = checkNativeModuleAvailable();
+let cachedMapComponents: MapComponents | null = null;
+let mapLoadAttempted = false;
+let mapLoadError: Error | null = null;
 
-// Only try to load react-native-maps if native module is confirmed available
-if (nativeModuleAvailable) {
+// Lazy load map components - only called when actually needed
+const loadMapComponents = (): MapComponents | null => {
+  // Return cached result if already attempted
+  if (mapLoadAttempted) {
+    return cachedMapComponents;
+  }
+  
+  mapLoadAttempted = true;
+  
+  // Don't even try if we know native module isn't available
+  if (!checkNativeModuleAvailable()) {
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Skipping map load - native module not available');
+    }
+    return null;
+  }
+  
   try {
     const maps = require('react-native-maps');
-    MapViewComponent = maps.default;
-    MarkerComponent = maps.Marker;
-    PolygonComponent = maps.Polygon;
-    PolylineComponent = maps.Polyline;
+    cachedMapComponents = {
+      MapView: maps.default,
+      Marker: maps.Marker,
+      Polygon: maps.Polygon,
+      Polyline: maps.Polyline,
+    };
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Successfully loaded react-native-maps');
+    }
+    return cachedMapComponents;
   } catch (error) {
-    console.log('react-native-maps failed to load, using fallback:', error);
+    mapLoadError = error as Error;
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Failed to load react-native-maps:', error);
+    }
+    return null;
   }
-}
+};
+
+// Get cached map components (fast path for already-loaded components)
+const getMapComponents = (): MapComponents | null => {
+  if (mapLoadAttempted) {
+    return cachedMapComponents;
+  }
+  return loadMapComponents();
+};
 
 interface MapFallbackProps {
   style?: any;
@@ -120,48 +221,59 @@ const MapFallback: React.FC<MapFallbackProps> = ({ style }) => (
 
 // Check if maps are available at runtime
 export const isMapsAvailable = (): boolean => {
-  // Use the cached result from module initialization
-  return nativeModuleAvailable && MapViewComponent !== null;
+  const components = getMapComponents();
+  return components !== null;
 };
 
 // Wrapper component that handles the availability check
 export const MapViewWrapper = forwardRef<any, MapViewProps>((props, ref) => {
   const [mapsAvailable, setMapsAvailable] = useState<boolean | null>(null);
+  const mapComponentsRef = useRef<MapComponents | null>(null);
 
   useEffect(() => {
-    // Check availability on mount
-    setMapsAvailable(isMapsAvailable());
+    // Load map components on mount (after React has initialized)
+    const components = loadMapComponents();
+    mapComponentsRef.current = components;
+    setMapsAvailable(components !== null);
   }, []);
 
-  // Still checking
+  // Still loading
   if (mapsAvailable === null) {
     return <MapFallback style={props.style} />;
   }
 
   // Maps not available
-  if (!mapsAvailable || !MapViewComponent) {
+  if (!mapsAvailable || !mapComponentsRef.current) {
     return <MapFallback style={props.style}>{props.children}</MapFallback>;
   }
 
   // Maps available, render the actual component
+  const MapViewComponent = mapComponentsRef.current.MapView;
   return <MapViewComponent ref={ref} {...props} />;
 });
 
 MapViewWrapper.displayName = 'MapViewWrapper';
 
 // Re-export map components with fallback wrappers
+// These use the cached components from getMapComponents() which returns immediately if already loaded
 export const Marker: React.FC<MapMarkerProps> = (props) => {
-  if (!MarkerComponent) return null;
+  const components = getMapComponents();
+  if (!components?.Marker) return null;
+  const MarkerComponent = components.Marker;
   return <MarkerComponent {...props} />;
 };
 
 export const Polygon: React.FC<MapPolygonProps> = (props) => {
-  if (!PolygonComponent) return null;
+  const components = getMapComponents();
+  if (!components?.Polygon) return null;
+  const PolygonComponent = components.Polygon;
   return <PolygonComponent {...props} />;
 };
 
 export const Polyline: React.FC<MapPolylineProps> = (props) => {
-  if (!PolylineComponent) return null;
+  const components = getMapComponents();
+  if (!components?.Polyline) return null;
+  const PolylineComponent = components.Polyline;
   return <PolylineComponent {...props} />;
 };
 
