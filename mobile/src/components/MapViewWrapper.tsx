@@ -93,7 +93,7 @@ const isExpoGo = (() => {
 })();
 
 // Check if the native maps module is available BEFORE attempting to load react-native-maps
-// This prevents the TurboModuleRegistry.getEnforcing error from being thrown
+// With react-native-maps 1.20.1, we use the legacy NativeModules check (no TurboModules)
 const checkNativeModuleAvailable = (): boolean => {
   // Always return false for Expo Go - maps are never available there
   if (isExpoGo) {
@@ -104,43 +104,18 @@ const checkNativeModuleAvailable = (): boolean => {
   }
   
   try {
-    // Try to access TurboModuleRegistry to check if maps module exists
-    // Using get() instead of getEnforcing() to avoid throwing an error
-    const { TurboModuleRegistry } = require('react-native');
-    if (TurboModuleRegistry && typeof TurboModuleRegistry.get === 'function') {
-      const turboModule = TurboModuleRegistry.get('RNMapsAirModule');
-      if (__DEV__) {
-        console.log('[MapViewWrapper] TurboModuleRegistry.get result:', turboModule !== null && turboModule !== undefined);
-      }
-      if (turboModule !== null && turboModule !== undefined) {
-        return true;
-      }
+    // Check for the legacy AirMapModule (used by react-native-maps 1.20.1)
+    const hasAirMapModule = NativeModules?.AirMapModule != null;
+    if (__DEV__) {
+      console.log('[MapViewWrapper] NativeModules.AirMapModule available:', hasAirMapModule);
     }
+    return hasAirMapModule;
   } catch (e) {
-    // TurboModuleRegistry check failed, try legacy NativeModules
     if (__DEV__) {
-      console.log('[MapViewWrapper] TurboModuleRegistry check failed:', e);
+      console.log('[MapViewWrapper] NativeModules check failed:', e);
     }
+    return false;
   }
-  
-  try {
-    // Fallback to legacy NativeModules check
-    const hasAirMapModule = NativeModules && NativeModules.AirMapModule !== undefined && NativeModules.AirMapModule !== null;
-    const hasRNMapsAirModule = NativeModules && NativeModules.RNMapsAirModule !== undefined && NativeModules.RNMapsAirModule !== null;
-    if (__DEV__) {
-      console.log('[MapViewWrapper] Legacy NativeModules check - AirMapModule:', hasAirMapModule, 'RNMapsAirModule:', hasRNMapsAirModule);
-    }
-    if (hasAirMapModule || hasRNMapsAirModule) {
-      return true;
-    }
-  } catch (e) {
-    // Legacy check also failed
-    if (__DEV__) {
-      console.log('[MapViewWrapper] Legacy NativeModules check failed:', e);
-    }
-  }
-  
-  return false;
 };
 
 // Cache for loaded map components - loaded lazily on first use
