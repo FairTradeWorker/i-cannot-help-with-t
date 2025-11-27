@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mobile Dark Mode Theme Variables */
+/* Mobile Theme Variables - Light Mode */
 :root {
   --color-background: #f8fafc;
   --color-foreground: #0f172a;
@@ -19,6 +19,7 @@
   --color-border: #e2e8f0;
 }
 
+/* Mobile Theme Variables - Dark Mode */
 .dark {
   --color-background: #1a1a2e;
   --color-foreground: #f8fafc;
