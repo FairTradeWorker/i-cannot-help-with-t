@@ -1,0 +1,241 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "submit": "Enviar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "viewAll": "Ver Todo",
+    "learnMore": "Más Información",
+    "getStarted": "Comenzar",
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "yes": "Sí",
+    "no": "No",
+    "confirm": "Confirmar",
+    "success": "Éxito",
+    "welcome": "Bienvenido"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "territories": "Territorios",
+    "jobs": "Trabajos",
+    "contractors": "Contratistas",
+    "homeowner": "Propietario",
+    "contractor": "Contratista",
+    "subcontractor": "Subcontratista",
+    "api": "API",
+    "partners": "Socios",
+    "warranty": "Garantía",
+    "messages": "Mensajes",
+    "notifications": "Notificaciones",
+    "payment": "Pago",
+    "profile": "Perfil",
+    "dashboard": "Panel"
+  },
+  "home": {
+    "postJob": "Publicar un Trabajo",
+    "postJobDescription": "Obtén presupuestos de contratistas calificados en tu área",
+    "availableTerritories": "Territorios Disponibles",
+    "activeJobs": "Trabajos Activos",
+    "verifiedContractors": "Contratistas Verificados",
+    "apiAccess": "Acceso API",
+    "zeroFees": "Cero Comisiones para Contratistas",
+    "earningsGuarantee": "Garantía del 100% de Ganancias",
+    "platformFee": "Tarifa de Plataforma",
+    "joinAsContractor": "Únete como Contratista",
+    "jobPaymentExample": "Ejemplo de Pago de Trabajo de $10,000",
+    "howMoneyFlows": "Cómo fluye el dinero"
+  },
+  "jobs": {
+    "title": "Trabajos",
+    "postNew": "Publicar Nuevo Trabajo",
+    "browseJobs": "Explorar Trabajos",
+    "myJobs": "Mis Trabajos",
+    "jobDetails": "Detalles del Trabajo",
+    "status": {
+      "draft": "Borrador",
+      "posted": "Publicado",
+      "bidding": "En Subasta",
+      "assigned": "Asignado",
+      "inProgress": "En Progreso",
+      "completed": "Completado",
+      "disputed": "En Disputa"
+    },
+    "urgency": {
+      "normal": "Normal",
+      "urgent": "Urgente",
+      "emergency": "Emergencia"
+    },
+    "estimatedCost": "Costo Estimado",
+    "actualCost": "Costo Real",
+    "laborHours": "Horas de Trabajo",
+    "materials": "Materiales",
+    "scopeDetails": "Detalles del Alcance"
+  },
+  "contractors": {
+    "title": "Contratistas",
+    "verified": "Verificado",
+    "rating": "Calificación",
+    "completedJobs": "Trabajos Completados",
+    "hourlyRate": "Tarifa por Hora",
+    "serviceRadius": "Radio de Servicio",
+    "availability": {
+      "available": "Disponible",
+      "busy": "Ocupado",
+      "unavailable": "No Disponible"
+    },
+    "skills": "Habilidades",
+    "licenses": "Licencias",
+    "insurance": "Seguro",
+    "viewProfile": "Ver Perfil",
+    "contactContractor": "Contactar Contratista"
+  },
+  "territories": {
+    "title": "Territorios",
+    "claimTerritory": "Reclamar Territorio",
+    "availableTerritories": "Territorios Disponibles",
+    "claimedTerritories": "Territorios Reclamados",
+    "myTerritories": "Mis Territorios",
+    "pricing": "Precios de Territorios",
+    "first10Free": "Primeros 10 GRATIS",
+    "perMonth": "/mes",
+    "exclusiveLeadRights": "Derechos exclusivos de leads",
+    "onePerEntity": "Una licencia por Individuo/LLC/Corporación",
+    "searchByZip": "Buscar por código postal",
+    "searchByCity": "Buscar por ciudad",
+    "searchByState": "Buscar por estado"
+  },
+  "payments": {
+    "title": "Pagos",
+    "makePayment": "Realizar Pago",
+    "paymentHistory": "Historial de Pagos",
+    "paymentMethods": "Métodos de Pago",
+    "addPaymentMethod": "Agregar Método de Pago",
+    "amount": "Monto",
+    "status": {
+      "pending": "Pendiente",
+      "processing": "Procesando",
+      "completed": "Completado",
+      "failed": "Fallido",
+      "refunded": "Reembolsado"
+    },
+    "financeOptions": {
+      "fullPayment": "Pago Completo",
+      "installments": "Cuotas",
+      "financing": "Financiamiento"
+    },
+    "securePayment": "Pago Seguro",
+    "escrowProtection": "Protección de Depósito"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar Todo como Leído",
+    "clearAll": "Limpiar Todo",
+    "noNotifications": "Sin Notificaciones",
+    "allCaughtUp": "¡Estás al día!",
+    "unread": "Sin Leer",
+    "types": {
+      "jobPosted": "Trabajo Publicado",
+      "bidReceived": "Oferta Recibida",
+      "bidAccepted": "Oferta Aceptada",
+      "message": "Nuevo Mensaje",
+      "milestoneCompleted": "Hito Completado",
+      "paymentReceived": "Pago Recibido",
+      "ratingReceived": "Calificación Recibida"
+    }
+  },
+  "messages": {
+    "title": "Mensajes",
+    "newMessage": "Nuevo Mensaje",
+    "typeMessage": "Escribe un mensaje...",
+    "send": "Enviar",
+    "noMessages": "Aún no hay mensajes",
+    "startConversation": "Iniciar una conversación"
+  },
+  "api": {
+    "title": "API de Inteligencia",
+    "marketplace": "Mercado de API",
+    "documentation": "Documentación",
+    "apiKeys": "Claves API",
+    "generateKey": "Generar Clave API",
+    "usage": "Uso",
+    "pricing": "Precios",
+    "perMonth": "/mes",
+    "endpoints": {
+      "aiScope": "API de Alcance IA",
+      "instantQuote": "API de Cotización Instantánea",
+      "contractorMatch": "API de Búsqueda de Contratistas",
+      "demandHeatmap": "API de Mapa de Demanda"
+    },
+    "learningMetrics": "Métricas de Aprendizaje",
+    "accuracy": "Precisión",
+    "totalCalls": "Total de Llamadas API"
+  },
+  "warranty": {
+    "title": "Garantía",
+    "coverage": "Cobertura",
+    "fileClaim": "Presentar Reclamo",
+    "claimHistory": "Historial de Reclamos",
+    "warrantyDetails": "Detalles de Garantía"
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu Contraseña?",
+    "resetPassword": "Restablecer Contraseña",
+    "createAccount": "Crear Cuenta",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "selectRole": "Selecciona tu rol",
+    "roles": {
+      "homeowner": "Propietario",
+      "contractor": "Contratista",
+      "subcontractor": "Subcontratista",
+      "operator": "Operador de Territorio"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "editProfile": "Editar Perfil",
+    "personalInfo": "Información Personal",
+    "accountSettings": "Configuración de Cuenta",
+    "notificationPreferences": "Preferencias de Notificación",
+    "billingPayments": "Facturación y Pagos",
+    "securitySettings": "Configuración de Seguridad"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Por favor intenta de nuevo.",
+    "networkError": "Error de red. Por favor verifica tu conexión.",
+    "unauthorized": "No estás autorizado para realizar esta acción.",
+    "notFound": "El recurso solicitado no fue encontrado.",
+    "validationError": "Por favor verifica tu información e intenta de nuevo.",
+    "serverError": "Error del servidor. Por favor intenta más tarde."
+  },
+  "footer": {
+    "termsOfService": "Términos de Servicio",
+    "privacyPolicy": "Política de Privacidad",
+    "contactUs": "Contáctanos",
+    "about": "Acerca de",
+    "careers": "Carreras",
+    "blog": "Blog",
+    "copyright": "© 2025 FairTradeWorker. Todos los derechos reservados."
+  }
+}

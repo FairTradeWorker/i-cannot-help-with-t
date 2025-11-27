@@ -68,6 +68,7 @@ import { WarrantySection } from '@/components/WarrantySection';
 import { FileAClaim } from '@/components/FileAClaim';
 import { UnifiedJobPost } from '@/components/UnifiedJobPost';
 import { NotificationsPage } from '@/components/NotificationsPage';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
@@ -487,6 +488,8 @@ function App() {
                   <CreditCard className="w-4 h-4" />
                 </Button>
               </motion.div>
+
+              <ThemeToggle />
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
