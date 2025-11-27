@@ -1,0 +1,21 @@
+# FairTradeWorker Robots.txt
+# https://fairtradeworker.com/robots.txt
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow private/admin areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/private/
+Disallow: /*.json$
+
+# Allow specific JSON-LD structured data
+Allow: /manifest.json
+
+# Crawl delay (be nice to servers)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://fairtradeworker.com/sitemap.xml

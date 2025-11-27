@@ -1,0 +1,241 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "submit": "Soumettre",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "viewAll": "Voir Tout",
+    "learnMore": "En Savoir Plus",
+    "getStarted": "Commencer",
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se Déconnecter",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "help": "Aide",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "yes": "Oui",
+    "no": "Non",
+    "confirm": "Confirmer",
+    "success": "Succès",
+    "welcome": "Bienvenue"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "territories": "Territoires",
+    "jobs": "Travaux",
+    "contractors": "Entrepreneurs",
+    "homeowner": "Propriétaire",
+    "contractor": "Entrepreneur",
+    "subcontractor": "Sous-traitant",
+    "api": "API",
+    "partners": "Partenaires",
+    "warranty": "Garantie",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "payment": "Paiement",
+    "profile": "Profil",
+    "dashboard": "Tableau de Bord"
+  },
+  "home": {
+    "postJob": "Publier un Travail",
+    "postJobDescription": "Obtenez des devis d'entrepreneurs qualifiés dans votre région",
+    "availableTerritories": "Territoires Disponibles",
+    "activeJobs": "Travaux Actifs",
+    "verifiedContractors": "Entrepreneurs Vérifiés",
+    "apiAccess": "Accès API",
+    "zeroFees": "Zéro Frais pour les Entrepreneurs",
+    "earningsGuarantee": "Garantie de 100% des Revenus",
+    "platformFee": "Frais de Plateforme",
+    "joinAsContractor": "Rejoindre en tant qu'Entrepreneur",
+    "jobPaymentExample": "Exemple de Paiement de Travail de 10 000 $",
+    "howMoneyFlows": "Comment l'argent circule"
+  },
+  "jobs": {
+    "title": "Travaux",
+    "postNew": "Publier un Nouveau Travail",
+    "browseJobs": "Parcourir les Travaux",
+    "myJobs": "Mes Travaux",
+    "jobDetails": "Détails du Travail",
+    "status": {
+      "draft": "Brouillon",
+      "posted": "Publié",
+      "bidding": "En Enchère",
+      "assigned": "Attribué",
+      "inProgress": "En Cours",
+      "completed": "Terminé",
+      "disputed": "En Litige"
+    },
+    "urgency": {
+      "normal": "Normal",
+      "urgent": "Urgent",
+      "emergency": "Urgence"
+    },
+    "estimatedCost": "Coût Estimé",
+    "actualCost": "Coût Réel",
+    "laborHours": "Heures de Travail",
+    "materials": "Matériaux",
+    "scopeDetails": "Détails du Périmètre"
+  },
+  "contractors": {
+    "title": "Entrepreneurs",
+    "verified": "Vérifié",
+    "rating": "Note",
+    "completedJobs": "Travaux Terminés",
+    "hourlyRate": "Taux Horaire",
+    "serviceRadius": "Rayon de Service",
+    "availability": {
+      "available": "Disponible",
+      "busy": "Occupé",
+      "unavailable": "Indisponible"
+    },
+    "skills": "Compétences",
+    "licenses": "Licences",
+    "insurance": "Assurance",
+    "viewProfile": "Voir le Profil",
+    "contactContractor": "Contacter l'Entrepreneur"
+  },
+  "territories": {
+    "title": "Territoires",
+    "claimTerritory": "Réclamer un Territoire",
+    "availableTerritories": "Territoires Disponibles",
+    "claimedTerritories": "Territoires Réclamés",
+    "myTerritories": "Mes Territoires",
+    "pricing": "Tarification des Territoires",
+    "first10Free": "10 Premiers GRATUITS",
+    "perMonth": "/mois",
+    "exclusiveLeadRights": "Droits exclusifs sur les prospects",
+    "onePerEntity": "Une licence par Individu/LLC/Société",
+    "searchByZip": "Rechercher par code postal",
+    "searchByCity": "Rechercher par ville",
+    "searchByState": "Rechercher par état"
+  },
+  "payments": {
+    "title": "Paiements",
+    "makePayment": "Effectuer un Paiement",
+    "paymentHistory": "Historique des Paiements",
+    "paymentMethods": "Méthodes de Paiement",
+    "addPaymentMethod": "Ajouter une Méthode de Paiement",
+    "amount": "Montant",
+    "status": {
+      "pending": "En Attente",
+      "processing": "En Traitement",
+      "completed": "Terminé",
+      "failed": "Échoué",
+      "refunded": "Remboursé"
+    },
+    "financeOptions": {
+      "fullPayment": "Paiement Intégral",
+      "installments": "Versements",
+      "financing": "Financement"
+    },
+    "securePayment": "Paiement Sécurisé",
+    "escrowProtection": "Protection par Séquestre"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout Marquer comme Lu",
+    "clearAll": "Tout Effacer",
+    "noNotifications": "Aucune Notification",
+    "allCaughtUp": "Vous êtes à jour !",
+    "unread": "Non Lu",
+    "types": {
+      "jobPosted": "Travail Publié",
+      "bidReceived": "Offre Reçue",
+      "bidAccepted": "Offre Acceptée",
+      "message": "Nouveau Message",
+      "milestoneCompleted": "Étape Terminée",
+      "paymentReceived": "Paiement Reçu",
+      "ratingReceived": "Évaluation Reçue"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "newMessage": "Nouveau Message",
+    "typeMessage": "Écrivez un message...",
+    "send": "Envoyer",
+    "noMessages": "Pas encore de messages",
+    "startConversation": "Démarrer une conversation"
+  },
+  "api": {
+    "title": "API d'Intelligence",
+    "marketplace": "Marché API",
+    "documentation": "Documentation",
+    "apiKeys": "Clés API",
+    "generateKey": "Générer une Clé API",
+    "usage": "Utilisation",
+    "pricing": "Tarification",
+    "perMonth": "/mois",
+    "endpoints": {
+      "aiScope": "API Portée IA",
+      "instantQuote": "API Devis Instantané",
+      "contractorMatch": "API Correspondance Entrepreneur",
+      "demandHeatmap": "API Carte de Demande"
+    },
+    "learningMetrics": "Métriques d'Apprentissage",
+    "accuracy": "Précision",
+    "totalCalls": "Total des Appels API"
+  },
+  "warranty": {
+    "title": "Garantie",
+    "coverage": "Couverture",
+    "fileClaim": "Déposer une Réclamation",
+    "claimHistory": "Historique des Réclamations",
+    "warrantyDetails": "Détails de la Garantie"
+  },
+  "auth": {
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se Déconnecter",
+    "email": "Email",
+    "password": "Mot de Passe",
+    "confirmPassword": "Confirmer le Mot de Passe",
+    "forgotPassword": "Mot de Passe Oublié ?",
+    "resetPassword": "Réinitialiser le Mot de Passe",
+    "createAccount": "Créer un Compte",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "selectRole": "Sélectionnez votre rôle",
+    "roles": {
+      "homeowner": "Propriétaire",
+      "contractor": "Entrepreneur",
+      "subcontractor": "Sous-traitant",
+      "operator": "Opérateur de Territoire"
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Modifier le Profil",
+    "personalInfo": "Informations Personnelles",
+    "accountSettings": "Paramètres du Compte",
+    "notificationPreferences": "Préférences de Notification",
+    "billingPayments": "Facturation et Paiements",
+    "securitySettings": "Paramètres de Sécurité"
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action.",
+    "notFound": "La ressource demandée n'a pas été trouvée.",
+    "validationError": "Veuillez vérifier vos informations et réessayer.",
+    "serverError": "Erreur serveur. Veuillez réessayer plus tard."
+  },
+  "footer": {
+    "termsOfService": "Conditions d'Utilisation",
+    "privacyPolicy": "Politique de Confidentialité",
+    "contactUs": "Nous Contacter",
+    "about": "À Propos",
+    "careers": "Carrières",
+    "blog": "Blog",
+    "copyright": "© 2025 FairTradeWorker. Tous droits réservés."
+  }
+}
