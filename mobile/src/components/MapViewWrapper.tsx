@@ -46,6 +46,9 @@ interface MapPolylineProps {
   [key: string]: any;
 }
 
+// Constant for Expo Go execution environment string value
+const EXPO_GO_EXECUTION_ENV = 'storeClient';
+
 // Check if running in Expo Go (where native modules aren't available)
 // Use executionEnvironment for SDK 54+, with fallback to appOwnership for older SDKs
 const isExpoGo = (() => {
@@ -60,9 +63,9 @@ const isExpoGo = (() => {
     // Primary check: executionEnvironment (recommended for SDK 54+)
     // Cast to string for comparison to handle any type mismatches
     const execEnv = String(Constants.executionEnvironment || '');
-    const storeClientValue = String(ExecutionEnvironment.StoreClient || 'storeClient');
+    const storeClientValue = String(ExecutionEnvironment.StoreClient || EXPO_GO_EXECUTION_ENV);
     
-    if (execEnv === storeClientValue || execEnv === 'storeClient') {
+    if (execEnv === storeClientValue || execEnv === EXPO_GO_EXECUTION_ENV) {
       if (__DEV__) {
         console.log('[MapViewWrapper] Detected Expo Go via executionEnvironment');
       }
@@ -78,12 +81,13 @@ const isExpoGo = (() => {
       return true;
     }
   } catch (e) {
-    // If Constants access fails, assume we're not in a proper environment
-    // and should use fallback - be conservative and assume Expo Go
+    // If Constants access fails, log the error in dev mode
+    // Assume Expo Go to prevent crashes from TurboModuleRegistry.getEnforcing
     if (__DEV__) {
       console.log('[MapViewWrapper] Error checking environment:', e);
     }
-    return true; // Safer to assume Expo Go if we can't determine
+    // Be conservative: assume Expo Go if we can't determine, to prevent native module errors
+    return true;
   }
   return false;
 })();
@@ -182,9 +186,19 @@ const loadMapComponents = (): MapComponents | null => {
     return cachedMapComponents;
   } catch (error) {
     mapLoadError = error as Error;
-    console.log('[MapViewWrapper] Failed to load react-native-maps:', error);
+    if (__DEV__) {
+      console.log('[MapViewWrapper] Failed to load react-native-maps:', error);
+    }
     return null;
   }
+};
+
+// Get cached map components (fast path for already-loaded components)
+const getMapComponents = (): MapComponents | null => {
+  if (mapLoadAttempted) {
+    return cachedMapComponents;
+  }
+  return loadMapComponents();
 };
 
 interface MapFallbackProps {
@@ -207,7 +221,7 @@ const MapFallback: React.FC<MapFallbackProps> = ({ style }) => (
 
 // Check if maps are available at runtime
 export const isMapsAvailable = (): boolean => {
-  const components = loadMapComponents();
+  const components = getMapComponents();
   return components !== null;
 };
 
@@ -241,22 +255,23 @@ export const MapViewWrapper = forwardRef<any, MapViewProps>((props, ref) => {
 MapViewWrapper.displayName = 'MapViewWrapper';
 
 // Re-export map components with fallback wrappers
+// These use the cached components from getMapComponents() which returns immediately if already loaded
 export const Marker: React.FC<MapMarkerProps> = (props) => {
-  const components = loadMapComponents();
+  const components = getMapComponents();
   if (!components?.Marker) return null;
   const MarkerComponent = components.Marker;
   return <MarkerComponent {...props} />;
 };
 
 export const Polygon: React.FC<MapPolygonProps> = (props) => {
-  const components = loadMapComponents();
+  const components = getMapComponents();
   if (!components?.Polygon) return null;
   const PolygonComponent = components.Polygon;
   return <PolygonComponent {...props} />;
 };
 
 export const Polyline: React.FC<MapPolylineProps> = (props) => {
-  const components = loadMapComponents();
+  const components = getMapComponents();
   if (!components?.Polyline) return null;
   const PolylineComponent = components.Polyline;
   return <PolylineComponent {...props} />;
