@@ -14,6 +14,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import type { User } from '@/lib/types';
 
 interface UserProfileProps {
@@ -23,15 +25,21 @@ interface UserProfileProps {
 export function UserProfile({ user }: UserProfileProps) {
   if (!user) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card rounded-3xl p-12 text-center"
+      <GlassSurface
+        id="user-profile-empty"
+        context={getDefaultGlassContext()}
+        className="rounded-3xl"
       >
-        <UserIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-        <h2 className="text-2xl font-bold mb-2">No Profile Found</h2>
-        <p className="text-muted-foreground">Please sign in to view your profile</p>
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-12 text-center border-0 bg-transparent"
+        >
+          <UserIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+          <h2 className="text-2xl font-bold mb-2">No Profile Found</h2>
+          <p className="text-muted-foreground">Please sign in to view your profile</p>
+        </motion.div>
+      </GlassSurface>
     );
   }
 
@@ -43,11 +51,20 @@ export function UserProfile({ user }: UserProfileProps) {
 
   return (
     <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card rounded-3xl p-8"
+      <GlassSurface
+        id="user-profile-main"
+        context={{
+          ...getDefaultGlassContext(),
+          serviceCategory: 'profile',
+          confidence: 0.95
+        }}
+        className="rounded-3xl"
       >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-8 border-0 bg-transparent"
+        >
         <div className="flex flex-col md:flex-row gap-8 items-start">
           <motion.div
             whileHover={{ scale: 1.05 }}
@@ -106,21 +123,27 @@ export function UserProfile({ user }: UserProfileProps) {
             transition={{ delay: index * 0.1 }}
             whileHover={{ y: -4 }}
           >
-            <Card className="glass-card rounded-3xl p-6 text-center">
-              <stat.icon className="w-8 h-8 mx-auto mb-3 text-primary" weight="duotone" />
-              <p className="text-3xl font-bold mb-1">{stat.value}</p>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-            </Card>
+              <Card className="rounded-3xl p-6 text-center border-0 bg-transparent">
+                <stat.icon className="w-8 h-8 mx-auto mb-3 text-primary" weight="duotone" />
+                <p className="text-3xl font-bold mb-1">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </Card>
+            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="glass-card rounded-3xl p-8"
+      <GlassSurface
+        id="user-profile-activity"
+        context={getDefaultGlassContext()}
+        className="rounded-3xl"
       >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="p-8 border-0 bg-transparent"
+        >
         <h2 className="text-2xl font-bold mb-6">Recent Activity</h2>
         <div className="space-y-4">
           {[1, 2, 3].map((item, index) => (
@@ -142,6 +165,7 @@ export function UserProfile({ user }: UserProfileProps) {
           ))}
         </div>
       </motion.div>
+      </GlassSurface>
     </div>
   );
 }

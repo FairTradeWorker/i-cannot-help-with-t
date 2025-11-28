@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   CreditCard,
   Money,
@@ -166,11 +168,20 @@ export function PaymentScreen({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="glass-card p-6">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Lightning className="w-6 h-6 text-primary" weight="fill" />
-              Payment Plan
-            </h3>
+          <GlassSurface
+            id="payment-plan"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'payment',
+              urgency: 'medium',
+              confidence: 0.9
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Lightning className="w-6 h-6 text-primary" weight="fill" />
+                Payment Plan
+              </h3>
             <Separator className="mb-4" />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -235,12 +246,22 @@ export function PaymentScreen({
               })}
             </div>
           </Card>
+          </GlassSurface>
 
-          <Card className="glass-card p-6">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Wallet className="w-6 h-6 text-primary" weight="fill" />
-              Payment Method
-            </h3>
+          <GlassSurface
+            id="payment-method"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'payment',
+              urgency: 'medium',
+              confidence: 0.85
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Wallet className="w-6 h-6 text-primary" weight="fill" />
+                Payment Method
+              </h3>
             <Separator className="mb-4" />
 
             <Tabs value={selectedMethod} onValueChange={(v) => setSelectedMethod(v as any)} className="mb-6">
@@ -419,12 +440,21 @@ export function PaymentScreen({
               </div>
             </div>
           </Card>
+          </GlassSurface>
 
-          <Card className="glass-card p-6">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Shield className="w-6 h-6 text-primary" weight="fill" />
-              Warranty Protection
-            </h3>
+          <GlassSurface
+            id="payment-warranty"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'payment',
+              confidence: 0.95
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Shield className="w-6 h-6 text-primary" weight="fill" />
+                Warranty Protection
+              </h3>
             <Separator className="mb-4" />
 
             <div className="space-y-3">
@@ -480,11 +510,21 @@ export function PaymentScreen({
         </div>
 
         <div className="space-y-6">
-          <Card className="glass-card p-6 sticky top-24">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Receipt className="w-6 h-6 text-primary" weight="fill" />
-              Payment Summary
-            </h3>
+          <GlassSurface
+            id="payment-summary"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'payment',
+              urgency: 'high',
+              confidence: 0.95
+            }}
+            className="sticky top-24"
+          >
+            <Card className="p-6 border-0 bg-transparent">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Receipt className="w-6 h-6 text-primary" weight="fill" />
+                Payment Summary
+              </h3>
             <Separator className="mb-4" />
 
             <div className="space-y-4">
