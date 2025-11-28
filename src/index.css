@@ -21,12 +21,12 @@
       radial-gradient(at 0% 50%, oklch(0.55 0.12 264 / 0.02) 0px, transparent 50%);
   }
   
-  /* Dark mode body with vibrant gradient accents */
+  /* Dark mode body with industrial gradient accents */
   .dark body {
     background-image: 
-      radial-gradient(at 30% 10%, oklch(0.75 0.18 200 / 0.08) 0px, transparent 45%),
-      radial-gradient(at 85% 15%, oklch(0.70 0.20 290 / 0.06) 0px, transparent 40%),
-      radial-gradient(at 10% 80%, oklch(0.72 0.16 165 / 0.05) 0px, transparent 50%);
+      radial-gradient(at 30% 10%, oklch(0.55 0.12 240 / 0.04) 0px, transparent 45%),
+      radial-gradient(at 85% 15%, oklch(0.50 0.10 220 / 0.03) 0px, transparent 40%),
+      radial-gradient(at 10% 80%, oklch(0.60 0.15 160 / 0.02) 0px, transparent 50%);
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -97,91 +97,99 @@
   --ease-map-zoom: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Dark mode - Vibrant Crypto Wallet inspired theme */
+/* Dark mode - Manly Industrial Palette */
 .dark {
-  --background: oklch(0.12 0.008 264);
-  --foreground: oklch(0.98 0.002 264);
+  /* Deep charcoal background */
+  --background: oklch(0.10 0.002 264);
+  --foreground: oklch(0.91 0.003 264);
   
-  --card: oklch(0.16 0.012 264 / 0.85);
-  --card-foreground: oklch(0.98 0.002 264);
+  /* Dark slate cards */
+  --card: oklch(0.15 0.005 264 / 0.85);
+  --card-foreground: oklch(0.91 0.003 264);
   
-  --popover: oklch(0.18 0.012 264 / 0.95);
-  --popover-foreground: oklch(0.98 0.002 264);
+  --popover: oklch(0.18 0.005 264 / 0.95);
+  --popover-foreground: oklch(0.91 0.003 264);
   
-  /* Vibrant cyan-blue primary */
-  --primary: oklch(0.75 0.18 200);
-  --primary-foreground: oklch(0.12 0.008 264);
+  /* Steel blue primary (Option 1) - Professional, industrial */
+  --primary: oklch(0.55 0.12 240);
+  --primary-foreground: oklch(0.98 0 0);
   
-  /* Vibrant teal/emerald secondary */
-  --secondary: oklch(0.72 0.16 165);
-  --secondary-foreground: oklch(0.12 0.008 264);
+  /* Construction orange alternative (uncomment to use instead of steel blue) */
+  /* --primary: oklch(0.65 0.18 35); */
+  /* --primary-foreground: oklch(0.10 0.002 264); */
   
-  --muted: oklch(0.22 0.012 264);
-  --muted-foreground: oklch(0.68 0.008 264);
+  /* Gunmetal secondary */
+  --secondary: oklch(0.35 0.008 264);
+  --secondary-foreground: oklch(0.91 0.003 264);
   
-  /* Vibrant purple accent */
-  --accent: oklch(0.70 0.20 290);
-  --accent-foreground: oklch(0.12 0.008 264);
+  /* Medium gray muted */
+  --muted: oklch(0.23 0.005 264);
+  --muted-foreground: oklch(0.45 0.005 264);
   
-  --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(0.98 0.002 264);
+  /* Steel blue accent (matches primary) */
+  --accent: oklch(0.55 0.12 240);
+  --accent-foreground: oklch(0.98 0 0);
   
-  /* Vibrant success green */
-  --success: oklch(0.75 0.18 155);
-  --success-foreground: oklch(0.12 0.008 264);
+  --destructive: oklch(0.60 0.20 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  
+  /* Industrial green success */
+  --success: oklch(0.60 0.15 160);
+  --success-foreground: oklch(0.10 0.002 264);
   
   /* Warm amber warning */
-  --warning: oklch(0.80 0.16 70);
-  --warning-foreground: oklch(0.12 0.008 264);
+  --warning: oklch(0.75 0.15 70);
+  --warning-foreground: oklch(0.10 0.002 264);
   
-  --border: oklch(0.32 0.015 264 / 0.4);
-  --input: oklch(0.22 0.012 264);
-  --ring: oklch(0.75 0.18 200);
+  /* Gunmetal borders */
+  --border: oklch(0.23 0.005 264 / 0.5);
+  --input: oklch(0.20 0.005 264);
+  --ring: oklch(0.55 0.12 240);
   
-  --glass-bg: oklch(0.16 0.012 264 / 0.80);
-  --glass-border: oklch(0.40 0.015 264 / 0.25);
+  --glass-bg: oklch(0.15 0.005 264 / 0.80);
+  --glass-border: oklch(0.25 0.005 264 / 0.3);
   
-  /* Vibrant gradient backgrounds for dark mode - use with bg-gradient-accent/bg-gradient-success classes */
-  --gradient-accent: linear-gradient(135deg, oklch(0.75 0.18 200) 0%, oklch(0.70 0.20 290) 100%);
-  --gradient-success: linear-gradient(135deg, oklch(0.72 0.16 165) 0%, oklch(0.75 0.18 155) 100%);
+  /* Industrial gradient backgrounds */
+  --gradient-accent: linear-gradient(135deg, oklch(0.55 0.12 240) 0%, oklch(0.50 0.10 220) 100%);
+  --gradient-success: linear-gradient(135deg, oklch(0.60 0.15 160) 0%, oklch(0.55 0.12 150) 100%);
 }
 
-/* Vibrant accent utility classes */
-.vibrant-cyan {
-  color: oklch(0.75 0.18 200);
+/* Industrial accent utility classes */
+.steel-blue {
+  color: oklch(0.55 0.12 240);
 }
 
-.vibrant-purple {
-  color: oklch(0.70 0.20 290);
+.construction-orange {
+  color: oklch(0.65 0.18 35);
 }
 
-.vibrant-teal {
-  color: oklch(0.72 0.16 165);
+.industrial-green {
+  color: oklch(0.60 0.15 160);
 }
 
-.vibrant-green {
-  color: oklch(0.75 0.18 155);
+.gunmetal {
+  color: oklch(0.35 0.008 264);
 }
 
-.vibrant-amber {
-  color: oklch(0.80 0.16 70);
+.warm-amber {
+  color: oklch(0.75 0.15 70);
 }
 
-/* Vibrant background accents */
-.bg-vibrant-cyan {
-  background-color: oklch(0.75 0.18 200);
+/* Industrial background accents */
+.bg-steel-blue {
+  background-color: oklch(0.55 0.12 240);
 }
 
-.bg-vibrant-purple {
-  background-color: oklch(0.70 0.20 290);
+.bg-construction-orange {
+  background-color: oklch(0.65 0.18 35);
 }
 
-.bg-vibrant-teal {
-  background-color: oklch(0.72 0.16 165);
+.bg-industrial-green {
+  background-color: oklch(0.60 0.15 160);
 }
 
-.bg-vibrant-green {
-  background-color: oklch(0.75 0.18 155);
+.bg-gunmetal {
+  background-color: oklch(0.35 0.008 264);
 }
 
 /* Gradient accent backgrounds */
@@ -193,17 +201,17 @@
   background: var(--gradient-success);
 }
 
-/* Dark mode glow effects for vibrant elements */
-.dark .glow-cyan {
-  box-shadow: 0 0 20px oklch(0.75 0.18 200 / 0.4), 0 0 40px oklch(0.75 0.18 200 / 0.2);
+/* Dark mode glow effects for industrial elements */
+.dark .glow-steel {
+  box-shadow: 0 0 20px oklch(0.55 0.12 240 / 0.3), 0 0 40px oklch(0.55 0.12 240 / 0.15);
 }
 
-.dark .glow-purple {
-  box-shadow: 0 0 20px oklch(0.70 0.20 290 / 0.4), 0 0 40px oklch(0.70 0.20 290 / 0.2);
+.dark .glow-orange {
+  box-shadow: 0 0 20px oklch(0.65 0.18 35 / 0.3), 0 0 40px oklch(0.65 0.18 35 / 0.15);
 }
 
-.dark .glow-teal {
-  box-shadow: 0 0 20px oklch(0.72 0.16 165 / 0.4), 0 0 40px oklch(0.72 0.16 165 / 0.2);
+.dark .glow-green {
+  box-shadow: 0 0 20px oklch(0.60 0.15 160 / 0.3), 0 0 40px oklch(0.60 0.15 160 / 0.15);
 }
 
 .glass {
@@ -236,7 +244,7 @@
 
 .dark .glass-card {
   box-shadow: 
-    0 0 0 0.5px oklch(0.75 0.18 200 / 0.1) inset,
+    0 0 0 0.5px oklch(0.55 0.12 240 / 0.08) inset,
     0 2px 8px -2px oklch(0 0 0 / 0.3),
     0 12px 24px -8px oklch(0 0 0 / 0.4);
 }
@@ -252,10 +260,438 @@
 
 .dark .glass-hover:hover {
   box-shadow: 
-    0 0 0 0.5px oklch(0.75 0.18 200 / 0.15) inset,
-    0 4px 16px -2px oklch(0.75 0.18 200 / 0.15),
+    0 0 0 0.5px oklch(0.55 0.12 240 / 0.12) inset,
+    0 4px 16px -2px oklch(0.55 0.12 240 / 0.12),
     0 24px 40px -8px oklch(0 0 0 / 0.5),
-    0 0 0 1px oklch(0.75 0.18 200 / 0.2);
+    0 0 0 1px oklch(0.55 0.12 240 / 0.18);
+}
+
+/* ============================================
+   GLASSMORPHISM 2.0 - HOLOGRAPHIC SURFACE ENGINE
+   ============================================ */
+
+/* Base glass surface with dynamic properties */
+.glass-surface {
+  position: relative;
+  background: linear-gradient(
+    var(--light-angle, 135deg),
+    var(--glass-tint, rgba(255,255,255,0.1)),
+    rgba(255,255,255,0.05)
+  );
+  backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
+  border: var(--glass-border-width, 1px) solid var(--glass-border-color, rgba(255,255,255,0.2));
+  box-shadow: 
+    0 8px 32px var(--glass-shadow-color, rgba(0,0,0,0.1)),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  opacity: var(--glass-opacity, 0.7);
+  
+  /* GPU acceleration */
+  transform: translateZ(0);
+  will-change: backdrop-filter, opacity, transform, box-shadow;
+  contain: layout style paint;
+  
+  /* Smooth transitions */
+  transition: 
+    backdrop-filter 0.3s ease,
+    opacity 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Depth-based glass layers */
+.glass-surface[data-glass-depth="0"] {
+  --glass-blur: 4px;
+  --glass-opacity: 0.4;
+}
+
+.glass-surface[data-glass-depth="1"] {
+  --glass-blur: 8px;
+  --glass-opacity: 0.6;
+}
+
+.glass-surface[data-glass-depth="2"] {
+  --glass-blur: 12px;
+  --glass-opacity: 0.75;
+}
+
+.glass-surface[data-glass-depth="3"] {
+  --glass-blur: 16px;
+  --glass-opacity: 0.85;
+}
+
+.glass-surface[data-glass-depth="4"] {
+  --glass-blur: 20px;
+  --glass-opacity: 0.9;
+}
+
+/* Urgency-based styling */
+.glass-surface[data-glass-urgency="high"] {
+  animation: urgency-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes urgency-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px var(--glass-shadow-color),
+      0 0 40px var(--glass-shadow-color),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    border-color: var(--glass-border-color);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px var(--glass-shadow-color),
+      0 0 80px var(--glass-shadow-color),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    border-color: var(--glass-border-color);
+  }
+}
+
+/* Refraction layer - cursor-tracking light */
+.glass-refraction-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.glass-refraction-layer::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: calc(var(--light-y, 50%) - 100%);
+  left: calc(var(--light-x, 50%) - 100%);
+  background: radial-gradient(
+    circle at center,
+    rgba(255,255,255,0.3) 0%,
+    rgba(255,255,255,0.1) 30%,
+    transparent 60%
+  );
+  mix-blend-mode: overlay;
+  opacity: var(--glass-refraction, 0.2);
+  transition: opacity 0.3s ease;
+  transform: translateZ(0);
+}
+
+.glass-refraction-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    var(--light-angle, 135deg),
+    rgba(255,0,0,0.05),
+    rgba(0,255,0,0.05),
+    rgba(0,0,255,0.05)
+  );
+  mix-blend-mode: screen;
+  opacity: calc(var(--glass-refraction, 0.2) * 0.5);
+  pointer-events: none;
+}
+
+/* Progress shimmer for in-progress items */
+.glass-progress-shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.glass-progress-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.3) calc(var(--progress, 0) * 100%),
+    rgba(255,255,255,0.3) calc(var(--progress, 0) * 100% + 10%),
+    transparent calc(var(--progress, 0) * 100% + 20%)
+  );
+  animation: shimmer-sweep 2s ease-in-out infinite;
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Phase glass - confidence-based transparency */
+.glass-surface[data-confidence="low"] {
+  --glass-opacity: 0.4;
+  --glass-blur: 20px;
+  animation: uncertainty-pulse 2s ease-in-out infinite;
+}
+
+.glass-surface[data-confidence="high"] {
+  --glass-opacity: 0.9;
+  --glass-blur: 8px;
+}
+
+@keyframes uncertainty-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Weather-reactive glass effects */
+.glass-surface[data-weather="storm"] {
+  background: linear-gradient(
+    135deg,
+    rgba(30,41,59,0.9),
+    rgba(71,85,105,0.6)
+  );
+  position: relative;
+}
+
+.glass-surface[data-weather="storm"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.1) 2px,
+    rgba(255,255,255,0.1) 4px
+  );
+  animation: rain-streaks 0.3s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@keyframes rain-streaks {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+.glass-surface[data-weather="sunny"] {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.9),
+    rgba(255,235,59,0.3)
+  );
+  box-shadow: 
+    0 8px 32px rgba(255,193,7,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.glass-surface[data-weather="snow"] {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.8),
+    rgba(240,253,250,0.6)
+  );
+  position: relative;
+}
+
+.glass-surface[data-weather="snow"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 60% 70%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.8), transparent);
+  background-size: 200% 200%;
+  animation: snow-fall 3s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@keyframes snow-fall {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Service category glass tints */
+.glass-surface[data-service="roofing"] {
+  --service-tint: rgba(71,85,105,0.3);
+}
+
+.glass-surface[data-service="plumbing"] {
+  --service-tint: rgba(20,184,166,0.3);
+}
+
+.glass-surface[data-service="electrical"] {
+  --service-tint: rgba(250,204,21,0.3);
+}
+
+.glass-surface[data-service="landscaping"] {
+  --service-tint: rgba(34,197,94,0.3);
+}
+
+.glass-surface[data-service="hvac"] {
+  --service-tint: rgba(59,130,246,0.3);
+}
+
+.glass-surface[data-service="construction"] {
+  --service-tint: rgba(249,115,22,0.3);
+}
+
+/* Time-of-day glass themes */
+.glass-surface[data-time="morning"] {
+  --time-tint: rgba(59,130,246,0.1);
+  --time-shadow: rgba(59,130,246,0.2);
+}
+
+.glass-surface[data-time="afternoon"] {
+  --time-tint: rgba(255,255,255,0.1);
+  --time-shadow: rgba(0,0,0,0.1);
+}
+
+.glass-surface[data-time="evening"] {
+  --time-tint: rgba(251,146,60,0.1);
+  --time-shadow: rgba(249,115,22,0.2);
+}
+
+.glass-surface[data-time="night"] {
+  --time-tint: rgba(30,58,138,0.2);
+  --time-shadow: rgba(0,0,0,0.4);
+}
+
+/* Magnetic snap effect */
+.glass-surface[data-snapping="true"] {
+  animation: magnetic-snap 0.3s ease-out;
+}
+
+@keyframes magnetic-snap {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(34,197,94,0.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Glass elasticity on resize */
+.glass-surface[data-resizing="true"] {
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+              height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Throw-and-catch animation */
+@keyframes throw-away {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--throw-x, 2000px), var(--throw-y, 2000px)) rotate(var(--throw-rotate, 45deg));
+    opacity: 0;
+  }
+}
+
+.glass-surface[data-throwing="true"] {
+  animation: throw-away 0.4s ease-out forwards;
+}
+
+/* Workflow state glass colors */
+.glass-surface[data-state="posted"] {
+  --state-tint: rgba(59,130,246,0.15);
+  animation: gentle-float 3s ease-in-out infinite;
+}
+
+.glass-surface[data-state="bidding"] {
+  --state-tint: rgba(234,179,8,0.15);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.glass-surface[data-state="accepted"] {
+  --state-tint: rgba(34,197,94,0.15);
+}
+
+.glass-surface[data-state="in-progress"] {
+  --state-tint: rgba(249,115,22,0.15);
+}
+
+.glass-surface[data-state="completed"] {
+  --state-tint: rgba(168,85,247,0.15);
+  animation: fade-back 2s ease-out forwards;
+}
+
+.glass-surface[data-state="paid"] {
+  --state-tint: rgba(34,197,94,0.1);
+  opacity: 0.4;
+}
+
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(234,179,8,0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(234,179,8,0.5);
+  }
+}
+
+@keyframes fade-back {
+  0% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+/* Content layer */
+.glass-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .glass-surface {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .glass-surface {
+    --glass-blur: calc(var(--glass-blur, 12px) * 0.6);
+    backdrop-filter: blur(8px) saturate(150%);
+    -webkit-backdrop-filter: blur(8px) saturate(150%);
+  }
+  
+  .glass-refraction-layer::before,
+  .glass-refraction-layer::after {
+    display: none; /* Disable expensive effects on mobile */
+  }
 }
 
 button, .button-interactive {

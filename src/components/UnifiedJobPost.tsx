@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Upload, X, Camera, VideoCamera } from '@phosphor-icons/react';
+import { ArrowLeft, Upload, X, Camera, VideoCamera, Wrench } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,36 +10,31 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
+import type { ServiceSelection } from '@/types/service-categories';
+import { getServiceInfo } from '@/types/service-categories';
 
 interface UnifiedJobPostProps {
   onJobCreated: (jobData: any) => void;
   onCancel: () => void;
+  serviceSelection?: ServiceSelection;
 }
 
-export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) {
+interface ServiceSpecificFields {
+  [key: string]: string | number | boolean;
+}
+
+export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initialSelection }: UnifiedJobPostProps) {
   const [activeTab, setActiveTab] = useState<'photo' | 'video' | 'text'>('photo');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
+  const [serviceSelection, setServiceSelection] = useState<ServiceSelection | null>(initialSelection || null);
+  const [showServiceMenu, setShowServiceMenu] = useState(false);
   const [timeline, setTimeline] = useState('');
   const [budget, setBudget] = useState('');
   const [photos, setPhotos] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-
-  const categories = [
-    'Roofing',
-    'HVAC',
-    'Plumbing',
-    'Electrical',
-    'Landscaping',
-    'Painting',
-    'Carpentry',
-    'Flooring',
-    'Kitchen Remodel',
-    'Bathroom Remodel',
-    'General Repairs',
-    'Other',
-  ];
+  const [serviceFields, setServiceFields] = useState<ServiceSpecificFields>({});
 
   const timelines = [
     'Urgent (within 1 week)',
@@ -90,6 +85,192 @@ export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) 
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Auto-fill title when service is selected
+  const handleServiceSelect = (selection: ServiceSelection) => {
+    setServiceSelection(selection);
+    if (!title.trim()) {
+      setTitle(`${selection.service} - ${selection.subcategory}`);
+    }
+    setShowServiceMenu(false);
+  };
+
+  // Get dynamic form fields based on service
+  const getServiceSpecificFields = () => {
+    if (!serviceSelection) return null;
+
+    const serviceInfo = getServiceInfo(serviceSelection.service);
+    if (!serviceInfo) return null;
+
+    const service = serviceSelection.service.toLowerCase();
+    const categoryId = serviceSelection.categoryId;
+
+    // Roofing fields
+    if (service.includes('roofing') || categoryId === 'construction-heavy') {
+      if (service.includes('roof')) {
+        return (
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="roof-type">Roof Type</Label>
+              <Select
+                value={serviceFields.roofType as string || ''}
+                onValueChange={(v) => setServiceFields({ ...serviceFields, roofType: v })}
+              >
+                <SelectTrigger id="roof-type">
+                  <SelectValue placeholder="Select roof type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="asphalt">Asphalt Shingles</SelectItem>
+                  <SelectItem value="metal">Metal</SelectItem>
+                  <SelectItem value="tile">Tile</SelectItem>
+                  <SelectItem value="slate">Slate</SelectItem>
+                  <SelectItem value="flat">Flat Roof</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="square-footage">Square Footage</Label>
+              <Input
+                id="square-footage"
+                type="number"
+                placeholder="e.g., 2000"
+                value={serviceFields.squareFootage || ''}
+                onChange={(e) => setServiceFields({ ...serviceFields, squareFootage: parseInt(e.target.value) || 0 })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="stories">Number of Stories</Label>
+              <Select
+                value={serviceFields.stories as string || ''}
+                onValueChange={(v) => setServiceFields({ ...serviceFields, stories: v })}
+              >
+                <SelectTrigger id="stories">
+                  <SelectValue placeholder="Select stories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 Story</SelectItem>
+                  <SelectItem value="2">2 Stories</SelectItem>
+                  <SelectItem value="3+">3+ Stories</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="current-material">Current Material</Label>
+              <Input
+                id="current-material"
+                placeholder="e.g., Asphalt shingles"
+                value={serviceFields.currentMaterial as string || ''}
+                onChange={(e) => setServiceFields({ ...serviceFields, currentMaterial: e.target.value })}
+              />
+            </div>
+          </div>
+        );
+      }
+    }
+
+    // Plumbing fields
+    if (categoryId === 'kitchen-bath-plumbing' || service.includes('plumb')) {
+      return (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="issue-type">Issue Type</Label>
+            <Select
+              value={serviceFields.issueType as string || ''}
+              onValueChange={(v) => setServiceFields({ ...serviceFields, issueType: v })}
+            >
+              <SelectTrigger id="issue-type">
+                <SelectValue placeholder="Select issue type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="leak">Leak</SelectItem>
+                <SelectItem value="clog">Clog/Drain</SelectItem>
+                <SelectItem value="installation">Installation</SelectItem>
+                <SelectItem value="repair">Repair</SelectItem>
+                <SelectItem value="replacement">Replacement</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="water-shutoff">Water Shutoff Status</Label>
+            <Select
+              value={serviceFields.waterShutoff as string || ''}
+              onValueChange={(v) => setServiceFields({ ...serviceFields, waterShutoff: v })}
+            >
+              <SelectTrigger id="water-shutoff">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="accessible">Easily Accessible</SelectItem>
+                <SelectItem value="difficult">Difficult to Access</SelectItem>
+                <SelectItem value="unknown">Unknown Location</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="urgency-level">Urgency Level</Label>
+            <Select
+              value={serviceFields.urgencyLevel as string || ''}
+              onValueChange={(v) => setServiceFields({ ...serviceFields, urgencyLevel: v })}
+            >
+              <SelectTrigger id="urgency-level">
+                <SelectValue placeholder="Select urgency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="emergency">Emergency (Active Leak)</SelectItem>
+                <SelectItem value="urgent">Urgent (Within 24hrs)</SelectItem>
+                <SelectItem value="normal">Normal</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      );
+    }
+
+    // Electrical fields
+    if (categoryId === 'electrical-hvac-tech' || service.includes('electr')) {
+      return (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="panel-type">Panel Type</Label>
+            <Select
+              value={serviceFields.panelType as string || ''}
+              onValueChange={(v) => setServiceFields({ ...serviceFields, panelType: v })}
+            >
+              <SelectTrigger id="panel-type">
+                <SelectValue placeholder="Select panel type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="breaker">Circuit Breaker</SelectItem>
+                <SelectItem value="fuse">Fuse Box</SelectItem>
+                <SelectItem value="unknown">Unknown</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="circuit-count">Circuit Count</Label>
+            <Input
+              id="circuit-count"
+              type="number"
+              placeholder="e.g., 20"
+              value={serviceFields.circuitCount || ''}
+              onChange={(e) => setServiceFields({ ...serviceFields, circuitCount: parseInt(e.target.value) || 0 })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="last-inspection">Last Inspection Date</Label>
+            <Input
+              id="last-inspection"
+              type="date"
+              value={serviceFields.lastInspection as string || ''}
+              onChange={(e) => setServiceFields({ ...serviceFields, lastInspection: e.target.value })}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   const handleSubmit = () => {
     if (!title.trim()) {
       toast.error('Please enter a job title');
@@ -99,8 +280,8 @@ export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) 
       toast.error('Please enter a job description');
       return;
     }
-    if (!category) {
-      toast.error('Please select a category');
+    if (!serviceSelection) {
+      toast.error('Please select a service');
       return;
     }
     if (!timeline) {
@@ -115,7 +296,8 @@ export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) 
     onJobCreated({
       title,
       description,
-      category,
+      serviceSelection,
+      serviceFields,
       timeline,
       budget,
       photos: activeTab === 'photo' ? photos : [],
@@ -271,23 +453,47 @@ export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) 
                   />
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="category">Category *</Label>
-                    <Select value={category} onValueChange={setCategory}>
-                      <SelectTrigger id="category">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                <div>
+                  <Label htmlFor="service">Service Type *</Label>
+                  <div className="space-y-2">
+                    {serviceSelection ? (
+                      <div className="flex items-center gap-2 p-3 border rounded-lg bg-card/50">
+                        <Wrench className="w-5 h-5 text-primary" />
+                        <div className="flex-1">
+                          <div className="font-semibold">{serviceSelection.service}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {serviceSelection.subcategory} • {serviceSelection.category}
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowServiceMenu(true)}
+                        >
+                          Change
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setShowServiceMenu(true)}
+                      >
+                        <Wrench className="w-4 h-4 mr-2" />
+                        Select Service
+                      </Button>
+                    )}
                   </div>
+                </div>
 
+                {serviceSelection && getServiceSpecificFields() && (
+                  <div className="pt-2 border-t">
+                    <Label className="text-sm font-semibold mb-3 block">Service-Specific Details</Label>
+                    {getServiceSpecificFields()}
+                  </div>
+                )}
+
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="timeline">Timeline *</Label>
                     <Select value={timeline} onValueChange={setTimeline}>
@@ -303,17 +509,17 @@ export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) 
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="budget">Budget (Optional)</Label>
-                  <Input
-                    id="budget"
-                    type="text"
-                    placeholder="e.g., $5,000 - $8,000"
-                    value={budget}
-                    onChange={(e) => setBudget(e.target.value)}
-                  />
+                  <div>
+                    <Label htmlFor="budget">Budget (Optional)</Label>
+                    <Input
+                      id="budget"
+                      type="text"
+                      placeholder="e.g., $5,000 - $8,000"
+                      value={budget}
+                      onChange={(e) => setBudget(e.target.value)}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -414,6 +620,13 @@ export function UnifiedJobPost({ onJobCreated, onCancel }: UnifiedJobPostProps) 
           </CardContent>
         </Card>
       </Tabs>
+
+      <ServiceCategoryMegaMenu
+        open={showServiceMenu}
+        onClose={() => setShowServiceMenu(false)}
+        onSelect={handleServiceSelect}
+        title="Select a Service"
+      />
     </motion.div>
   );
 }

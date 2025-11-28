@@ -544,7 +544,7 @@ fairtradeworker/
 │   │   ├── TerritoryMapPage.tsx
 │   │   ├── MessagesView.tsx
 │   │   ├── JobBrowser.tsx
-│   │   └── ... (50+ components)
+│   │   └── ... (148+ components)
 │   │
 │   ├── api/                # API endpoints
 │   │   └── intelligence/   # 50 Intelligence APIs
@@ -721,8 +721,8 @@ fairtradeworker/
 ### 📊 Platform Metrics
 
 **Code:**
-- ~84,000 lines of production TypeScript/React code (Web + Mobile planned)
-- 50+ React components
+- ~55,000 lines of production TypeScript/React code (Web application)
+- 148+ React components
 - 15+ comprehensive documentation files
 - 100% TypeScript type coverage
 - Zero runtime errors

@@ -10,10 +10,14 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { dataStore } from '@/lib/store';
 import { JobFeedbackModal } from '@/components/JobFeedbackModal';
 import type { Job, User, Bid, Message } from '@/lib/types';
+import { getServiceInfo } from '@/types/service-categories';
+import type { ServiceSelection } from '@/types/service-categories';
 
 interface JobDetailsProps {
   job: Job;
@@ -34,6 +38,10 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
   const [actualMaterialsCost, setActualMaterialsCost] = useState('');
   const [actualLaborHours, setActualLaborHours] = useState('');
   const [showCompletionForm, setShowCompletionForm] = useState(false);
+  const [serviceBidFields, setServiceBidFields] = useState<Record<string, any>>({});
+
+  // Get service selection from job
+  const jobService = (job as any).serviceSelection as ServiceSelection | undefined;
 
   const isContractor = user.role === 'contractor';
   const isHomeowner = user.role === 'homeowner';
@@ -67,8 +75,17 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
         },
         message: bidMessage,
         status: 'pending',
-        createdAt: new Date()
+        createdAt: new Date(),
+        breakdown: {
+          materials: serviceBidFields.materialsCost || 0,
+          labor: serviceBidFields.laborCost || 0,
+          overhead: serviceBidFields.overhead || 0,
+          profit: serviceBidFields.profit || 0
+        }
       };
+
+      // Add service-specific fields to bid data
+      (bid as any).serviceFields = serviceBidFields;
 
       await dataStore.addBidToJob(job.id, bid);
       
@@ -353,6 +370,9 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
                         />
                       </div>
                     </div>
+
+                    {/* Service-Specific Bid Fields */}
+                    {jobService && getServiceSpecificBidFields(jobService, serviceBidFields, setServiceBidFields)}
                     
                     <div>
                       <Label htmlFor="bidMessage">Message to Homeowner</Label>
@@ -662,4 +682,156 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
       )}
     </Dialog>
   );
+}
+
+// Helper function to render service-specific bid fields
+function getServiceSpecificBidFields(
+  serviceSelection: ServiceSelection,
+  fields: Record<string, any>,
+  setFields: (fields: Record<string, any>) => void
+) {
+  const service = serviceSelection.service.toLowerCase();
+  const categoryId = serviceSelection.categoryId;
+
+  // Roofing bid fields
+  if (service.includes('roofing') || categoryId === 'construction-heavy') {
+    if (service.includes('roof')) {
+      return (
+        <div className="space-y-4 pt-4 border-t">
+          <Label className="text-sm font-semibold">Roofing-Specific Details</Label>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="shingle-type">Shingle Type</Label>
+              <Select
+                value={fields.shingleType || ''}
+                onValueChange={(v) => setFields({ ...fields, shingleType: v })}
+              >
+                <SelectTrigger id="shingle-type">
+                  <SelectValue placeholder="Select shingle type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="asphalt-3tab">Asphalt 3-Tab</SelectItem>
+                  <SelectItem value="asphalt-architectural">Asphalt Architectural</SelectItem>
+                  <SelectItem value="metal">Metal</SelectItem>
+                  <SelectItem value="tile">Tile</SelectItem>
+                  <SelectItem value="slate">Slate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="warranty-years">Warranty (Years)</Label>
+              <Input
+                id="warranty-years"
+                type="number"
+                placeholder="e.g., 20"
+                value={fields.warrantyYears || ''}
+                onChange={(e) => setFields({ ...fields, warrantyYears: parseInt(e.target.value) || 0 })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="color-options">Color Options</Label>
+              <Input
+                id="color-options"
+                placeholder="e.g., Charcoal, Slate Gray"
+                value={fields.colorOptions || ''}
+                onChange={(e) => setFields({ ...fields, colorOptions: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="material-choice">Material Choice</Label>
+              <Input
+                id="material-choice"
+                placeholder="e.g., Premium shingles"
+                value={fields.materialChoice || ''}
+                onChange={(e) => setFields({ ...fields, materialChoice: e.target.value })}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  // Plumbing bid fields
+  if (categoryId === 'kitchen-bath-plumbing' || service.includes('plumb')) {
+    return (
+      <div className="space-y-4 pt-4 border-t">
+        <Label className="text-sm font-semibold">Plumbing-Specific Details</Label>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="parts-needed">Parts Needed</Label>
+            <Textarea
+              id="parts-needed"
+              placeholder="List required parts..."
+              value={fields.partsNeeded || ''}
+              onChange={(e) => setFields({ ...fields, partsNeeded: e.target.value })}
+              rows={3}
+            />
+          </div>
+          <div>
+            <Label htmlFor="emergency-fee">Emergency Fee ($)</Label>
+            <Input
+              id="emergency-fee"
+              type="number"
+              placeholder="0"
+              value={fields.emergencyFee || ''}
+              onChange={(e) => setFields({ ...fields, emergencyFee: parseFloat(e.target.value) || 0 })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="warranty-terms">Warranty Terms</Label>
+            <Input
+              id="warranty-terms"
+              placeholder="e.g., 1 year parts & labor"
+              value={fields.warrantyTerms || ''}
+              onChange={(e) => setFields({ ...fields, warrantyTerms: e.target.value })}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Electrical bid fields
+  if (categoryId === 'electrical-hvac-tech' || service.includes('electr')) {
+    return (
+      <div className="space-y-4 pt-4 border-t">
+        <Label className="text-sm font-semibold">Electrical-Specific Details</Label>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="permit-included"
+              checked={fields.permitIncluded || false}
+              onCheckedChange={(checked) => setFields({ ...fields, permitIncluded: checked })}
+            />
+            <Label htmlFor="permit-included" className="cursor-pointer">
+              Permit Included
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="inspection-scheduled"
+              checked={fields.inspectionScheduled || false}
+              onCheckedChange={(checked) => setFields({ ...fields, inspectionScheduled: checked })}
+            />
+            <Label htmlFor="inspection-scheduled" className="cursor-pointer">
+              Inspection Scheduled
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="code-compliant"
+              checked={fields.codeCompliant || false}
+              onCheckedChange={(checked) => setFields({ ...fields, codeCompliant: checked })}
+            />
+            <Label htmlFor="code-compliant" className="cursor-pointer">
+              Code Compliant
+            </Label>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }

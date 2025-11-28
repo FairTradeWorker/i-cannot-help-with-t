@@ -1,7 +1,7 @@
 # FairTradeWorker Architecture
 
 > **Version**: 1.0.0  
-> **Last Updated**: November 2025
+> **Last Updated**: January 2025
 
 ## Overview
 
@@ -673,4 +673,4 @@ See [README.md](README.md) for contribution guidelines.
 
 ---
 
-*Last updated: November 2025*
+*Last updated: January 2025*

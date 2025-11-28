@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales, Path, Brain } from '@phosphor-icons/react';
+import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales, Path, Brain, Funnel, Briefcase } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { dataStore } from '@/lib/store';
 import type { Job, User, Earnings } from '@/lib/types';
 import { JobBrowser } from './JobBrowser';
@@ -15,6 +18,8 @@ import { ComplianceDashboard } from './ComplianceDashboard';
 import { EstimateAccuracyTrend } from './EstimateAccuracyTrend';
 import { RouteOptimizer } from './RouteOptimizer';
 import { AILearningDashboard } from './AILearningDashboard';
+import { matchContractorsToJob, isBestMatch } from '@/lib/contractor-matching';
+import { SERVICE_CATEGORIES, getCategoryById } from '@/types/service-categories';
 
 interface ContractorDashboardProps {
   user?: User;
@@ -25,9 +30,13 @@ interface ContractorDashboardProps {
 export function ContractorDashboard({ user, subTab, isSubcontractor }: ContractorDashboardProps) {
   const [activeTab, setActiveTab] = useState(subTab || 'dashboard');
   const [myJobs, setMyJobs] = useState<Job[]>([]);
+  const [availableJobs, setAvailableJobs] = useState<Job[]>([]);
   const [earnings, setEarnings] = useState<Earnings | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [expandRelated, setExpandRelated] = useState(false);
+  const [sortBy, setSortBy] = useState<'match' | 'distance' | 'value' | 'urgency'>('match');
 
   useEffect(() => {
     if (user?.id) {
@@ -36,12 +45,19 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
   }, [user?.id]);
 
   const loadData = async () => {
-    if (!user?.id) return;
+    if (!user?.id || !user?.contractorProfile) return;
     
     setLoading(true);
     try {
       const jobs = await dataStore.getJobsForContractor(user.id);
       setMyJobs(jobs);
+      
+      // Load available jobs for matching
+      const allJobs = await dataStore.getJobs();
+      const postedJobs = allJobs.filter(j => 
+        j.status === 'posted' || j.status === 'bidding'
+      );
+      setAvailableJobs(postedJobs);
       
       const earningsData = await dataStore.getEarnings(user.id);
       setEarnings(earningsData);
@@ -51,6 +67,88 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
       setLoading(false);
     }
   };
+
+  // Get contractor's service specialties
+  const contractorSpecialties = useMemo(() => {
+    if (!user?.contractorProfile?.serviceSpecialties) return [];
+    return user.contractorProfile.serviceSpecialties;
+  }, [user]);
+
+  // Get unique category IDs from specialties
+  const specialtyCategories = useMemo(() => {
+    const categoryIds = new Set(contractorSpecialties.map(s => s.categoryId));
+    return Array.from(categoryIds);
+  }, [contractorSpecialties]);
+
+  // Filter and match jobs based on selected category
+  const filteredAndMatchedJobs = useMemo(() => {
+    if (!user || !user.contractorProfile) return [];
+
+    let jobsToFilter = availableJobs;
+
+    // Filter by category if selected
+    if (selectedCategory !== 'all') {
+      jobsToFilter = jobsToFilter.filter(job => {
+        // Check if job has serviceSelection matching category
+        const jobService = (job as any).serviceSelection;
+        if (jobService) {
+          if (expandRelated) {
+            // Include related categories (same main category)
+            const selectedCat = getCategoryById(selectedCategory);
+            const jobCat = getCategoryById(jobService.categoryId);
+            return jobCat?.id === selectedCat?.id || jobService.categoryId === selectedCategory;
+          }
+          return jobService.categoryId === selectedCategory;
+        }
+        return false;
+      });
+    } else if (!expandRelated) {
+      // Filter to only jobs matching contractor's specialties
+      jobsToFilter = jobsToFilter.filter(job => {
+        const jobService = (job as any).serviceSelection;
+        if (!jobService) return false;
+        return contractorSpecialties.some(spec => 
+          spec.categoryId === jobService.categoryId &&
+          spec.subcategoryId === jobService.subcategoryId &&
+          spec.services.includes(jobService.service)
+        );
+      });
+    }
+
+    // Match and rank jobs
+    const matchedJobs = jobsToFilter.map(job => {
+      const jobService = (job as any).serviceSelection;
+      if (!jobService) return { job, match: null };
+      
+      const matches = matchContractorsToJob([user], job, jobService);
+      return { job, match: matches[0] || null };
+    }).filter(({ match }) => match !== null);
+
+    // Sort by selected criteria
+    matchedJobs.sort((a, b) => {
+      if (!a.match || !b.match) return 0;
+      
+      switch (sortBy) {
+        case 'match':
+          return b.match.matchScore - a.match.matchScore;
+        case 'distance':
+          const distA = a.match.matchBreakdown.distanceScore;
+          const distB = b.match.matchBreakdown.distanceScore;
+          return distB - distA;
+        case 'value':
+          const valueA = a.job.estimatedCost.max;
+          const valueB = b.job.estimatedCost.max;
+          return valueB - valueA;
+        case 'urgency':
+          const urgencyOrder = { emergency: 3, urgent: 2, normal: 1 };
+          return urgencyOrder[b.job.urgency] - urgencyOrder[a.job.urgency];
+        default:
+          return 0;
+      }
+    });
+
+    return matchedJobs;
+  }, [availableJobs, user, selectedCategory, expandRelated, sortBy, contractorSpecialties]);
 
   const profile = user?.contractorProfile;
 
@@ -179,11 +277,110 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
           </TabsList>
 
           <TabsContent value="browse">
-            <JobBrowser 
-              user={user} 
-              onJobSelect={setSelectedJob}
-              onJobUpdated={loadData}
-            />
+            <div className="space-y-6">
+              {/* Service Category Filter */}
+              {contractorSpecialties.length > 0 && (
+                <Card className="p-4">
+                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <div className="flex items-center gap-4 flex-1">
+                      <div className="flex items-center gap-2">
+                        <Funnel className="w-5 h-5 text-muted-foreground" />
+                        <Label className="font-semibold">Filter by Service:</Label>
+                      </div>
+                      <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Services</SelectItem>
+                          {specialtyCategories.map(catId => {
+                            const category = getCategoryById(catId);
+                            const jobCount = filteredAndMatchedJobs.filter(({ job }) => {
+                              const jobService = (job as any).serviceSelection;
+                              return jobService?.categoryId === catId;
+                            }).length;
+                            return (
+                              <SelectItem key={catId} value={catId}>
+                                {category?.title || catId} ({jobCount})
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id="expand-related"
+                          checked={expandRelated}
+                          onCheckedChange={setExpandRelated}
+                        />
+                        <Label htmlFor="expand-related" className="text-sm">
+                          Expand to Related
+                        </Label>
+                      </div>
+                      <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+                        <SelectTrigger className="w-[150px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="match">Match Quality</SelectItem>
+                          <SelectItem value="distance">Distance</SelectItem>
+                          <SelectItem value="value">Job Value</SelectItem>
+                          <SelectItem value="urgency">Urgency</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {/* Service Category Tabs */}
+              {contractorSpecialties.length > 0 && selectedCategory === 'all' && (
+                <Tabs defaultValue={specialtyCategories[0] || 'all'} className="w-full">
+                  <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${specialtyCategories.length + 1}, minmax(0, 1fr))` }}>
+                    <TabsTrigger value="all">All ({filteredAndMatchedJobs.length})</TabsTrigger>
+                    {specialtyCategories.map(catId => {
+                      const category = getCategoryById(catId);
+                      const jobCount = filteredAndMatchedJobs.filter(({ job }) => {
+                        const jobService = (job as any).serviceSelection;
+                        return jobService?.categoryId === catId;
+                      }).length;
+                      return (
+                        <TabsTrigger key={catId} value={catId}>
+                          {category?.title || catId} ({jobCount})
+                        </TabsTrigger>
+                      );
+                    })}
+                  </TabsList>
+                  
+                  <TabsContent value="all" className="mt-6">
+                    <JobList jobs={filteredAndMatchedJobs} onJobSelect={setSelectedJob} />
+                  </TabsContent>
+                  
+                  {specialtyCategories.map(catId => (
+                    <TabsContent key={catId} value={catId} className="mt-6">
+                      <JobList
+                        jobs={filteredAndMatchedJobs.filter(({ job }) => {
+                          const jobService = (job as any).serviceSelection;
+                          return jobService?.categoryId === catId;
+                        })}
+                        onJobSelect={setSelectedJob}
+                      />
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              )}
+
+              {/* Default Job Browser if no specialties */}
+              {contractorSpecialties.length === 0 && (
+                <JobBrowser 
+                  user={user} 
+                  onJobSelect={setSelectedJob}
+                  onJobUpdated={loadData}
+                />
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="active">
@@ -340,6 +537,72 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
           onJobUpdated={loadData}
         />
       )}
+    </div>
+  );
+}
+
+// Job List Component with Match Quality
+function JobList({ jobs, onJobSelect }: { jobs: Array<{ job: Job; match: any }>; onJobSelect: (job: Job) => void }) {
+  if (jobs.length === 0) {
+    return (
+      <Card className="p-8 text-center">
+        <Briefcase className="w-16 h-16 text-muted-foreground mx-auto mb-4" weight="duotone" />
+        <h4 className="text-lg font-semibold mb-2">No Matching Jobs</h4>
+        <p className="text-muted-foreground">No jobs found for your specialties</p>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {jobs.map(({ job, match }) => (
+        <Card
+          key={job.id}
+          className="p-6 hover:border-primary/50 transition-colors cursor-pointer"
+          onClick={() => onJobSelect(job)}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-xl font-bold">{job.title}</h3>
+                {match && isBestMatch(match) && (
+                  <Badge className="bg-accent text-white">Best Match</Badge>
+                )}
+                {match && (
+                  <Badge variant="secondary">
+                    {Math.round(match.matchScore)}% Match
+                  </Badge>
+                )}
+                <Badge variant={job.urgency === 'emergency' ? 'destructive' : job.urgency === 'urgent' ? 'default' : 'secondary'}>
+                  {job.urgency}
+                </Badge>
+              </div>
+              <p className="text-muted-foreground mb-4 line-clamp-2">{job.description}</p>
+              <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                  <span>{job.address.city}, {job.address.state}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span>{job.laborHours}h</span>
+                </div>
+                {match && match.reasons.length > 0 && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    {match.reasons.slice(0, 2).join(' • ')}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-accent font-mono">
+                ${job.estimatedCost.max.toLocaleString()}
+              </p>
+              <p className="text-sm text-muted-foreground">{job.bids.length} bids</p>
+            </div>
+          </div>
+        </Card>
+      ))}
     </div>
   );
 }

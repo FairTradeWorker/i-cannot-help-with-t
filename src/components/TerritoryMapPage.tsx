@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useKV } from '@github/spark/hooks';
 import { 
@@ -13,13 +13,16 @@ import {
   Star,
   Buildings,
   Plus,
-  X
+  X,
+  Warning
 } from '@phosphor-icons/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Dialog,
   DialogContent,
@@ -32,6 +35,9 @@ import { toast } from 'sonner';
 import { US_STATES, type StateData } from '@/lib/us-states-data';
 import { territoryZips, type TerritoryZip } from '@/lib/territory-data';
 import { USMap } from './USMap';
+import { validateTerritoryClaim, recordTerritoryOwnership, getOwnedTerritories, type EntityType } from '@/lib/territory-validation';
+import { dataStore } from '@/lib/store';
+import type { User } from '@/lib/types';
 
 export function TerritoryMapPage() {
   const [view, setView] = useState<'map' | 'list'>('map');
@@ -40,6 +46,17 @@ export function TerritoryMapPage() {
   const [selectedTerritory, setSelectedTerritory] = useState<TerritoryZip | null>(null);
   const [showClaimDialog, setShowClaimDialog] = useState(false);
   const [claimedTerritories, setClaimedTerritories] = useKV<string[]>('claimed-territories', []);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [entityType, setEntityType] = useState<EntityType>('Individual');
+  const [taxId, setTaxId] = useState('');
+  const [email, setEmail] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [validating, setValidating] = useState(false);
+
+  // Load current user
+  useEffect(() => {
+    dataStore.getCurrentUser().then(setCurrentUser);
+  }, []);
 
   const territories = territoryZips.map(t => ({
     ...t,
@@ -58,21 +75,84 @@ export function TerritoryMapPage() {
     return matchesSearch && matchesState;
   });
 
-  const handleClaimTerritory = (territory: TerritoryZip) => {
+  const handleClaimTerritory = async (territory: TerritoryZip) => {
+    if (!currentUser) {
+      toast.error('Please log in to claim a territory');
+      return;
+    }
+
     setSelectedTerritory(territory);
     setShowClaimDialog(true);
+    setValidationError(null);
+    
+    // Pre-fill email from user
+    if (currentUser.email) {
+      setEmail(currentUser.email);
+    }
+
+    // Check if user already owns a territory
+    try {
+      const owned = await getOwnedTerritories(
+        entityType,
+        currentUser.email,
+        currentUser.id,
+        taxId || undefined
+      );
+      if (owned.length > 0) {
+        setValidationError(`You already own ${owned.length} territory/territories. Only one territory per entity is allowed.`);
+      }
+    } catch (error) {
+      console.error('Failed to check owned territories:', error);
+    }
   };
 
-  const confirmClaim = () => {
-    if (selectedTerritory) {
+  const validateClaim = async () => {
+    if (!selectedTerritory || !currentUser) return;
+
+    setValidating(true);
+    setValidationError(null);
+
+    try {
+      const validation = await validateTerritoryClaim({
+        entityType,
+        userId: currentUser.id,
+        email: email || currentUser.email,
+        taxId: taxId || undefined,
+        territoryId: selectedTerritory.zip
+      });
+
+      if (!validation.valid) {
+        setValidationError(validation.error || 'Validation failed');
+        setValidating(false);
+        return;
+      }
+
+      // Record ownership
+      if (validation.entityHash) {
+        await recordTerritoryOwnership(validation.entityHash, {
+          entityType,
+          userId: currentUser.id,
+          email: email || currentUser.email,
+          taxId: taxId || undefined,
+          territoryId: selectedTerritory.zip
+        });
+      }
+
       setClaimedTerritories(current => [...(current || []), selectedTerritory.zip]);
       
       toast.success('Territory Claimed!', {
-        description: `${selectedTerritory.city}, ${selectedTerritory.state} - $45/month for Exclusive Rights to Our Leads`,
+        description: `${selectedTerritory.city}, ${selectedTerritory.state} - Exclusive Rights to Our Leads`,
       });
       
       setShowClaimDialog(false);
       setSelectedTerritory(null);
+      setEntityType('Individual');
+      setTaxId('');
+      setEmail('');
+    } catch (error) {
+      setValidationError(error instanceof Error ? error.message : 'Failed to claim territory');
+    } finally {
+      setValidating(false);
     }
   };
 
@@ -330,12 +410,14 @@ export function TerritoryMapPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <Label className="text-sm text-muted-foreground">Monthly Price</Label>
+                  <Label className="text-sm text-muted-foreground">Price</Label>
                   <p className="text-2xl font-bold text-primary">
-                    ${selectedTerritory.monthlyPrice}/mo
+                    {claimedTerritories && claimedTerritories.length < 10 ? 'FREE' : `$${selectedTerritory.monthlyPrice}`}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Exclusive Rights to Our Leads
+                    {claimedTerritories && claimedTerritories.length < 10 
+                      ? 'First 10 territories FREE' 
+                      : 'One-time purchase'}
                   </p>
                 </div>
                 
@@ -367,16 +449,100 @@ export function TerritoryMapPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Entity Information */}
+              <div className="space-y-4 pt-4 border-t">
+                <Label className="text-sm font-semibold">Entity Information</Label>
+                <div>
+                  <Label htmlFor="entity-type">Entity Type *</Label>
+                  <Select value={entityType} onValueChange={(v: EntityType) => {
+                    setEntityType(v);
+                    if (v === 'Individual') {
+                      setTaxId('');
+                    }
+                    setValidationError(null);
+                  }}>
+                    <SelectTrigger id="entity-type">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Individual">Individual</SelectItem>
+                      <SelectItem value="LLC">LLC</SelectItem>
+                      <SelectItem value="Corporation">Corporation</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Only one territory per Individual/LLC/Corporation
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setValidationError(null);
+                    }}
+                    placeholder={currentUser?.email || 'your@email.com'}
+                  />
+                </div>
+
+                {(entityType === 'LLC' || entityType === 'Corporation') && (
+                  <div>
+                    <Label htmlFor="tax-id">Tax ID (EIN) *</Label>
+                    <Input
+                      id="tax-id"
+                      type="text"
+                      value={taxId}
+                      onChange={(e) => {
+                        // Format EIN (XX-XXXXXXX)
+                        const value = e.target.value.replace(/[^\d]/g, '');
+                        if (value.length <= 9) {
+                          const formatted = value.length > 2 
+                            ? `${value.slice(0, 2)}-${value.slice(2)}`
+                            : value;
+                          setTaxId(formatted);
+                        }
+                        setValidationError(null);
+                      }}
+                      placeholder="XX-XXXXXXX"
+                      maxLength={10}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Required for {entityType}. Format: XX-XXXXXXX
+                    </p>
+                  </div>
+                )}
+
+                {validationError && (
+                  <Alert variant="destructive">
+                    <Warning className="w-4 h-4" />
+                    <AlertDescription>{validationError}</AlertDescription>
+                  </Alert>
+                )}
+              </div>
             </div>
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowClaimDialog(false)}>
+            <Button variant="outline" onClick={() => {
+              setShowClaimDialog(false);
+              setValidationError(null);
+              setEntityType('Individual');
+              setTaxId('');
+              setEmail('');
+            }}>
               Cancel
             </Button>
-            <Button onClick={confirmClaim}>
+            <Button 
+              onClick={validateClaim}
+              disabled={validating || !!validationError}
+            >
               <CheckCircle className="w-4 h-4 mr-2" weight="fill" />
-              Confirm & Claim
+              {validating ? 'Validating...' : 'Confirm & Claim'}
             </Button>
           </DialogFooter>
         </DialogContent>

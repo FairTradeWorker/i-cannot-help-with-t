@@ -66,6 +66,19 @@ export interface ContractorProfile {
   territoryId?: string;
   operatorId?: string;
   specialties?: string[];
+  // New service category-based fields
+  serviceSpecialties?: {
+    categoryId: string;
+    subcategoryId: string;
+    services: string[];
+    yearsExperience: number;
+    certifications: string[];
+  }[];
+  portfolio?: {
+    serviceCategory: string;
+    subcategory: string;
+    photos: string[];
+  }[];
 }
 
 export interface HomeownerProfile {
@@ -81,6 +94,7 @@ export interface License {
   state: string;
   expiryDate: Date;
   verified: boolean;
+  validForCategories?: string[]; // Maps to service category IDs
 }
 
 export interface Insurance {
@@ -219,6 +233,24 @@ export interface Rating {
     comment: string;
     createdAt: Date;
   };
+  serviceCategory?: string; // Service category for this rating
+}
+
+export interface ContractorRating {
+  overallRating: number;
+  categoryRatings: {
+    categoryId: string;
+    categoryName: string;
+    rating: number;
+    jobsCompleted: number;
+    dimensions: {
+      quality: number;
+      timeliness: number;
+      communication: number;
+      pricing: number;
+      professionalism: number;
+    };
+  }[];
 }
 
 export interface Earnings {

@@ -6,12 +6,17 @@ import {
   Users,
   Briefcase,
   Package,
+  ChartBar,
 } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import type { Territory, OperatorProfile } from '@/lib/types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { dataStore } from '@/lib/store';
+import { SERVICE_CATEGORIES } from '@/types/service-categories';
+import type { Territory, OperatorProfile, Job } from '@/lib/types';
+import { useState, useEffect } from 'react';
 
 interface OperatorDashboardProps {
   operatorProfile: OperatorProfile;
@@ -19,9 +24,87 @@ interface OperatorDashboardProps {
 }
 
 export function OperatorDashboard({ operatorProfile, territories }: OperatorDashboardProps) {
+  const [serviceCategoryStats, setServiceCategoryStats] = useState<Record<string, {
+    jobs: number;
+    revenue: number;
+    contractors: number;
+    avgJobValue: number;
+  }>>({});
+  const [loading, setLoading] = useState(true);
+
   const roi = operatorProfile.totalInvestment > 0 
     ? ((operatorProfile.totalEarnings / operatorProfile.totalInvestment) * 100).toFixed(1)
     : '0';
+
+  useEffect(() => {
+    loadServiceCategoryStats();
+  }, [territories]);
+
+  const loadServiceCategoryStats = async () => {
+    setLoading(true);
+    try {
+      const allJobs = await dataStore.getJobs();
+      const territoryZipCodes = territories.flatMap(t => t.zipCodes);
+      
+      // Filter jobs in operator's territories
+      const territoryJobs = allJobs.filter(job => 
+        territoryZipCodes.includes(job.address.zip)
+      );
+
+      // Aggregate by service category
+      const stats: Record<string, {
+        jobs: number;
+        revenue: number;
+        contractors: Set<string>;
+        totalJobValue: number;
+      }> = {};
+
+      territoryJobs.forEach(job => {
+        const jobService = (job as any).serviceSelection;
+        if (!jobService) return;
+
+        const categoryId = jobService.categoryId;
+        if (!stats[categoryId]) {
+          stats[categoryId] = {
+            jobs: 0,
+            revenue: 0,
+            contractors: new Set(),
+            totalJobValue: 0
+          };
+        }
+
+        stats[categoryId].jobs++;
+        stats[categoryId].revenue += job.estimatedCost.max;
+        stats[categoryId].totalJobValue += job.estimatedCost.max;
+        if (job.contractorId) {
+          stats[categoryId].contractors.add(job.contractorId);
+        }
+      });
+
+      // Transform to final format
+      const finalStats: Record<string, {
+        jobs: number;
+        revenue: number;
+        contractors: number;
+        avgJobValue: number;
+      }> = {};
+
+      Object.entries(stats).forEach(([categoryId, data]) => {
+        finalStats[categoryId] = {
+          jobs: data.jobs,
+          revenue: data.revenue,
+          contractors: data.contractors.size,
+          avgJobValue: data.jobs > 0 ? data.totalJobValue / data.jobs : 0
+        };
+      });
+
+      setServiceCategoryStats(finalStats);
+    } catch (error) {
+      console.error('Failed to load service category stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -199,10 +282,84 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
         </Card>
       </motion.div>
 
+      {/* Service Category Analytics */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.177, delay: 0.266, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <Card className="glass-card p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <ChartBar className="w-6 h-6 text-primary" weight="fill" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold">Territory Analytics by Service Category</h3>
+              <p className="text-sm text-muted-foreground">Performance breakdown across service types</p>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-8 text-muted-foreground">Loading analytics...</div>
+          ) : Object.keys(serviceCategoryStats).length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">No job data available yet</div>
+          ) : (
+            <div className="space-y-4">
+              {SERVICE_CATEGORIES.map(category => {
+                const stats = serviceCategoryStats[category.id];
+                if (!stats || stats.jobs === 0) return null;
+
+                return (
+                  <Card key={category.id} className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h4 className="font-semibold text-lg">{category.title}</h4>
+                        <p className="text-sm text-muted-foreground">{category.description}</p>
+                      </div>
+                      <Badge variant="secondary">{stats.jobs} jobs</Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Total Jobs</p>
+                        <p className="text-xl font-bold">{stats.jobs}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Total Revenue</p>
+                        <p className="text-xl font-bold text-primary">
+                          ${(stats.revenue / 1000).toFixed(1)}k
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Active Contractors</p>
+                        <p className="text-xl font-bold">{stats.contractors}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Avg Job Value</p>
+                        <p className="text-xl font-bold">
+                          ${(stats.avgJobValue / 1000).toFixed(1)}k
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <Progress 
+                        value={(stats.jobs / Math.max(...Object.values(serviceCategoryStats).map(s => s.jobs))) * 100} 
+                        className="h-2"
+                      />
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.177, delay: 0.31, ease: [0.4, 0, 0.2, 1] }}
       >
         <Card className="glass-card p-6">
           <h3 className="text-xl font-bold mb-4">How the 3-Tier System Works</h3>

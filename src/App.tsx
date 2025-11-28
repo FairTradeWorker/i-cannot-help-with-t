@@ -605,18 +605,18 @@ function App() {
                     <div className="space-y-8">
                       {/* Top section with Post Job and Mini Map */}
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all lg:col-span-2" onClick={handleCreateJob}>
+                        <Card className="glass-card p-4 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all lg:col-span-2" onClick={handleCreateJob}>
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                              <div className="p-4 rounded-xl bg-primary">
-                                <Plus className="w-8 h-8 text-white" weight="bold" />
+                            <div className="flex items-center gap-3">
+                              <div className="p-3 rounded-xl bg-primary">
+                                <Plus className="w-6 h-6 text-white" weight="bold" />
                               </div>
                               <div>
-                                <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
-                                <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
+                                <h3 className="text-lg font-bold mb-0.5">Post a New Job</h3>
+                                <p className="text-xs text-muted-foreground">Get estimates from qualified contractors in your area</p>
                               </div>
                             </div>
-                            <Button size="lg">
+                            <Button size="default" className="h-12">
                               Get Started
                             </Button>
                           </div>

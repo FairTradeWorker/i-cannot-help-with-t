@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Star, CheckCircle, MapPin, CurrencyDollar, Briefcase, ShieldCheck, Certificate, Phone, EnvelopeSimple, Calendar } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -9,7 +9,9 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { ReviewSystem } from '@/components/ReviewSystem';
-import type { User } from '@/lib/types';
+import { dataStore } from '@/lib/store';
+import { aggregateContractorRatings } from '@/lib/rating-aggregator';
+import type { User, Rating } from '@/lib/types';
 
 interface ContractorProfileModalProps {
   contractor: User;
@@ -20,8 +22,29 @@ interface ContractorProfileModalProps {
 
 export function ContractorProfileModal({ contractor, open, onClose, onContact }: ContractorProfileModalProps) {
   const profile = contractor.contractorProfile;
+  const [contractorRatings, setContractorRatings] = useState<{ overallRating: number; categoryRatings: any[] } | null>(null);
+  const [loadingRatings, setLoadingRatings] = useState(true);
   
   if (!profile) return null;
+
+  useEffect(() => {
+    if (open && contractor.id) {
+      loadRatings();
+    }
+  }, [open, contractor.id]);
+
+  const loadRatings = async () => {
+    setLoadingRatings(true);
+    try {
+      const ratings = await dataStore.getRatings(contractor.id);
+      const aggregated = aggregateContractorRatings(contractor.id, ratings);
+      setContractorRatings(aggregated);
+    } catch (error) {
+      console.error('Failed to load ratings:', error);
+    } finally {
+      setLoadingRatings(false);
+    }
+  };
 
   const getRatingColor = (rating: number) => {
     if (rating >= 95) return 'bg-accent';
@@ -30,13 +53,21 @@ export function ContractorProfileModal({ contractor, open, onClose, onContact }:
     return 'bg-muted-foreground';
   };
 
-  const categoryRatings = [
-    { label: 'Quality', value: 95 },
-    { label: 'Communication', value: 92 },
-    { label: 'Timeliness', value: 98 },
-    { label: 'Professionalism', value: 96 },
-    { label: 'Cleanliness', value: 90 },
-  ];
+  // Use aggregated ratings if available, otherwise fallback to static data
+  const categoryRatings = contractorRatings?.categoryRatings.length 
+    ? contractorRatings.categoryRatings.map(cr => ({
+        label: cr.categoryName,
+        value: cr.rating,
+        jobsCompleted: cr.jobsCompleted,
+        dimensions: cr.dimensions
+      }))
+    : [
+        { label: 'Quality', value: profile.rating || 95 },
+        { label: 'Communication', value: profile.rating || 92 },
+        { label: 'Timeliness', value: profile.rating || 98 },
+        { label: 'Professionalism', value: profile.rating || 96 },
+        { label: 'Cleanliness', value: profile.rating || 90 },
+      ];
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -160,11 +191,47 @@ export function ContractorProfileModal({ contractor, open, onClose, onContact }:
             </TabsContent>
 
             <TabsContent value="ratings" className="space-y-4 mt-4">
+              {contractorRatings && contractorRatings.categoryRatings.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Performance by Service Category</h3>
+                  <div className="space-y-4">
+                    {contractorRatings.categoryRatings.map((category) => (
+                      <Card key={category.categoryId} className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <h4 className="font-semibold">{category.categoryName}</h4>
+                            <p className="text-xs text-muted-foreground">
+                              {category.jobsCompleted} job{category.jobsCompleted !== 1 ? 's' : ''} completed
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Star className="w-5 h-5 text-accent" weight="fill" />
+                            <span className="text-2xl font-bold">{category.rating}</span>
+                            <span className="text-sm text-muted-foreground">/100</span>
+                          </div>
+                        </div>
+                        <div className="space-y-2 mt-3">
+                          {Object.entries(category.dimensions).map(([dimension, value]) => (
+                            <div key={dimension}>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs font-medium capitalize">{dimension}</span>
+                                <span className="text-xs font-bold">{value as number}/100</span>
+                              </div>
+                              <Progress value={value as number} className="h-1.5" />
+                            </div>
+                          ))}
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
-                <h3 className="text-lg font-semibold mb-4">Performance Breakdown</h3>
+                <h3 className="text-lg font-semibold mb-4">Overall Performance</h3>
                 <div className="space-y-4">
-                  {categoryRatings.map((category) => (
-                    <div key={category.label}>
+                  {categoryRatings.slice(0, 5).map((category, idx) => (
+                    <div key={idx}>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">{category.label}</span>
                         <span className="text-sm font-bold">{category.value}/100</span>
