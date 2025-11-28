@@ -390,7 +390,7 @@ export class ScrollPositionManager {
   }
 
   restore(key: string, element?: HTMLElement): void {
-    const cached = this.positions.get(key) ?? Number(sessionStorage.getItem(`scroll_${key}`)) || 0;
+    const cached = (this.positions.get(key) ?? Number(sessionStorage.getItem(`scroll_${key}`))) || 0;
     
     if (element) {
       element.scrollTop = cached;

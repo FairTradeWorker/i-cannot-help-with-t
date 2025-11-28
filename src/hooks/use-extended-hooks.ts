@@ -125,11 +125,11 @@ export function useLockScroll(): { lock: () => void; unlock: () => void } {
 
 // Hook 28: Use hover state
 export function useHover<T extends HTMLElement>(): [
-  React.RefObject<T>,
+  React.RefObject<T | null>,
   boolean
 ] {
   const [isHovered, setIsHovered] = useState(false);
-  const ref = useRef<T>(null);
+  const ref = useRef<T | null>(null);
 
   useEffect(() => {
     const element = ref.current;
@@ -153,8 +153,8 @@ export function useHover<T extends HTMLElement>(): [
 // Hook 29: Use focus trap
 export function useFocusTrap<T extends HTMLElement>(
   active: boolean
-): React.RefObject<T> {
-  const ref = useRef<T>(null);
+): React.RefObject<T | null> {
+  const ref = useRef<T | null>(null);
 
   useEffect(() => {
     if (!active || !ref.current) return;
@@ -238,7 +238,7 @@ export function useForm<T extends Record<string, unknown>>(initialValues: T): {
     setErrors(prev => {
       if (error === undefined) {
         const { [name]: _, ...rest } = prev;
-        return rest;
+        return rest as Partial<Record<keyof T, string>>;
       }
       return { ...prev, [name]: error };
     });

@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { ReviewSystem } from '@/components/ReviewSystem';
 import type { User } from '@/lib/types';
 
 interface ContractorProfileModalProps {
@@ -177,50 +178,10 @@ export function ContractorProfileModal({ contractor, open, onClose, onContact }:
               <Separator />
 
               <div>
-                <h3 className="text-lg font-semibold mb-3">Recent Reviews</h3>
-                <div className="space-y-4">
-                  <Card className="p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarFallback className="text-xs">JD</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-sm">John D.</span>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-accent" weight="fill" />
-                            <span className="text-xs font-semibold">98/100</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground">2 weeks ago</p>
-                      </div>
-                    </div>
-                    <p className="text-sm">
-                      Excellent work! Very professional and completed the job ahead of schedule. Highly recommend.
-                    </p>
-                  </Card>
-
-                  <Card className="p-4">
-                    <div className="flex items-start gap-3 mb-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarFallback className="text-xs">SM</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-sm">Sarah M.</span>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-accent" weight="fill" />
-                            <span className="text-xs font-semibold">95/100</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground">1 month ago</p>
-                      </div>
-                    </div>
-                    <p className="text-sm">
-                      Great communication and quality work. Very satisfied with the results.
-                    </p>
-                  </Card>
-                </div>
+                <ReviewSystem 
+                  contractorId={contractor.id}
+                  contractorName={contractor.name}
+                />
               </div>
             </TabsContent>
 
