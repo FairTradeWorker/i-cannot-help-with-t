@@ -4,6 +4,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Trophy,
   Star,
@@ -300,32 +302,71 @@ export function GamificationSystem() {
             ))}
           </div>
         </div>
-      </Card>
+        </Card>
+      </GlassSurface>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="glass-card p-4 text-center">
-          <Trophy className="w-8 h-8 mx-auto mb-2 text-yellow-500" weight="fill" />
-          <p className="text-2xl font-bold">
-            {stats.achievements.filter(a => a.unlocked).length}
-          </p>
-          <p className="text-xs text-muted-foreground">Achievements</p>
-        </Card>
-        <Card className="glass-card p-4 text-center">
-          <Fire className="w-8 h-8 mx-auto mb-2 text-orange-500" weight="fill" />
-          <p className="text-2xl font-bold">{stats.streakDays}</p>
-          <p className="text-xs text-muted-foreground">Day Streak</p>
-        </Card>
-        <Card className="glass-card p-4 text-center">
-          <TrendUp className="w-8 h-8 mx-auto mb-2 text-green-500" weight="fill" />
-          <p className="text-2xl font-bold">+{stats.recentActivity.reduce((sum, a) => sum + a.xp, 0)}</p>
-          <p className="text-xs text-muted-foreground">Recent XP</p>
-        </Card>
-        <Card className="glass-card p-4 text-center">
-          <Sparkle className="w-8 h-8 mx-auto mb-2 text-purple-500" weight="fill" />
-          <p className="text-2xl font-bold">{stats.nextLevel.minXP - stats.totalXP}</p>
-          <p className="text-xs text-muted-foreground">XP to Next Level</p>
-        </Card>
+        <GlassSurface
+          id="gamification-achievements"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'gamification',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-4 text-center border-0 bg-transparent">
+            <Trophy className="w-8 h-8 mx-auto mb-2 text-yellow-500" weight="fill" />
+            <p className="text-2xl font-bold">
+              {stats.achievements.filter(a => a.unlocked).length}
+            </p>
+            <p className="text-xs text-muted-foreground">Achievements</p>
+          </Card>
+        </GlassSurface>
+        <GlassSurface
+          id="gamification-streak"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'gamification',
+            urgency: stats.streakDays > 7 ? 'high' : 'medium',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-4 text-center border-0 bg-transparent">
+            <Fire className="w-8 h-8 mx-auto mb-2 text-orange-500" weight="fill" />
+            <p className="text-2xl font-bold">{stats.streakDays}</p>
+            <p className="text-xs text-muted-foreground">Day Streak</p>
+          </Card>
+        </GlassSurface>
+        <GlassSurface
+          id="gamification-recent-xp"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'gamification',
+            confidence: 0.85
+          }}
+        >
+          <Card className="p-4 text-center border-0 bg-transparent">
+            <TrendUp className="w-8 h-8 mx-auto mb-2 text-green-500" weight="fill" />
+            <p className="text-2xl font-bold">+{stats.recentActivity.reduce((sum, a) => sum + a.xp, 0)}</p>
+            <p className="text-xs text-muted-foreground">Recent XP</p>
+          </Card>
+        </GlassSurface>
+        <GlassSurface
+          id="gamification-xp-to-next"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'gamification',
+            urgency: (stats.nextLevel.minXP - stats.totalXP) < 100 ? 'high' : 'low',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-4 text-center border-0 bg-transparent">
+            <Sparkle className="w-8 h-8 mx-auto mb-2 text-purple-500" weight="fill" />
+            <p className="text-2xl font-bold">{stats.nextLevel.minXP - stats.totalXP}</p>
+            <p className="text-xs text-muted-foreground">XP to Next Level</p>
+          </Card>
+        </GlassSurface>
       </div>
 
       {/* Achievements */}

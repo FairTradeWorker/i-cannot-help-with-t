@@ -391,6 +391,7 @@ export function MaterialsMarketplace() {
             Checkout
           </Button>
         </Card>
+        </GlassSurface>
       )}
     </div>
   );

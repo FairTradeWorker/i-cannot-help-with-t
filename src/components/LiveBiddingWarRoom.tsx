@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Gavel,
   Lightning,
@@ -435,51 +437,88 @@ export function LiveBiddingWarRoom() {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="glass-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-green-100">
-              <Lightning className="w-5 h-5 text-green-600" weight="fill" />
+        <GlassSurface
+          id="bidding-live-auctions"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'bidding',
+            urgency: 'high',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-4 border-0 bg-transparent">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-green-100">
+                <Lightning className="w-5 h-5 text-green-600" weight="fill" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Live Auctions</p>
+                <p className="text-xl font-bold">
+                  {auctions.filter(a => a.status === 'live' || a.status === 'ending_soon').length}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Live Auctions</p>
-              <p className="text-xl font-bold">
-                {auctions.filter(a => a.status === 'live' || a.status === 'ending_soon').length}
-              </p>
+          </Card>
+        </GlassSurface>
+        <GlassSurface
+          id="bidding-ending-soon"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'bidding',
+            urgency: 'critical',
+            confidence: 0.95
+          }}
+        >
+          <Card className="p-4 border-0 bg-transparent">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-yellow-100">
+                <Fire className="w-5 h-5 text-yellow-600" weight="fill" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Ending Soon</p>
+                <p className="text-xl font-bold">
+                  {auctions.filter(a => a.status === 'ending_soon').length}
+                </p>
+              </div>
             </div>
-          </div>
-        </Card>
-        <Card className="glass-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-yellow-100">
-              <Fire className="w-5 h-5 text-yellow-600" weight="fill" />
+          </Card>
+        </GlassSurface>
+        <GlassSurface
+          id="bidding-total-value"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'bidding',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-4 border-0 bg-transparent">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-100">
+                <CurrencyDollar className="w-5 h-5 text-blue-600" weight="fill" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Total Value</p>
+                <p className="text-xl font-bold">
+                  ${auctions.reduce((sum, a) => sum + a.estimatedValue.max, 0).toLocaleString()}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Ending Soon</p>
-              <p className="text-xl font-bold">
-                {auctions.filter(a => a.status === 'ending_soon').length}
-              </p>
-            </div>
-          </div>
-        </Card>
-        <Card className="glass-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-blue-100">
-              <CurrencyDollar className="w-5 h-5 text-blue-600" weight="fill" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Total Value</p>
-              <p className="text-xl font-bold">
-                ${auctions.reduce((sum, a) => sum + a.estimatedValue.max, 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        </Card>
-        <Card className="glass-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-100">
-              <Eye className="w-5 h-5 text-purple-600" weight="fill" />
-            </div>
-            <div>
+          </Card>
+        </GlassSurface>
+        <GlassSurface
+          id="bidding-watchers"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'bidding',
+            confidence: 0.85
+          }}
+        >
+          <Card className="p-4 border-0 bg-transparent">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-purple-100">
+                <Eye className="w-5 h-5 text-purple-600" weight="fill" />
+              </div>
+              <div>
               <p className="text-xs text-muted-foreground">Watching</p>
               <p className="text-xl font-bold">{isWatching.size}</p>
             </div>
