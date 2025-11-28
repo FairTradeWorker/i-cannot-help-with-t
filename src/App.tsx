@@ -73,6 +73,7 @@ import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
+import { ThemeToggle } from './components/ThemeToggle';
 
 type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch';
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
