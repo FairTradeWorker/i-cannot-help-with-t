@@ -72,6 +72,11 @@ import { NotificationsPage } from '@/components/NotificationsPage';
 import { DispatchMap } from '@/components/DispatchMap';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
+import { ServiceCategoriesShowcase } from '@/components/ServiceCategoriesShowcase';
+import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
+import { GlassSurface } from '@/components/GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
+import type { ServiceSelection } from '@/types/service-categories';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
@@ -91,6 +96,7 @@ function App() {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showJobPost, setShowJobPost] = useState(false);
+  const [showServiceMenu, setShowServiceMenu] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
 
@@ -594,6 +600,14 @@ function App() {
                   onCancel={() => setShowJobPost(false)}
                 />
               )}
+              <ServiceCategoryMegaMenu
+                open={showServiceMenu}
+                onClose={() => setShowServiceMenu(false)}
+                onSelect={(selection: ServiceSelection) => {
+                  setShowServiceMenu(false);
+                  handleCreateJob();
+                }}
+              />
               {!showProfile && !showJobPost && (
                 <>
                   {activeTab === 'payment' && <PaymentScreen onPaymentComplete={() => {
@@ -605,108 +619,181 @@ function App() {
                     <div className="space-y-8">
                       {/* Top section with Post Job and Mini Map */}
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <Card className="glass-card p-4 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all lg:col-span-2" onClick={handleCreateJob}>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="p-3 rounded-xl bg-primary">
-                                <Plus className="w-6 h-6 text-white" weight="bold" />
+                        <GlassSurface
+                          id="post-job-card"
+                          context={{
+                            ...getDefaultGlassContext(),
+                            urgency: 'medium',
+                            serviceCategory: 'general'
+                          }}
+                          onClick={handleCreateJob}
+                          className="cursor-pointer lg:col-span-2"
+                        >
+                          <Card className="p-4 border-0 bg-transparent hover:bg-transparent">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="p-3 rounded-xl bg-primary">
+                                  <Plus className="w-6 h-6 text-white" weight="bold" />
+                                </div>
+                                <div>
+                                  <h3 className="text-lg font-bold mb-0.5">Post a New Job</h3>
+                                  <p className="text-xs text-muted-foreground">Get estimates from qualified contractors in your area</p>
+                                </div>
                               </div>
-                              <div>
-                                <h3 className="text-lg font-bold mb-0.5">Post a New Job</h3>
-                                <p className="text-xs text-muted-foreground">Get estimates from qualified contractors in your area</p>
-                              </div>
+                              <Button size="default" className="h-12">
+                                Get Started
+                              </Button>
                             </div>
-                            <Button size="default" className="h-12">
-                              Get Started
-                            </Button>
-                          </div>
-                        </Card>
+                          </Card>
+                        </GlassSurface>
                         
                         {/* Mini Dispatch/Territory Map - positioned top right */}
                         <TerritoryMiniMap onExplore={() => handleNavClick('territories', 'overview')} />
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-primary">
-                              <MapTrifold className="w-7 h-7 text-white" weight="fill" />
+                        <GlassSurface
+                          id="territories-card"
+                          context={{
+                            ...getDefaultGlassContext(),
+                            serviceCategory: 'territories'
+                          }}
+                          onClick={() => handleNavClick('territories', 'overview')}
+                          className="cursor-pointer h-full"
+                        >
+                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-primary">
+                                <MapTrifold className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Available</p>
+                                <p className="text-2xl font-bold">{getAvailableTerritoryCount().toLocaleString()}+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Available</p>
-                              <p className="text-2xl font-bold">{getAvailableTerritoryCount().toLocaleString()}+</p>
+                            <p className="text-sm font-semibold mb-1">Territories</p>
+                            <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              <Badge variant="outline" className="text-[10px]">TX</Badge>
+                              <Badge variant="outline" className="text-[10px]">AZ</Badge>
+                              <Badge variant="outline" className="text-[10px]">GA</Badge>
+                              <Badge variant="outline" className="text-[10px]">+{getStateStats().length - 3} states</Badge>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">Territories</p>
-                          <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            <Badge variant="outline" className="text-[10px]">TX</Badge>
-                            <Badge variant="outline" className="text-[10px]">AZ</Badge>
-                            <Badge variant="outline" className="text-[10px]">GA</Badge>
-                            <Badge variant="outline" className="text-[10px]">+{getStateStats().length - 3} states</Badge>
-                          </div>
-                        </Card>
+                          </Card>
+                        </GlassSurface>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('jobs')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-accent">
-                              <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                        <GlassSurface
+                          id="jobs-card"
+                          context={{
+                            ...getDefaultGlassContext(),
+                            serviceCategory: 'jobs',
+                            urgency: 'medium'
+                          }}
+                          onClick={() => handleNavClick('jobs')}
+                          className="cursor-pointer h-full"
+                        >
+                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-accent">
+                                <Briefcase className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Active</p>
+                                <p className="text-2xl font-bold">2.8K+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Active</p>
-                              <p className="text-2xl font-bold">2.8K+</p>
+                            <p className="text-sm font-semibold mb-1">Jobs Available</p>
+                            <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
+                              <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
+                              <Badge variant="secondary" className="text-[10px]">+12</Badge>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">Jobs Available</p>
-                          <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
-                            <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
-                            <Badge variant="secondary" className="text-[10px]">+12</Badge>
-                          </div>
-                        </Card>
+                          </Card>
+                        </GlassSurface>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('contractors-browse')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-secondary">
-                              <Hammer className="w-7 h-7 text-white" weight="fill" />
+                        <GlassSurface
+                          id="contractors-card"
+                          context={{
+                            ...getDefaultGlassContext(),
+                            serviceCategory: 'contractors',
+                            confidence: 0.95
+                          }}
+                          onClick={() => handleNavClick('contractors-browse')}
+                          className="cursor-pointer h-full"
+                        >
+                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-secondary">
+                                <Hammer className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Network</p>
+                                <p className="text-2xl font-bold">3.5K+</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Network</p>
-                              <p className="text-2xl font-bold">3.5K+</p>
+                            <p className="text-sm font-semibold mb-1">Verified Contractors</p>
+                            <p className="text-xs text-muted-foreground mb-2">Browse professional profiles</p>
+                            <div className="flex items-center gap-1 mt-2 text-xs">
+                              <CheckCircle className="w-3 h-3 text-secondary" weight="fill" />
+                              <span className="text-muted-foreground">View ratings & reviews</span>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">Verified Contractors</p>
-                          <p className="text-xs text-muted-foreground mb-2">Browse professional profiles</p>
-                          <div className="flex items-center gap-1 mt-2 text-xs">
-                            <CheckCircle className="w-3 h-3 text-secondary" weight="fill" />
-                            <span className="text-muted-foreground">View ratings & reviews</span>
-                          </div>
-                        </Card>
+                          </Card>
+                        </GlassSurface>
 
-                        <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('api')}>
-                          <div className="flex items-center gap-4 mb-3">
-                            <div className="p-3 rounded-xl bg-primary">
-                              <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
+                        <GlassSurface
+                          id="api-card"
+                          context={{
+                            ...getDefaultGlassContext(),
+                            serviceCategory: 'api',
+                            urgency: 'low',
+                            confidence: 1.0
+                          }}
+                          onClick={() => handleNavClick('api')}
+                          className="cursor-pointer h-full"
+                        >
+                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="p-3 rounded-xl bg-primary">
+                                <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Starting at</p>
+                                <p className="text-2xl font-bold">$99</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm text-muted-foreground">Starting at</p>
-                              <p className="text-2xl font-bold">$99</p>
+                            <p className="text-sm font-semibold mb-1">API Access</p>
+                            <p className="text-xs text-muted-foreground mb-2">Intelligence & pricing endpoints</p>
+                            <div className="flex items-center gap-1 mt-2 text-xs">
+                              <Lightning className="w-3 h-3 text-primary" weight="fill" />
+                              <span className="text-muted-foreground">Real-time data</span>
                             </div>
-                          </div>
-                          <p className="text-sm font-semibold mb-1">API Access</p>
-                          <p className="text-xs text-muted-foreground mb-2">Intelligence & pricing endpoints</p>
-                          <div className="flex items-center gap-1 mt-2 text-xs">
-                            <Lightning className="w-3 h-3 text-primary" weight="fill" />
-                            <span className="text-muted-foreground">Real-time data</span>
-                          </div>
-                        </Card>
+                          </Card>
+                        </GlassSurface>
                       </div>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
                       
-                      <Card className="glass-card p-8 border-2 border-primary/20">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                      {/* Service Categories Showcase */}
+                      <ServiceCategoriesShowcase
+                        onCategoryClick={(categoryId) => {
+                          handleCreateJob();
+                          // Pre-select category when creating job
+                        }}
+                        onServiceSelect={() => setShowServiceMenu(true)}
+                      />
+
+                      <GlassSurface
+                        id="zero-fees-card"
+                        context={{
+                          ...getDefaultGlassContext(),
+                          serviceCategory: 'platform',
+                          confidence: 1.0
+                        }}
+                        className="p-8"
+                      >
+                        <Card className="p-8 border-0 bg-transparent">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                           <div>
                             <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
                             <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
@@ -781,7 +868,8 @@ function App() {
                             </div>
                           </div>
                         </div>
-                      </Card>
+                        </Card>
+                      </GlassSurface>
                     </div>
                   )}
                   {activeTab === 'jobs' && (

@@ -91,6 +91,26 @@ export function getWeatherCondition(location: { city: string; state: string }): 
 }
 
 /**
+ * Get default glass context for general UI elements
+ */
+export function getDefaultGlassContext(): GlassContext {
+  const hour = new Date().getHours();
+  const timeOfDay: TimeOfDay = 
+    hour >= 5 && hour < 12 ? 'morning' :
+    hour >= 12 && hour < 17 ? 'afternoon' :
+    hour >= 17 && hour < 21 ? 'evening' : 'night';
+
+  return {
+    urgency: 'low',
+    confidence: 0.9,
+    completion: 1,
+    weather: 'sunny',
+    timeOfDay,
+    dataComplexity: 'simple'
+  };
+}
+
+/**
  * Get time of day
  */
 export function getTimeOfDay(): TimeOfDay {
