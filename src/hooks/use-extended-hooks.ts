@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
 // Hook 21: Use previous value
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>();
+  const ref = useRef<T | undefined>(undefined);
   
   useEffect(() => {
     ref.current = value;
@@ -451,7 +451,7 @@ export function useLongPress(
   onTouchStart: () => void;
   onTouchEnd: () => void;
 } {
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const start = useCallback(() => {
     timeoutRef.current = setTimeout(callback, duration);

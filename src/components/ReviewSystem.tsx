@@ -222,8 +222,8 @@ export function ReviewSystem({
     });
   };
 
-  const renderStars = (rating: number, interactive: boolean = false, onRate?: (rating: number) => void) => {
-    const stars = [];
+  const renderStars = (rating: number, interactive: boolean = false, onRate?: (rating: number) => void): React.ReactElement => {
+    const stars: React.ReactElement[] = [];
     for (let i = 1; i <= 5; i++) {
       const isFilled = interactive ? i <= (hoverRating || rating) : i <= rating / 20;
       stars.push(

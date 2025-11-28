@@ -233,7 +233,7 @@ export function useScrollPosition(throttleMs = 100): { x: number; y: number } {
  * Hook for previous value
  */
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>();
+  const ref = useRef<T | undefined>(undefined);
   useEffect(() => {
     ref.current = value;
   }, [value]);
