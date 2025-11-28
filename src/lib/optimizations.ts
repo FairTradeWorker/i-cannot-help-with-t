@@ -31,7 +31,7 @@ export function debounce<T extends (...args: any[]) => any>(
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
   limit: number
-): (...args: Parameters<T>) => void {
+): (...args: Parameters<T>) => ReturnType<T> {
   let inThrottle: boolean;
   let lastResult: ReturnType<T>;
 
