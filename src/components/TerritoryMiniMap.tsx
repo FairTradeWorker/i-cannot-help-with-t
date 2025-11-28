@@ -1,108 +1,165 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapTrifold } from '@phosphor-icons/react';
+import { MapTrifold, Lightning, Circle, ArrowRight } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { 
+  territoryZips, 
+  getStateStats, 
+  getAvailableTerritoryCount,
+  getTotalTerritoryCount,
+  takenTerritories 
+} from '@/lib/territory-data';
 
 interface TerritoryMiniMapProps {
   onExplore: () => void;
 }
 
 export function TerritoryMiniMap({ onExplore }: TerritoryMiniMapProps) {
-  const [hoveredState, setHoveredState] = useState<string | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [liveCount, setLiveCount] = useState(0);
+  
+  // Simulate live activity
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveCount(c => c + 1);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const stateHeatData: Record<string, number> = {
-    CA: 95,
-    TX: 88,
-    FL: 82,
-    NY: 78,
-    IL: 75,
-    PA: 72,
-    OH: 68,
-    GA: 65,
-    NC: 62,
-    MI: 60,
-  };
+  // Draw mini map
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Clear
+    ctx.clearRect(0, 0, width, height);
+    
+    // Background
+    ctx.fillStyle = 'rgba(248, 250, 252, 1)';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Map bounds for continental US
+    const minLat = 24.5;
+    const maxLat = 49.5;
+    const minLng = -125;
+    const maxLng = -66;
+    
+    const toX = (lng: number) => ((lng - minLng) / (maxLng - minLng)) * width;
+    const toY = (lat: number) => height - ((lat - minLat) / (maxLat - minLat)) * height;
+    
+    // Draw territories as small dots
+    territoryZips.forEach(t => {
+      const x = toX(t.longitude);
+      const y = toY(t.latitude);
+      
+      const isAvailable = t.available && !takenTerritories.has(t.zip);
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = isAvailable ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.5)';
+      ctx.fill();
+    });
+    
+    // Add some animated "pulse" dots for activity
+    const pulsingDots = [
+      { lat: 30.27, lng: -97.74 }, // Austin
+      { lat: 33.45, lng: -112.07 }, // Phoenix
+      { lat: 39.74, lng: -104.99 }, // Denver
+      { lat: 41.88, lng: -87.63 }, // Chicago
+      { lat: 47.61, lng: -122.33 }, // Seattle
+    ];
+    
+    const pulsePhase = (Date.now() % 2000) / 2000;
+    const pulseSize = 4 + Math.sin(pulsePhase * Math.PI * 2) * 2;
+    
+    pulsingDots.forEach(dot => {
+      const x = toX(dot.lng);
+      const y = toY(dot.lat);
+      
+      ctx.beginPath();
+      ctx.arc(x, y, pulseSize, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(59, 130, 246, ${0.3 + Math.sin(pulsePhase * Math.PI * 2) * 0.2})`;
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.9)';
+      ctx.fill();
+    });
+    
+  }, [liveCount]);
 
-  const getHeatColor = (intensity: number) => {
-    if (intensity >= 90) return 'oklch(0.45 0.20 264)';
-    if (intensity >= 80) return 'oklch(0.50 0.18 264)';
-    if (intensity >= 70) return 'oklch(0.55 0.15 264)';
-    if (intensity >= 60) return 'oklch(0.60 0.12 264)';
-    return 'oklch(0.88 0.003 264 / 0.3)';
-  };
+  const availableCount = getAvailableTerritoryCount();
+  const totalCount = getTotalTerritoryCount();
+  const topStates = getStateStats().slice(0, 3);
 
   return (
-    <Card className="glass-card p-6 cursor-pointer" onClick={onExplore}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold">Territory Activity</h3>
-        <MapTrifold className="w-6 h-6 text-primary" weight="fill" />
-      </div>
-      
-      <svg viewBox="0 0 960 600" className="w-full h-auto">
-        <g id="states">
-          <path
-            d="M 100,150 L 250,150 L 250,250 L 100,250 Z"
-            fill={getHeatColor(stateHeatData['CA'] || 0)}
-            stroke="oklch(0.98 0.002 264)"
-            strokeWidth="2"
-            onMouseEnter={() => setHoveredState('CA')}
-            onMouseLeave={() => setHoveredState(null)}
-            className="transition-all duration-200 hover:opacity-80"
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card 
+        className="glass-card p-4 cursor-pointer hover:border-primary/50 transition-all"
+        onClick={onExplore}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <MapTrifold className="w-5 h-5 text-primary" weight="fill" />
+            <h3 className="text-sm font-bold">Territory Activity</h3>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Circle className="w-2 h-2 text-green-500 animate-pulse" weight="fill" />
+            <span className="text-xs text-muted-foreground">Live</span>
+          </div>
+        </div>
+        
+        <div className="relative bg-slate-50 rounded-lg overflow-hidden mb-3">
+          <canvas 
+            ref={canvasRef} 
+            width={280} 
+            height={160} 
+            className="w-full h-auto"
           />
-          <text x="175" y="200" textAnchor="middle" className="text-[10px] fill-white font-bold pointer-events-none">CA</text>
-
-          <path
-            d="M 400,300 L 500,300 L 500,400 L 400,400 Z"
-            fill={getHeatColor(stateHeatData['TX'] || 0)}
-            stroke="oklch(0.98 0.002 264)"
-            strokeWidth="2"
-            onMouseEnter={() => setHoveredState('TX')}
-            onMouseLeave={() => setHoveredState(null)}
-            className="transition-all duration-200 hover:opacity-80"
-          />
-          <text x="450" y="350" textAnchor="middle" className="text-[10px] fill-white font-bold pointer-events-none">TX</text>
-
-          <path
-            d="M 700,350 L 780,350 L 780,450 L 700,450 Z"
-            fill={getHeatColor(stateHeatData['FL'] || 0)}
-            stroke="oklch(0.98 0.002 264)"
-            strokeWidth="2"
-            onMouseEnter={() => setHoveredState('FL')}
-            onMouseLeave={() => setHoveredState(null)}
-            className="transition-all duration-200 hover:opacity-80"
-          />
-          <text x="740" y="400" textAnchor="middle" className="text-[10px] fill-white font-bold pointer-events-none">FL</text>
-
-          <path
-            d="M 750,150 L 850,150 L 850,250 L 750,250 Z"
-            fill={getHeatColor(stateHeatData['NY'] || 0)}
-            stroke="oklch(0.98 0.002 264)"
-            strokeWidth="2"
-            onMouseEnter={() => setHoveredState('NY')}
-            onMouseLeave={() => setHoveredState(null)}
-            className="transition-all duration-200 hover:opacity-80"
-          />
-          <text x="800" y="200" textAnchor="middle" className="text-[10px] fill-white font-bold pointer-events-none">NY</text>
-
-          <path
-            d="M 550,200 L 650,200 L 650,300 L 550,300 Z"
-            fill={getHeatColor(stateHeatData['IL'] || 0)}
-            stroke="oklch(0.98 0.002 264)"
-            strokeWidth="2"
-            onMouseEnter={() => setHoveredState('IL')}
-            onMouseLeave={() => setHoveredState(null)}
-            className="transition-all duration-200 hover:opacity-80"
-          />
-          <text x="600" y="250" textAnchor="middle" className="text-[10px] fill-white font-bold pointer-events-none">IL</text>
-        </g>
-      </svg>
-
-      <div className="mt-4 flex items-center justify-between text-sm">
-        <span className="text-muted-foreground">
-          {hoveredState ? `${hoveredState}: ${stateHeatData[hoveredState]}% active` : 'Hover to see activity'}
-        </span>
-        <span className="text-primary font-semibold">View Full Map →</span>
-      </div>
-    </Card>
+        </div>
+        
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="text-center">
+              <p className="text-lg font-bold text-green-600">{availableCount}</p>
+              <p className="text-[10px] text-muted-foreground">Available</p>
+            </div>
+            <div className="w-px h-8 bg-border"></div>
+            <div className="text-center">
+              <p className="text-lg font-bold">{totalCount}</p>
+              <p className="text-[10px] text-muted-foreground">Total</p>
+            </div>
+          </div>
+          <Badge variant="outline" className="text-xs">
+            $45/mo
+          </Badge>
+        </div>
+        
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex gap-2">
+            {topStates.map(s => (
+              <Badge key={s.state} variant="secondary" className="text-[10px]">
+                {s.state}: {s.available}
+              </Badge>
+            ))}
+          </div>
+          <span className="text-primary font-semibold flex items-center gap-1">
+            Explore <ArrowRight className="w-3 h-3" />
+          </span>
+        </div>
+      </Card>
+    </motion.div>
   );
 }

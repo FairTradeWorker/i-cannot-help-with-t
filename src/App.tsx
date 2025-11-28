@@ -69,11 +69,13 @@ import { FileAClaim } from '@/components/FileAClaim';
 import { UnifiedJobPost } from '@/components/UnifiedJobPost';
 import { NotificationsPage } from '@/components/NotificationsPage';
 import { DispatchMap } from '@/components/DispatchMap';
+import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { getAvailableTerritoryCount, getStateStats } from '@/lib/territory-data';
 
 type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch';
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
@@ -599,22 +601,28 @@ function App() {
                   {activeTab === 'notifications' && <NotificationsPage />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
-                      <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all" onClick={handleCreateJob}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="p-4 rounded-xl bg-primary">
-                              <Plus className="w-8 h-8 text-white" weight="bold" />
+                      {/* Top section with Post Job and Mini Map */}
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <Card className="glass-card p-6 cursor-pointer border-2 border-primary/20 hover:border-primary transition-all lg:col-span-2" onClick={handleCreateJob}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="p-4 rounded-xl bg-primary">
+                                <Plus className="w-8 h-8 text-white" weight="bold" />
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
+                                <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
+                              </div>
                             </div>
-                            <div>
-                              <h3 className="text-xl font-bold mb-1">Post a New Job</h3>
-                              <p className="text-sm text-muted-foreground">Get estimates from qualified contractors in your area</p>
-                            </div>
+                            <Button size="lg">
+                              Get Started
+                            </Button>
                           </div>
-                          <Button size="lg">
-                            Get Started
-                          </Button>
-                        </div>
-                      </Card>
+                        </Card>
+                        
+                        {/* Mini Dispatch/Territory Map - positioned top right */}
+                        <TerritoryMiniMap onExplore={() => handleNavClick('territories', 'overview')} />
+                      </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Card className="glass-card p-6 cursor-pointer h-full glass-hover" onClick={() => handleNavClick('territories', 'overview')}>
@@ -624,16 +632,16 @@ function App() {
                             </div>
                             <div>
                               <p className="text-sm text-muted-foreground">Available</p>
-                              <p className="text-2xl font-bold">850+</p>
+                              <p className="text-2xl font-bold">{getAvailableTerritoryCount().toLocaleString()}+</p>
                             </div>
                           </div>
                           <p className="text-sm font-semibold mb-1">Territories</p>
                           <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
                           <div className="flex flex-wrap gap-1 mt-2">
-                            <Badge variant="outline" className="text-[10px]">CA</Badge>
                             <Badge variant="outline" className="text-[10px]">TX</Badge>
-                            <Badge variant="outline" className="text-[10px]">FL</Badge>
-                            <Badge variant="outline" className="text-[10px]">+47 states</Badge>
+                            <Badge variant="outline" className="text-[10px]">AZ</Badge>
+                            <Badge variant="outline" className="text-[10px]">GA</Badge>
+                            <Badge variant="outline" className="text-[10px]">+{getStateStats().length - 3} states</Badge>
                           </div>
                         </Card>
 
