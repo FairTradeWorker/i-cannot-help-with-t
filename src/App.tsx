@@ -57,6 +57,7 @@ import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { PaymentManagement } from '@/components/PaymentManagement';
 import { PartnerDashboard } from '@/components/PartnerDashboard';
 import { JobBrowser } from '@/components/JobBrowser';
+import { JobsTab } from '@/components/JobsTab';
 import { ContractorDashboard } from '@/components/ContractorDashboard';
 import { ContractorBrowser } from '@/components/ContractorBrowser';
 import { AdminLearningDashboard } from '@/components/AdminDashboard/AdminLearningDashboard';
@@ -70,6 +71,7 @@ import { UnifiedJobPost } from '@/components/UnifiedJobPost';
 import { NotificationsPage } from '@/components/NotificationsPage';
 import { DispatchMap } from '@/components/DispatchMap';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
+import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
 import { toast } from 'sonner';
@@ -782,7 +784,15 @@ function App() {
                       </Card>
                     </div>
                   )}
-                  {activeTab === 'jobs' && <JobBrowser />}
+                  {activeTab === 'jobs' && (
+                    <JobsTab 
+                      user={currentUser || undefined}
+                      onPostJob={handleCreateJob}
+                      onJobSelect={(job) => {
+                        toast.success(`Selected job: ${job.title}`);
+                      }}
+                    />
+                  )}
                   {activeTab === 'contractors-browse' && <ContractorBrowser />}
                   {activeTab === 'homeowner' && currentUser && <HomeownerDashboard user={currentUser} activeSubTab={activeSubTab} />}
                   {activeTab === 'territories' && activeSubTab === 'overview' && (
@@ -794,7 +804,7 @@ function App() {
                   )}
                   {activeTab === 'territories' && activeSubTab !== 'overview' && <TerritoryMapPage />}
                   {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
-                  {activeTab === 'subcontractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
+                  {activeTab === 'subcontractor' && <SubcontractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'dispatch' && <DispatchMap />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
                   {activeTab === 'api' && <IntelligenceAPIManager userId={currentUser?.id || ''} />}
