@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { MapTrifold, Lightning, Circle, ArrowRight } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { 
   territoryZips, 
   getStateStats, 
@@ -106,10 +108,20 @@ export function TerritoryMiniMap({ onExplore }: TerritoryMiniMapProps) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <Card 
-        className="glass-card p-4 cursor-pointer hover:border-primary/50 transition-all"
+      <GlassSurface
+        id="territory-minimap"
+        context={{
+          ...getDefaultGlassContext(),
+          serviceCategory: 'territories',
+          urgency: 'low',
+          confidence: 0.9
+        }}
         onClick={onExplore}
+        className="cursor-pointer"
       >
+        <Card 
+          className="p-4 border-0 bg-transparent hover:bg-transparent"
+        >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <MapTrifold className="w-5 h-5 text-primary" weight="fill" />
@@ -160,6 +172,7 @@ export function TerritoryMiniMap({ onExplore }: TerritoryMiniMapProps) {
           </span>
         </div>
       </Card>
+      </GlassSurface>
     </motion.div>
   );
 }
