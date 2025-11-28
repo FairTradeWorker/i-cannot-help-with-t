@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales, Path, Brain, Funnel, Briefcase } from '@phosphor-icons/react';
+import { CurrencyDollar, Clock, CheckCircle, MapPin, Star, Calendar, ChatCircle, Scales, Path, Brain, Funnel, Briefcase, Users } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +20,7 @@ import { RouteOptimizer } from './RouteOptimizer';
 import { AILearningDashboard } from './AILearningDashboard';
 import { matchContractorsToJob, isBestMatch } from '@/lib/contractor-matching';
 import { SERVICE_CATEGORIES, getCategoryById } from '@/types/service-categories';
+import { SubcontractorFinder } from './SubcontractorFinder';
 
 interface ContractorDashboardProps {
   user?: User;
@@ -257,7 +258,7 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-5xl grid-cols-7 mb-8">
+          <TabsList className="grid w-full max-w-5xl grid-cols-8 mb-8">
             <TabsTrigger value="browse">Browse Jobs</TabsTrigger>
             <TabsTrigger value="active">Active ({activeJobs.length})</TabsTrigger>
             <TabsTrigger value="route">
@@ -273,6 +274,10 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
             <TabsTrigger value="compliance">
               <Scales className="w-4 h-4 mr-2" />
               Compliance
+            </TabsTrigger>
+            <TabsTrigger value="subcontractors">
+              <Users className="w-4 h-4 mr-2" />
+              Find Help
             </TabsTrigger>
           </TabsList>
 
@@ -525,6 +530,10 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
 
           <TabsContent value="compliance">
             <ComplianceDashboard user={user} />
+          </TabsContent>
+
+          <TabsContent value="subcontractors">
+            <SubcontractorFinder contractorId={user?.id} />
           </TabsContent>
         </Tabs>
       </div>
