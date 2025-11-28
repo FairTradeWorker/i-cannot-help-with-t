@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QuickJobPost } from './QuickJobPost';
 import { HomeownerProfileForm } from './HomeownerProfileForm';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import type { User } from '@/lib/types';
@@ -117,29 +119,58 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
         transition={{ duration: 0.4, delay: 0.1 }}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="glass-card p-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-              <Clock className="w-4 h-4" />
-              <span>Active Projects</span>
-            </div>
-            <p className="text-3xl font-bold text-primary font-mono">{activeJobs.length}</p>
-          </Card>
+          <GlassSurface
+            id="homeowner-active-projects"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'jobs',
+              urgency: activeJobs.length > 0 ? 'medium' : 'low',
+              confidence: 0.9
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <Clock className="w-4 h-4" />
+                <span>Active Projects</span>
+              </div>
+              <p className="text-3xl font-bold text-primary font-mono">{activeJobs.length}</p>
+            </Card>
+          </GlassSurface>
 
-          <Card className="glass-card p-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-              <CheckCircle className="w-4 h-4" />
-              <span>Completed Projects</span>
-            </div>
-            <p className="text-3xl font-bold text-secondary font-mono">{completedJobs.length}</p>
-          </Card>
+          <GlassSurface
+            id="homeowner-completed-projects"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'jobs',
+              completion: 1,
+              confidence: 0.95
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <CheckCircle className="w-4 h-4" />
+                <span>Completed Projects</span>
+              </div>
+              <p className="text-3xl font-bold text-secondary font-mono">{completedJobs.length}</p>
+            </Card>
+          </GlassSurface>
 
-          <Card className="glass-card p-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-              <Users className="w-4 h-4" />
-              <span>Total Jobs</span>
-            </div>
-            <p className="text-3xl font-bold text-foreground font-mono">{myJobs.length}</p>
-          </Card>
+          <GlassSurface
+            id="homeowner-total-jobs"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'jobs',
+              confidence: 0.9
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <Users className="w-4 h-4" />
+                <span>Total Jobs</span>
+              </div>
+              <p className="text-3xl font-bold text-foreground font-mono">{myJobs.length}</p>
+            </Card>
+          </GlassSurface>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -164,19 +195,24 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
 
           <TabsContent value="my-jobs">
             {myJobs.length === 0 ? (
-              <Card className="glass-card p-12 text-center">
-                <div className="max-w-md mx-auto">
-                  <Clock className="w-20 h-20 text-muted-foreground mx-auto mb-4" weight="duotone" />
-                  <h4 className="text-2xl font-semibold mb-2">No Projects Yet</h4>
-                  <p className="text-muted-foreground mb-6">
-                    Start your first home improvement project. Upload a video and get instant AI-powered estimates from qualified contractors.
-                  </p>
-                  <Button size="lg" onClick={() => setActiveTab('post-job')}>
-                    <Plus className="w-5 h-5 mr-2" weight="bold" />
-                    Create Your First Project
-                  </Button>
-                </div>
-              </Card>
+              <GlassSurface
+                id="homeowner-no-jobs"
+                context={getDefaultGlassContext()}
+              >
+                <Card className="p-12 text-center border-0 bg-transparent">
+                  <div className="max-w-md mx-auto">
+                    <Clock className="w-20 h-20 text-muted-foreground mx-auto mb-4" weight="duotone" />
+                    <h4 className="text-2xl font-semibold mb-2">No Projects Yet</h4>
+                    <p className="text-muted-foreground mb-6">
+                      Start your first home improvement project. Upload a video and get instant AI-powered estimates from qualified contractors.
+                    </p>
+                    <Button size="lg" onClick={() => setActiveTab('post-job')}>
+                      <Plus className="w-5 h-5 mr-2" weight="bold" />
+                      Create Your First Project
+                    </Button>
+                  </div>
+                </Card>
+              </GlassSurface>
             ) : (
               <div className="space-y-4">
                 {myJobs.map((job, index) => {
@@ -190,10 +226,20 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
-                      <Card 
-                        className="glass-card p-6 hover:border-primary/50 transition-colors cursor-pointer"
+                      <GlassSurface
+                        id={`homeowner-job-${job.id}`}
+                        context={{
+                          ...getDefaultGlassContext(),
+                          serviceCategory: 'jobs',
+                          urgency: activeBids > 0 || unreadMessages > 0 ? 'medium' : 'low',
+                          confidence: 0.8
+                        }}
                         onClick={() => setSelectedJobId(job.id)}
+                        className="cursor-pointer"
                       >
+                        <Card 
+                          className="p-6 border-0 bg-transparent hover:bg-transparent"
+                        >
                         <div className="flex items-start justify-between gap-6">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
@@ -243,6 +289,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                           </div>
                         </div>
                       </Card>
+                      </GlassSurface>
                     </motion.div>
                   );
                 })}
@@ -264,8 +311,17 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
             transition={{ duration: 0.2 }}
             className="w-full max-w-2xl"
           >
-            <Card className="glass-card border-2">
-              <div className="p-6">
+            <GlassSurface
+              id="homeowner-video-job-modal"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'jobs',
+                urgency: 'medium'
+              }}
+              className="border-2"
+            >
+              <Card className="border-0 bg-transparent">
+                <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-2xl font-bold">Create Video Job Post</h2>
@@ -301,6 +357,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                 </div>
               </div>
             </Card>
+            </GlassSurface>
           </motion.div>
         </div>
       )}
@@ -365,6 +422,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                 </div>
               </div>
             </Card>
+            </GlassSurface>
           </motion.div>
         </div>
       )}

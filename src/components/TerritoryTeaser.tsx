@@ -9,6 +9,8 @@ import { MapTrifold, TrendUp, CurrencyDollar, Users, Lightning, ArrowRight, Chec
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 
 interface TerritoryTeaserProps {
   onExplore: () => void;
@@ -45,8 +47,18 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
 
   return (
     <div className="relative overflow-hidden">
-      <Card className="glass-card border-2 border-primary/20">
-        <CardContent className="relative p-8">
+      <GlassSurface
+        id="territory-teaser"
+        context={{
+          ...getDefaultGlassContext(),
+          serviceCategory: 'territories',
+          urgency: 'medium',
+          confidence: 0.95
+        }}
+        className="border-2 border-primary/20"
+      >
+        <Card className="border-0 bg-transparent">
+          <CardContent className="relative p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="inline-flex">
@@ -133,6 +145,7 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
           </div>
         </CardContent>
       </Card>
+      </GlassSurface>
     </div>
   );
 }
