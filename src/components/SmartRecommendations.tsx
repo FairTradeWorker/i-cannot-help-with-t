@@ -158,25 +158,35 @@ export function SmartRecommendations() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
           >
-            <Card className="glass-card p-4">
-              <p className="text-xs text-muted-foreground mb-1">{insight.metric}</p>
-              <div className="flex items-end justify-between">
-                <p className="text-2xl font-bold">{insight.value}</p>
-                <Badge
-                  variant="secondary"
-                  className={`text-xs ${
-                    insight.trend === 'up'
-                      ? 'bg-green-100 text-green-700'
-                      : insight.trend === 'down'
-                      ? 'bg-red-100 text-red-700'
-                      : 'bg-gray-100 text-gray-700'
-                  }`}
-                >
-                  {insight.trend === 'up' ? '+' : insight.trend === 'down' ? '-' : ''}
-                  {insight.change}%
-                </Badge>
-              </div>
-            </Card>
+            <GlassSurface
+              id={`market-insight-${i}`}
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'analytics',
+                urgency: insight.trend === 'up' ? 'medium' : 'low',
+                confidence: 0.85
+              }}
+            >
+              <Card className="p-4 border-0 bg-transparent">
+                <p className="text-xs text-muted-foreground mb-1">{insight.metric}</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-2xl font-bold">{insight.value}</p>
+                  <Badge
+                    variant="secondary"
+                    className={`text-xs ${
+                      insight.trend === 'up'
+                        ? 'bg-green-100 text-green-700'
+                        : insight.trend === 'down'
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    {insight.trend === 'up' ? '+' : insight.trend === 'down' ? '-' : ''}
+                    {insight.change}%
+                  </Badge>
+                </div>
+              </Card>
+            </GlassSurface>
           </motion.div>
         ))}
       </div>
@@ -200,8 +210,18 @@ export function SmartRecommendations() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className={`glass-card p-4 ${isApplied ? 'opacity-60' : ''}`}>
-                  <div className="flex items-start gap-4">
+                <GlassSurface
+                  id={`suggestion-${suggestion.id}`}
+                  context={{
+                    ...getDefaultGlassContext(),
+                    serviceCategory: 'ai',
+                    confidence: suggestion.confidence / 100,
+                    urgency: suggestion.impact === 'high' ? 'high' : suggestion.impact === 'medium' ? 'medium' : 'low'
+                  }}
+                  className={isApplied ? 'opacity-60' : ''}
+                >
+                  <Card className="p-4 border-0 bg-transparent">
+                    <div className="flex items-start gap-4">
                     <div className={`p-3 rounded-xl ${TYPE_COLORS[suggestion.type]}`}>
                       <IconComponent className="w-6 h-6 text-white" weight="fill" />
                     </div>
@@ -273,6 +293,7 @@ export function SmartRecommendations() {
                     </div>
                   </div>
                 </Card>
+                </GlassSurface>
               </motion.div>
             );
           })}
@@ -280,7 +301,16 @@ export function SmartRecommendations() {
       </div>
 
       {/* AI Confidence Explanation */}
-      <Card className="glass-card p-4 border-primary/20">
+      <GlassSurface
+        id="ai-confidence-explanation"
+        context={{
+          ...getDefaultGlassContext(),
+          serviceCategory: 'ai',
+          confidence: 0.9
+        }}
+        className="border-primary/20"
+      >
+        <Card className="p-4 border-0 bg-transparent">
         <div className="flex items-start gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Brain className="w-5 h-5 text-primary" />

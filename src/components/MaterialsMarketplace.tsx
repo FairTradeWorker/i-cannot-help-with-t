@@ -184,8 +184,17 @@ export function MaterialsMarketplace() {
                 animate={{ opacity: 1, y: 0 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <Card className="glass-card p-4">
-                  <div className="flex items-start justify-between mb-3">
+                <GlassSurface
+                  id={`material-${material.id}`}
+                  context={{
+                    ...getDefaultGlassContext(),
+                    serviceCategory: 'materials',
+                    confidence: material.rating / 5,
+                    urgency: material.inStock ? 'low' : 'medium'
+                  }}
+                >
+                  <Card className="p-4 border-0 bg-transparent">
+                    <div className="flex items-start justify-between mb-3">
                     <div className="p-3 rounded-xl bg-primary/10">
                       <Package className="w-6 h-6 text-primary" />
                     </div>
@@ -225,6 +234,7 @@ export function MaterialsMarketplace() {
                     </Button>
                   </div>
                 </Card>
+                </GlassSurface>
               </motion.div>
             ))}
           </div>
@@ -232,7 +242,17 @@ export function MaterialsMarketplace() {
 
         <TabsContent value="orders" className="space-y-4">
           {orders.map(order => (
-            <Card key={order.id} className="glass-card p-4">
+            <GlassSurface
+              key={order.id}
+              id={`order-${order.id}`}
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'materials',
+                completion: STATUS_CONFIG[order.status].progress / 100,
+                urgency: order.status === 'processing' ? 'medium' : 'low'
+              }}
+            >
+              <Card className="p-4 border-0 bg-transparent">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h4 className="font-semibold">{order.id}</h4>
@@ -296,13 +316,23 @@ export function MaterialsMarketplace() {
                 </div>
               </div>
             </Card>
+            </GlassSurface>
           ))}
         </TabsContent>
 
         <TabsContent value="suppliers" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {['ABC Supply', 'Home Depot Pro', 'Roofing Wholesale', 'Fastener Depot'].map(supplier => (
-              <Card key={supplier} className="glass-card p-4">
+              <GlassSurface
+                key={supplier}
+                id={`supplier-${supplier}`}
+                context={{
+                  ...getDefaultGlassContext(),
+                  serviceCategory: 'materials',
+                  confidence: 0.9
+                }}
+              >
+                <Card className="p-4 border-0 bg-transparent">
                 <div className="flex items-center gap-4">
                   <div className="p-4 rounded-xl bg-primary/10">
                     <Factory className="w-8 h-8 text-primary" />
@@ -324,6 +354,7 @@ export function MaterialsMarketplace() {
                   </Button>
                 </div>
               </Card>
+              </GlassSurface>
             ))}
           </div>
         </TabsContent>
@@ -331,7 +362,17 @@ export function MaterialsMarketplace() {
 
       {/* Cart Summary (when items in cart) */}
       {cart.length > 0 && (
-        <Card className="glass-card p-4 fixed bottom-6 right-6 w-80 shadow-2xl">
+        <GlassSurface
+          id="cart-summary"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'materials',
+            urgency: 'medium',
+            confidence: 0.9
+          }}
+          className="fixed bottom-6 right-6 w-80 shadow-2xl"
+        >
+          <Card className="p-4 border-0 bg-transparent">
           <h4 className="font-semibold mb-3">Cart Summary</h4>
           <div className="space-y-2 max-h-40 overflow-y-auto mb-4">
             {cart.map(item => (
