@@ -236,7 +236,7 @@ export function ReviewSystem({
           onMouseEnter={() => interactive && setHoverRating(i)}
           onMouseLeave={() => interactive && setHoverRating(0)}
           onClick={() => interactive && onRate?.(i)}
-        /> as React.ReactElement
+        />
       );
     }
     return <div className="flex gap-1">{stars}</div>;
