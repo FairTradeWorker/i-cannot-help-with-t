@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Package,
   Truck,
