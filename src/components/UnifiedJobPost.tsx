@@ -11,6 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
+import { GlassSurface } from '@/components/GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import type { ServiceSelection } from '@/types/service-categories';
 import { getServiceInfo } from '@/types/service-categories';
 
@@ -133,7 +135,7 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                 id="square-footage"
                 type="number"
                 placeholder="e.g., 2000"
-                value={serviceFields.squareFootage || ''}
+                value={String(serviceFields.squareFootage || '')}
                 onChange={(e) => setServiceFields({ ...serviceFields, squareFootage: parseInt(e.target.value) || 0 })}
               />
             </div>
@@ -251,7 +253,7 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
               id="circuit-count"
               type="number"
               placeholder="e.g., 20"
-              value={serviceFields.circuitCount || ''}
+                value={String(serviceFields.circuitCount || '')}
               onChange={(e) => setServiceFields({ ...serviceFields, circuitCount: parseInt(e.target.value) || 0 })}
             />
           </div>
@@ -340,13 +342,20 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
         <div className="grid lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <TabsContent value="photo" className="mt-0">
-              <Card className="glass-card">
-                <CardHeader>
-                  <h3 className="text-xl font-bold">Upload Photos</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Add photos of the area or issue that needs work
-                  </p>
-                </CardHeader>
+              <GlassSurface
+                id="upload-photos-card"
+                context={{
+                  ...getDefaultGlassContext(),
+                  serviceCategory: serviceSelection?.categoryId || 'general'
+                }}
+              >
+                <Card className="border-0 bg-transparent">
+                  <CardHeader>
+                    <h3 className="text-xl font-bold">Upload Photos</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Add photos of the area or issue that needs work
+                    </p>
+                  </CardHeader>
                 <CardContent>
                   <div
                     className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
@@ -402,36 +411,61 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                   )}
                 </CardContent>
               </Card>
+              </GlassSurface>
             </TabsContent>
 
             <TabsContent value="video" className="mt-0">
-              <Card className="glass-card">
-                <CardContent className="p-8 text-center">
-                  <VideoCamera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-xl font-bold mb-2">Video Walkthrough</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Record a quick video walkthrough of your project
-                  </p>
-                  <Badge variant="secondary">Coming Soon</Badge>
-                </CardContent>
-              </Card>
+              <GlassSurface
+                id="video-card"
+                context={{
+                  ...getDefaultGlassContext(),
+                  serviceCategory: serviceSelection?.categoryId || 'general'
+                }}
+              >
+                <Card className="border-0 bg-transparent">
+                  <CardContent className="p-8 text-center">
+                    <VideoCamera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-xl font-bold mb-2">Video Walkthrough</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Record a quick video walkthrough of your project
+                    </p>
+                    <Badge variant="secondary">Coming Soon</Badge>
+                  </CardContent>
+                </Card>
+              </GlassSurface>
             </TabsContent>
 
             <TabsContent value="text" className="mt-0">
-              <Card className="glass-card">
-                <CardContent className="p-8">
-                  <p className="text-sm text-muted-foreground">
-                    Describe your project in detail below
-                  </p>
-                </CardContent>
-              </Card>
+              <GlassSurface
+                id="text-card"
+                context={{
+                  ...getDefaultGlassContext(),
+                  serviceCategory: serviceSelection?.categoryId || 'general'
+                }}
+              >
+                <Card className="border-0 bg-transparent">
+                  <CardContent className="p-8">
+                    <p className="text-sm text-muted-foreground">
+                      Describe your project in detail below
+                    </p>
+                  </CardContent>
+                </Card>
+              </GlassSurface>
             </TabsContent>
 
-            <Card className="glass-card">
-              <CardHeader>
-                <h3 className="text-xl font-bold">Job Details</h3>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <GlassSurface
+              id="job-details-card"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: serviceSelection?.categoryId || 'general',
+                urgency: serviceSelection ? 'medium' : 'low'
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardHeader>
+                  <h3 className="text-xl font-bold">Job Details</h3>
+                </CardHeader>
+                <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="title">Job Title *</Label>
                   <Input
@@ -523,13 +557,18 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                 </div>
               </CardContent>
             </Card>
+            </GlassSurface>
           </div>
 
           <div className="space-y-6">
-            <Card className="glass-card">
-              <CardHeader>
-                <h3 className="text-lg font-bold">How it Works</h3>
-              </CardHeader>
+            <GlassSurface
+              id="how-it-works-card"
+              context={getDefaultGlassContext()}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardHeader>
+                  <h3 className="text-lg font-bold">How it Works</h3>
+                </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex gap-3">
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
@@ -577,48 +616,64 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                 </div>
               </CardContent>
             </Card>
+            </GlassSurface>
 
             {activeTab === 'photo' && (
-              <Card className="glass-card">
-                <CardHeader>
-                  <h4 className="font-bold flex items-center gap-2">
-                    <Camera className="w-5 h-5" />
-                    Photo Tips
-                  </h4>
-                </CardHeader>
-                <CardContent>
-                  <ul className="text-xs text-muted-foreground space-y-2">
-                    <li>• Include wide shots showing the entire area</li>
-                    <li>• Good lighting helps contractors assess the work</li>
-                    <li>• Capture multiple angles of the problem</li>
-                    <li>• Include close-ups of specific issues</li>
-                  </ul>
-                </CardContent>
-              </Card>
+              <GlassSurface
+                id="photo-tips-card"
+                context={getDefaultGlassContext()}
+              >
+                <Card className="border-0 bg-transparent">
+                  <CardHeader>
+                    <h4 className="font-bold flex items-center gap-2">
+                      <Camera className="w-5 h-5" />
+                      Photo Tips
+                    </h4>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="text-xs text-muted-foreground space-y-2">
+                      <li>• Include wide shots showing the entire area</li>
+                      <li>• Good lighting helps contractors assess the work</li>
+                      <li>• Capture multiple angles of the problem</li>
+                      <li>• Include close-ups of specific issues</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </GlassSurface>
             )}
           </div>
         </div>
 
-        <Card className="glass-card border-2 border-primary/20 mt-6">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-bold mb-1">Ready to Post?</h3>
-                <p className="text-sm text-muted-foreground">
-                  Your job will be visible to contractors in your area
-                </p>
+        <GlassSurface
+          id="ready-to-post-card"
+          context={{
+            ...getDefaultGlassContext(),
+            urgency: serviceSelection ? 'medium' : 'low',
+            confidence: serviceSelection ? 0.9 : 0.7
+          }}
+          className="mt-6"
+        >
+          <Card className="border-2 border-primary/20 bg-transparent">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold mb-1">Ready to Post?</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your job will be visible to contractors in your area
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={onCancel}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSubmit} size="lg">
+                    Post Job
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={onCancel}>
-                  Cancel
-                </Button>
-                <Button onClick={handleSubmit} size="lg">
-                  Post Job
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </GlassSurface>
       </Tabs>
 
       <ServiceCategoryMegaMenu
