@@ -7,10 +7,17 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, RefreshCw, Home, Bug, Mail } from '@phosphor-icons/react';
+import { 
+  Bug,                 // the missing bug icon for errors
+  Triangle,           // this is the new "warning" triangle
+  ArrowCounterClockwise, 
+  House, 
+  Envelope 
+} from "@phosphor-icons/react";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { captureError } from '@/lib/error-tracking';
+
 
 // ============================================================================
 // Types
@@ -125,7 +132,7 @@ export function PageErrorFallback({ error, onRetry }: ErrorFallbackProps) {
       >
         <div className="mb-6">
           <div className="w-20 h-20 mx-auto rounded-full bg-destructive/10 flex items-center justify-center mb-4">
-            <AlertTriangle className="w-10 h-10 text-destructive" weight="fill" />
+            <Triangle weight="fill" className="text-yellow-500" />
           </div>
           <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
           <p className="text-muted-foreground">
@@ -146,7 +153,7 @@ export function PageErrorFallback({ error, onRetry }: ErrorFallbackProps) {
 
         <div className="flex flex-col gap-3">
           <Button onClick={onRetry} className="w-full">
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <ArrowCounterClockwise />
             Try Again
           </Button>
           <Button
@@ -154,7 +161,7 @@ export function PageErrorFallback({ error, onRetry }: ErrorFallbackProps) {
             onClick={() => window.location.href = '/'}
             className="w-full"
           >
-            <Home className="w-4 h-4 mr-2" />
+            <House className="w-4 h-4 mr-2" />
             Go to Home
           </Button>
           <Button
@@ -162,7 +169,7 @@ export function PageErrorFallback({ error, onRetry }: ErrorFallbackProps) {
             onClick={() => window.location.href = `mailto:${SUPPORT_EMAIL}`}
             className="w-full"
           >
-            <Mail className="w-4 h-4 mr-2" />
+            <Envelope className="w-4 h-4 mr-2" />
             Contact Support
           </Button>
         </div>
@@ -180,14 +187,14 @@ export function SectionErrorFallback({ error, onRetry }: ErrorFallbackProps) {
     <Card className="w-full">
       <CardContent className="p-6 text-center">
         <div className="w-12 h-12 mx-auto rounded-full bg-destructive/10 flex items-center justify-center mb-4">
-          <AlertTriangle className="w-6 h-6 text-destructive" weight="fill" />
+          <Triangle weight="fill" className="text-yellow-500" />
         </div>
         <h3 className="text-lg font-semibold mb-2">Failed to load this section</h3>
         <p className="text-sm text-muted-foreground mb-4">
           {error?.message || 'An unexpected error occurred'}
         </p>
         <Button onClick={onRetry} size="sm">
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <ArrowCounterClockwise className="w-4 h-4 mr-2" />
           Retry
         </Button>
       </CardContent>
@@ -213,7 +220,7 @@ export function ComponentErrorFallback({ error, onRetry }: ErrorFallbackProps) {
       </p>
       {onRetry && (
         <Button onClick={onRetry} size="sm" variant="outline">
-          <RefreshCw className="w-3 h-3 mr-1" />
+          <ArrowCounterClockwise className="w-4 h-4 mr-2" />
           Retry
         </Button>
       )}
