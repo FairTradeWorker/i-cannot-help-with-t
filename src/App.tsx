@@ -48,7 +48,6 @@ import { LegalFooter } from '@/components/LegalFooter';
 import { LoginModal } from '@/components/LoginModal';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { MessagesView } from '@/components/MessagesView';
 import { HomeownerDashboard } from '@/components/HomeownerDashboard';
 import { TerritoryMapPage } from '@/components/TerritoryMapPage';
