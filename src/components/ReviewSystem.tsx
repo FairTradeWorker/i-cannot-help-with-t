@@ -1,5 +1,5 @@
 // Review and Rating System - Leave and view detailed reviews
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star,
@@ -222,8 +222,8 @@ export function ReviewSystem({
     });
   };
 
-  const renderStars = (rating: number, interactive: boolean = false, onRate?: (rating: number) => void): React.ReactElement => {
-    const stars: React.ReactElement[] = [];
+  const renderStars = (rating: number, interactive: boolean = false, onRate?: (rating: number) => void) => {
+    const stars = [];
     for (let i = 1; i <= 5; i++) {
       const isFilled = interactive ? i <= (hoverRating || rating) : i <= rating / 20;
       stars.push(
@@ -236,7 +236,7 @@ export function ReviewSystem({
           onMouseEnter={() => interactive && setHoverRating(i)}
           onMouseLeave={() => interactive && setHoverRating(0)}
           onClick={() => interactive && onRate?.(i)}
-        /> as React.ReactElement
+        />
       );
     }
     return <div className="flex gap-1">{stars}</div>;

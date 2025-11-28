@@ -23,7 +23,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 /**
  * Hook for debounced callbacks
  */
-export function useDebouncedCallback<T extends (...args: any[]) => void>(
+export function useDebouncedCallback<T extends (...args: never[]) => void>(
   callback: T,
   delay: number
 ): T {
@@ -39,7 +39,7 @@ export function useDebouncedCallback<T extends (...args: any[]) => void>(
 /**
  * Hook for throttled callbacks
  */
-export function useThrottledCallback<T extends (...args: any[]) => void>(
+export function useThrottledCallback<T extends (...args: never[]) => void>(
   callback: T,
   limit: number
 ): T {
@@ -58,7 +58,7 @@ export function useThrottledCallback<T extends (...args: any[]) => void>(
 export function useIntersectionObserver(
   options: IntersectionObserverInit = {}
 ): [React.RefObject<HTMLDivElement | null>, boolean] {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -233,7 +233,7 @@ export function useScrollPosition(throttleMs = 100): { x: number; y: number } {
  * Hook for previous value
  */
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T | undefined>(undefined);
+  const ref = useRef<T>();
   useEffect(() => {
     ref.current = value;
   }, [value]);
@@ -387,7 +387,7 @@ export function useDocumentTitle(title: string): void {
 export function useClickOutside<T extends HTMLElement>(
   callback: () => void
 ): React.RefObject<T | null> {
-  const ref = useRef<T | null>(null);
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {

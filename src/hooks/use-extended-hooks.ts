@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
 // Hook 21: Use previous value
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T | undefined>(undefined);
+  const ref = useRef<T>();
   
   useEffect(() => {
     ref.current = value;
@@ -129,7 +129,7 @@ export function useHover<T extends HTMLElement>(): [
   boolean
 ] {
   const [isHovered, setIsHovered] = useState(false);
-  const ref = useRef<T>(null as unknown as T);
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     const element = ref.current;
@@ -147,14 +147,14 @@ export function useHover<T extends HTMLElement>(): [
     };
   }, []);
 
-  return [ref as React.RefObject<T>, isHovered];
+  return [ref, isHovered];
 }
 
 // Hook 29: Use focus trap
 export function useFocusTrap<T extends HTMLElement>(
   active: boolean
 ): React.RefObject<T> {
-  const ref = useRef<T>(null as unknown as T);
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     if (!active || !ref.current) return;
@@ -185,7 +185,7 @@ export function useFocusTrap<T extends HTMLElement>(
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [active]);
 
-  return ref as React.RefObject<T>;
+  return ref;
 }
 
 // Hook 30: Use async effect
@@ -238,7 +238,7 @@ export function useForm<T extends Record<string, unknown>>(initialValues: T): {
     setErrors(prev => {
       if (error === undefined) {
         const { [name]: _, ...rest } = prev;
-        return rest as unknown as Partial<Record<keyof T, string>>;
+        return rest;
       }
       return { ...prev, [name]: error };
     });
@@ -451,7 +451,7 @@ export function useLongPress(
   onTouchStart: () => void;
   onTouchEnd: () => void;
 } {
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const start = useCallback(() => {
     timeoutRef.current = setTimeout(callback, duration);
