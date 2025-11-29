@@ -308,13 +308,7 @@ export function GamificationSystem() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="glass-card"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'gamification',
-            confidence: 0.9
-          }}
-        >
+        <div className="glass-card">
           <Card className="p-4 text-center border-0 bg-transparent">
             <Trophy className="w-8 h-8 mx-auto mb-2 text-yellow-500" weight="fill" />
             <p className="text-2xl font-bold">

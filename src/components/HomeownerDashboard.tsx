@@ -139,13 +139,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
             </Card>
           </div>
 
-          <div className="glass-card"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'jobs',
-              confidence: 0.9
-            }}
-          >
+          <div className="glass-card">
             <Card className="p-6 border-0 bg-transparent">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                 <Users className="w-4 h-4" />
