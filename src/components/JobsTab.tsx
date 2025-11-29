@@ -668,6 +668,49 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                 </div>
               </div>
             )}
+
+            {/* Text overlay on video */}
+            <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-3 pointer-events-none">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-bold text-white truncate drop-shadow-md">
+                  {job.title}
+                </h3>
+                <p className="mt-1 text-xs text-white/90 line-clamp-2 drop-shadow-md">
+                  {job.description}
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-white/90">
+                  <div className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    <span className="truncate">
+                      {job.address.city}, {job.address.state}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    <span>{job.laborHours}h</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="w-3 h-3" />
+                    <span>
+                      {job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right space-y-2 pointer-events-auto">
+                <p className="text-[11px] text-white/80">Budget</p>
+                <p className="text-xl font-bold text-white drop-shadow-md">
+                  {formatBudget(job.estimatedCost)}
+                </p>
+                <Button
+                  size="sm"
+                  className="bg-primary hover:bg-primary/90 text-xs px-3 py-1 h-8"
+                >
+                  Bid Job
+                  <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
+            </div>
             
             {/* Hover Overlay */}
             {isHovered && (
