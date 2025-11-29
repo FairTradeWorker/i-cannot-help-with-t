@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { learningDB } from '@/lib/learning-db';
 import { Card } from '@/components/ui/card';
 import { TrendingUp, Brain, Zap } from 'lucide-react';
+import Confetti from 'react-confetti';
 
 export function LearningBrain() {
   const [stats, setStats] = useState({ accuracy: 0, jobs: 0, justHit90: false });
-  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     const update = async () => {
@@ -19,48 +19,21 @@ export function LearningBrain() {
         : 0.6;
 
       const newAcc = Math.round(accuracy * 1000) / 10;
-      const justHit90 = newAcc >= 90 && stats.accuracy < 90;
-      
       setStats(prev => ({
         accuracy: newAcc,
         jobs: scopeJobs.length,
-        justHit90: justHit90
+        justHit90: newAcc >= 90 && prev.accuracy < 90
       }));
-
-      if (justHit90) {
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 8000);
-      }
     };
 
     update();
     const id = setInterval(update, 3000);
     return () => clearInterval(id);
-  }, [stats.accuracy]);
+  }, []);
 
   return (
     <>
-      {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-50">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-6xl animate-bounce">🎉</div>
-          </div>
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-ping"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${1 + Math.random()}s`
-              }}
-            >
-              <div className="w-4 h-4 bg-yellow-400 rounded-full" />
-            </div>
-          ))}
-        </div>
-      )}
+      {stats.justHit90 && <Confetti width={window.innerWidth} height={window.innerHeight} recycle={false} />}
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
         <Card className="p-8 text-center">
