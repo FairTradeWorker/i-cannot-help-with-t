@@ -345,7 +345,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col overflow-x-hidden" style={{ maxWidth: '100vw', width: '100%' }}>
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -455,7 +455,9 @@ function App() {
                           style={{ 
                             touchAction: 'pan-y',
                             overscrollBehavior: 'contain',
-                            WebkitOverflowScrolling: 'touch'
+                            WebkitOverflowScrolling: 'touch',
+                            maxWidth: '100vw',
+                            width: '100%'
                           }}
                           onClick={(e) => {
                             // Prevent clicks from propagating to backdrop
@@ -1052,8 +1054,8 @@ function App() {
           </div>
         </div>
       </motion.header>
-      <main className="flex-1 py-8">
-        <div className="max-w-7xl mx-auto px-4">
+      <main className="flex-1 py-8 overflow-x-hidden" style={{ maxWidth: '100vw', width: '100%' }}>
+        <div className="max-w-7xl mx-auto px-4" style={{ maxWidth: '100%' }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}-${showJobPost}`}

@@ -737,8 +737,8 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2, delay: index * 0.03 }}
-        className="mb-4"
-        style={{ marginLeft: '16px', marginRight: '16px', width: 'calc(100% - 32px)' }}
+        className="mb-4 mx-4"
+        style={{ maxWidth: '100%' }}
       >
         <Card
           className="overflow-hidden cursor-pointer transition-all border-0"
@@ -819,11 +819,12 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
 
           {/* MIDDLE SECTION - Video thumbnail if exists */}
           {job.videoUrl && (
-            <div className="relative mb-3 rounded-lg overflow-hidden" style={{ aspectRatio: '16/9' }}>
+            <div className="relative mb-3 rounded-lg overflow-hidden w-full" style={{ aspectRatio: '16/9', maxWidth: '100%' }}>
               <img
                 src={job.videoUrl}
                 alt={job.title}
                 className="w-full h-full object-cover"
+                style={{ maxWidth: '100%', height: 'auto' }}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}

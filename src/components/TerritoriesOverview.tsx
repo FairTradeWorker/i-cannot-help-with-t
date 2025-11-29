@@ -346,13 +346,13 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
                   </div>
                 </div>
               </div>
-              <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg overflow-hidden w-full">
+              <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg overflow-hidden w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
                 <canvas 
                   ref={canvasRef} 
                   width={1000} 
                   height={600} 
-                  className="w-full h-auto max-w-full"
-                  style={{ maxWidth: '100%', height: 'auto' }}
+                  className="w-full h-auto"
+                  style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
                 />
               </div>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
