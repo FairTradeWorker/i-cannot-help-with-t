@@ -50,13 +50,13 @@ Territory Operator: $0 (no fees!)
 Contractor receives: $10,000 (100% of job amount)
 ```
 
-### 3. 🗺️ Territory-Based Operations (First 10 FREE!)
+### 3. 🗺️ Territory-Based Operations (First 300 Launch!)
 **The Problem**: Lead generation platforms flood contractors with low-quality leads.  
-**Our Solution**: Territory Operators claim exclusive rights to zip codes, recruit quality contractors, approve workers, and build their network without paying into it.
+**Our Solution**: Territory Operators claim First Priority on every lead in their zip code, recruit quality contractors, approve workers, and build their network.
 
-- **First 10 Territories**: FREE (claim now!)
-- **Pricing After First 10**: $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
-- **Operator Fees**: $0 - they BUILD the network, not pay into it
+- **First 300 Operators**: First Priority forever = FREE (claim now!)
+- **After First 300**: $500 one-time fee + $20/month to maintain First Priority status
+- **If subscription lapses**: Automatically downgraded to Second Priority (still get leads, but after First Priority operators)
 - **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 - **Exit Strategy**: Sell your territory portfolio later
 
@@ -110,14 +110,14 @@ Contractor receives: $10,000 (100% of job amount)
 6. **Complete & Get Paid** → Mark complete, receive 100% of job payment (no fees!)
 7. **Optimize Routes** → Use route planner to save time and fuel
 
-### For Territory Operators (First 10 FREE - $0 Fees!)
+### For Territory Operators (First 300 Launch!)
 1. **Sign Up** → Select "Territory Owner" role
-2. **Claim Territories** → First 10 completely FREE, then $500 each
-3. **Recruit Contractors** → Build your local network
-4. **Approve Workers** → Verify licenses and credentials
-5. **Pay NO Fees** → You build the network, not pay into it
-6. **Scale Your Portfolio** → Add more territories, increase network reach
-7. **Exit Strategy** → Sell your portfolio for a profit
+2. **Claim First Priority** → First 300 operators get First Priority forever = FREE
+3. **After First 300** → $500 one-time + $20/month to maintain First Priority
+4. **Recruit Contractors** → Build your local network
+5. **Approve Workers** → Verify licenses and credentials
+6. **First Priority Benefits** → Get every lead before Second Priority operators
+7. **Scale Your Portfolio** → Add more territories, increase network reach
 8. **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 
 ### For Developers
@@ -196,7 +196,7 @@ npm run build
 
 #### 🗺️ For Territory Operators
 - **Territory Map** - Interactive US map with 850+ available territories
-- **Claim System** - First 10 territories FREE, then $500 each
+- **Claim System** - First 300 operators get First Priority forever = FREE, then $500 + $20/month
 - **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 - **Contractor Recruitment** - Build your local contractor network
 - **Approval Workflow** - Verify and approve contractors
@@ -626,7 +626,7 @@ fairtradeworker/
 - **Annual**: $672,000
 
 #### 2. Territory Sales
-- **First 10**: FREE (acquisition strategy)
+- **First 300**: First Priority forever = FREE (acquisition strategy)
 - **Next territories**: $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
 - **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 - **Target**: 500 territories sold in Year 1
@@ -673,7 +673,8 @@ fairtradeworker/
 - **Total platform revenue per job**: $20
 
 **Per Territory:**
-- Initial cost to claim: $0-$500 (first 10 free, then escalating)
+- First 300 operators: First Priority forever = FREE
+- After First 300: $500 one-time + $20/month to maintain First Priority
 - Average jobs per territory per month: 20
 - **Operator pays**: $0/month (zero fees!)
 - **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
@@ -712,7 +713,7 @@ fairtradeworker/
 - **Full Marketplace** - Job posting, bidding, contractor profiles, messaging
 - **60-Second Video Analysis** - AI-powered job scope generation from video
 - **Route Optimization** - Multi-stop route planning with cost calculations
-- **Territory System** - Interactive map, claiming, first 10 free pricing
+- **Territory System** - Interactive map, First 300 launch, $500 + $20/month pricing
 - **Territory Rule**: ONE license per Individual/LLC/Corporation
 - **Payment System** - Homeowner $20 platform fee per job
 - **4 Intelligence APIs** - AI Scope ($2,499/mo), Instant Quote ($499/mo), Contractor Match ($299/mo), Demand Heatmap ($199/mo)
@@ -789,7 +790,7 @@ fairtradeworker/
 #### 🗺️ Territory Operators - Build Your Network (Zero Fees!)
 1. **Sign up** and select "Territory Owner" role
 2. **Explore the territory map** - View available territories
-3. **Claim your first 10 territories** - Completely FREE
+3. **Claim First Priority** - First 300 operators get it forever free
 4. **Additional territories** - $500 (#11), $1,000 (#12), $1,500 (#13), $2,000 (#14), $2,500+ (#15+)
 5. **⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION**
 6. **Recruit contractors** - Build your local network
@@ -843,7 +844,8 @@ FairTradeWorker's UI is inspired by **iOS 18 Maps + Linear.app + Arc browser** -
 - Interactive SVG US map
 - List/map view toggle
 - Search by zip, city, county, state
-- Dynamic pricing (first 10 free, then $500, $1,000, $1,500, $2,000, $2,500+)
+- First 300 launch: First Priority forever = FREE
+- After First 300: $500 one-time + $20/month to maintain First Priority
 - ⚠️ ONE LICENSE PER INDIVIDUAL/LLC/CORPORATION
 - Claimed territory tracking
 
@@ -1081,9 +1083,10 @@ Competitors can't replicate this without our data.
 60-second videos replace 30-minute forms.  
 10x faster job posting = more volume = more data = better learning.
 
-### 7. **First 10 Free Strategy**
-Viral growth as operators claim free territories.  
-Creates land grab mentality, rapid expansion.
+### 7. **First 300 Launch Strategy**
+Viral growth as operators claim First Priority spots.  
+Creates urgency and land grab mentality, rapid expansion.
+First 300 get First Priority forever = FREE, creating massive value for early adopters.
 
 ### 8. **Developer Platform**
 APIs allow others to build on our intelligence.  

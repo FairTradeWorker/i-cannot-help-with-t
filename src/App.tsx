@@ -84,6 +84,7 @@ import { DispatchMap } from '@/components/DispatchMap';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
 import { LearningBrain } from '@/components/LearningBrain';
+import { First300Page } from '@/pages/First300Page';
 import { ServiceCategoriesShowcase } from '@/components/ServiceCategoriesShowcase';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
 import { ScrollAnimatedSection } from '@/components/ScrollAnimatedSection';
@@ -95,7 +96,7 @@ import type { User as UserType, Referral, Analytics } from '@/lib/types';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { getAvailableTerritoryCount, getStateStats } from '@/lib/territory-data';
 
-type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch' | 'learning';
+type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch' | 'learning' | 'first300';
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
@@ -852,6 +853,14 @@ function App() {
                 AI Learning Live
               </Button>
               <Button
+                variant={activeTab === 'first300' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('first300')}
+                className="button-interactive text-red-500 hover:text-red-400"
+                size="sm"
+              >
+                First 300 Launch
+              </Button>
+              <Button
                 variant={activeTab === 'partners' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('partners')}
                 className="button-interactive"
@@ -1338,7 +1347,7 @@ function App() {
                               </div>
                             </div>
                             <p className="text-sm font-semibold mb-1">Territories</p>
-                            <p className="text-xs text-muted-foreground mb-2">$45/month • Exclusive lead rights</p>
+                            <p className="text-xs text-muted-foreground mb-2">First 300: FREE Forever • First Priority on every lead</p>
                             <div className="flex flex-wrap gap-1 mt-2">
                               <Badge variant="outline" className="text-[10px]">TX</Badge>
                               <Badge variant="outline" className="text-[10px]">AZ</Badge>
@@ -1419,7 +1428,7 @@ function App() {
                             <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
                             <Badge variant="secondary" className="mb-4">100% Earnings Guarantee</Badge>
                             <p className="text-muted-foreground mb-6">
-                              Unlike other platforms that charge 15-30% fees, FairTradeWorker contractors keep 100% of their job earnings. Territory operators pay $45/month for exclusive lead rights in their area to fund the platform. Homeowners pay a one-time $20 platform fee per job.
+                              Unlike other platforms that charge 15-30% fees, FairTradeWorker contractors keep 100% of their job earnings. The first 300 territory operators get First Priority forever = FREE. After that, it's $500 + $20/month to maintain First Priority. Homeowners pay a one-time $20 platform fee per job.
                             </p>
                             <div className="space-y-3">
                               <div className="flex items-center gap-3">
@@ -1501,7 +1510,7 @@ function App() {
                             </div>
                             <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
                               <p className="text-xs text-muted-foreground">
-                                <span className="font-semibold text-foreground">Territory operators</span> separately pay $45/month for exclusive lead rights in their area. This monthly fee funds platform operations.
+                                <span className="font-semibold text-foreground">Territory operators</span> get First Priority on every lead. The first 300 get it forever free. After that, it's $500 + $20/month to maintain First Priority status.
                               </p>
                             </div>
                           </div>
@@ -1728,6 +1737,7 @@ function App() {
                       </div>
                     </div>
                   )}
+                  {activeTab === 'first300' && <First300Page />}
                 </>
               )}
             </motion.div>

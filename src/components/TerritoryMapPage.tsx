@@ -38,6 +38,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, GeoJSON } from 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { validateTerritoryClaim, recordTerritoryOwnership, getOwnedTerritories, type EntityType } from '@/lib/territory-validation';
+import { getTerritoryPricing, processTerritoryClaim } from '@/lib/territory-pricing';
+import { getFirst300Count, isFirst300Complete } from '@/lib/first300';
+import { First300Counter } from '@/components/First300Counter';
 import { dataStore } from '@/lib/store';
 import type { User } from '@/lib/types';
 
@@ -315,7 +318,7 @@ function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick,
               </div>
               <div>
                 <span className="font-medium">Claimed</span>
-                <p className="text-[10px] text-muted-foreground">Territory owned</p>
+                <p className="text-[10px] text-muted-foreground">First Priority taken</p>
               </div>
             </div>
             <div className="flex items-start gap-2">
@@ -351,10 +354,13 @@ export function TerritoryMapPage() {
   const [email, setEmail] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
   const [validating, setValidating] = useState(false);
+  const [pricing, setPricing] = useState<{ isFirst300: boolean; initialFee: number; monthlyFee: number; priorityStatus: 'first_priority' | 'second_priority'; description: string } | null>(null);
+  const [first300Count, setFirst300Count] = useState<number | null>(null);
 
-  // Load current user
+  // Load current user and First 300 count
   useEffect(() => {
     dataStore.getCurrentUser().then(setCurrentUser);
+    getFirst300Count().then(setFirst300Count);
   }, []);
 
   const territories = territoryZips.map(t => ({
@@ -376,7 +382,7 @@ export function TerritoryMapPage() {
 
   const handleClaimTerritory = async (territory: TerritoryZip) => {
     if (!currentUser) {
-      toast.error('Please log in to claim a territory');
+      toast.error('Please log in to claim First Priority');
       return;
     }
 
@@ -389,6 +395,19 @@ export function TerritoryMapPage() {
       setEmail(currentUser.email);
     }
 
+    // Get pricing for this claim
+    try {
+      const territoryPricing = await getTerritoryPricing(
+        entityType,
+        currentUser.email,
+        currentUser.id,
+        taxId || undefined
+      );
+      setPricing(territoryPricing);
+    } catch (error) {
+      console.error('Failed to get territory pricing:', error);
+    }
+
     // Check if user already owns a territory
     try {
       const owned = await getOwnedTerritories(
@@ -398,7 +417,7 @@ export function TerritoryMapPage() {
         taxId || undefined
       );
       if (owned.length > 0) {
-        setValidationError(`You already own ${owned.length} territory/territories. Only one territory per entity is allowed.`);
+        setValidationError(`You already have First Priority on ${owned.length} territory/territories. Only one territory per entity is allowed.`);
       }
     } catch (error) {
       console.error('Failed to check owned territories:', error);
@@ -426,6 +445,21 @@ export function TerritoryMapPage() {
         return;
       }
 
+      // Process claim with First 300 system
+      const claimResult = await processTerritoryClaim(
+        selectedTerritory.zip,
+        entityType,
+        email || currentUser.email,
+        currentUser.id,
+        taxId || undefined
+      );
+
+      if (!claimResult.success) {
+        setValidationError('Failed to process claim. Please try again.');
+        setValidating(false);
+        return;
+      }
+
       // Record ownership
       if (validation.entityHash) {
         await recordTerritoryOwnership(validation.entityHash, {
@@ -439,9 +473,15 @@ export function TerritoryMapPage() {
 
       setClaimedTerritories(current => [...(current || []), selectedTerritory.zip]);
       
-      toast.success('Territory Claimed!', {
-        description: `${selectedTerritory.city}, ${selectedTerritory.state} - Exclusive Rights to Our Leads`,
-      });
+      if (claimResult.priorityStatus === 'first_priority' && !claimResult.requiresPayment) {
+        toast.success('First Priority Claimed!', {
+          description: `${selectedTerritory.city}, ${selectedTerritory.state} - First Priority on every lead, forever free!`,
+        });
+      } else {
+        toast.success('First Priority Claimed!', {
+          description: `${selectedTerritory.city}, ${selectedTerritory.state} - Payment required to activate First Priority status.`,
+        });
+      }
       
       setShowClaimDialog(false);
       setSelectedTerritory(null);
@@ -494,6 +534,13 @@ export function TerritoryMapPage() {
 
   return (
     <div className="space-y-6">
+      {/* First 300 Counter */}
+      {first300Count !== null && first300Count > 0 && (
+        <div className="mb-6">
+          <First300Counter />
+        </div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -501,9 +548,9 @@ export function TerritoryMapPage() {
       >
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight mb-2">Territory Map</h1>
+            <h1 className="text-4xl font-bold tracking-tight mb-2">First Priority Territories</h1>
             <p className="text-lg text-muted-foreground">
-              $45/month per territory • Exclusive Rights to Our Leads
+              Claim First Priority on every lead in your zip code
             </p>
           </div>
           
@@ -697,12 +744,12 @@ export function TerritoryMapPage() {
                           onClick={() => handleClaimTerritory(territory)}
                         >
                           <Plus className="w-4 h-4 mr-2" />
-                          Claim Territory
+                          Claim First Priority
                         </Button>
                       ) : (
                         <Button className="w-full" variant="secondary" disabled>
                           <Lock className="w-4 h-4 mr-2" />
-                          Already Claimed
+                          First Priority Taken
                         </Button>
                       )}
                     </div>
@@ -717,9 +764,9 @@ export function TerritoryMapPage() {
       <Dialog open={showClaimDialog} onOpenChange={setShowClaimDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-2xl">Claim Territory</DialogTitle>
+            <DialogTitle className="text-2xl">Claim First Priority</DialogTitle>
             <DialogDescription className="text-base">
-              Review the details before claiming this territory
+              Review the details before claiming First Priority on this zip code
             </DialogDescription>
           </DialogHeader>
           
@@ -737,15 +784,30 @@ export function TerritoryMapPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <Label className="text-sm text-muted-foreground">Price</Label>
-                  <p className="text-2xl font-bold text-primary">
-                    {claimedTerritories && claimedTerritories.length < 10 ? 'FREE' : `$${selectedTerritory.monthlyPrice}`}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {claimedTerritories && claimedTerritories.length < 10 
-                      ? 'First 10 territories FREE' 
-                      : 'One-time purchase'}
-                  </p>
+                  <Label className="text-sm text-muted-foreground">Pricing</Label>
+                  {pricing ? (
+                    <>
+                      <p className="text-2xl font-bold text-primary">
+                        {pricing.isFirst300 ? 'FREE' : `$${pricing.initialFee}`}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {pricing.isFirst300 
+                          ? 'First Priority — Forever Free' 
+                          : `$500 one-time + $20/month`}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-2xl font-bold text-primary">
+                        {first300Count !== null && first300Count > 0 ? 'FREE' : '$500'}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {first300Count !== null && first300Count > 0 
+                          ? 'First Priority — Forever Free' 
+                          : '$500 one-time + $20/month'}
+                      </p>
+                    </>
+                  )}
                 </div>
                 
                 <div className="space-y-1">

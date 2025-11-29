@@ -58,11 +58,11 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
 
               <div className="space-y-4">
                 <h2 className="text-4xl font-bold tracking-tight">
-                  Own Your Territory
-                  <span className="block text-2xl text-primary font-mono mt-2">$45/month</span>
+                  Claim First Priority
+                  <span className="block text-2xl text-primary font-mono mt-2">First 300: FREE Forever</span>
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Priority Access to first Leads in your zip codes. Build a sustainable business with intelligent platform features and guaranteed lead flow.
+                  First Priority on every lead in your zip code. The first 300 operators get it forever free. After that, it's $500 + $20/month to maintain First Priority status.
                 </p>
               </div>
 
@@ -121,9 +121,9 @@ export function TerritoryTeaser({ onExplore }: TerritoryTeaserProps) {
                       <CurrencyDollar className="w-5 h-5 text-white" weight="fill" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="font-semibold">Simple Monthly Pricing</h4>
+                      <h4 className="font-semibold">First 300 Launch</h4>
                       <p className="text-sm text-muted-foreground">
-                        Just $45/month to own exclusive lead rights in your territory. No hidden fees.
+                        First 300 operators get First Priority forever = FREE. After that, $500 one-time + $20/month to maintain First Priority.
                       </p>
                     </div>
                   </div>
