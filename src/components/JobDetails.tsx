@@ -15,6 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { dataStore } from '@/lib/store';
 import { JobFeedbackModal } from '@/components/JobFeedbackModal';
+import { InvoiceUploader } from '@/components/InvoiceUploader';
 import type { Job, User, Bid, Message } from '@/lib/types';
 import { getServiceInfo } from '@/types/service-categories';
 import type { ServiceSelection } from '@/types/service-categories';
@@ -515,6 +516,8 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
                       </p>
                     </div>
 
+                    <InvoiceUploader jobId={job.id} />
+                    
                     <div className="flex gap-3 pt-2">
                       <Button 
                         variant="outline" 
