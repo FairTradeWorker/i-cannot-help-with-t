@@ -7,6 +7,7 @@ import { Home, Briefcase, MapPin, MessageSquare, User, Settings, Navigation, Cam
 // Import screens
 import HomeScreen from '@/screens/HomeScreen';
 import JobPostScreen from '@/screens/JobPostScreen';
+import JobDetailsScreen from '@/screens/JobDetailsScreen';
 import TerritoriesScreen from '@/screens/TerritoriesScreen';
 import JobsScreen from '@/screens/JobsScreen';
 import MessagesScreen from '@/screens/MessagesScreen';
@@ -17,8 +18,11 @@ import SettingsScreen from '@/screens/SettingsScreen';
 export type RootStackParamList = {
   MainTabs: undefined;
   JobPost: undefined;
+  JobDetails: { jobId: string };
+  Messages: { jobId?: string } | undefined;
   Route: undefined;
   Settings: undefined;
+  SubmitBid: { jobId: string };
 };
 
 export type MainTabParamList = {
@@ -122,6 +126,28 @@ export default function AppNavigator() {
           component={JobPostScreen}
           options={{ 
             headerTitle: 'Post a Job',
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen
+          name="JobDetails"
+          component={JobDetailsScreen}
+          options={{ 
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Messages"
+          component={MessagesScreen}
+          options={{ 
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SubmitBid"
+          component={JobPostScreen} // TODO: Create SubmitBidScreen
+          options={{ 
+            headerTitle: 'Submit Bid',
             presentation: 'modal',
           }}
         />

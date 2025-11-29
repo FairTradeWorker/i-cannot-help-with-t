@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { MapPin, Clock, DollarSign, AlertCircle, ChevronRight } from 'lucide-react-native';
+import { MapPin, Clock, DollarSign, ChevronRight } from 'lucide-react-native';
 import type { Job, UrgencyLevel } from '@/types';
 
 interface JobCardProps {

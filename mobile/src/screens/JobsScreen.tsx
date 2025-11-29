@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, FlatList, Modal, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { Search, Filter, MapPin, Clock, DollarSign, Star, ChevronRight, X, Send } from 'lucide-react-native';
 import { JobCard } from '@/components/JobCard';
 import { dataStore } from '@fairtradeworker/shared';
@@ -77,6 +78,7 @@ const urgencyColors: Record<UrgencyLevel, { bg: string; text: string }> = {
 };
 
 export default function JobsScreen() {
+  const navigation = useNavigation();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -152,7 +154,10 @@ export default function JobsScreen() {
   const renderJobCard = ({ item }: { item: Job }) => (
     <JobCard
       job={item}
-      onPress={() => setSelectedJob(item)}
+      onPress={() => {
+        // Navigate to JobDetailsScreen
+        navigation.navigate('JobDetails' as never, { jobId: item.id } as never);
+      }}
     />
   );
 
