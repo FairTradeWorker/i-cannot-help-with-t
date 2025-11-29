@@ -713,10 +713,32 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useIsMobile();
 
+  // Helper function to format time ago
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return `${Math.floor(diffDays / 7)}w ago`;
+  };
+
   // Mobile-optimized card layout
   if (isMobile && !compact) {
-    const urgencyStatus = job.urgency === 'urgent' || job.urgency === 'emergency' ? 'URGENT' : 'NORMAL';
-    const statusColor = urgencyStatus === 'URGENT' ? 'bg-red-500' : 'bg-green-500';
+    // Determine status and color
+    let urgencyStatus = 'NORMAL';
+    let statusColor = 'bg-green-500';
+    if (job.urgency === 'emergency') {
+      urgencyStatus = 'EMERGENCY';
+      statusColor = 'bg-red-500';
+    } else if (job.urgency === 'urgent') {
+      urgencyStatus = 'URGENT';
+      statusColor = 'bg-orange-500';
+    }
     
     // Determine gradient colors based on urgency
     let gradientFrom = '#6366f1'; // default indigo
@@ -725,12 +747,14 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
       gradientFrom = '#ef4444'; // red
       gradientTo = '#dc2626';
     } else if (job.urgency === 'urgent') {
-      gradientFrom = '#f59e0b'; // amber
+      gradientFrom = '#f59e0b'; // amber/orange
       gradientTo = '#d97706';
     } else {
       gradientFrom = '#3b82f6'; // blue
       gradientTo = '#1d4ed8';
     }
+    
+    const timeAgo = job.createdAt ? formatTimeAgo(job.createdAt) : 'Recently';
     
     return (
       <motion.div
@@ -749,91 +773,52 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
           }}
           onClick={onClick}
         >
-          {/* TOP SECTION */}
-          <div className="relative mb-3">
-            {/* Small video icon in top-right corner if video exists */}
+          {/* TOP ROW: Title + Video Icon */}
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="font-bold text-white flex-1 pr-2" style={{ fontSize: '18px' }}>
+              {job.title}
+            </h3>
             {job.videoUrl && (
-              <div className="absolute top-0 right-0 z-10">
-                <div className="w-5 h-5 rounded bg-black/40 backdrop-blur-sm flex items-center justify-center">
-                  <Play className="w-3 h-3 text-white" weight="fill" />
-                </div>
-              </div>
+              <Play className="w-4 h-4 text-white/90 flex-shrink-0" weight="fill" style={{ opacity: 0.8 }} />
             )}
-            
-            {/* Job title with optional Video badge */}
-            <div className="flex items-center gap-2 pr-6">
-              <h3 className="font-bold text-white" style={{ fontSize: '16px' }}>
-                {job.title}
-              </h3>
-              {job.videoUrl && (
-                <Badge 
-                  variant="outline" 
-                  className="bg-white/20 border-white/30 text-white text-xs px-1.5 py-0 h-5"
-                  style={{ fontSize: '10px' }}
-                >
-                  Video
-                </Badge>
-              )}
+          </div>
+
+          {/* DESCRIPTION: 2 lines max */}
+          <p 
+            className="text-white/80 mb-3" 
+            style={{ 
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.8)',
+              lineHeight: '1.4',
+              maxHeight: '2.8em',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical'
+            }}
+          >
+            {job.description}
+          </p>
+
+          {/* META ROW: Location, Time, Bids - evenly spaced */}
+          <div className="flex items-center justify-between mb-3" style={{ fontSize: '12px' }}>
+            <div className="flex items-center gap-1 text-white/80">
+              <MapPin className="w-3 h-3" />
+              <span>{job.address.city}, {job.address.state}</span>
             </div>
-            
-            {/* Description */}
-            <p 
-              className="text-white/90 mt-1 line-clamp-2" 
-              style={{ 
-                fontSize: '14px',
-                color: 'rgba(255, 255, 255, 0.9)',
-                lineHeight: '1.4',
-                maxHeight: '2.8em',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical'
-              }}
-            >
-              {job.description}
-            </p>
-            
-            {/* Location + Time + Bids in one row */}
-            <div className="flex items-center gap-3 mt-2 flex-wrap">
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-white/80" />
-                <span className="text-white/80" style={{ fontSize: '12px' }}>
-                  {job.address.city}, {job.address.state}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-white/80" />
-                <span className="text-white/80" style={{ fontSize: '12px' }}>
-                  {job.laborHours}h
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Users className="w-3 h-3 text-white/80" />
-                <span className="text-white/80" style={{ fontSize: '12px' }}>
-                  {job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}
-                </span>
-              </div>
+            <div className="flex items-center gap-1 text-white/80">
+              <Clock className="w-3 h-3" />
+              <span>{timeAgo}</span>
+            </div>
+            <div className="flex items-center gap-1 text-white/80">
+              <Users className="w-3 h-3" />
+              <span>{job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}</span>
             </div>
           </div>
 
-          {/* MIDDLE SECTION - Video thumbnail if exists */}
-          {job.videoUrl && (
-            <div className="relative mb-3 rounded-lg overflow-hidden w-full" style={{ aspectRatio: '16/9', maxWidth: '100%' }}>
-              <img
-                src={job.videoUrl}
-                alt={job.title}
-                className="w-full h-full object-cover"
-                style={{ maxWidth: '100%', height: 'auto' }}
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
-          )}
-
-          {/* BOTTOM SECTION */}
-          <div className="flex items-center justify-between gap-2">
+          {/* BOTTOM ROW: Status Badge (left) + Budget (right, stacked) */}
+          <div className="flex items-center justify-between mb-3">
             {/* Left: Status badge */}
             <Badge 
               className={`${statusColor} text-white border-0`}
@@ -842,24 +827,26 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
               {urgencyStatus}
             </Badge>
             
-            {/* Right: Budget + Bid Job button */}
-            <div className="flex items-center gap-2 ml-auto">
-              <span className="text-white font-bold" style={{ fontSize: '14px' }}>
+            {/* Right: Budget stacked */}
+            <div className="text-right">
+              <div className="text-white/80" style={{ fontSize: '11px' }}>Budget</div>
+              <div className="text-white font-bold" style={{ fontSize: '18px' }}>
                 {formatBudget(job.estimatedCost)}
-              </span>
-              <Button
-                size="sm"
-                className="bg-white text-primary hover:bg-white/90 text-xs px-3 py-1 h-7 whitespace-nowrap"
-                style={{ fontSize: '12px' }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClick();
-                }}
-              >
-                Bid Job
-              </Button>
+              </div>
             </div>
           </div>
+
+          {/* BID BUTTON: Full width at bottom */}
+          <Button
+            className="w-full bg-white text-primary hover:bg-white/90"
+            style={{ fontSize: '14px', padding: '12px' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick();
+            }}
+          >
+            Bid Job
+          </Button>
         </Card>
       </motion.div>
     );
