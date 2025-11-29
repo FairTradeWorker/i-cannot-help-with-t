@@ -83,6 +83,7 @@ import { NotificationsPage } from '@/components/NotificationsPage';
 import { DispatchMap } from '@/components/DispatchMap';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
+import { LearningBrain } from '@/components/LearningBrain';
 import { ServiceCategoriesShowcase } from '@/components/ServiceCategoriesShowcase';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
 import { ScrollAnimatedSection } from '@/components/ScrollAnimatedSection';
@@ -94,7 +95,7 @@ import type { User as UserType, Referral, Analytics } from '@/lib/types';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { getAvailableTerritoryCount, getStateStats } from '@/lib/territory-data';
 
-type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch';
+type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch' | 'learning';
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
@@ -1687,6 +1688,21 @@ function App() {
                   {activeTab === 'warranty' && activeSubTab === 'file-claim' && <FileAClaim />}
                   {activeTab === 'warranty' && activeSubTab !== 'file-claim' && (
                     <WarrantySection onFileClaimClick={() => handleNavClick('warranty', 'file-claim')} />
+                  )}
+                  {activeTab === 'learning' && (
+                    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 -m-8 p-8">
+                      <div className="container mx-auto px-4 py-12">
+                        <div className="text-center mb-12">
+                          <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
+                            The AI is Learning
+                          </h1>
+                          <p className="text-xl text-purple-200">
+                            Every completed job makes every future estimate more accurate.
+                          </p>
+                        </div>
+                        <LearningBrain />
+                      </div>
+                    </div>
                   )}
                 </>
               )}

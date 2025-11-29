@@ -22,7 +22,7 @@ export interface LearningFeedback {
   };
 }
 
-class LearningDatabase {
+export class LearningDatabase {
   private KEY = "fairtrade-learning-v1";
 
   async getAll(): Promise<LearningFeedback[]> {
