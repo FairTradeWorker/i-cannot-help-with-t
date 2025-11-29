@@ -275,16 +275,16 @@
   position: relative;
   background: linear-gradient(
     var(--light-angle, 135deg),
-    var(--glass-tint, rgba(255,255,255,0.1)),
-    rgba(255,255,255,0.05)
+    var(--glass-tint, rgba(255,255,255,0.25)),
+    rgba(255,255,255,0.15)
   );
   backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
-  border: var(--glass-border-width, 1px) solid var(--glass-border-color, rgba(255,255,255,0.2));
+  border: var(--glass-border-width, 1px) solid var(--glass-border-color, rgba(255,255,255,0.3));
   box-shadow: 
     0 8px 32px var(--glass-shadow-color, rgba(0,0,0,0.1)),
-    inset 0 1px 0 rgba(255,255,255,0.1);
-  opacity: var(--glass-opacity, 0.7);
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  opacity: var(--glass-opacity, 0.95);
   
   /* GPU acceleration */
   transform: translateZ(0);
@@ -299,30 +299,44 @@
     box-shadow 0.3s ease;
 }
 
+/* Dark mode - brighter glass for better readability */
+.dark .glass-surface {
+  background: linear-gradient(
+    var(--light-angle, 135deg),
+    var(--glass-tint, oklch(0.20 0.005 264 / 0.85)),
+    oklch(0.18 0.005 264 / 0.75)
+  );
+  border-color: var(--glass-border-color, oklch(0.30 0.005 264 / 0.5));
+  box-shadow: 
+    0 8px 32px oklch(0 0 0 / 0.4),
+    inset 0 1px 0 oklch(0.55 0.12 240 / 0.15);
+  opacity: var(--glass-opacity, 0.95);
+}
+
 /* Depth-based glass layers */
 .glass-surface[data-glass-depth="0"] {
   --glass-blur: 4px;
-  --glass-opacity: 0.4;
+  --glass-opacity: 0.85;
 }
 
 .glass-surface[data-glass-depth="1"] {
   --glass-blur: 8px;
-  --glass-opacity: 0.6;
+  --glass-opacity: 0.9;
 }
 
 .glass-surface[data-glass-depth="2"] {
   --glass-blur: 12px;
-  --glass-opacity: 0.75;
+  --glass-opacity: 0.95;
 }
 
 .glass-surface[data-glass-depth="3"] {
   --glass-blur: 16px;
-  --glass-opacity: 0.85;
+  --glass-opacity: 0.98;
 }
 
 .glass-surface[data-glass-depth="4"] {
   --glass-blur: 20px;
-  --glass-opacity: 0.9;
+  --glass-opacity: 1.0;
 }
 
 /* Urgency-based styling */
@@ -427,22 +441,22 @@
 
 /* Phase glass - confidence-based transparency */
 .glass-surface[data-confidence="low"] {
-  --glass-opacity: 0.4;
+  --glass-opacity: 0.85;
   --glass-blur: 20px;
   animation: uncertainty-pulse 2s ease-in-out infinite;
 }
 
 .glass-surface[data-confidence="high"] {
-  --glass-opacity: 0.9;
+  --glass-opacity: 0.98;
   --glass-blur: 8px;
 }
 
 @keyframes uncertainty-pulse {
   0%, 100% {
-    opacity: 0.4;
+    opacity: 0.85;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.9;
   }
 }
 
@@ -450,8 +464,8 @@
 .glass-surface[data-weather="storm"] {
   background: linear-gradient(
     135deg,
-    rgba(30,41,59,0.9),
-    rgba(71,85,105,0.6)
+    rgba(30,41,59,0.95),
+    rgba(71,85,105,0.85)
   );
   position: relative;
 }
@@ -484,19 +498,19 @@
 .glass-surface[data-weather="sunny"] {
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.9),
-    rgba(255,235,59,0.3)
+    rgba(255,255,255,0.95),
+    rgba(255,235,59,0.5)
   );
   box-shadow: 
-    0 8px 32px rgba(255,193,7,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.2);
+    0 8px 32px rgba(255,193,7,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.3);
 }
 
 .glass-surface[data-weather="snow"] {
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.8),
-    rgba(240,253,250,0.6)
+    rgba(255,255,255,0.95),
+    rgba(240,253,250,0.85)
   );
   position: relative;
 }
@@ -636,7 +650,7 @@
 
 .glass-surface[data-state="paid"] {
   --state-tint: rgba(34,197,94,0.1);
-  opacity: 0.4;
+  opacity: 0.85;
 }
 
 @keyframes gentle-float {

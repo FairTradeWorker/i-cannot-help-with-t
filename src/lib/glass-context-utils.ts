@@ -13,7 +13,7 @@ export function jobToGlassContext(job: Job): GlassContext {
   const serviceCategory = (job as any).serviceSelection?.categoryId;
   
   // Calculate confidence from AI scope if available
-  const confidence = job.scope?.confidence || undefined;
+  const confidence = job.scope?.confidenceScore || undefined;
 
   // Determine completion status
   const completion = job.status === 'completed' ? 1 :

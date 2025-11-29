@@ -375,10 +375,10 @@ export function SubcontractorFinder({ contractorId, onInvite }: SubcontractorFin
                     <UserPlus className="w-4 h-4 mr-2" />
                     Add to Team
                   </Button>
-                  <Button variant="ghost" size="sm" sizeIcon>
+                  <Button variant="ghost" size="icon">
                     <Phone className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" sizeIcon>
+                  <Button variant="ghost" size="icon">
                     <EnvelopeSimple className="w-4 h-4" />
                   </Button>
                 </div>

@@ -27,6 +27,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -222,8 +224,16 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="glass-card">
-                <CardContent className="p-6">
+              <GlassSurface
+                id={`analytics-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
+                context={{
+                  ...getDefaultGlassContext(),
+                  serviceCategory: 'analytics',
+                  confidence: 0.9
+                }}
+              >
+                <Card className="border-0 bg-transparent">
+                  <CardContent className="p-6">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className={`p-2 rounded-lg ${stat.bgColor}`}>
@@ -253,6 +263,7 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
                   </div>
                 </CardContent>
               </Card>
+              </GlassSurface>
             </motion.div>
           );
         })}
@@ -271,8 +282,17 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Revenue Trend */}
-            <Card className="glass-card">
-              <CardHeader>
+            <GlassSurface
+              id="analytics-revenue-trend"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'analytics',
+                dataComplexity: 'moderate',
+                confidence: 0.9
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CurrencyDollar className="w-5 h-5 text-primary" weight="duotone" />
                   Revenue Trend
@@ -314,10 +334,20 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+            </GlassSurface>
 
             {/* Jobs by Category */}
-            <Card className="glass-card">
-              <CardHeader>
+            <GlassSurface
+              id="analytics-jobs-by-category"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'analytics',
+                dataComplexity: 'moderate',
+                confidence: 0.9
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ChartBar className="w-5 h-5 text-secondary" weight="duotone" />
                   Jobs by Category
@@ -353,11 +383,21 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+            </GlassSurface>
           </div>
 
           {/* User Growth */}
-          <Card className="glass-card">
-            <CardHeader>
+          <GlassSurface
+            id="analytics-user-growth"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'analytics',
+              dataComplexity: 'moderate',
+              confidence: 0.9
+            }}
+          >
+            <Card className="border-0 bg-transparent">
+              <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-accent" weight="duotone" />
                 User Growth
@@ -406,11 +446,21 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
               </ResponsiveContainer>
             </CardContent>
           </Card>
+          </GlassSurface>
         </TabsContent>
 
         <TabsContent value="revenue" className="space-y-6">
-          <Card className="glass-card">
-            <CardHeader>
+          <GlassSurface
+            id="analytics-monthly-revenue"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'analytics',
+              dataComplexity: 'moderate',
+              confidence: 0.9
+            }}
+          >
+            <Card className="border-0 bg-transparent">
+              <CardHeader>
               <CardTitle>Monthly Revenue Breakdown</CardTitle>
             </CardHeader>
             <CardContent>
@@ -436,12 +486,22 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
               </ResponsiveContainer>
             </CardContent>
           </Card>
+          </GlassSurface>
         </TabsContent>
 
         <TabsContent value="jobs" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="glass-card">
-              <CardHeader>
+            <GlassSurface
+              id="analytics-jobs-over-time"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'analytics',
+                dataComplexity: 'moderate',
+                confidence: 0.9
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardHeader>
                 <CardTitle>Jobs Over Time</CardTitle>
               </CardHeader>
               <CardContent>
@@ -476,10 +536,20 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+            </GlassSurface>
 
-            <Card className="glass-card">
-              <CardHeader>
-                <CardTitle>Category Distribution</CardTitle>
+            <GlassSurface
+              id="analytics-category-distribution"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'analytics',
+                dataComplexity: 'moderate',
+                confidence: 0.9
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardHeader>
+                  <CardTitle>Category Distribution</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -504,12 +574,22 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+            </GlassSurface>
           </div>
         </TabsContent>
 
         <TabsContent value="contractors" className="space-y-6">
-          <Card className="glass-card">
-            <CardHeader>
+          <GlassSurface
+            id="analytics-contractor-growth"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'analytics',
+              dataComplexity: 'moderate',
+              confidence: 0.9
+            }}
+          >
+            <Card className="border-0 bg-transparent">
+              <CardHeader>
               <CardTitle>Contractor Growth</CardTitle>
             </CardHeader>
             <CardContent>
@@ -544,11 +624,21 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
               </ResponsiveContainer>
             </CardContent>
           </Card>
+          </GlassSurface>
         </TabsContent>
 
         <TabsContent value="territories" className="space-y-6">
-          <Card className="glass-card">
-            <CardHeader>
+          <GlassSurface
+            id="analytics-territories"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'analytics',
+              dataComplexity: 'moderate',
+              confidence: 0.9
+            }}
+          >
+            <Card className="border-0 bg-transparent">
+              <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" weight="duotone" />
                 Territory Performance
@@ -602,39 +692,66 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
               </div>
             </CardContent>
           </Card>
+          </GlassSurface>
         </TabsContent>
       </Tabs>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass-card p-6">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Completion Rate</p>
+        <GlassSurface
+          id="analytics-completion-rate"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'analytics',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Completion Rate</p>
             <p className="text-3xl font-bold">
-              {((analytics.completedJobs / analytics.totalJobs) * 100).toFixed(1)}%
+              {analytics.totalJobs > 0 ? ((analytics.completedJobs / analytics.totalJobs) * 100).toFixed(1) : '0.0'}%
             </p>
             <div className="w-full bg-muted rounded-full h-2">
               <div
                 className="bg-accent h-2 rounded-full transition-all"
-                style={{ width: `${(analytics.completedJobs / analytics.totalJobs) * 100}%` }}
+                style={{ width: `${analytics.totalJobs > 0 ? (analytics.completedJobs / analytics.totalJobs) * 100 : 0}%` }}
               />
             </div>
           </div>
         </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Average Job Value</p>
-            <p className="text-3xl font-bold">
-              ${analytics.averageJobValue.toLocaleString()}
-            </p>
-            <p className="text-sm text-accent">+18% from last month</p>
-          </div>
-        </Card>
+        <GlassSurface
+          id="analytics-avg-job-value"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'analytics',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Average Job Value</p>
+              <p className="text-3xl font-bold">
+                ${analytics.averageJobValue.toLocaleString()}
+              </p>
+              <p className="text-sm text-accent">+18% from last month</p>
+            </div>
+          </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">AI Accuracy</p>
+        <GlassSurface
+          id="analytics-ai-accuracy"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'analytics',
+            confidence: 0.95
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">AI Accuracy</p>
             <p className="text-3xl font-bold">
               {(analytics.platformAccuracy * 100).toFixed(1)}%
             </p>
@@ -643,6 +760,7 @@ export function AnalyticsDashboardEnhanced({ analytics }: AnalyticsDashboardEnha
             </p>
           </div>
         </Card>
+        </GlassSurface>
       </div>
     </div>
   );

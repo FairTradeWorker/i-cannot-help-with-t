@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Users,
   Briefcase,
@@ -85,7 +87,16 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="glass-card p-6">
+              <GlassSurface
+                id={`analytics-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
+                context={{
+                  ...getDefaultGlassContext(),
+                  serviceCategory: 'analytics',
+                  urgency: stat.trendUp ? 'medium' : 'low',
+                  confidence: 0.9
+                }}
+              >
+                <Card className="p-6 border-0 bg-transparent">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className={`p-2 rounded-lg ${stat.bgColor}`}>
@@ -114,6 +125,7 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
                   </div>
                 </div>
               </Card>
+              </GlassSurface>
             </motion.div>
           );
         })}
@@ -125,7 +137,15 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="glass-card p-6">
+          <GlassSurface
+            id="analytics-top-states"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'analytics',
+              dataComplexity: 'moderate'
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" weight="duotone" />
@@ -159,6 +179,7 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
               </div>
             </div>
           </Card>
+          </GlassSurface>
         </motion.div>
 
         <motion.div
@@ -166,7 +187,15 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card className="glass-card p-6">
+          <GlassSurface
+            id="analytics-top-services"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'analytics',
+              dataComplexity: 'moderate'
+            }}
+          >
+            <Card className="p-6 border-0 bg-transparent">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <ChartBar className="w-5 h-5 text-secondary" weight="duotone" />
@@ -200,6 +229,7 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
               </div>
             </div>
           </Card>
+          </GlassSurface>
         </motion.div>
       </div>
 
@@ -208,7 +238,15 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <Card className="glass-card p-6">
+        <GlassSurface
+          id="analytics-revenue-by-month"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'analytics',
+            dataComplexity: 'moderate'
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <CurrencyDollar className="w-5 h-5 text-accent" weight="duotone" />
@@ -240,10 +278,20 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
             </div>
           </div>
         </Card>
+        </GlassSurface>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="glass-card p-6">
+        <GlassSurface
+          id="analytics-completion-rate"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'analytics',
+            completion: analytics.totalJobs > 0 ? analytics.completedJobs / analytics.totalJobs : 0,
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Completion Rate</p>
             <p className="text-3xl font-bold">
@@ -257,8 +305,17 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
             </div>
           </div>
         </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
+        <GlassSurface
+          id="analytics-avg-job-value"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'analytics',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Average Job Value</p>
             <p className="text-3xl font-bold">
@@ -267,18 +324,28 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
             <p className="text-sm text-accent">+18% from last month</p>
           </div>
         </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
+        <GlassSurface
+          id="analytics-ratio"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'analytics',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Homeowner to Contractor Ratio</p>
             <p className="text-3xl font-bold">
-              {(analytics.totalHomeowners / analytics.totalContractors).toFixed(1)}:1
+              {analytics.totalContractors > 0 ? (analytics.totalHomeowners / analytics.totalContractors).toFixed(1) : '0.0'}:1
             </p>
             <p className="text-sm text-muted-foreground">
               {analytics.totalHomeowners.toLocaleString()} homeowners
             </p>
           </div>
         </Card>
+        </GlassSurface>
       </div>
     </div>
   );

@@ -316,7 +316,16 @@ export function DigitalContracts() {
         <h3 className="text-lg font-bold mb-4">Contract Templates</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {templates.map(template => (
-            <Card key={template.id} className="glass-card p-4 cursor-pointer hover:border-primary/50 transition-colors">
+            <GlassSurface
+              key={template.id}
+              id={`contract-template-${template.id}`}
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'contracts',
+                confidence: 0.9
+              }}
+            >
+              <Card className="p-4 border-0 bg-transparent cursor-pointer hover:border-primary/50 transition-colors">
               <div className="flex items-start justify-between">
                 <div>
                   <h4 className="font-semibold">{template.name}</h4>
@@ -334,6 +343,7 @@ export function DigitalContracts() {
                 </Button>
               </div>
             </Card>
+            </GlassSurface>
           ))}
         </div>
       </div>

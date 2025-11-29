@@ -168,15 +168,7 @@ export function PaymentScreen({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <GlassSurface
-            id="payment-plan"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'payment',
-              urgency: 'medium',
-              confidence: 0.9
-            }}
-          >
+          <div className="glass-card">
             <Card className="p-6 border-0 bg-transparent">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Lightning className="w-6 h-6 text-primary" weight="fill" />
@@ -246,17 +238,9 @@ export function PaymentScreen({
               })}
             </div>
           </Card>
-          </GlassSurface>
+          </div>
 
-          <GlassSurface
-            id="payment-method"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'payment',
-              urgency: 'medium',
-              confidence: 0.85
-            }}
-          >
+          <div className="glass-card">
             <Card className="p-6 border-0 bg-transparent">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Wallet className="w-6 h-6 text-primary" weight="fill" />
@@ -440,22 +424,15 @@ export function PaymentScreen({
               </div>
             </div>
           </Card>
-          </GlassSurface>
+          </div>
 
-          <GlassSurface
-            id="payment-warranty"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'payment',
-              confidence: 0.95
-            }}
-          >
+          <div className="glass-card">
             <Card className="p-6 border-0 bg-transparent">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Shield className="w-6 h-6 text-primary" weight="fill" />
                 Warranty Protection
               </h3>
-            <Separator className="mb-4" />
+              <Separator className="mb-4" />
 
             <div className="space-y-3">
               <div
@@ -507,19 +484,11 @@ export function PaymentScreen({
               </div>
             </div>
           </Card>
+          </div>
         </div>
 
         <div className="space-y-6">
-          <GlassSurface
-            id="payment-summary"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'payment',
-              urgency: 'high',
-              confidence: 0.95
-            }}
-            className="sticky top-24"
-          >
+          <div className="glass-card sticky top-24">
             <Card className="p-6 border-0 bg-transparent">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <Receipt className="w-6 h-6 text-primary" weight="fill" />
@@ -677,42 +646,45 @@ export function PaymentScreen({
               </div>
             </div>
           </Card>
+          </div>
         </div>
       </div>
 
-      <Card className="glass-card p-6">
-        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <Question className="w-5 h-5 text-primary" weight="fill" />
-          Frequently Asked Questions
-        </h3>
-        <Separator className="mb-4" />
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-semibold text-sm mb-2">When will work begin?</h4>
-            <p className="text-sm text-muted-foreground">Work typically begins within 3-5 business days of payment confirmation. Your contractor will contact you within 24 hours to schedule.</p>
+      <div className="glass-card">
+        <Card className="p-6 border-0 bg-transparent">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Question className="w-5 h-5 text-primary" weight="fill" />
+            Frequently Asked Questions
+          </h3>
+          <Separator className="mb-4" />
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-2">When will work begin?</h4>
+              <p className="text-sm text-muted-foreground">Work typically begins within 3-5 business days of payment confirmation. Your contractor will contact you within 24 hours to schedule.</p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-sm mb-2">What is the escrow process?</h4>
+              <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-sm mb-2">Can I get a refund?</h4>
+              <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-sm mb-2">What are the financing terms?</h4>
+              <p className="text-sm text-muted-foreground">We offer 0% APR financing for 12 months to qualified customers. 3-month payment plans have a 2% processing fee.</p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-sm mb-2">What does the platform fee cover?</h4>
+              <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
+            </div>
           </div>
-          
-          <div>
-            <h4 className="font-semibold text-sm mb-2">What is the escrow process?</h4>
-            <p className="text-sm text-muted-foreground">Funds are held securely in escrow until the job is completed and you approve the work. This protects both homeowners and contractors.</p>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold text-sm mb-2">Can I get a refund?</h4>
-            <p className="text-sm text-muted-foreground">Full refunds are available if work hasn't started. After work begins, our dispute resolution team handles any issues fairly for both parties.</p>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold text-sm mb-2">What are the financing terms?</h4>
-            <p className="text-sm text-muted-foreground">We offer 0% APR financing for 12 months to qualified customers. 3-month payment plans have a 2% processing fee.</p>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold text-sm mb-2">What does the platform fee cover?</h4>
-            <p className="text-sm text-muted-foreground">The one-time platform fee covers secure payment processing, escrow services, customer support, and platform maintenance.</p>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

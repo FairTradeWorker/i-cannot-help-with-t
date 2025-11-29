@@ -44,7 +44,7 @@ export function TerritoryMapboxMap({ onTerritorySelect, onTerritoryClaim }: Terr
 
       try {
         // Dynamically import mapbox-gl
-        const mapboxgl = await import('mapbox-gl');
+        const mapboxgl = await import('mapbox-gl') as any;
         mapboxgl.accessToken = mapboxToken;
 
         // Initialize map
@@ -85,7 +85,7 @@ export function TerritoryMapboxMap({ onTerritorySelect, onTerritoryClaim }: Terr
     const markers: any[] = [];
 
     territoryZips.forEach(territory => {
-      if (!territory.lat || !territory.lng) return;
+      if (!territory.latitude || !territory.longitude) return;
 
       const isClaimed = claimedTerritories?.includes(territory.zip);
       const status = isClaimed ? 'claimed' : (territory.available ? 'available' : 'unavailable');
@@ -115,7 +115,7 @@ export function TerritoryMapboxMap({ onTerritorySelect, onTerritoryClaim }: Terr
         
         // Fly to territory
         map.current.flyTo({
-          center: [territory.lng!, territory.lat!],
+          center: [territory.longitude, territory.latitude],
           zoom: 10,
           duration: 1000
         });
@@ -123,7 +123,7 @@ export function TerritoryMapboxMap({ onTerritorySelect, onTerritoryClaim }: Terr
 
       // Create marker
       const marker = new (window as any).mapboxgl.Marker(el)
-        .setLngLat([territory.lng!, territory.lat!])
+        .setLngLat([territory.longitude, territory.latitude])
         .setPopup(
           new (window as any).mapboxgl.Popup({ offset: 25 })
             .setHTML(`

@@ -10,6 +10,8 @@ import { motion } from 'framer-motion';
 import { Plus, VideoCamera, Image as ImageIcon, FileText, MapPin } from '@phosphor-icons/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { Badge } from '@/components/ui/badge';
 
 interface QuickJobPostProps {

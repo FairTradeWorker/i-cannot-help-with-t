@@ -437,15 +437,7 @@ export function LiveBiddingWarRoom() {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <GlassSurface
-          id="bidding-live-auctions"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'bidding',
-            urgency: 'high',
-            confidence: 0.9
-          }}
-        >
+        <div className="glass-card">
           <Card className="p-4 border-0 bg-transparent">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-green-100">
@@ -459,16 +451,8 @@ export function LiveBiddingWarRoom() {
               </div>
             </div>
           </Card>
-        </GlassSurface>
-        <GlassSurface
-          id="bidding-ending-soon"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'bidding',
-            urgency: 'critical',
-            confidence: 0.95
-          }}
-        >
+        </div>
+        <div className="glass-card">
           <Card className="p-4 border-0 bg-transparent">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-yellow-100">
@@ -482,15 +466,8 @@ export function LiveBiddingWarRoom() {
               </div>
             </div>
           </Card>
-        </GlassSurface>
-        <GlassSurface
-          id="bidding-total-value"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'bidding',
-            confidence: 0.9
-          }}
-        >
+        </div>
+        <div className="glass-card">
           <Card className="p-4 border-0 bg-transparent">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-blue-100">
@@ -504,26 +481,20 @@ export function LiveBiddingWarRoom() {
               </div>
             </div>
           </Card>
-        </GlassSurface>
-        <GlassSurface
-          id="bidding-watchers"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'bidding',
-            confidence: 0.85
-          }}
-        >
+        </div>
+        <div className="glass-card">
           <Card className="p-4 border-0 bg-transparent">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-purple-100">
                 <Eye className="w-5 h-5 text-purple-600" weight="fill" />
               </div>
               <div>
-              <p className="text-xs text-muted-foreground">Watching</p>
-              <p className="text-xl font-bold">{isWatching.size}</p>
+                <p className="text-xs text-muted-foreground">Watching</p>
+                <p className="text-xl font-bold">{isWatching.size}</p>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
 
       {/* Auctions Grid */}
@@ -542,9 +513,10 @@ export function LiveBiddingWarRoom() {
               whileHover={{ scale: 1.01 }}
               className={`${isEnding && auction.status !== 'ended' ? 'ring-2 ring-red-500 ring-offset-2' : ''}`}
             >
-              <Card className="glass-card overflow-hidden">
-                {/* Header */}
-                <div className="p-4 border-b bg-gradient-to-r from-muted/50 to-transparent">
+              <div className="glass-card">
+                <Card className="overflow-hidden border-0 bg-transparent">
+                  {/* Header */}
+                  <div className="p-4 border-b bg-gradient-to-r from-muted/50 to-transparent">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
                       <Badge className={`${statusConfig.color} ${statusConfig.pulse ? 'animate-pulse' : ''}`}>
@@ -695,6 +667,7 @@ export function LiveBiddingWarRoom() {
                   </div>
                 </div>
               </Card>
+            </div>
             </motion.div>
           );
         })}

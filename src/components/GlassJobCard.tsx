@@ -82,12 +82,12 @@ export function GlassJobCard({ job, onClick }: GlassJobCardProps) {
         </div>
 
         {/* AI Confidence indicator */}
-        {job.scope?.confidence && (
+        {job.scope?.confidenceScore && (
           <div className="pt-2 border-t border-border/50">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">AI Confidence</span>
-              <span className={job.scope.confidence > 0.8 ? 'text-green-600' : job.scope.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600'}>
-                {Math.round(job.scope.confidence * 100)}%
+              <span className={job.scope.confidenceScore > 0.8 ? 'text-green-600' : job.scope.confidenceScore > 0.6 ? 'text-yellow-600' : 'text-red-600'}>
+                {Math.round(job.scope.confidenceScore * 100)}%
               </span>
             </div>
           </div>

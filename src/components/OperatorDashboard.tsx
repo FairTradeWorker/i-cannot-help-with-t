@@ -17,8 +17,6 @@ import { dataStore } from '@/lib/store';
 import { SERVICE_CATEGORIES } from '@/types/service-categories';
 import type { Territory, OperatorProfile, Job } from '@/lib/types';
 import { useState, useEffect } from 'react';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 
 interface OperatorDashboardProps {
   operatorProfile: OperatorProfile;
@@ -132,16 +130,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.177, delay: 0.044, ease: [0.4, 0, 0.2, 1] }}
         >
-          <GlassSurface
-            id="operator-roi-card"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'operator',
-              confidence: parseFloat(roi) > 100 ? 0.95 : 0.8,
-              urgency: parseFloat(roi) > 200 ? 'high' : 'medium'
-            }}
-            className="cursor-pointer"
-          >
+          <div className="glass-card cursor-pointer">
             <Card className="p-6 border-0 bg-transparent hover:bg-transparent">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
@@ -158,7 +147,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
                 </span>
               </div>
             </Card>
-          </GlassSurface>
+          </div>
         </motion.div>
 
         <motion.div
@@ -166,16 +155,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.177, delay: 0.088, ease: [0.4, 0, 0.2, 1] }}
         >
-          <GlassSurface
-            id="operator-territories-card"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'territories',
-              confidence: 0.9,
-              urgency: territories.length > 10 ? 'high' : 'medium'
-            }}
-            className="cursor-pointer"
-          >
+          <div className="glass-card cursor-pointer">
             <Card className="p-6 border-0 bg-transparent hover:bg-transparent">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
@@ -192,7 +172,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
                 </span>
               </div>
             </Card>
-          </GlassSurface>
+          </div>
         </motion.div>
       </div>
 
@@ -201,14 +181,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.177, delay: 0.222, ease: [0.4, 0, 0.2, 1] }}
       >
-        <GlassSurface
-          id="operator-territories-list"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'territories',
-            dataComplexity: territories.length > 5 ? 'moderate' : 'simple'
-          }}
-        >
+        <div className="glass-card">
           <Card className="p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">Your Territories</h3>
           <div className="space-y-4">
@@ -312,7 +285,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
             ))}
           </div>
         </Card>
-        </GlassSurface>
+        </div>
       </motion.div>
 
       {/* Service Category Analytics */}
@@ -321,15 +294,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.177, delay: 0.266, ease: [0.4, 0, 0.2, 1] }}
       >
-        <GlassSurface
-          id="operator-service-analytics"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'analytics',
-            dataComplexity: Object.keys(serviceCategoryStats).length > 3 ? 'complex' : 'moderate',
-            confidence: 0.9
-          }}
-        >
+        <div className="glass-card">
           <Card className="p-6 border-0 bg-transparent">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -396,7 +361,7 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
             </div>
           )}
         </Card>
-        </GlassSurface>
+        </div>
       </motion.div>
 
       <motion.div
@@ -404,13 +369,10 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.177, delay: 0.31, ease: [0.4, 0, 0.2, 1] }}
       >
-        <GlassSurface
-          id="operator-3tier-system"
-          context={getDefaultGlassContext()}
-        >
+        <div className="glass-card">
           <Card className="p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">How the 3-Tier System Works</h3>
-          <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
             <div className="space-y-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-3">
                 <MapTrifold className="w-7 h-7 text-white" weight="fill" />
@@ -482,8 +444,9 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
                 </li>
               </ul>
             </div>
-          </div>
-        </Card>
+            </div>
+          </Card>
+        </div>
       </motion.div>
     </div>
   );

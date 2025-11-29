@@ -251,64 +251,64 @@ export function GamificationSystem() {
       </AnimatePresence>
 
       {/* Level Progress Card */}
-      <Card className="glass-card p-6">
-        <div className="flex items-center gap-6">
-          <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-3xl font-bold text-white">{stats.currentLevel.level}</span>
-            </div>
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full p-1"
-            >
-              <Crown className="w-4 h-4 text-yellow-900" weight="fill" />
-            </motion.div>
-          </div>
-
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <h3 className="text-xl font-bold">{stats.currentLevel.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  Next: {stats.nextLevel.title}
-                </p>
+      <div className="glass-card">
+        <Card className="p-6 border-0 bg-transparent">
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <span className="text-3xl font-bold text-white">{stats.currentLevel.level}</span>
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold">{stats.totalXP.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Total XP</p>
-              </div>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full p-1"
+              >
+                <Crown className="w-4 h-4 text-yellow-900" weight="fill" />
+              </motion.div>
             </div>
 
-            <div className="space-y-1">
-              <Progress value={xpProgress} className="h-3" />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{stats.totalXP - stats.currentLevel.minXP} XP</span>
-                <span>{stats.nextLevel.minXP - stats.currentLevel.minXP} XP needed</span>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <h3 className="text-xl font-bold">{stats.currentLevel.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Next: {stats.nextLevel.title}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold">{stats.totalXP.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">Total XP</p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Progress value={xpProgress} className="h-3" />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>{stats.totalXP - stats.currentLevel.minXP} XP</span>
+                  <span>{stats.nextLevel.minXP - stats.currentLevel.minXP} XP needed</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Current Perks */}
-        <div className="mt-4 pt-4 border-t">
-          <p className="text-sm text-muted-foreground mb-2">Your Perks</p>
-          <div className="flex flex-wrap gap-2">
-            {LEVELS.slice(0, stats.currentLevel.level).flatMap(l => l.perks).map((perk, i) => (
-              <Badge key={i} variant="secondary" className="flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" weight="fill" />
-                {perk}
-              </Badge>
-            ))}
+          {/* Current Perks */}
+          <div className="mt-4 pt-4 border-t">
+            <p className="text-sm text-muted-foreground mb-2">Your Perks</p>
+            <div className="flex flex-wrap gap-2">
+              {LEVELS.slice(0, stats.currentLevel.level).flatMap(l => l.perks).map((perk, i) => (
+                <Badge key={i} variant="secondary" className="flex items-center gap-1">
+                  <CheckCircle className="w-3 h-3" weight="fill" />
+                  {perk}
+                </Badge>
+              ))}
+            </div>
           </div>
-        </div>
         </Card>
-      </GlassSurface>
+      </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <GlassSurface
-          id="gamification-achievements"
+        <div className="glass-card"
           context={{
             ...getDefaultGlassContext(),
             serviceCategory: 'gamification',
@@ -322,51 +322,28 @@ export function GamificationSystem() {
             </p>
             <p className="text-xs text-muted-foreground">Achievements</p>
           </Card>
-        </GlassSurface>
-        <GlassSurface
-          id="gamification-streak"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'gamification',
-            urgency: stats.streakDays > 7 ? 'high' : 'medium',
-            confidence: 0.9
-          }}
-        >
+        </div>
+        <div className="glass-card">
           <Card className="p-4 text-center border-0 bg-transparent">
             <Fire className="w-8 h-8 mx-auto mb-2 text-orange-500" weight="fill" />
             <p className="text-2xl font-bold">{stats.streakDays}</p>
             <p className="text-xs text-muted-foreground">Day Streak</p>
           </Card>
-        </GlassSurface>
-        <GlassSurface
-          id="gamification-recent-xp"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'gamification',
-            confidence: 0.85
-          }}
-        >
+        </div>
+        <div className="glass-card">
           <Card className="p-4 text-center border-0 bg-transparent">
             <TrendUp className="w-8 h-8 mx-auto mb-2 text-green-500" weight="fill" />
             <p className="text-2xl font-bold">+{stats.recentActivity.reduce((sum, a) => sum + a.xp, 0)}</p>
             <p className="text-xs text-muted-foreground">Recent XP</p>
           </Card>
-        </GlassSurface>
-        <GlassSurface
-          id="gamification-xp-to-next"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'gamification',
-            urgency: (stats.nextLevel.minXP - stats.totalXP) < 100 ? 'high' : 'low',
-            confidence: 0.9
-          }}
-        >
+        </div>
+        <div className="glass-card">
           <Card className="p-4 text-center border-0 bg-transparent">
             <Sparkle className="w-8 h-8 mx-auto mb-2 text-purple-500" weight="fill" />
             <p className="text-2xl font-bold">{stats.nextLevel.minXP - stats.totalXP}</p>
             <p className="text-xs text-muted-foreground">XP to Next Level</p>
           </Card>
-        </GlassSurface>
+        </div>
       </div>
 
       {/* Achievements */}
@@ -398,8 +375,9 @@ export function GamificationSystem() {
                 animate={{ opacity: 1, y: 0 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <Card className={`glass-card p-4 ${!achievement.unlocked ? 'opacity-75' : ''}`}>
-                  <div className="flex items-start gap-3">
+                <div className="glass-card">
+                  <Card className={`p-4 border-0 bg-transparent ${!achievement.unlocked ? 'opacity-75' : ''}`}>
+                    <div className="flex items-start gap-3">
                     <div className={`p-3 rounded-xl ${TIER_COLORS[achievement.tier]} ${!achievement.unlocked ? 'grayscale' : ''}`}>
                       {achievement.unlocked ? (
                         <IconComponent className="w-6 h-6 text-white" weight="fill" />
@@ -440,6 +418,7 @@ export function GamificationSystem() {
                     </Badge>
                   </div>
                 </Card>
+              </div>
               </motion.div>
             );
           })}
@@ -447,8 +426,9 @@ export function GamificationSystem() {
       </div>
 
       {/* Recent Activity */}
-      <Card className="glass-card p-4">
-        <h3 className="font-bold mb-4">Recent Activity</h3>
+      <div className="glass-card">
+        <Card className="p-4 border-0 bg-transparent">
+          <h3 className="font-bold mb-4">Recent Activity</h3>
         <div className="space-y-3">
           {stats.recentActivity.map((activity, i) => (
             <div key={i} className="flex items-center justify-between py-2 border-b last:border-0">
@@ -469,7 +449,8 @@ export function GamificationSystem() {
             </div>
           ))}
         </div>
-      </Card>
+        </Card>
+      </div>
 
       {/* Demo Button */}
       <Button onClick={() => addXP(50)} className="w-full">

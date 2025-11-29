@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { GlassSurface, type GlassContext } from './GlassSurface';
+import { GlassSurface } from './GlassSurface';
+import type { GlassContext } from '@/lib/glassmorphism-engine';
 
 interface MagneticGlassCardProps {
   id: string;
@@ -48,22 +49,30 @@ export function MagneticGlassCard({
   useEffect(() => {
     if (!snapTarget || !cardRef.current || isDragging) return;
 
+    let animationFrameId: number | null = null;
+    let isActive = true;
+
     const checkDistance = () => {
-      const rect = cardRef.current?.getBoundingClientRect();
-      if (!rect) return;
+      if (!isActive || !cardRef.current) return;
+
+      const rect = cardRef.current.getBoundingClientRect();
+      if (!rect) {
+        animationFrameId = requestAnimationFrame(checkDistance);
+        return;
+      }
 
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
       const distance = Math.sqrt(
-        Math.pow(centerX - snapTarget.x, 2) + 
-        Math.pow(centerY - snapTarget.y, 2)
+        Math.pow(centerX - snapTarget!.x, 2) + 
+        Math.pow(centerY - snapTarget!.y, 2)
       );
 
       if (distance < snapDistance) {
         const force = (1 - distance / snapDistance) * snapStrength;
-        const deltaX = (snapTarget.x - centerX) * force;
-        const deltaY = (snapTarget.y - centerY) * force;
+        const deltaX = (snapTarget!.x - centerX) * force;
+        const deltaY = (snapTarget!.y - centerY) * force;
 
         x.set(x.get() + deltaX * 0.1);
         y.set(y.get() + deltaY * 0.1);
@@ -76,11 +85,18 @@ export function MagneticGlassCard({
         setIsSnapping(false);
       }
 
-      requestAnimationFrame(checkDistance);
+      if (isActive) {
+        animationFrameId = requestAnimationFrame(checkDistance);
+      }
     };
 
-    const animationFrame = requestAnimationFrame(checkDistance);
-    return () => cancelAnimationFrame(animationFrame);
+    animationFrameId = requestAnimationFrame(checkDistance);
+    return () => {
+      isActive = false;
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, [snapTarget, snapDistance, snapStrength, isDragging, isSnapping, x, y, onSnap]);
 
   const handleDragEnd = (event: any, info: any) => {

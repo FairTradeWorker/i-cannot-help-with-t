@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GlassSurface, type GlassContext } from './GlassSurface';
+import { GlassSurface } from './GlassSurface';
+import type { GlassContext } from '@/lib/glassmorphism-engine';
 
 interface HologramCard {
   id: string;

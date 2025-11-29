@@ -73,7 +73,7 @@ export function ContractorCard({ contractor, compact = false, showActions = true
         confidence: rating / 100,
         serviceCategory: contractorSpecialties[0]?.toLowerCase() || 'general',
         dataComplexity: 'simple' as const
-      };
+  };
 
   if (compact) {
     return (
@@ -122,14 +122,14 @@ export function ContractorCard({ contractor, compact = false, showActions = true
       className="cursor-pointer"
     >
       <Card className="p-6 border-0 bg-transparent hover:bg-transparent">
-        <div className="flex items-start gap-4">
-          <div className="relative flex-shrink-0">
-            <Avatar className="w-16 h-16 border-2 border-border shadow-lg">
+      <div className="flex items-start gap-4">
+        <div className="relative flex-shrink-0">
+          <Avatar className="w-16 h-16 border-2 border-border shadow-lg">
               <AvatarImage src={contractorAvatar} alt={contractorName} />
-              <AvatarFallback className="bg-primary/10 text-primary font-bold text-xl">
+            <AvatarFallback className="bg-primary/10 text-primary font-bold text-xl">
                 {contractorName[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            </AvatarFallback>
+          </Avatar>
             {contractorVerified && (
             <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full border-2 border-card flex items-center justify-center">
               <CheckCircle className="w-4 h-4 text-white" weight="fill" />
@@ -137,59 +137,59 @@ export function ContractorCard({ contractor, compact = false, showActions = true
           )}
         </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-4 mb-2">
-              <div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <div>
                 <h3 className="text-xl font-bold mb-1">{contractorName}</h3>
-                <Badge variant={ratingBadge.variant} className="mb-2">
-                  {ratingBadge.label}
-                </Badge>
-              </div>
+              <Badge variant={ratingBadge.variant} className="mb-2">
+                {ratingBadge.label}
+              </Badge>
             </div>
+          </div>
 
-            <div className="flex items-center gap-4 mb-3 text-sm flex-wrap">
-              <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-4 mb-3 text-sm flex-wrap">
+            <div className="flex items-center gap-1.5">
                 <Star className={`w-4 h-4 ${getRatingColor(rating)}`} weight="fill" />
                 <span className="font-bold">{rating}</span>
-                <span className="text-muted-foreground">/100</span>
-              </div>
-              <div className="h-4 w-px bg-border"></div>
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Briefcase className="w-4 h-4" />
-                <span>{contractorCompletedJobs} jobs completed</span>
-              </div>
-              {contractorHourlyRate && (
-                <>
-                  <div className="h-4 w-px bg-border"></div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <CurrencyDollar className="w-4 h-4" />
-                    <span>${contractorHourlyRate}/hr</span>
-                  </div>
-                </>
-              )}
+              <span className="text-muted-foreground">/100</span>
             </div>
+            <div className="h-4 w-px bg-border"></div>
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <Briefcase className="w-4 h-4" />
+                <span>{contractorCompletedJobs} jobs completed</span>
+            </div>
+              {contractorHourlyRate && (
+              <>
+                <div className="h-4 w-px bg-border"></div>
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <CurrencyDollar className="w-4 h-4" />
+                    <span>${contractorHourlyRate}/hr</span>
+                </div>
+              </>
+            )}
+          </div>
 
             {contractorSpecialties && contractorSpecialties.length > 0 && (
-              <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-3">
                 {contractorSpecialties.slice(0, 3).map((specialty, i) => (
-                  <Badge key={i} variant="outline" className="text-xs">
-                    {specialty}
-                  </Badge>
-                ))}
+                <Badge key={i} variant="outline" className="text-xs">
+                  {specialty}
+                </Badge>
+              ))}
                 {contractorSpecialties.length > 3 && (
-                  <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs">
                     +{contractorSpecialties.length - 3} more
-                  </Badge>
-                )}
-              </div>
-            )}
+                </Badge>
+              )}
+            </div>
+          )}
 
             {contractorLocation && (
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-3">
-                <MapPin className="w-4 h-4" />
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-3">
+              <MapPin className="w-4 h-4" />
                 <span>{contractorLocation}</span>
-              </div>
-            )}
+            </div>
+          )}
 
           {showActions && (
             <Button size="sm" className="mt-2">

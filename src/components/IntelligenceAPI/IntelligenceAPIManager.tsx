@@ -15,6 +15,8 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { GlassSurface } from '../GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { intelligenceDB } from '@/lib/intelligence-db';
 import { toast } from 'sonner';
 import { APIMarketplaceSection } from '@/components/APIMarketplaceSection';
@@ -134,42 +136,52 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
         </TabsContent>
 
         <TabsContent value="keys" className="space-y-6 mt-6">
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>Generate New API Key</CardTitle>
-              <CardDescription>
-                Create a new API key to access our intelligence endpoints
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="key-name">Key Name</Label>
-                <Input
-                  id="key-name"
-                  placeholder="Production API Key"
-                  value={newKeyName}
-                  onChange={(e) => setNewKeyName(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="key-tier">Tier</Label>
-                <Select value={newKeyTier} onValueChange={(value: any) => setNewKeyTier(value)}>
-                  <SelectTrigger id="key-tier">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="free">Starter - 1K calls/month (Free)</SelectItem>
-                    <SelectItem value="professional">Professional - 10K calls/month ($49/mo)</SelectItem>
-                    <SelectItem value="enterprise">Enterprise - Unlimited ($209/mo)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button onClick={generateNewKey} disabled={loading} className="w-full">
-                <Key className="w-4 h-4 mr-2" />
-                Generate API Key
-              </Button>
-            </CardContent>
-          </Card>
+          <GlassSurface
+            id="api-generate-key"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'api',
+              urgency: 'medium',
+              confidence: 0.9
+            }}
+          >
+            <Card className="border-0 bg-transparent">
+              <CardHeader>
+                <CardTitle>Generate New API Key</CardTitle>
+                <CardDescription>
+                  Create a new API key to access our intelligence endpoints
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="key-name">Key Name</Label>
+                  <Input
+                    id="key-name"
+                    placeholder="Production API Key"
+                    value={newKeyName}
+                    onChange={(e) => setNewKeyName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="key-tier">Tier</Label>
+                  <Select value={newKeyTier} onValueChange={(value: any) => setNewKeyTier(value)}>
+                    <SelectTrigger id="key-tier">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="free">Starter - 1K calls/month (Free)</SelectItem>
+                      <SelectItem value="professional">Professional - 10K calls/month ($49/mo)</SelectItem>
+                      <SelectItem value="enterprise">Enterprise - Unlimited ($209/mo)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button onClick={generateNewKey} disabled={loading} className="w-full">
+                  <Key className="w-4 h-4 mr-2" />
+                  Generate API Key
+                </Button>
+              </CardContent>
+            </Card>
+          </GlassSurface>
 
           <div className="grid gap-4">
             {apiKeys.map((key) => (
@@ -184,7 +196,16 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                   y: { type: "spring", stiffness: 300, damping: 30 }
                 }}
               >
-                <Card className="glass-card">
+                <GlassSurface
+                  id={`api-key-${key.id}`}
+                  context={{
+                    ...getDefaultGlassContext(),
+                    serviceCategory: 'api',
+                    urgency: key.status === 'active' ? 'medium' : 'low',
+                    confidence: 0.95
+                  }}
+                >
+                  <Card className="border-0 bg-transparent">
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
@@ -255,20 +276,31 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
                     </div>
                   </CardContent>
                 </Card>
+                </GlassSurface>
               </motion.div>
             ))}
           </div>
 
           {apiKeys.length === 0 && (
-            <Card className="glass-card">
-              <CardContent className="py-12 text-center">
-                <Key className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-xl font-semibold mb-2">No API Keys Yet</h3>
-                <p className="text-muted-foreground mb-4">
-                  Generate your first API key to start accessing our intelligence endpoints
-                </p>
-              </CardContent>
-            </Card>
+            <GlassSurface
+              id="api-no-keys"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'api',
+                urgency: 'low',
+                confidence: 1.0
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardContent className="py-12 text-center">
+                  <Key className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-semibold mb-2">No API Keys Yet</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Generate your first API key to start accessing our intelligence endpoints
+                  </p>
+                </CardContent>
+              </Card>
+            </GlassSurface>
           )}
         </TabsContent>
 
@@ -278,52 +310,102 @@ export function IntelligenceAPIManager({ userId }: IntelligenceAPIManagerProps) 
 
         <TabsContent value="usage" className="space-y-6 mt-6">
           <div className="grid grid-cols-4 gap-4">
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Total Calls</p>
-                <p className="text-3xl font-bold">{usageMetrics?.totalCalls.toLocaleString() || 0}</p>
-              </CardContent>
-            </Card>
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Avg Response Time</p>
-                <p className="text-3xl font-bold">{usageMetrics?.avgResponseTime.toFixed(0) || 0}ms</p>
-              </CardContent>
-            </Card>
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
-                <p className="text-3xl font-bold">
-                  {((1 - (usageMetrics?.errorRate || 0)) * 100).toFixed(1)}%
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="glass-card">
-              <CardContent className="pt-6">
-                <p className="text-sm text-muted-foreground mb-1">Endpoints Used</p>
-                <p className="text-3xl font-bold">
-                  {Object.keys(usageMetrics?.callsByEndpoint || {}).length}
-                </p>
-              </CardContent>
-            </Card>
+            <GlassSurface
+              id="api-metric-total-calls"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'api',
+                urgency: 'medium',
+                confidence: 0.95
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Total Calls</p>
+                  <p className="text-3xl font-bold">{usageMetrics?.totalCalls.toLocaleString() || 0}</p>
+                </CardContent>
+              </Card>
+            </GlassSurface>
+            <GlassSurface
+              id="api-metric-avg-response"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'api',
+                urgency: 'medium',
+                confidence: 0.95
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Avg Response Time</p>
+                  <p className="text-3xl font-bold">{usageMetrics?.avgResponseTime.toFixed(0) || 0}ms</p>
+                </CardContent>
+              </Card>
+            </GlassSurface>
+            <GlassSurface
+              id="api-metric-success-rate"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'api',
+                urgency: usageMetrics && (1 - (usageMetrics.errorRate || 0)) > 0.95 ? 'high' : 'medium',
+                confidence: 1 - (usageMetrics?.errorRate || 0)
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
+                  <p className="text-3xl font-bold">
+                    {((1 - (usageMetrics?.errorRate || 0)) * 100).toFixed(1)}%
+                  </p>
+                </CardContent>
+              </Card>
+            </GlassSurface>
+            <GlassSurface
+              id="api-metric-endpoints"
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'api',
+                urgency: 'medium',
+                confidence: 0.95
+              }}
+            >
+              <Card className="border-0 bg-transparent">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground mb-1">Endpoints Used</p>
+                  <p className="text-3xl font-bold">
+                    {Object.keys(usageMetrics?.callsByEndpoint || {}).length}
+                  </p>
+                </CardContent>
+              </Card>
+            </GlassSurface>
           </div>
 
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>API Usage by Endpoint</CardTitle>
-              <CardDescription>Breakdown of your API calls across different endpoints</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {Object.entries(usageMetrics?.callsByEndpoint || {}).map(([endpoint, calls]: [string, any]) => (
-                  <div key={endpoint} className="flex items-center justify-between">
-                    <span className="font-mono text-sm">{endpoint}</span>
-                    <Badge variant="secondary">{calls} calls</Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <GlassSurface
+            id="api-usage-by-endpoint"
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'api',
+              dataComplexity: 'moderate',
+              confidence: 0.9
+            }}
+          >
+            <Card className="border-0 bg-transparent">
+              <CardHeader>
+                <CardTitle>API Usage by Endpoint</CardTitle>
+                <CardDescription>Breakdown of your API calls across different endpoints</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {Object.entries(usageMetrics?.callsByEndpoint || {}).map(([endpoint, calls]: [string, any]) => (
+                    <div key={endpoint} className="flex items-center justify-between">
+                      <span className="font-mono text-sm">{endpoint}</span>
+                      <Badge variant="secondary">{calls} calls</Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </GlassSurface>
         </TabsContent>
       </Tabs>
     </div>
@@ -384,38 +466,58 @@ function PricingPlans() {
     <div className="space-y-8">
       <div className="grid grid-cols-3 gap-6">
         {plans.map((plan) => (
-          <Card key={plan.name} className={`glass-card ${plan.popular ? 'border-2 border-primary' : ''}`}>
-            <CardHeader>
-              {plan.popular && (
-                <Badge className="w-fit mb-2 bg-primary">Most Popular</Badge>
-              )}
-              <CardTitle>{plan.name}</CardTitle>
-              <div className="mt-4">
-                <span className="text-4xl font-bold">${plan.price}</span>
-                <span className="text-muted-foreground">/month</span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-2">
-                {plan.calls ? `${plan.calls.toLocaleString()} calls/month` : 'Unlimited calls'}
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <ul className="space-y-2">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-primary mt-0.5" weight="fill" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button className="w-full" variant={plan.popular ? 'default' : 'outline'}>
-                {plan.price === 0 ? 'Get Started' : 'Upgrade Now'}
-              </Button>
-            </CardContent>
-          </Card>
+          <GlassSurface
+            key={plan.name}
+            id={`api-plan-${plan.name.toLowerCase()}`}
+            context={{
+              ...getDefaultGlassContext(),
+              serviceCategory: 'api',
+              urgency: plan.popular ? 'high' : 'medium',
+              confidence: 0.95
+            }}
+          >
+            <Card className={`border-0 bg-transparent ${plan.popular ? 'border-2 border-primary' : ''}`}>
+              <CardHeader>
+                {plan.popular && (
+                  <Badge className="w-fit mb-2 bg-primary">Most Popular</Badge>
+                )}
+                <CardTitle>{plan.name}</CardTitle>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">${plan.price}</span>
+                  <span className="text-muted-foreground">/month</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {plan.calls ? `${plan.calls.toLocaleString()} calls/month` : 'Unlimited calls'}
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm">
+                      <CheckCircle className="w-4 h-4 text-primary mt-0.5" weight="fill" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button className="w-full" variant={plan.popular ? 'default' : 'outline'}>
+                  {plan.price === 0 ? 'Get Started' : 'Upgrade Now'}
+                </Button>
+              </CardContent>
+            </Card>
+          </GlassSurface>
         ))}
       </div>
 
-      <Card className="glass-card border-2 border-primary/30">
+      <GlassSurface
+        id="api-payment-options"
+        context={{
+          ...getDefaultGlassContext(),
+          serviceCategory: 'api',
+          urgency: 'high',
+          confidence: 0.95
+        }}
+      >
+        <Card className="border-0 bg-transparent border-2 border-primary/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Lightning className="w-5 h-5" weight="fill" />
@@ -470,6 +572,7 @@ function PricingPlans() {
           </div>
         </CardContent>
       </Card>
+      </GlassSurface>
     </div>
   );
 }
@@ -550,13 +653,22 @@ function EndpointsDocumentation() {
 
   return (
     <div className="space-y-4">
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle>Nuclear API Endpoints</CardTitle>
-          <CardDescription>
-            10 high-powered intelligence endpoints with learning feedback integration
-          </CardDescription>
-        </CardHeader>
+      <GlassSurface
+        id="api-endpoints-docs"
+        context={{
+          ...getDefaultGlassContext(),
+          serviceCategory: 'api',
+          dataComplexity: 'complex',
+          confidence: 0.95
+        }}
+      >
+        <Card className="border-0 bg-transparent">
+          <CardHeader>
+            <CardTitle>Nuclear API Endpoints</CardTitle>
+            <CardDescription>
+              10 high-powered intelligence endpoints with learning feedback integration
+            </CardDescription>
+          </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {nuclearAPIs.map((api, index) => (
@@ -615,6 +727,7 @@ function EndpointsDocumentation() {
           </div>
         </CardContent>
       </Card>
+      </GlassSurface>
     </div>
   );
 }

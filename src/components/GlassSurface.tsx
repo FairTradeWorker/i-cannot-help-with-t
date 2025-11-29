@@ -44,7 +44,7 @@ export function GlassSurface({
   // Update glass when context changes
   useEffect(() => {
     engine.updateGlass(id, context);
-  }, [id, context.urgency, context.confidence, context.completion, context.weather]);
+  }, [id, context.urgency, context.confidence, context.completion, context.weather, context.serviceCategory, context.dataComplexity]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -70,7 +70,7 @@ export function GlassSurface({
         transition: {
           duration: 1.5,
           repeat: Infinity,
-          ease: 'easeInOut'
+          ease: [0.4, 0, 0.6, 1] as const
         }
       }
     : context.urgency === 'high'
@@ -86,7 +86,7 @@ export function GlassSurface({
         transition: {
           duration: 3,
           repeat: Infinity,
-          ease: 'easeInOut'
+          ease: [0.4, 0, 0.6, 1] as const
         }
       }
     : {

@@ -119,15 +119,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
         transition={{ duration: 0.4, delay: 0.1 }}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <GlassSurface
-            id="homeowner-active-projects"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'jobs',
-              urgency: activeJobs.length > 0 ? 'medium' : 'low',
-              confidence: 0.9
-            }}
-          >
+          <div className="glass-card">
             <Card className="p-6 border-0 bg-transparent">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                 <Clock className="w-4 h-4" />
@@ -135,17 +127,9 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
               </div>
               <p className="text-3xl font-bold text-primary font-mono">{activeJobs.length}</p>
             </Card>
-          </GlassSurface>
+          </div>
 
-          <GlassSurface
-            id="homeowner-completed-projects"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'jobs',
-              completion: 1,
-              confidence: 0.95
-            }}
-          >
+          <div className="glass-card">
             <Card className="p-6 border-0 bg-transparent">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                 <CheckCircle className="w-4 h-4" />
@@ -153,10 +137,9 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
               </div>
               <p className="text-3xl font-bold text-secondary font-mono">{completedJobs.length}</p>
             </Card>
-          </GlassSurface>
+          </div>
 
-          <GlassSurface
-            id="homeowner-total-jobs"
+          <div className="glass-card"
             context={{
               ...getDefaultGlassContext(),
               serviceCategory: 'jobs',
@@ -170,7 +153,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
               </div>
               <p className="text-3xl font-bold text-foreground font-mono">{myJobs.length}</p>
             </Card>
-          </GlassSurface>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -195,10 +178,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
 
           <TabsContent value="my-jobs">
             {myJobs.length === 0 ? (
-              <GlassSurface
-                id="homeowner-no-jobs"
-                context={getDefaultGlassContext()}
-              >
+              <div className="glass-card">
                 <Card className="p-12 text-center border-0 bg-transparent">
                   <div className="max-w-md mx-auto">
                     <Clock className="w-20 h-20 text-muted-foreground mx-auto mb-4" weight="duotone" />
@@ -212,7 +192,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                     </Button>
                   </div>
                 </Card>
-              </GlassSurface>
+              </div>
             ) : (
               <div className="space-y-4">
                 {myJobs.map((job, index) => {
@@ -226,17 +206,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
-                      <GlassSurface
-                        id={`homeowner-job-${job.id}`}
-                        context={{
-                          ...getDefaultGlassContext(),
-                          serviceCategory: 'jobs',
-                          urgency: activeBids > 0 || unreadMessages > 0 ? 'medium' : 'low',
-                          confidence: 0.8
-                        }}
-                        onClick={() => setSelectedJobId(job.id)}
-                        className="cursor-pointer"
-                      >
+                      <div className="glass-card cursor-pointer" onClick={() => setSelectedJobId(job.id)}>
                         <Card 
                           className="p-6 border-0 bg-transparent hover:bg-transparent"
                         >
@@ -289,7 +259,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                           </div>
                         </div>
                       </Card>
-                      </GlassSurface>
+                      </div>
                     </motion.div>
                   );
                 })}
@@ -311,15 +281,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
             transition={{ duration: 0.2 }}
             className="w-full max-w-2xl"
           >
-            <GlassSurface
-              id="homeowner-video-job-modal"
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'jobs',
-                urgency: 'medium'
-              }}
-              className="border-2"
-            >
+            <div className="glass-card border-2">
               <Card className="border-0 bg-transparent">
                 <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
@@ -357,7 +319,7 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
                 </div>
               </div>
             </Card>
-            </GlassSurface>
+            </div>
           </motion.div>
         </div>
       )}
@@ -370,59 +332,60 @@ export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardPro
             transition={{ duration: 0.2 }}
             className="w-full max-w-4xl"
           >
-            <Card className="glass-card border-2">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-2xl font-bold">{selectedJob.title}</h2>
-                    <Badge variant="secondary" className="mt-2">{selectedJob.status.replace('_', ' ')}</Badge>
-                  </div>
-                  <Button variant="ghost" size="icon" onClick={() => setSelectedJobId(null)}>
-                    <X className="w-5 h-5" />
-                  </Button>
-                </div>
-
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="font-semibold mb-2">Description</h3>
-                    <p className="text-muted-foreground">{selectedJob.description}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
+            <div className="glass-card">
+              <Card className="border-2 bg-transparent">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h3 className="font-semibold mb-2">Location</h3>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="w-4 h-4" />
-                        <span>{selectedJob.address.street}</span>
+                      <h2 className="text-2xl font-bold">{selectedJob.title}</h2>
+                      <Badge variant="secondary" className="mt-2">{selectedJob.status.replace('_', ' ')}</Badge>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={() => setSelectedJobId(null)}>
+                      <X className="w-5 h-5" />
+                    </Button>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold mb-2">Description</h3>
+                      <p className="text-muted-foreground">{selectedJob.description}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold mb-2">Location</h3>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <MapPin className="w-4 h-4" />
+                          <span>{selectedJob.address.street}</span>
+                        </div>
+                        <div className="text-muted-foreground ml-6">
+                          {selectedJob.address.city}, {selectedJob.address.state} {selectedJob.address.zip}
+                        </div>
                       </div>
-                      <div className="text-muted-foreground ml-6">
-                        {selectedJob.address.city}, {selectedJob.address.state} {selectedJob.address.zip}
+
+                      <div>
+                        <h3 className="font-semibold mb-2">Budget Range</h3>
+                        <p className="text-2xl font-bold text-accent font-mono">
+                          ${selectedJob.estimatedCost.min.toLocaleString()} - ${selectedJob.estimatedCost.max.toLocaleString()}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="font-semibold mb-2">Budget Range</h3>
-                      <p className="text-2xl font-bold text-accent font-mono">
-                        ${selectedJob.estimatedCost.min.toLocaleString()} - ${selectedJob.estimatedCost.max.toLocaleString()}
-                      </p>
+                      <h3 className="font-semibold mb-4">Bids Received</h3>
+                      {selectedJob.bids === 0 ? (
+                        <Card className="p-8 text-center">
+                          <Users className="w-12 h-12 text-muted-foreground mx-auto mb-2" weight="duotone" />
+                          <p className="text-muted-foreground">No bids yet. Check back soon!</p>
+                        </Card>
+                      ) : (
+                        <p className="text-muted-foreground">{selectedJob.bids} contractor{selectedJob.bids > 1 ? 's have' : ' has'} submitted bids</p>
+                      )}
                     </div>
                   </div>
-
-                  <div>
-                    <h3 className="font-semibold mb-4">Bids Received</h3>
-                    {selectedJob.bids === 0 ? (
-                      <Card className="p-8 text-center">
-                        <Users className="w-12 h-12 text-muted-foreground mx-auto mb-2" weight="duotone" />
-                        <p className="text-muted-foreground">No bids yet. Check back soon!</p>
-                      </Card>
-                    ) : (
-                      <p className="text-muted-foreground">{selectedJob.bids} contractor{selectedJob.bids > 1 ? 's have' : ' has'} submitted bids</p>
-                    )}
-                  </div>
                 </div>
-              </div>
-            </Card>
-            </GlassSurface>
+              </Card>
+            </div>
           </motion.div>
         </div>
       )}

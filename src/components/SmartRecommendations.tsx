@@ -158,15 +158,7 @@ export function SmartRecommendations() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
           >
-            <GlassSurface
-              id={`market-insight-${i}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'analytics',
-                urgency: insight.trend === 'up' ? 'medium' : 'low',
-                confidence: 0.85
-              }}
-            >
+            <div className="glass-card">
               <Card className="p-4 border-0 bg-transparent">
                 <p className="text-xs text-muted-foreground mb-1">{insight.metric}</p>
                 <div className="flex items-end justify-between">
@@ -186,7 +178,7 @@ export function SmartRecommendations() {
                   </Badge>
                 </div>
               </Card>
-            </GlassSurface>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -210,16 +202,7 @@ export function SmartRecommendations() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <GlassSurface
-                  id={`suggestion-${suggestion.id}`}
-                  context={{
-                    ...getDefaultGlassContext(),
-                    serviceCategory: 'ai',
-                    confidence: suggestion.confidence / 100,
-                    urgency: suggestion.impact === 'high' ? 'high' : suggestion.impact === 'medium' ? 'medium' : 'low'
-                  }}
-                  className={isApplied ? 'opacity-60' : ''}
-                >
+                <div className={`glass-card ${isApplied ? 'opacity-60' : ''}`}>
                   <Card className="p-4 border-0 bg-transparent">
                     <div className="flex items-start gap-4">
                     <div className={`p-3 rounded-xl ${TYPE_COLORS[suggestion.type]}`}>
@@ -293,7 +276,7 @@ export function SmartRecommendations() {
                     </div>
                   </div>
                 </Card>
-                </GlassSurface>
+                </div>
               </motion.div>
             );
           })}
@@ -301,30 +284,23 @@ export function SmartRecommendations() {
       </div>
 
       {/* AI Confidence Explanation */}
-      <GlassSurface
-        id="ai-confidence-explanation"
-        context={{
-          ...getDefaultGlassContext(),
-          serviceCategory: 'ai',
-          confidence: 0.9
-        }}
-        className="border-primary/20"
-      >
+      <div className="glass-card border-primary/20">
         <Card className="p-4 border-0 bg-transparent">
-        <div className="flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Brain className="w-5 h-5 text-primary" />
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Brain className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">How AI Recommendations Work</h4>
+              <p className="text-sm text-muted-foreground">
+                Our AI analyzes thousands of data points including job history, market trends, 
+                seasonal patterns, and your performance metrics to provide personalized suggestions. 
+                Higher confidence scores indicate more reliable predictions based on available data.
+              </p>
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold mb-1">How AI Recommendations Work</h4>
-            <p className="text-sm text-muted-foreground">
-              Our AI analyzes thousands of data points including job history, market trends, 
-              seasonal patterns, and your performance metrics to provide personalized suggestions. 
-              Higher confidence scores indicate more reliable predictions based on available data.
-            </p>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

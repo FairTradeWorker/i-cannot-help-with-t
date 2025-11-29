@@ -6,6 +6,8 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { GlassSurface } from './GlassSurface';
+import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Handshake,
   CurrencyDollar,
@@ -104,21 +106,38 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="glass-card p-6">
-              <div className="flex items-center justify-between mb-3">
-                <stat.icon className="w-8 h-8 text-primary" weight="duotone" />
-                <TrendUp className="w-5 h-5 text-accent" weight="bold" />
-              </div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="text-3xl font-bold">{stat.value}</p>
-            </Card>
+            <GlassSurface
+              id={`partner-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'partner',
+                confidence: 0.9
+              }}
+            >
+              <Card className="p-6 border-0 bg-transparent">
+                <div className="flex items-center justify-between mb-3">
+                  <stat.icon className="w-8 h-8 text-primary" weight="duotone" />
+                  <TrendUp className="w-5 h-5 text-accent" weight="bold" />
+                </div>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className="text-3xl font-bold">{stat.value}</p>
+              </Card>
+            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-card p-6">
-          <h3 className="text-xl font-bold mb-4">Featured Materials Partners</h3>
+        <GlassSurface
+          id="partner-featured-materials"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            dataComplexity: 'moderate'
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <h3 className="text-xl font-bold mb-4">Featured Materials Partners</h3>
           <Separator className="mb-4" />
           <div className="space-y-4">
             {[
@@ -152,14 +171,23 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             ))}
           </div>
         </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
-          <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
-          <Separator className="mb-4" />
-          <div className="space-y-4">
-            {[
-              'Access to 3,500+ verified contractors',
-              'Automated ordering and invoicing',
+        <GlassSurface
+          id="partner-benefits-materials"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            confidence: 0.95
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
+            <Separator className="mb-4" />
+            <div className="space-y-4">
+              {[
+                'Access to 3,500+ verified contractors',
+                'Automated ordering and invoicing',
               'Real-time inventory management',
               'Bulk order discounts (15-30%)',
               'Dedicated account manager',
@@ -182,6 +210,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             </Button>
           </div>
         </Card>
+        </GlassSurface>
       </div>
     </div>
   );
@@ -215,21 +244,38 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="glass-card p-6">
-              <div className="flex items-center justify-between mb-3">
-                <stat.icon className="w-8 h-8 text-secondary" weight="duotone" />
-                <TrendUp className="w-5 h-5 text-accent" weight="bold" />
-              </div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="text-3xl font-bold">{stat.value}</p>
-            </Card>
+            <GlassSurface
+              id={`partner-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'partner',
+                confidence: 0.9
+              }}
+            >
+              <Card className="p-6 border-0 bg-transparent">
+                <div className="flex items-center justify-between mb-3">
+                  <stat.icon className="w-8 h-8 text-secondary" weight="duotone" />
+                  <TrendUp className="w-5 h-5 text-accent" weight="bold" />
+                </div>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className="text-3xl font-bold">{stat.value}</p>
+              </Card>
+            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-card p-6">
-          <h3 className="text-xl font-bold mb-4">Insurance Coverage Types</h3>
+        <GlassSurface
+          id="partner-insurance-coverage"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            dataComplexity: 'moderate'
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <h3 className="text-xl font-bold mb-4">Insurance Coverage Types</h3>
           <Separator className="mb-4" />
           <div className="space-y-3">
             {[
@@ -258,9 +304,18 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             ))}
           </div>
         </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
-          <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
+        <GlassSurface
+          id="partner-benefits"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
           <Separator className="mb-4" />
           <div className="space-y-4">
             {[
@@ -288,6 +343,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             </Button>
           </div>
         </Card>
+        </GlassSurface>
       </div>
     </div>
   );
@@ -309,13 +365,22 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
         </div>
       </motion.div>
 
-      <Card className="glass-card p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-2">
-        <div className="text-center space-y-6">
-          <div className="inline-block p-4 rounded-full bg-primary/10">
-            <Bank className="w-16 h-16 text-primary" weight="duotone" />
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold mb-2">Investment Opportunities</h3>
+      <GlassSurface
+        id="partner-private-equity-main"
+        context={{
+          ...getDefaultGlassContext(),
+          serviceCategory: 'partner',
+          urgency: 'high',
+          confidence: 0.95
+        }}
+      >
+        <Card className="p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-2 border-0 bg-transparent">
+          <div className="text-center space-y-6">
+            <div className="inline-block p-4 rounded-full bg-primary/10">
+              <Bank className="w-16 h-16 text-primary" weight="duotone" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Investment Opportunities</h3>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               FairTradeWorker is revolutionizing the home services industry. Learn about partnership opportunities, 
               territory acquisition programs, and investment options.
@@ -431,6 +496,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
           </div>
         </div>
       </Card>
+      </GlassSurface>
     </div>
   );
 
@@ -463,21 +529,38 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="glass-card p-6">
-              <div className="flex items-center justify-between mb-3">
-                <stat.icon className="w-8 h-8 text-accent" weight="duotone" />
-                <TrendUp className="w-5 h-5 text-accent" weight="bold" />
-              </div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="text-3xl font-bold">{stat.value}</p>
-            </Card>
+            <GlassSurface
+              id={`partner-re-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'partner',
+                confidence: 0.9
+              }}
+            >
+              <Card className="p-6 border-0 bg-transparent">
+                <div className="flex items-center justify-between mb-3">
+                  <stat.icon className="w-8 h-8 text-accent" weight="duotone" />
+                  <TrendUp className="w-5 h-5 text-accent" weight="bold" />
+                </div>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className="text-3xl font-bold">{stat.value}</p>
+              </Card>
+            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-card p-6">
-          <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
+        <GlassSurface
+          id="partner-re-benefits"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
           <Separator className="mb-4" />
           <div className="space-y-4">
             {[
@@ -502,9 +585,18 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             ))}
           </div>
         </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
-          <h3 className="text-xl font-bold mb-4">Use Cases</h3>
+        <GlassSurface
+          id="partner-re-use-cases"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            dataComplexity: 'moderate'
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <h3 className="text-xl font-bold mb-4">Use Cases</h3>
           <Separator className="mb-4" />
           <div className="space-y-3">
             {[
@@ -536,6 +628,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             Become a Real Estate Partner
           </Button>
         </Card>
+        </GlassSurface>
       </div>
     </div>
   );
@@ -656,20 +749,29 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="glass-card p-6">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                      <Icon className={`w-6 h-6 ${stat.color}`} weight="duotone" />
+              <GlassSurface
+                id={`partner-overview-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
+                context={{
+                  ...getDefaultGlassContext(),
+                  serviceCategory: 'partner',
+                  confidence: 0.9
+                }}
+              >
+                <Card className="p-6 border-0 bg-transparent">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                        <Icon className={`w-6 h-6 ${stat.color}`} weight="duotone" />
+                      </div>
+                      <Badge variant="secondary">{stat.trend}</Badge>
                     </div>
-                    <Badge variant="secondary">{stat.trend}</Badge>
+                    <div>
+                      <p className="text-sm text-muted-foreground">{stat.label}</p>
+                      <p className="text-3xl font-bold">{stat.value}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    <p className="text-3xl font-bold">{stat.value}</p>
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </GlassSurface>
             </motion.div>
           );
         })}
@@ -688,55 +790,82 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="glass-card p-6 hover:shadow-xl transition-shadow cursor-pointer">
+            <GlassSurface
+              id={`partner-category-${category.label.toLowerCase().replace(/\s+/g, '-')}`}
+              context={{
+                ...getDefaultGlassContext(),
+                serviceCategory: 'partner',
+                confidence: 0.9
+              }}
+            >
+              <Card className="p-6 border-0 bg-transparent hover:shadow-xl transition-shadow cursor-pointer">
               <div className={`p-3 rounded-xl bg-gradient-to-br ${category.color} mb-4 inline-block`}>
                 <category.icon className="w-7 h-7 text-white" weight="duotone" />
               </div>
               <p className="text-sm text-muted-foreground">{category.label}</p>
               <p className="text-2xl font-bold">{category.count}</p>
-            </Card>
+              </Card>
+            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="glass-card p-6">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <ChartLine className="w-5 h-5 text-primary" weight="duotone" />
-              <h3 className="text-xl font-bold">Commission Breakdown</h3>
-            </div>
-            <Separator />
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Contractor Referrals</span>
-                <span className="font-semibold">$8,200</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Premium Partnerships</span>
-                <span className="font-semibold">$3,150</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Standard Partnerships</span>
-                <span className="font-semibold">$1,100</span>
+        <GlassSurface
+          id="partner-commission-breakdown"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            dataComplexity: 'moderate',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <ChartLine className="w-5 h-5 text-primary" weight="duotone" />
+                <h3 className="text-xl font-bold">Commission Breakdown</h3>
               </div>
               <Separator />
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">Total Commission</span>
-                <span className="text-xl font-bold text-accent">$12,450</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Contractor Referrals</span>
+                  <span className="font-semibold">$8,200</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Premium Partnerships</span>
+                  <span className="font-semibold">$3,150</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Standard Partnerships</span>
+                  <span className="font-semibold">$1,100</span>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">Total Commission</span>
+                  <span className="text-xl font-bold text-accent">$12,450</span>
+                </div>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </GlassSurface>
 
-        <Card className="glass-card p-6">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Bank className="w-5 h-5 text-secondary" weight="duotone" />
-              <h3 className="text-xl font-bold">Finance Options</h3>
-            </div>
-            <Separator />
-            <div className="space-y-3">
+        <GlassSurface
+          id="partner-finance-options"
+          context={{
+            ...getDefaultGlassContext(),
+            serviceCategory: 'partner',
+            confidence: 0.9
+          }}
+        >
+          <Card className="p-6 border-0 bg-transparent">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Bank className="w-5 h-5 text-secondary" weight="duotone" />
+                <h3 className="text-xl font-bold">Finance Options</h3>
+              </div>
+              <Separator />
+              <div className="space-y-3">
               <Button variant="outline" className="w-full justify-start glass-hover">
                 <CurrencyDollar className="w-5 h-5 mr-2" weight="duotone" />
                 Request Payout
@@ -752,6 +881,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             </div>
           </div>
         </Card>
+        </GlassSurface>
       </div>
     </div>
   );
