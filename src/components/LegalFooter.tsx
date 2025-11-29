@@ -2,7 +2,7 @@ export function LegalFooter() {
   return (
     <footer className="mt-auto" style={{ backgroundColor: '#1f2937', paddingTop: '48px', paddingBottom: '48px' }}>
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-center md:text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-center sm:text-left">
           {/* Column 1: For Homeowners */}
           <div>
             <h4 className="font-semibold mb-4 text-white">

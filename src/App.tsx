@@ -1052,8 +1052,8 @@ function App() {
           </div>
         </div>
       </motion.header>
-      <main className="flex-1 py-8 px-4 md:px-4">
-        <div className="max-w-7xl mx-auto px-4 md:px-0">
+      <main className="flex-1 py-8">
+        <div className="max-w-7xl mx-auto px-4">
           <AnimatePresence mode="wait">
             <motion.div
               key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}-${showJobPost}`}

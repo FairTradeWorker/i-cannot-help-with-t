@@ -218,30 +218,30 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
   }, [liveUpdateCounter, claimedTerritories]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-0 sm:px-0" style={{ paddingLeft: '0', paddingRight: '0' }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Available Territories</h1>
-            <p className="text-muted-foreground">Priority Access to first Leads in your zip codes</p>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Available Territories</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Priority Access to first Leads in your zip codes</p>
           </div>
-          <div className="text-right flex items-center gap-4">
+          <div className="flex items-center justify-between sm:justify-end gap-4">
             <div className="flex items-center gap-2">
               <Circle className="w-3 h-3 text-green-500" weight="fill" />
               <span className="text-xs text-muted-foreground">Live Updates</span>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Your Territories</p>
-              <p className="text-3xl font-bold font-mono">{claimedCount}</p>
+            <div className="text-right">
+              <p className="text-xs sm:text-sm text-muted-foreground">Your Territories</p>
+              <p className="text-2xl sm:text-3xl font-bold font-mono">{claimedCount}</p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card className="p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-primary">
@@ -292,21 +292,21 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
         </div>
 
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'list' | 'map')} className="w-full">
-          <div className="flex items-center justify-between mb-4">
-            <TabsList>
-              <TabsTrigger value="map">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <TabsList className="w-full sm:w-auto">
+              <TabsTrigger value="map" className="flex-1 sm:flex-initial">
                 <MapTrifold className="w-4 h-4 mr-2" />
                 Live Map
               </TabsTrigger>
-              <TabsTrigger value="list">
+              <TabsTrigger value="list" className="flex-1 sm:flex-initial">
                 <MagnifyingGlass className="w-4 h-4 mr-2" />
                 Browse Territories
               </TabsTrigger>
             </TabsList>
             
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
               <Select value={selectedState} onValueChange={setSelectedState}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40">
                   <SelectValue placeholder="All States" />
                 </SelectTrigger>
                 <SelectContent>
@@ -322,7 +322,7 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
                 placeholder="Search zip, city, state..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64"
+                className="w-full sm:w-64"
               />
             </div>
           </div>
@@ -346,28 +346,32 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
                   </div>
                 </div>
               </div>
-              <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg overflow-hidden">
+              <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg overflow-hidden w-full">
                 <canvas 
                   ref={canvasRef} 
                   width={1000} 
                   height={600} 
-                  className="w-full h-auto"
+                  className="w-full h-auto max-w-full"
+                  style={{ maxWidth: '100%', height: 'auto' }}
                 />
               </div>
-              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
                 {stateStats.slice(0, 12).map(s => (
                   <Card 
                     key={s.state} 
-                    className="p-3 cursor-pointer hover:border-primary transition-colors"
+                    className="p-3 cursor-pointer hover:border-primary transition-colors w-full"
                     onClick={() => setSelectedState(s.state)}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold">{s.state}</span>
-                      <Badge variant={s.available > 0 ? 'default' : 'secondary'} className="text-xs">
-                        {s.available}
-                      </Badge>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-bold flex-shrink-0" style={{ fontSize: '18px' }}>{s.state}</span>
+                      <div className="flex items-center gap-1.5 flex-1 justify-end min-w-0">
+                        <span className="font-mono whitespace-nowrap" style={{ fontSize: '16px' }}>{s.total}</span>
+                        <span className="text-muted-foreground whitespace-nowrap" style={{ fontSize: '14px', color: '#6b7280' }}>total</span>
+                        <Badge variant={s.available > 0 ? 'default' : 'secondary'} className="text-xs whitespace-nowrap flex-shrink-0" style={{ fontSize: '12px', padding: '2px 6px' }}>
+                          {s.available}
+                        </Badge>
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">{s.total} total</p>
                   </Card>
                 ))}
               </div>
