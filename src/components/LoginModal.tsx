@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { EnvelopeSimple, Lock, Eye, EyeSlash, UserCircle, Hammer, HardHat, House, MapTrifold } from '@phosphor-icons/react';
+import { EnvelopeSimple, Lock, Eye, EyeSlash, UserCircle, Hammer, HardHat, House, MapTrifold, X } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,15 +11,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface LoginModalProps {
   onLogin: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => void;
   onSignUp: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => void;
+  onClose?: () => void;
+  initialMode?: 'login' | 'signup';
 }
 
-export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
+export function LoginModal({ onLogin, onSignUp, onClose, initialMode = 'login' }: LoginModalProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState<'homeowner' | 'contractor' | 'subcontractor'>('homeowner');
   const [selectedTrade, setSelectedTrade] = useState<string>('General Contractor');
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [showSplash, setShowSplash] = useState(true);
 
   const trades = [
@@ -62,12 +64,20 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
 
   if (showSplash) {
     return (
-      <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
+      <div 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center"
+        onClick={onClose ? (e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        } : undefined}
+      >
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center"
+          onClick={(e) => e.stopPropagation()}
         >
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
@@ -138,13 +148,31 @@ export function LoginModal({ onLogin, onSignUp }: LoginModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-background z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div 
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+      onClick={onClose ? (e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      } : undefined}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="w-full max-w-5xl my-8"
+        className="w-full max-w-5xl my-8 relative"
+        onClick={(e) => e.stopPropagation()}
       >
+        {onClose && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 z-10 bg-background/80 hover:bg-background"
+            onClick={onClose}
+          >
+            <X className="w-5 h-5" />
+          </Button>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
           <motion.div
             initial={{ opacity: 0, x: -50 }}

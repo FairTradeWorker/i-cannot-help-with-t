@@ -21,6 +21,8 @@ import {
   CreditCard,
   UserGear,
   SignOut,
+  SignIn,
+  UserPlus,
   MapTrifold,
   Lightning,
   Brain,
@@ -97,6 +99,7 @@ function App() {
   const [showServiceMenu, setShowServiceMenu] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
+  const [loginModalMode, setLoginModalMode] = useState<'login' | 'signup'>('login');
 
   const mockReferrals: Referral[] = [
     {
@@ -165,9 +168,8 @@ function App() {
     await initializeDemoData();
     const user = await dataStore.getCurrentUser();
     
-    if (!user) {
-      setShowLogin(true);
-    } else {
+    // Allow users to browse without logging in
+    if (user) {
       setCurrentUser(user);
     }
     
@@ -211,12 +213,18 @@ function App() {
   };
 
   const handleCreateJob = () => {
+    // Require authentication to post a job
+    if (!currentUser) {
+      setLoginModalMode('signup');
+      setShowLogin(true);
+      return;
+    }
     setShowJobPost(true);
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    setShowLogin(true);
+    // Don't force login after logout - allow browsing
     setActiveTab('home');
     setActiveSubTab(null);
     setShowJobPost(false);
@@ -242,15 +250,6 @@ function App() {
           <p className="text-sm text-muted-foreground font-medium">Loading FairTradeWorker...</p>
         </motion.div>
       </div>
-    );
-  }
-
-  if (showLogin) {
-    return (
-      <LoginModal
-        onLogin={handleLogin}
-        onSignUp={handleSignUp}
-      />
     );
   }
 
@@ -503,75 +502,104 @@ function App() {
 
               <ThemeToggle />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }} 
-                    whileTap={{ scale: 0.96 }}
-                    transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
-                  >
-                    <Button
-                      variant="ghost"
-                      className="button-interactive flex items-center gap-1.5 px-2 h-8"
+              {currentUser ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <motion.div 
+                      whileHover={{ scale: 1.02 }} 
+                      whileTap={{ scale: 0.96 }}
+                      transition={{ duration: 0.11, ease: [0.32, 0, 0.67, 0] }}
                     >
-                      <Avatar className="w-6 h-6">
-                        <AvatarImage src={currentUser?.avatar} />
-                        <AvatarFallback className="text-xs">
-                          {currentUser?.name?.charAt(0) || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="hidden md:inline text-sm font-medium">
-                        {currentUser?.name || 'User'}
-                      </span>
-                      {(currentUser?.role === 'contractor' || currentUser?.role === 'subcontractor') && 
-                        currentUser?.contractorProfile?.specialties && 
-                        currentUser.contractorProfile.specialties.length > 0 && (
-                        <span className="hidden lg:inline text-xs text-muted-foreground ml-1">
-                          ({currentUser.contractorProfile.specialties[0]})
+                      <Button
+                        variant="ghost"
+                        className="button-interactive flex items-center gap-1.5 px-2 h-8"
+                      >
+                        <Avatar className="w-6 h-6">
+                          <AvatarImage src={currentUser?.avatar} />
+                          <AvatarFallback className="text-xs">
+                            {currentUser?.name?.charAt(0) || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="hidden md:inline text-sm font-medium">
+                          {currentUser?.name || 'User'}
                         </span>
-                      )}
-                      <CaretDown className="w-3 h-3" />
-                    </Button>
-                  </motion.div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="glass-card border-border/50 w-56">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-semibold">{currentUser?.name || 'User'}</span>
-                      {(currentUser?.role === 'contractor' || currentUser?.role === 'subcontractor') && 
-                        currentUser?.contractorProfile?.specialties && 
-                        currentUser.contractorProfile.specialties.length > 0 && (
-                        <span className="text-xs text-muted-foreground">
-                          {currentUser.contractorProfile.specialties[0]}
-                        </span>
-                      )}
-                      <span className="text-xs text-muted-foreground">{currentUser?.email}</span>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => {
-                    setShowProfile(true);
-                    setShowAdminPanel(false);
-                  }}>
-                    <UserGear className="w-4 h-4 mr-2" />
-                    Profile Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => {
-                    setActiveTab('payment');
-                    setActiveSubTab(null);
-                    setShowProfile(false);
-                    setShowAdminPanel(false);
-                  }}>
-                    <CreditCard className="w-4 h-4 mr-2" />
-                    Billing & Payments
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive">
-                    <SignOut className="w-4 h-4 mr-2" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                        {(currentUser?.role === 'contractor' || currentUser?.role === 'subcontractor') && 
+                          currentUser?.contractorProfile?.specialties && 
+                          currentUser.contractorProfile.specialties.length > 0 && (
+                          <span className="hidden lg:inline text-xs text-muted-foreground ml-1">
+                            ({currentUser.contractorProfile.specialties[0]})
+                          </span>
+                        )}
+                        <CaretDown className="w-3 h-3" />
+                      </Button>
+                    </motion.div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="glass-card border-border/50 w-56">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold">{currentUser?.name || 'User'}</span>
+                        {(currentUser?.role === 'contractor' || currentUser?.role === 'subcontractor') && 
+                          currentUser?.contractorProfile?.specialties && 
+                          currentUser.contractorProfile.specialties.length > 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            {currentUser.contractorProfile.specialties[0]}
+                          </span>
+                        )}
+                        <span className="text-xs text-muted-foreground">{currentUser?.email}</span>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => {
+                      setShowProfile(true);
+                      setShowAdminPanel(false);
+                    }}>
+                      <UserGear className="w-4 h-4 mr-2" />
+                      Profile Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                      setActiveTab('payment');
+                      setActiveSubTab(null);
+                      setShowProfile(false);
+                      setShowAdminPanel(false);
+                    }}>
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Billing & Payments
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                      <SignOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setLoginModalMode('login');
+                      setShowLogin(true);
+                    }}
+                    className="button-interactive"
+                  >
+                    <SignIn className="w-4 h-4 mr-2" />
+                    Sign In
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => {
+                      setLoginModalMode('signup');
+                      setShowLogin(true);
+                    }}
+                    className="button-interactive"
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Sign Up
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -892,6 +920,16 @@ function App() {
             </div>
           </div>
         </motion.div>
+      )}
+
+      {/* Login Modal Overlay */}
+      {showLogin && (
+        <LoginModal
+          onLogin={handleLogin}
+          onSignUp={handleSignUp}
+          onClose={() => setShowLogin(false)}
+          initialMode={loginModalMode}
+        />
       )}
     </div>
   );
