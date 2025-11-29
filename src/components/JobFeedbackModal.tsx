@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Slider } from '@/components/ui/slider';
 import {
   Dialog,
   DialogContent,
@@ -48,7 +47,8 @@ export function JobFeedbackModal({
   actualMaterialsCost,
   actualLaborHours,
 }: JobFeedbackModalProps) {
-  const [accuracy, setAccuracy] = useState(50);
+  const [scopeAccurate, setScopeAccurate] = useState<boolean | null>(null);
+  const [actualMaterialsUsed, setActualMaterialsUsed] = useState<string>('');
   const [comments, setComments] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -60,12 +60,25 @@ export function JobFeedbackModal({
   const materialsDifference = actualMaterialsCost - predictedMaterialsCost;
 
   const laborDifference = actualLaborHours - prediction.laborHours;
+  
+  // Calculate predicted materials list for comparison
+  const predictedMaterialsList = prediction.materials.map(m => 
+    `${m.name} - ${m.quantity} ${m.unit}`
+  ).join('\n');
 
   const handleSubmit = async () => {
+    if (scopeAccurate === null) {
+      toast.error('Please indicate if the scope was accurate');
+      return;
+    }
+
     setSubmitting(true);
     try {
+      // Use predictionId from job if available, otherwise use job.id
+      const predictionId = (job as any).predictionId || `job-${job.id}`;
+      
       await recordPredictionOutcome(
-        job.id,
+        predictionId,
         'scope',
         {
           estimatedCost: prediction.estimatedCost,
@@ -78,7 +91,8 @@ export function JobFeedbackModal({
           laborHours: actualLaborHours,
         },
         {
-          rating: accuracy,
+          scopeAccurate: scopeAccurate,
+          actualMaterialsUsed: actualMaterialsUsed || undefined,
           comments: comments || undefined,
         }
       );
@@ -114,79 +128,129 @@ export function JobFeedbackModal({
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
-          <Card className="p-4 bg-muted/50">
-            <h4 className="font-semibold mb-3 flex items-center gap-2">
-              <Target className="w-4 h-4 text-primary" />
-              Estimate Accuracy
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div>
-                <p className="text-muted-foreground mb-1">Total Cost</p>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-lg font-bold">${actualCost.toLocaleString()}</p>
-                  <Badge variant={Math.abs(costDifferencePercent) < 15 ? 'default' : 'destructive'}>
-                    {costDifferencePercent > 0 ? '+' : ''}{costDifferencePercent.toFixed(1)}%
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Predicted: ${predictedCost.toLocaleString()}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-muted-foreground mb-1">Materials</p>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-lg font-bold">${actualMaterialsCost.toLocaleString()}</p>
-                  {materialsDifference !== 0 && (
-                    <Badge variant={Math.abs(materialsDifference) < predictedMaterialsCost * 0.15 ? 'default' : 'secondary'}>
-                      {materialsDifference > 0 ? '+' : ''}${Math.abs(materialsDifference).toLocaleString()}
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Predicted: ${predictedMaterialsCost.toLocaleString()}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-muted-foreground mb-1">Labor Hours</p>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-lg font-bold">{actualLaborHours}h</p>
-                  {laborDifference !== 0 && (
-                    <Badge variant={Math.abs(laborDifference) < prediction.laborHours * 0.20 ? 'default' : 'secondary'}>
-                      {laborDifference > 0 ? '+' : ''}{laborDifference}h
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Predicted: {prediction.laborHours}h
-                </p>
-              </div>
-            </div>
-          </Card>
-
+          {/* Question 1: Was the scope accurate? */}
           <div className="space-y-3">
-            <Label>How accurate was the AI estimate?</Label>
-            <div className="flex items-center gap-4">
-              <ThumbsDown className="w-5 h-5 text-muted-foreground" />
-              <Slider
-                value={[accuracy]}
-                onValueChange={(value) => setAccuracy(value[0])}
-                min={0}
-                max={100}
-                step={5}
+            <Label className="text-base font-semibold">Was the scope accurate?</Label>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant={scopeAccurate === true ? 'default' : 'outline'}
+                onClick={() => setScopeAccurate(true)}
                 className="flex-1"
-              />
-              <ThumbsUp className="w-5 h-5 text-accent" weight="fill" />
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Not Accurate</span>
-              <Badge variant={accuracy > 70 ? 'default' : accuracy > 40 ? 'secondary' : 'destructive'}>
-                {accuracy}% Accurate
-              </Badge>
-              <span className="text-muted-foreground">Very Accurate</span>
+                size="lg"
+              >
+                <ThumbsUp className="w-5 h-5 mr-2" />
+                Yes
+              </Button>
+              <Button
+                type="button"
+                variant={scopeAccurate === false ? 'destructive' : 'outline'}
+                onClick={() => setScopeAccurate(false)}
+                className="flex-1"
+                size="lg"
+              >
+                <ThumbsDown className="w-5 h-5 mr-2" />
+                No
+              </Button>
             </div>
           </div>
+
+          <Separator />
+
+          {/* Actual vs Predicted Comparison */}
+          <div className="space-y-4">
+            <h4 className="font-semibold flex items-center gap-2">
+              <Target className="w-4 h-4 text-primary" />
+              Actual vs Predicted
+            </h4>
+
+            {/* Actual Materials Used */}
+            <div className="space-y-2">
+              <Label htmlFor="actual-materials">
+                Actual Materials Used
+                <span className="text-xs text-muted-foreground ml-2">(vs predicted)</span>
+              </Label>
+              <Textarea
+                id="actual-materials"
+                placeholder={`Predicted:\n${predictedMaterialsList}\n\nEnter actual materials used...`}
+                value={actualMaterialsUsed}
+                onChange={(e) => setActualMaterialsUsed(e.target.value)}
+                rows={6}
+                className="resize-none font-mono text-sm"
+              />
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>Predicted Cost: ${predictedMaterialsCost.toLocaleString()}</span>
+                <span>Actual Cost: ${actualMaterialsCost.toLocaleString()}</span>
+                {materialsDifference !== 0 && (
+                  <Badge variant={Math.abs(materialsDifference) < predictedMaterialsCost * 0.15 ? 'default' : 'secondary'}>
+                    {materialsDifference > 0 ? '+' : ''}${Math.abs(materialsDifference).toLocaleString()}
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {/* Actual Labor Hours */}
+            <div className="space-y-2">
+              <Label htmlFor="actual-labor-hours">
+                Actual Labor Hours
+                <span className="text-xs text-muted-foreground ml-2">(vs predicted)</span>
+              </Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Predicted</p>
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-lg font-bold">{prediction.laborHours}h</p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Actual</p>
+                  <div className="p-3 bg-primary/10 rounded-lg border-2 border-primary/20">
+                    <p className="text-lg font-bold">{actualLaborHours}h</p>
+                    {laborDifference !== 0 && (
+                      <Badge variant={Math.abs(laborDifference) < prediction.laborHours * 0.20 ? 'default' : 'secondary'} className="mt-1">
+                        {laborDifference > 0 ? '+' : ''}{laborDifference}h
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Actual Total Cost */}
+            <div className="space-y-2">
+              <Label htmlFor="actual-total-cost">
+                Actual Total Cost
+                <span className="text-xs text-muted-foreground ml-2">(vs predicted)</span>
+              </Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Predicted</p>
+                  <div className="p-3 bg-muted rounded-lg">
+                    <p className="text-lg font-bold font-mono">
+                      ${predictedCost.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Range: ${prediction.estimatedCost.min.toLocaleString()} - ${prediction.estimatedCost.max.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Actual</p>
+                  <div className="p-3 bg-primary/10 rounded-lg border-2 border-primary/20">
+                    <p className="text-lg font-bold font-mono">${actualCost.toLocaleString()}</p>
+                    <Badge 
+                      variant={Math.abs(costDifferencePercent) < 15 ? 'default' : 'destructive'} 
+                      className="mt-1"
+                    >
+                      {costDifferencePercent > 0 ? '+' : ''}{costDifferencePercent.toFixed(1)}%
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Separator />
 
           <div className="space-y-2">
             <Label htmlFor="feedback-comments">

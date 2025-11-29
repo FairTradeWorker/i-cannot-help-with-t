@@ -258,7 +258,12 @@ export async function recordPredictionOutcome(
   predictionType: "scope" | "pricing" | "matching",
   prediction: any,
   actualOutcome: any,
-  userFeedback?: { rating: number; comments?: string }
+  userFeedback?: { 
+    rating?: number; 
+    scopeAccurate?: boolean;
+    actualMaterialsUsed?: string;
+    comments?: string;
+  }
 ): Promise<void> {
   const accuracy = calculateAccuracy(prediction, actualOutcome, predictionType);
   
