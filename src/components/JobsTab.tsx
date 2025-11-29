@@ -773,13 +773,26 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
           }}
           onClick={onClick}
         >
-          {/* TOP ROW: Title + Video Icon */}
-          <div className="flex items-start justify-between mb-2">
+          {/* TOP ROW: Title + Video Badge */}
+          <div className="flex items-start justify-between mb-2 relative">
             <h3 className="font-bold text-white flex-1 pr-2" style={{ fontSize: '18px' }}>
               {job.title}
             </h3>
             {job.videoUrl && (
-              <Play className="w-4 h-4 text-white/90 flex-shrink-0" weight="fill" style={{ opacity: 0.8 }} />
+              <div 
+                className="absolute top-0 right-0 flex items-center gap-1 px-2 text-white"
+                style={{
+                  height: '24px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  top: '0px',
+                  right: '0px'
+                }}
+              >
+                <Play className="w-3 h-3" weight="fill" />
+                <span>Video</span>
+              </div>
             )}
           </div>
 
@@ -884,12 +897,23 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                 
-                {/* Small video icon in top-right corner */}
-                <div className="absolute top-2 right-2 z-10">
-                  <div className="w-5 h-5 rounded bg-black/40 backdrop-blur-sm flex items-center justify-center">
-                    <Play className="w-3 h-3 text-white" weight="fill" />
+                {/* Small video badge in top-right corner */}
+                {job.videoUrl && (
+                  <div 
+                    className="absolute z-10 flex items-center gap-1 px-2 text-white"
+                    style={{
+                      top: '8px',
+                      right: '8px',
+                      height: '24px',
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                      borderRadius: '4px',
+                      fontSize: '11px'
+                    }}
+                  >
+                    <Play className="w-3 h-3" weight="fill" />
+                    <span>Video</span>
                   </div>
-                </div>
+                )}
                 
                 <div className="absolute bottom-2 left-2 right-2">
                   <Badge className={getUrgencyColor(job.urgency)}>
