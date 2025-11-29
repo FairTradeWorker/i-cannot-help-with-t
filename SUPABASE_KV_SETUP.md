@@ -1,10 +1,33 @@
 # Supabase KV Setup Guide
 
-This guide explains how to set up Supabase tables for the KV proxy system.
+This guide explains how to set up Supabase for the KV proxy system.
 
 ## Overview
 
 The KV proxy mimics Spark KV's API (`window.spark.kv`) but stores data in Supabase tables. Each namespace (e.g., 'users', 'jobs') gets its own table.
+
+## Quick Start
+
+1. **Create Supabase Account** (if you don't have one)
+   - Visit: https://supabase.com/dashboard
+   - Sign up for free (no credit card required)
+
+2. **Create a New Project**
+   - Click "New Project"
+   - Choose organization
+   - Enter project name (e.g., "fairtradeworker")
+   - Set database password (save it!)
+   - Choose region closest to you
+   - Wait ~2 minutes for setup
+
+3. **Get Your Credentials**
+   - Go to: Project Settings → API
+   - Copy **Project URL** (e.g., `https://xxxxx.supabase.co`)
+   - Copy **anon public** key (starts with `eyJ...`)
+
+4. **Create Tables** (see Step 1 below)
+
+5. **Add Environment Variables** (see Step 2 below)
 
 ## Step 1: Create Supabase Tables
 
@@ -55,7 +78,33 @@ CREATE POLICY "Allow all operations on kv_default" ON kv_default
 
 ## Step 2: Environment Variables
 
-Add these to your `.env` file:
+### Local Development
+
+Create or update your `.env` file in the project root:
+
+```bash
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_USE_KV_PROXY=true
+```
+
+**Where to find these values:**
+- Go to: https://supabase.com/dashboard/project/YOUR_PROJECT/settings/api
+- **Project URL** = `VITE_SUPABASE_URL`
+- **anon public** key = `VITE_SUPABASE_ANON_KEY`
+
+### Vercel Deployment
+
+Add the same variables in Vercel:
+1. Go to: https://vercel.com/dashboard
+2. Select your project
+3. Go to: Settings → Environment Variables
+4. Add:
+   - `VITE_SUPABASE_URL` (Production, Preview, Development)
+   - `VITE_SUPABASE_ANON_KEY` (Production, Preview, Development)
+   - `VITE_USE_KV_PROXY` = `true` (Production, Preview, Development)
+
+**Note:** Vercel serverless functions can also access these without the `VITE_` prefix, but using `VITE_` keeps it consistent.
 
 ```bash
 VITE_SUPABASE_URL=your_supabase_project_url
