@@ -36,11 +36,100 @@ interface MockJob {
   messages: number;
 }
 
+// Demo jobs for initial display
+const demoJobs: MockJob[] = [
+  {
+    id: 'demo-job-1',
+    title: 'Kitchen Remodel - Countertop Replacement',
+    description: 'Need to replace kitchen countertops with quartz. Approximately 30 linear feet. Also need new sink installation.',
+    status: 'bidding',
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    estimatedCost: {
+      min: 3500,
+      max: 6500,
+    },
+    address: {
+      street: '123 Main St',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94103',
+    },
+    bids: 3,
+    messages: 2,
+  },
+  {
+    id: 'demo-job-2',
+    title: 'Bathroom Renovation - Full Remodel',
+    description: 'Complete bathroom renovation including new tiles, fixtures, vanity, and shower. Master bathroom, approximately 120 sq ft.',
+    status: 'assigned',
+    createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
+    estimatedCost: {
+      min: 8500,
+      max: 12500,
+    },
+    address: {
+      street: '123 Main St',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94103',
+    },
+    bids: 5,
+    messages: 8,
+  },
+  {
+    id: 'demo-job-3',
+    title: 'Roof Inspection and Repair',
+    description: 'Need roof inspection after recent storm. Suspected damage to shingles and possible leak in attic area.',
+    status: 'in_progress',
+    createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+    estimatedCost: {
+      min: 1200,
+      max: 3500,
+    },
+    address: {
+      street: '123 Main St',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94103',
+    },
+    bids: 4,
+    messages: 12,
+  },
+  {
+    id: 'demo-job-4',
+    title: 'Deck Construction - Backyard',
+    description: 'Build new 400 sq ft composite deck with stairs and railing. Need permit assistance and design consultation.',
+    status: 'completed',
+    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
+    estimatedCost: {
+      min: 12000,
+      max: 18000,
+    },
+    address: {
+      street: '123 Main St',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94103',
+    },
+    bids: 6,
+    messages: 15,
+  },
+];
+
 export function HomeownerDashboard({ user, activeSubTab }: HomeownerDashboardProps) {
   const [activeTab, setActiveTab] = useState(activeSubTab === 'profile' ? 'profile' : activeSubTab === 'post-job' ? 'post-job' : 'my-jobs');
   const [jobs, setJobs] = useKV<MockJob[]>('homeowner-jobs', []);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [showNewJobModal, setShowNewJobModal] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Initialize with demo jobs if no jobs exist
+  useEffect(() => {
+    if (!hasInitialized && (!jobs || jobs.length === 0)) {
+      setJobs(demoJobs);
+      setHasInitialized(true);
+    }
+  }, [jobs, hasInitialized, setJobs]);
 
   useEffect(() => {
     if (activeSubTab) {

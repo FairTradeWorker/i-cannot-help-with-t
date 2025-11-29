@@ -1123,7 +1123,41 @@ function App() {
                     />
                   )}
                   {activeTab === 'contractors-browse' && <ContractorBrowser />}
-                  {activeTab === 'homeowner' && currentUser && <HomeownerDashboard user={currentUser} activeSubTab={activeSubTab} />}
+                  {activeTab === 'homeowner' && (
+                    currentUser ? (
+                      <HomeownerDashboard user={currentUser} activeSubTab={activeSubTab} />
+                    ) : (
+                      <div className="space-y-6">
+                        <div className="text-center py-12">
+                          <h2 className="text-2xl font-bold mb-4">Homeowner Dashboard</h2>
+                          <p className="text-muted-foreground mb-6">
+                            Sign in or create an account to access your homeowner dashboard
+                          </p>
+                          <div className="flex gap-4 justify-center">
+                            <Button
+                              onClick={() => {
+                                setLoginModalMode('login');
+                                setShowLogin(true);
+                              }}
+                            >
+                              <SignIn className="w-4 h-4 mr-2" />
+                              Sign In
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setLoginModalMode('signup');
+                                setShowLogin(true);
+                              }}
+                            >
+                              <UserPlus className="w-4 h-4 mr-2" />
+                              Sign Up
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
                   {activeTab === 'territories' && activeSubTab === 'overview' && (
                     <TerritoriesOverview 
                       onNavigateToDetail={(stateCode) => {
