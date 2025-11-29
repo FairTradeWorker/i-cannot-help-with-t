@@ -29,6 +29,9 @@ FairTradeWorker is not just another marketplace - it's a **complete ecosystem** 
 - **Automatic Scope Generation**: Materials, labor hours, cost ranges, permit requirements
 - **85%+ Confidence Scores**: Transparent AI confidence metrics
 - **Self-Learning**: System improves from 82% → 99.9% accuracy over 10,000 jobs
+- **Zero-Click Learning**: Contractors upload invoice photos → AI reads and learns automatically
+- **Material Corrections**: AI automatically adjusts material quantities based on learned patterns
+- **Real-Time Learning Dashboard**: Live accuracy tracking, savings calculations, trend charts
 
 ### 2. 💰 Zero Fees for All Contractors AND Operators
 **The Problem**: Other platforms charge contractors 15-30% fees, reducing their take-home pay.  
@@ -331,6 +334,9 @@ npm run build
 - **Top Services** - Most popular service types
 - **Revenue by Month** - Financial trend analysis
 - **Learning Metrics** - AI accuracy and improvement rates (in Partners > Technology section)
+- **AI Learning Dashboard** - Real-time accuracy tracking, jobs taught, savings calculations
+- **Material Corrections** - View top AI improvements by material type
+- **Learning Trends** - Accuracy charts showing improvement over time
 
 ### 🏆 Quality & Trust Features
 
@@ -440,7 +446,9 @@ npm run build
 ### AI & Intelligence
 - **Azure OpenAI** - GPT-4o for analysis and predictions
 - **GPT-4 Vision** - Image and video frame analysis
-- **Learning Database** - Custom self-improving system
+- **Learning Database** - Custom self-improving system (`learning-db.ts`)
+- **Invoice OCR** - Zero-click invoice reading with GPT-4o Vision (`invoice-ocr.ts`)
+- **Material Corrections** - Learned pattern-based quantity adjustments (`material-corrections.ts`)
 - **Spark LLM API** - Integrated AI access
 
 ### APIs & Integrations
@@ -544,6 +552,9 @@ fairtradeworker/
 │   │   ├── TerritoryMapPage.tsx
 │   │   ├── MessagesView.tsx
 │   │   ├── JobBrowser.tsx
+│   │   ├── LearningBrain.tsx   # AI learning dashboard (Phase 2 & 3)
+│   │   ├── InvoiceUploader.tsx # Zero-click invoice upload (Phase 3)
+│   │   ├── JobFeedbackModal.tsx # Job completion feedback form
 │   │   └── ... (148+ components)
 │   │
 │   ├── api/                # API endpoints
@@ -555,9 +566,11 @@ fairtradeworker/
 │   │       └── [34 more] 🔒 (Unlocks May 2026)
 │   │
 │   ├── lib/                # Utilities and services
-│   │   ├── intelligence-db.ts  # Learning database
+│   │   ├── learning-db.ts      # AI learning database (Phase 2 & 3)
+│   │   ├── invoice-ocr.ts      # Zero-click invoice processing (Phase 3)
+│   │   ├── material-corrections.ts # Material quantity corrections (Phase 2)
 │   │   ├── routing-api.ts      # Route optimization
-│   │   ├── ai-service.ts       # AI analysis
+│   │   ├── ai-service.ts       # AI analysis with learning integration
 │   │   ├── store.ts            # Data persistence
 │   │   ├── demo-data.ts        # Demo initialization
 │   │   └── utils.ts            # Helper functions
