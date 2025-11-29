@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Lightning, CheckCircle } from '@phosphor-icons/react';
 import { territoryZips } from '@/lib/territory-data';
+import { useIsMobile } from '@/hooks/use-mobile';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default marker icons
@@ -44,6 +45,8 @@ function MapInitializer() {
 }
 
 export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
+  const isMobile = useIsMobile();
+  
   // Get top priority territories (high population, available)
   const priorityTerritories = territoryZips
     .filter(t => t.available && t.latitude && t.longitude)
@@ -51,9 +54,9 @@ export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
     .slice(0, 50); // Show top 50 for performance
 
   return (
-    <Card className="overflow-hidden border-2 cursor-pointer hover:shadow-lg transition-shadow" onClick={onExplore}>
-      <div className="p-4 border-b bg-primary/5">
-        <div className="flex items-center justify-between">
+    <Card className="overflow-hidden border-2 cursor-pointer hover:shadow-lg transition-shadow h-full" onClick={onExplore}>
+      <div className="p-3 md:p-4 border-b bg-primary/5">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <Lightning className="w-5 h-5 text-primary" weight="fill" />
             <h3 className="font-bold text-sm">Priority Leads Map</h3>
@@ -67,7 +70,7 @@ export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
         </p>
       </div>
       
-      <div className="relative w-full" style={{ height: '300px', minHeight: '300px' }}>
+      <div className="relative w-full" style={{ height: isMobile ? '250px' : '300px', minHeight: isMobile ? '250px' : '300px' }}>
         <style>{`
           .priority-map-container .leaflet-container {
             height: 300px !important;
@@ -82,7 +85,7 @@ export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
           <MapContainer
             center={[39.8283, -98.5795]}
             zoom={4}
-            style={{ height: '300px', width: '100%' }}
+            style={{ height: isMobile ? '250px' : '300px', width: '100%' }}
             zoomControl={true}
             scrollWheelZoom={false}
             dragging={true}
