@@ -60,18 +60,25 @@ function MapBoundsFitter({ territories, selectedState }: { territories: Array<Te
   const map = useMap();
   
   useEffect(() => {
-    const validTerritories = territories.filter(t => t.latitude && t.longitude);
-    if (validTerritories.length > 0) {
-      const points = validTerritories.map(t => [t.latitude, t.longitude] as [number, number]);
-      const bounds = L.latLngBounds(points);
+    // Delay to ensure map container is fully rendered
+    const timer = setTimeout(() => {
+      map.invalidateSize();
       
-      // If a state is selected, zoom in more
-      const maxZoom = selectedState ? 7 : 10;
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom });
-    } else {
-      // Default to center of USA
-      map.setView([39.8283, -98.5795], 4);
-    }
+      const validTerritories = territories.filter(t => t.latitude && t.longitude);
+      if (validTerritories.length > 0) {
+        const points = validTerritories.map(t => [t.latitude, t.longitude] as [number, number]);
+        const bounds = L.latLngBounds(points);
+        
+        // If a state is selected, zoom in more
+        const maxZoom = selectedState ? 7 : 10;
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom });
+      } else {
+        // Default to center of USA
+        map.setView([39.8283, -98.5795], 4);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [map, territories, selectedState]);
   
   return null;
@@ -127,11 +134,23 @@ function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick,
   return (
     <Card className="overflow-hidden">
       <div className="relative h-[600px] w-full">
+        <style>{`
+          .leaflet-container {
+            height: 100% !important;
+            width: 100% !important;
+          }
+          .leaflet-container .leaflet-tile-container img {
+            max-width: none !important;
+          }
+        `}</style>
         <MapContainer
           center={[39.8283, -98.5795]} // Center of USA
           zoom={4}
-          style={{ height: '100%', width: '100%' }}
+          style={{ height: '100%', width: '100%', minHeight: '600px' }}
           zoomControl={true}
+          whenReady={() => {
+            // Map is ready, bounds fitter will handle the rest
+          }}
         >
           <MapBoundsFitter territories={territories} selectedState={selectedState} />
           <TileLayer

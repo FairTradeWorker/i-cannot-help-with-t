@@ -300,15 +300,22 @@ export function DispatchMap() {
     const map = useMap();
     
     useEffect(() => {
-      const allPoints = [
-        ...workers.map(w => [w.location.lat, w.location.lng] as [number, number]),
-        ...jobs.map(j => [j.location.lat, j.location.lng] as [number, number]),
-      ];
+      // Delay to ensure map container is fully rendered
+      const timer = setTimeout(() => {
+        map.invalidateSize();
+        
+        const allPoints = [
+          ...workers.map(w => [w.location.lat, w.location.lng] as [number, number]),
+          ...jobs.map(j => [j.location.lat, j.location.lng] as [number, number]),
+        ];
+        
+        if (allPoints.length > 0) {
+          const bounds = L.latLngBounds(allPoints);
+          map.fitBounds(bounds, { padding: [50, 50] });
+        }
+      }, 100);
       
-      if (allPoints.length > 0) {
-        const bounds = L.latLngBounds(allPoints);
-        map.fitBounds(bounds, { padding: [50, 50] });
-      }
+      return () => clearTimeout(timer);
     }, [map, workers, jobs]);
     
     return null;
@@ -799,23 +806,30 @@ export function DispatchMap() {
             </div>
 
             {/* Real Map with Leaflet */}
-            <div className="w-full h-full relative z-0">
+            <div className="w-full h-full relative z-0" style={{ minHeight: '600px' }}>
               <style>{`
                 @keyframes pulse {
                   0%, 100% { opacity: 1; transform: scale(1); }
                   50% { opacity: 0.7; transform: scale(1.1); }
                 }
                 .leaflet-container {
-                  height: 100%;
-                  width: 100%;
+                  height: 100% !important;
+                  width: 100% !important;
                   z-index: 0;
+                  min-height: 600px;
+                }
+                .leaflet-container .leaflet-tile-container img {
+                  max-width: none !important;
                 }
               `}</style>
               <MapContainer
                 center={[mapCenter.lat, mapCenter.lng]}
                 zoom={mapZoom}
-                style={{ height: '100%', width: '100%' }}
+                style={{ height: '100%', width: '100%', minHeight: '600px' }}
                 zoomControl={true}
+                whenReady={() => {
+                  // Map is ready, bounds fitter will handle the rest
+                }}
               >
                 <MapBoundsFitter />
                 <TileLayer

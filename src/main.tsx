@@ -8,6 +8,7 @@ import { ErrorFallback } from './ErrorFallback.tsx'
 import "./main.css"
 import "./styles/theme.css"
 import "./index.css"
+import "leaflet/dist/leaflet.css"
 
 // Handle SPA redirect from 404.html (GitHub Pages)
 // Validate path to prevent open redirect vulnerabilities
