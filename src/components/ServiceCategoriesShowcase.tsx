@@ -33,28 +33,36 @@ export function ServiceCategoriesShowcase({
   onServiceSelect 
 }: ServiceCategoriesShowcaseProps) {
 
+  const firstRow = SERVICE_CATEGORIES.slice(0, 3);
+  const secondRow = SERVICE_CATEGORIES.slice(3);
+
   return (
-    <div className="space-y-4 rounded-2xl border border-border/40 bg-gradient-to-r from-slate-950/70 via-slate-900/60 to-slate-950/70 px-4 py-3 md:px-6 md:py-4 shadow-sm">
+    <div className="space-y-3 rounded-2xl border border-border/60 bg-white dark:bg-slate-950/80 px-3 py-2.5 md:px-5 md:py-3 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm md:text-base font-semibold text-slate-50">What do you need done?</h2>
-          <p className="text-[11px] md:text-xs text-slate-300">
-            Pick a category to start a job post in a few taps.
+          <h2 className="text-sm md:text-base font-semibold text-foreground">What do you need done?</h2>
+          <p className="text-[11px] md:text-xs text-muted-foreground">
+            Start by choosing the type of work you need help with.
           </p>
         </div>
         <Button 
           variant="outline" 
           size="sm"
           onClick={onServiceSelect}
-          className="hidden sm:inline-flex text-[11px] md:text-xs border-slate-600 text-slate-100 hover:bg-slate-800"
+          className="hidden sm:inline-flex text-[11px] md:text-xs"
         >
           View All Services
           <ArrowRight className="w-3 h-3 ml-1.5" />
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-2.5 md:gap-3">
-        {SERVICE_CATEGORIES.map((category, index) => {
+      {/* Core home categories */}
+      <div className="space-y-2">
+        <p className="text-[10px] uppercase tracking-wide text-muted-foreground/80 font-medium">
+          Home & Systems
+        </p>
+        <div className="grid grid-cols-3 gap-2.5 md:gap-3">
+          {firstRow.map((category, index) => {
           const Icon = iconMap[category.icon] || House;
           // Simple color palette per category for more visual variety
           const colorClasses = [
@@ -65,42 +73,95 @@ export function ServiceCategoriesShowcase({
             'bg-rose-500/10 text-rose-500',
             'bg-slate-500/10 text-slate-500',
           ];
-          const color = colorClasses[index % colorClasses.length];
+            const color = colorClasses[index % colorClasses.length];
 
-          return (
-            <motion.div
-              key={category.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.4, 
-                delay: index * 0.06,
-                ease: [0.4, 0, 0.2, 1]
-              }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              <Card 
-                className="p-2.5 md:p-3 h-full border-0 bg-transparent hover:bg-slate-900/60 cursor-pointer text-center rounded-xl transition-colors"
-                onClick={() => onCategoryClick?.(category.id)}
+            return (
+              <motion.div
+                key={category.id}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.35, 
+                  delay: index * 0.05,
+                  ease: [0.4, 0, 0.2, 1]
+                }}
+                whileHover={{ y: -3, scale: 1.01 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <div className="flex flex-col items-center gap-2">
-                  <div className={`flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full ${color}`}>
-                    <Icon className="w-5 h-5 md:w-6 md:h-6" weight="fill" />
+                <Card 
+                  className="p-2.5 md:p-3 h-full border-0 bg-transparent hover:bg-muted/80 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
+                  onClick={() => onCategoryClick?.(category.id)}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full ${color}`}>
+                      <Icon className="w-4 h-4 md:w-6 md:h-6" weight="fill" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <h3 className="text-[11px] md:text-xs font-semibold text-foreground line-clamp-1">
+                        {category.title}
+                      </h3>
+                      <p className="text-[9px] md:text-[11px] text-muted-foreground line-clamp-2">
+                        {category.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <h3 className="text-[11px] md:text-xs font-semibold text-slate-50 line-clamp-1">
-                      {category.title}
-                    </h3>
-                    <p className="text-[9px] md:text-[11px] text-slate-300 line-clamp-2">
-                      {category.description}
-                    </p>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Outdoor & lifestyle categories */}
+      <div className="space-y-2">
+        <p className="text-[10px] uppercase tracking-wide text-muted-foreground/80 font-medium">
+          Outdoor & Lifestyle
+        </p>
+        <div className="grid grid-cols-3 gap-2.5 md:gap-3">
+          {secondRow.map((category, index) => {
+            const Icon = iconMap[category.icon] || House;
+            const colorClasses = [
+              'bg-emerald-500/10 text-emerald-600',
+              'bg-amber-500/10 text-amber-600',
+              'bg-rose-500/10 text-rose-600',
+            ];
+            const color = colorClasses[index % colorClasses.length];
+
+            return (
+              <motion.div
+                key={category.id}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.35, 
+                  delay: index * 0.05,
+                  ease: [0.4, 0, 0.2, 1]
+                }}
+                whileHover={{ y: -3, scale: 1.01 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Card 
+                  className="p-2.5 md:p-3 h-full border-0 bg-transparent hover:bg-muted/80 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
+                  onClick={() => onCategoryClick?.(category.id)}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full ${color}`}>
+                      <Icon className="w-4 h-4 md:w-6 md:h-6" weight="fill" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <h3 className="text-[11px] md:text-xs font-semibold text-foreground line-clamp-1">
+                        {category.title}
+                      </h3>
+                      <p className="text-[9px] md:text-[11px] text-muted-foreground line-clamp-2">
+                        {category.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            </motion.div>
-          );
-        })}
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
     .slice(0, 50); // Show top 50 for performance
 
   return (
-    <Card className="overflow-hidden border-2 cursor-pointer hover:shadow-lg transition-shadow h-full" onClick={onExplore}>
+    <Card className="relative overflow-hidden border-2 cursor-pointer hover:shadow-lg transition-shadow h-full bg-background z-0" onClick={onExplore}>
       <div className="p-3 md:p-4 border-b bg-primary/5">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
