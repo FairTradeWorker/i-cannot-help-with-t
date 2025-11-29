@@ -1,316 +1,326 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch, Image } from 'react-native';
+// Enhanced Profile Screen
+// User profile management and settings
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {
-  User,
-  Star,
-  Briefcase,
-  DollarSign,
-  MapPin,
-  Shield,
-  Award,
-  ChevronRight,
-  Settings,
-  Navigation,
-  Clock,
-  TrendingUp,
-  CheckCircle,
+import { 
+  User, Edit2, Camera, Shield, CreditCard, Bell, LogOut, 
+  CheckCircle, MapPin, Phone, Mail, Briefcase, Star
 } from 'lucide-react-native';
-import type { RootStackParamList } from '@/navigation/AppNavigator';
-import type { UserRole, ContractorProfile } from '@/types';
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-interface DashboardStats {
-  completedJobs: number;
-  rating: number;
-  earnings: number;
-  activeJobs: number;
-}
-
-const mockUser = {
-  id: 'user1',
-  name: 'John Smith',
-  email: 'john.smith@example.com',
-  phone: '+1 (555) 123-4567',
-  role: 'contractor' as UserRole,
-  avatar: undefined,
-};
-
-const mockContractorProfile: ContractorProfile = {
-  userId: 'user1',
-  contractorType: 'general_contractor',
-  rating: 4.8,
-  completedJobs: 127,
-  skills: ['Plumbing', 'Electrical', 'HVAC', 'General Repairs'],
-  serviceRadius: 25,
-  location: { lat: 30.2672, lng: -97.7431, address: 'Austin, TX' },
-  hourlyRate: 75,
-  availability: 'available',
-  verified: true,
-  licenses: [
-    { type: 'General Contractor', number: 'TX-12345', state: 'TX', expiryDate: new Date('2025-12-31'), verified: true },
-    { type: 'Electrical', number: 'TX-67890', state: 'TX', expiryDate: new Date('2025-06-30'), verified: true },
-  ],
-  insurance: {
-    provider: 'State Farm',
-    policyNumber: 'SF-123456',
-    expiryDate: new Date('2025-08-15'),
-    coverageAmount: 1000000,
-    verified: true,
-  },
-  specialties: ['Kitchen Remodeling', 'Bathroom Renovation', 'Smart Home Installation'],
-};
-
-const mockStats: DashboardStats = {
-  completedJobs: 127,
-  rating: 4.8,
-  earnings: 45230,
-  activeJobs: 4,
-};
+import { dataStore } from '@fairtradeworker/shared';
+import type { User as UserType } from '@/types';
 
 export default function ProfileScreen() {
-  const navigation = useNavigation<NavigationProp>();
-  const [isContractor, setIsContractor] = useState(true);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [editedName, setEditedName] = useState('');
+  const [editedPhone, setEditedPhone] = useState('');
 
-  const renderContractorDashboard = () => (
-    <>
-      {/* Stats Cards */}
-      <View className="flex-row flex-wrap -m-1 mb-4">
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <Briefcase color="#0ea5e9" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Completed Jobs</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">{mockStats.completedJobs}</Text>
-          </View>
-        </View>
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <Star color="#f59e0b" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Rating</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">{mockStats.rating}</Text>
-          </View>
-        </View>
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <DollarSign color="#22c55e" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Total Earnings</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">${mockStats.earnings.toLocaleString()}</Text>
-          </View>
-        </View>
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <Clock color="#8b5cf6" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Active Jobs</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">{mockStats.activeJobs}</Text>
-          </View>
-        </View>
-      </View>
+  useEffect(() => {
+    loadUser();
+  }, []);
 
-      {/* Verification Status */}
-      <View className="bg-white rounded-xl p-4 shadow-sm mb-4">
-        <Text className="text-lg font-bold text-gray-900 mb-3">Verification Status</Text>
-        
-        <View className="flex-row items-center justify-between py-3 border-b border-gray-100">
-          <View className="flex-row items-center">
-            <Shield color="#22c55e" size={20} />
-            <Text className="text-gray-700 ml-3">Identity Verified</Text>
-          </View>
-          <CheckCircle color="#22c55e" size={20} />
-        </View>
-        
-        <View className="flex-row items-center justify-between py-3 border-b border-gray-100">
-          <View className="flex-row items-center">
-            <Award color="#22c55e" size={20} />
-            <Text className="text-gray-700 ml-3">Licenses Verified</Text>
-          </View>
-          <CheckCircle color="#22c55e" size={20} />
-        </View>
-        
-        <View className="flex-row items-center justify-between py-3">
-          <View className="flex-row items-center">
-            <Shield color="#22c55e" size={20} />
-            <Text className="text-gray-700 ml-3">Insurance Verified</Text>
-          </View>
-          <CheckCircle color="#22c55e" size={20} />
-        </View>
-      </View>
+  const loadUser = async () => {
+    try {
+      setLoading(true);
+      const user = await dataStore.getCurrentUser();
+      setCurrentUser(user);
+      if (user) {
+        setEditedName(user.name);
+        setEditedPhone(user.phone || '');
+      }
+    } catch (error) {
+      console.error('Failed to load user:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      {/* Skills */}
-      <View className="bg-white rounded-xl p-4 shadow-sm mb-4">
-        <Text className="text-lg font-bold text-gray-900 mb-3">Skills & Specialties</Text>
-        <View className="flex-row flex-wrap -m-1">
-          {mockContractorProfile.skills.map((skill, index) => (
-            <View key={index} className="bg-primary-50 px-3 py-1 rounded-full m-1">
-              <Text className="text-primary-700 text-sm font-medium">{skill}</Text>
-            </View>
-          ))}
-        </View>
-        <View className="flex-row flex-wrap -m-1 mt-2">
-          {mockContractorProfile.specialties?.map((specialty, index) => (
-            <View key={index} className="bg-purple-50 px-3 py-1 rounded-full m-1">
-              <Text className="text-purple-700 text-sm font-medium">{specialty}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
+  const handleSave = async () => {
+    if (!currentUser) return;
 
-      {/* Quick Actions */}
-      <View className="bg-white rounded-xl shadow-sm mb-4">
+    try {
+      const updatedUser: UserType = {
+        ...currentUser,
+        name: editedName,
+        phone: editedPhone || undefined,
+      };
+
+      await dataStore.saveUser(updatedUser);
+      await dataStore.setCurrentUser(updatedUser);
+      setCurrentUser(updatedUser);
+      setEditing(false);
+      Alert.alert('Success', 'Profile updated successfully');
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      Alert.alert('Error', 'Failed to update profile. Please try again.');
+    }
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await dataStore.setCurrentUser(null as any);
+              // Navigate to login screen
+              Alert.alert('Signed Out', 'You have been signed out successfully.');
+            } catch (error) {
+              console.error('Failed to sign out:', error);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+        <ActivityIndicator size="large" color="#0ea5e9" />
+        <Text className="text-gray-600 mt-4">Loading profile...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center px-6">
+        <User size={64} color="#9ca3af" />
+        <Text className="text-xl font-bold text-gray-900 mt-4 mb-2">Not Signed In</Text>
+        <Text className="text-gray-600 text-center mb-6">
+          Sign in or create an account to manage your profile
+        </Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Route')}
-          className="flex-row items-center justify-between p-4 border-b border-gray-100"
+          className="bg-primary-500 px-8 py-3 rounded-full"
+          onPress={() => {
+            // Navigate to login
+          }}
         >
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center mr-3">
-              <Navigation color="#3b82f6" size={20} />
-            </View>
-            <Text className="text-gray-900 font-medium">Route Optimizer</Text>
-          </View>
-          <ChevronRight color="#9ca3af" size={20} />
+          <Text className="text-white font-semibold">Sign In</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          className="flex-row items-center justify-between p-4"
-        >
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center mr-3">
-              <Settings color="#6b7280" size={20} />
-            </View>
-            <Text className="text-gray-900 font-medium">Settings</Text>
-          </View>
-          <ChevronRight color="#9ca3af" size={20} />
-        </TouchableOpacity>
-      </View>
-    </>
-  );
+      </SafeAreaView>
+    );
+  }
 
-  const renderHomeownerDashboard = () => (
-    <>
-      {/* Stats Cards */}
-      <View className="flex-row flex-wrap -m-1 mb-4">
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <Briefcase color="#0ea5e9" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Projects</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">5</Text>
-          </View>
-        </View>
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <DollarSign color="#22c55e" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Saved</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">$2,340</Text>
-          </View>
-        </View>
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <Clock color="#8b5cf6" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Active</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">2</Text>
-          </View>
-        </View>
-        <View className="w-1/2 p-1">
-          <View className="bg-white rounded-xl p-4 shadow-sm">
-            <View className="flex-row items-center mb-2">
-              <TrendingUp color="#f59e0b" size={20} />
-              <Text className="text-gray-600 text-sm ml-2">Loyalty Points</Text>
-            </View>
-            <Text className="text-2xl font-bold text-gray-900">1,250</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Quick Actions */}
-      <View className="bg-white rounded-xl shadow-sm mb-4">
-        <TouchableOpacity
-          onPress={() => navigation.navigate('JobPost')}
-          className="flex-row items-center justify-between p-4 border-b border-gray-100"
-        >
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-primary-100 rounded-full items-center justify-center mr-3">
-              <Briefcase color="#0ea5e9" size={20} />
-            </View>
-            <Text className="text-gray-900 font-medium">Post a New Job</Text>
-          </View>
-          <ChevronRight color="#9ca3af" size={20} />
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          className="flex-row items-center justify-between p-4"
-        >
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center mr-3">
-              <Settings color="#6b7280" size={20} />
-            </View>
-            <Text className="text-gray-900 font-medium">Settings</Text>
-          </View>
-          <ChevronRight color="#9ca3af" size={20} />
-        </TouchableOpacity>
-      </View>
-    </>
-  );
+  const userRole = currentUser.role;
+  const contractorProfile = currentUser.contractorProfile;
+  const homeownerProfile = currentUser.homeownerProfile;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Profile Header */}
-        <View className="bg-white p-4 mb-4">
-          <View className="flex-row items-center">
-            <View className="w-20 h-20 bg-primary-100 rounded-full items-center justify-center mr-4">
-              <User color="#0ea5e9" size={40} />
+        <View className="bg-white px-4 py-6 border-b border-gray-200">
+          <View className="items-center mb-4">
+            <View className="w-24 h-24 bg-primary-100 rounded-full items-center justify-center mb-3">
+              {currentUser.avatar ? (
+                <Image
+                  source={{ uri: currentUser.avatar }}
+                  className="w-24 h-24 rounded-full"
+                />
+              ) : (
+                <User size={48} color="#0ea5e9" />
+              )}
+              <TouchableOpacity
+                className="absolute bottom-0 right-0 bg-primary-500 w-8 h-8 rounded-full items-center justify-center border-2 border-white"
+              >
+                <Camera size={16} color="#ffffff" />
+              </TouchableOpacity>
             </View>
-            <View className="flex-1">
-              <View className="flex-row items-center">
-                <Text className="text-xl font-bold text-gray-900">{mockUser.name}</Text>
-                {mockContractorProfile.verified && (
-                  <View className="ml-2 bg-green-100 px-2 py-0.5 rounded-full">
-                    <Text className="text-green-700 text-xs font-medium">Verified</Text>
+
+            {editing ? (
+              <View className="w-full max-w-xs">
+                <TextInput
+                  className="text-xl font-bold text-gray-900 text-center mb-2 border-b border-gray-300 pb-2"
+                  value={editedName}
+                  onChangeText={setEditedName}
+                  placeholder="Full Name"
+                />
+                <TextInput
+                  className="text-base text-gray-600 text-center border-b border-gray-300 pb-2"
+                  value={editedPhone}
+                  onChangeText={setEditedPhone}
+                  placeholder="Phone Number"
+                  keyboardType="phone-pad"
+                />
+              </View>
+            ) : (
+              <>
+                <Text className="text-xl font-bold text-gray-900 mb-1">
+                  {currentUser.name}
+                </Text>
+                <View className="flex-row items-center">
+                  <View className="bg-primary-100 px-3 py-1 rounded-full">
+                    <Text className="text-primary-700 text-xs font-semibold uppercase">
+                      {userRole.replace('_', ' ')}
+                    </Text>
+                  </View>
+                </View>
+                {currentUser.phone && (
+                  <View className="flex-row items-center mt-2">
+                    <Phone size={14} color="#6b7280" />
+                    <Text className="text-gray-600 text-sm ml-1">{currentUser.phone}</Text>
                   </View>
                 )}
-              </View>
-              <Text className="text-gray-500 mt-1">{mockUser.email}</Text>
-              <View className="flex-row items-center mt-2">
-                <MapPin color="#6b7280" size={14} />
-                <Text className="text-gray-600 text-sm ml-1">{mockContractorProfile.location.address}</Text>
-              </View>
+              </>
+            )}
+          </View>
+
+          <View className="flex-row gap-3">
+            {editing ? (
+              <>
+                <TouchableOpacity
+                  onPress={() => {
+                    setEditing(false);
+                    setEditedName(currentUser.name);
+                    setEditedPhone(currentUser.phone || '');
+                  }}
+                  className="flex-1 bg-gray-200 py-3 rounded-lg items-center"
+                >
+                  <Text className="text-gray-700 font-semibold">Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleSave}
+                  className="flex-1 bg-primary-500 py-3 rounded-lg items-center"
+                >
+                  <Text className="text-white font-semibold">Save</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity
+                onPress={() => setEditing(true)}
+                className="flex-1 bg-primary-500 py-3 rounded-lg flex-row items-center justify-center"
+              >
+                <Edit2 size={18} color="#ffffff" />
+                <Text className="text-white font-semibold ml-2">Edit Profile</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        {/* Account Info */}
+        <View className="bg-white px-4 py-4 mb-4 mt-4">
+          <Text className="text-lg font-bold text-gray-900 mb-4">Account Information</Text>
+          
+          <View className="flex-row items-center py-3 border-b border-gray-100">
+            <Mail size={20} color="#6b7280" />
+            <View className="ml-3 flex-1">
+              <Text className="text-xs text-gray-500 mb-1">Email</Text>
+              <Text className="text-base text-gray-900">{currentUser.email}</Text>
             </View>
           </View>
 
-          {/* Role Toggle */}
-          <View className="flex-row items-center justify-between mt-4 bg-gray-50 rounded-lg p-3">
-            <Text className="text-gray-700 font-medium">View as Contractor</Text>
-            <Switch
-              value={isContractor}
-              onValueChange={setIsContractor}
-              trackColor={{ false: '#d1d5db', true: '#0ea5e9' }}
-              thumbColor="#ffffff"
-            />
+          {currentUser.phone && (
+            <View className="flex-row items-center py-3 border-b border-gray-100">
+              <Phone size={20} color="#6b7280" />
+              <View className="ml-3 flex-1">
+                <Text className="text-xs text-gray-500 mb-1">Phone</Text>
+                <Text className="text-base text-gray-900">{currentUser.phone}</Text>
+              </View>
+            </View>
+          )}
+
+          <View className="flex-row items-center py-3">
+            <Briefcase size={20} color="#6b7280" />
+            <View className="ml-3 flex-1">
+              <Text className="text-xs text-gray-500 mb-1">Role</Text>
+              <Text className="text-base text-gray-900 capitalize">
+                {userRole.replace('_', ' ')}
+              </Text>
+            </View>
           </View>
         </View>
 
-        {/* Role-specific Dashboard */}
-        <View className="px-4">
-          {isContractor ? renderContractorDashboard() : renderHomeownerDashboard()}
+        {/* Contractor Stats */}
+        {contractorProfile && (
+          <View className="bg-white px-4 py-4 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-4">Contractor Profile</Text>
+            
+            <View className="flex-row items-center justify-between mb-4">
+              <View className="flex-1">
+                <Text className="text-xs text-gray-500 mb-1">Rating</Text>
+                <View className="flex-row items-center">
+                  <Star size={18} color="#f59e0b" fill="#f59e0b" />
+                  <Text className="text-lg font-bold text-gray-900 ml-2">
+                    {contractorProfile.rating.toFixed(1)}
+                  </Text>
+                </View>
+              </View>
+
+              <View className="flex-1">
+                <Text className="text-xs text-gray-500 mb-1">Completed Jobs</Text>
+                <Text className="text-lg font-bold text-gray-900">
+                  {contractorProfile.completedJobs}
+                </Text>
+              </View>
+            </View>
+
+            {contractorProfile.location && (
+              <View className="flex-row items-center py-3 border-t border-gray-100">
+                <MapPin size={20} color="#6b7280" />
+                <View className="ml-3 flex-1">
+                  <Text className="text-xs text-gray-500 mb-1">Service Area</Text>
+                  <Text className="text-base text-gray-900">
+                    {contractorProfile.location.address}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Settings */}
+        <View className="bg-white px-4 py-4 mb-4">
+          <Text className="text-lg font-bold text-gray-900 mb-4">Settings</Text>
+          
+          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+            <View className="flex-row items-center flex-1">
+              <Bell size={20} color="#6b7280" />
+              <View className="ml-3">
+                <Text className="text-base text-gray-900">Notifications</Text>
+                <Text className="text-sm text-gray-500">Manage notification preferences</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+            <View className="flex-row items-center flex-1">
+              <Shield size={20} color="#6b7280" />
+              <View className="ml-3">
+                <Text className="text-base text-gray-900">Privacy & Security</Text>
+                <Text className="text-sm text-gray-500">Account security settings</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity className="flex-row items-center justify-between py-4">
+            <View className="flex-row items-center flex-1">
+              <CreditCard size={20} color="#6b7280" />
+              <View className="ml-3">
+                <Text className="text-base text-gray-900">Payment Methods</Text>
+                <Text className="text-sm text-gray-500">Manage payment options</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
+
+        {/* Sign Out */}
+        <TouchableOpacity
+          onPress={handleLogout}
+          className="bg-white px-4 py-4 mb-6 flex-row items-center justify-center"
+        >
+          <LogOut size={20} color="#ef4444" />
+          <Text className="text-red-600 font-semibold ml-2">Sign Out</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
