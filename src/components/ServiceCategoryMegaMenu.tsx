@@ -113,7 +113,7 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[95vw] w-full max-h-[92vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-[98vw] w-[98vw] max-h-[95vh] h-[95vh] p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-5 border-b bg-gradient-to-r from-primary/5 to-transparent">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -140,7 +140,7 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
           </div>
         </DialogHeader>
 
-        <ScrollArea className="h-[calc(92vh-140px)]">
+        <ScrollArea className="h-[calc(95vh-140px)]">
           <div className="p-6 md:p-8">
             <AnimatePresence mode="wait">
               {view === 'categories' && (
@@ -152,9 +152,9 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
                   transition={{ duration: 0.3 }}
                   className="w-full"
                 >
-                  {/* Single horizontal row with smooth scrolling */}
-                  <div className="w-full overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-                    <div className="flex gap-4 min-w-max px-1">
+                  {/* Single horizontal row with full width */}
+                  <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
+                    <div className="flex gap-4 min-w-max">
                       {SERVICE_CATEGORIES.map((category, index) => {
                         const Icon = iconMap[category.icon] || House;
                         return (
@@ -165,43 +165,35 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
                             transition={{ delay: index * 0.05, duration: 0.3 }}
                             whileHover={{ scale: 1.05, y: -8 }}
                             whileTap={{ scale: 0.95 }}
-                            className="flex-shrink-0 w-[280px] md:w-[320px] snap-start"
+                            className="flex-shrink-0 w-[280px] md:w-[320px]"
                           >
-                          <Card
-                            className="h-full min-h-[280px] p-5 md:p-6 cursor-pointer border-2 hover:border-primary transition-all duration-300 bg-gradient-to-br from-card/90 to-card/70 hover:from-primary/10 hover:to-primary/5 shadow-lg hover:shadow-xl group"
-                            onClick={() => handleCategorySelect(category)}
-                          >
-                            <div className="flex flex-col items-center text-center space-y-3 h-full">
-                              <div className="p-4 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 flex-shrink-0">
-                                <Icon className="w-10 h-10 md:w-12 md:h-12 text-primary" weight="duotone" />
-                              </div>
-                              <div className="flex-1 flex flex-col justify-center min-h-0">
-                                <h3 className="font-bold text-base md:text-lg mb-2 group-hover:text-primary transition-colors">
-                                  {category.title}
-                                </h3>
-                                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
-                                  {category.description}
-                                </p>
-                                <div className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold text-primary/80 group-hover:text-primary transition-colors flex-shrink-0">
-                                  <span>{category.subcategories.length} subcategories</span>
-                                  <CaretRight className="w-3 h-3 md:w-4 md:h-4" />
+                            <Card
+                              className="h-full min-h-[280px] p-5 md:p-6 cursor-pointer border-2 hover:border-primary transition-all duration-300 bg-gradient-to-br from-card/90 to-card/70 hover:from-primary/10 hover:to-primary/5 shadow-lg hover:shadow-xl group"
+                              onClick={() => handleCategorySelect(category)}
+                            >
+                              <div className="flex flex-col items-center text-center space-y-3 h-full">
+                                <div className="p-4 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 flex-shrink-0">
+                                  <Icon className="w-10 h-10 md:w-12 md:h-12 text-primary" weight="duotone" />
+                                </div>
+                                <div className="flex-1 flex flex-col justify-center min-h-0">
+                                  <h3 className="font-bold text-base md:text-lg mb-2 group-hover:text-primary transition-colors">
+                                    {category.title}
+                                  </h3>
+                                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
+                                    {category.description}
+                                  </p>
+                                  <div className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold text-primary/80 group-hover:text-primary transition-colors flex-shrink-0">
+                                    <span>{category.subcategories.length} subcategories</span>
+                                    <CaretRight className="w-3 h-3 md:w-4 md:h-4" />
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </Card>
+                            </Card>
                           </motion.div>
                         );
                       })}
                     </div>
                   </div>
-                  
-                  {/* Scroll indicator hint */}
-                  {SERVICE_CATEGORIES.length > 3 && (
-                    <div className="flex items-center justify-center gap-2 mt-4 text-xs text-muted-foreground">
-                      <CaretRight className="w-4 h-4 animate-pulse" />
-                      <span>Scroll to see more categories</span>
-                    </div>
-                  )}
                 </motion.div>
               )}
 
