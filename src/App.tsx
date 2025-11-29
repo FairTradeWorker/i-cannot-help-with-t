@@ -193,6 +193,48 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      // Lock body scroll and prevent horizontal scrolling
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflowX = 'hidden';
+      // Prevent touch dragging horizontally
+      document.documentElement.style.overflowX = 'hidden';
+      document.documentElement.style.touchAction = 'pan-y';
+    } else {
+      // Restore body scroll
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowX = '';
+      document.documentElement.style.overflowX = '';
+      document.documentElement.style.touchAction = '';
+      // Restore scroll position
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+
+    return () => {
+      // Cleanup on unmount
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowX = '';
+      document.documentElement.style.overflowX = '';
+      document.documentElement.style.touchAction = '';
+    };
+  }, [mobileMenuOpen]);
+
   const initialize = async () => {
     await initializeDemoData();
     const user = await dataStore.getCurrentUser();
@@ -386,8 +428,21 @@ function App() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.3 }}
-                          className="fixed inset-0 bg-black/50 z-[1999]"
+                          className="fixed inset-0 z-[1999]"
+                          style={{ 
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            touchAction: 'none'
+                          }}
                           onClick={() => setMobileMenuOpen(false)}
+                          onTouchStart={(e) => {
+                            // Prevent any touch interactions on backdrop
+                            e.stopPropagation();
+                          }}
+                          onTouchMove={(e) => {
+                            // Prevent dragging the backdrop
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
                         />
                         
                         {/* Menu Panel */}
@@ -397,6 +452,15 @@ function App() {
                           exit={{ x: '100%' }}
                           transition={{ duration: 0.3, ease: 'easeInOut' }}
                           className="fixed top-0 right-0 w-full h-screen bg-white z-[2000] overflow-y-auto"
+                          style={{ 
+                            touchAction: 'pan-y',
+                            overscrollBehavior: 'contain',
+                            WebkitOverflowScrolling: 'touch'
+                          }}
+                          onClick={(e) => {
+                            // Prevent clicks from propagating to backdrop
+                            e.stopPropagation();
+                          }}
                         >
                           <div className="flex flex-col h-full">
                             {/* Header with X button */}
