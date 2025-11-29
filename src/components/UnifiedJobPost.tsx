@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Upload, X, Camera, VideoCamera, Wrench } from '@phosphor-icons/react';
+import { ArrowLeft, Upload, X, Camera, VideoCamera, Wrench, Plus, Trash } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
 import type { ServiceSelection } from '@/types/service-categories';
 import { getServiceInfo } from '@/types/service-categories';
@@ -28,7 +28,9 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
   const [activeTab, setActiveTab] = useState<'photo' | 'video' | 'text'>('photo');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [serviceSelection, setServiceSelection] = useState<ServiceSelection | null>(initialSelection || null);
+  const [serviceSelections, setServiceSelections] = useState<ServiceSelection[]>(
+    initialSelection ? [initialSelection] : []
+  );
   const [showServiceMenu, setShowServiceMenu] = useState(false);
   const [timeline, setTimeline] = useState('');
   const [budget, setBudget] = useState('');
@@ -85,24 +87,61 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Auto-fill title when service is selected
+  // Add service to the list (check for duplicates)
   const handleServiceSelect = (selection: ServiceSelection) => {
-    setServiceSelection(selection);
-    if (!title.trim()) {
-      setTitle(`${selection.service} - ${selection.subcategory}`);
+    // Check if service already exists
+    const exists = serviceSelections.some(
+      s => s.service === selection.service && 
+           s.categoryId === selection.categoryId && 
+           s.subcategoryId === selection.subcategoryId
+    );
+    
+    if (exists) {
+      toast.info('This service is already added');
+      setShowServiceMenu(false);
+      return;
     }
-    setShowServiceMenu(false);
+    
+    // Add to array
+    setServiceSelections(prev => [...prev, selection]);
+    
+    // Auto-fill title if empty
+    if (!title.trim()) {
+      if (serviceSelections.length === 0) {
+        setTitle(`${selection.service} - ${selection.subcategory}`);
+      } else {
+        setTitle(`${serviceSelections.length + 1} Services - ${selection.subcategory}`);
+      }
+    }
+    
+    // Don't close menu - allow adding more services
+    toast.success(`${selection.service} added`);
   };
 
-  // Get dynamic form fields based on service
-  const getServiceSpecificFields = () => {
-    if (!serviceSelection) return null;
+  // Remove a service
+  const handleRemoveService = (index: number) => {
+    setServiceSelections(prev => prev.filter((_, i) => i !== index));
+    // If removing the first service (which has fields), clear fields
+    if (index === 0 && serviceSelections.length > 1) {
+      // Keep fields for the new first service
+      setServiceFields({});
+    } else if (index === 0) {
+      // Last service removed, clear all fields
+      setServiceFields({});
+    }
+  };
 
-    const serviceInfo = getServiceInfo(serviceSelection.service);
+  // Get dynamic form fields based on first service (or selected service)
+  const getServiceSpecificFields = (serviceSelection?: ServiceSelection) => {
+    const serviceToUse = serviceSelection || serviceSelections[0];
+    if (!serviceToUse) return null;
+
+    const serviceInfo = getServiceInfo(serviceToUse.service);
     if (!serviceInfo) return null;
 
-    const service = serviceSelection.service.toLowerCase();
-    const categoryId = serviceSelection.categoryId;
+    const service = serviceToUse.service.toLowerCase();
+    const categoryId = serviceToUse.categoryId;
+    const serviceId = `${serviceToUse.categoryId}-${serviceToUse.subcategoryId}-${serviceToUse.service}`;
 
     // Roofing fields
     if (service.includes('roofing') || categoryId === 'construction-heavy') {
@@ -280,8 +319,8 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
       toast.error('Please enter a job description');
       return;
     }
-    if (!serviceSelection) {
-      toast.error('Please select a service');
+    if (serviceSelections.length === 0) {
+      toast.error('Please select at least one service');
       return;
     }
     if (!timeline) {
@@ -296,7 +335,7 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
     onJobCreated({
       title,
       description,
-      serviceSelection,
+      serviceSelections, // Changed to array
       serviceFields,
       timeline,
       budget,
@@ -454,41 +493,60 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                 </div>
 
                 <div>
-                  <Label htmlFor="service">Service Type *</Label>
-                  <div className="space-y-2">
-                    {serviceSelection ? (
-                      <div className="flex items-center gap-2 p-3 border rounded-lg bg-card/50">
-                        <Wrench className="w-5 h-5 text-primary" />
-                        <div className="flex-1">
-                          <div className="font-semibold">{serviceSelection.service}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {serviceSelection.subcategory} • {serviceSelection.category}
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowServiceMenu(true)}
+                  <Label htmlFor="service">Services *</Label>
+                  <div className="space-y-3">
+                    <AnimatePresence mode="popLayout">
+                      {serviceSelections.map((selection, index) => (
+                        <motion.div
+                          key={`${selection.categoryId}-${selection.subcategoryId}-${selection.service}-${index}`}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, x: -20 }}
+                          transition={{ duration: 0.2 }}
                         >
-                          Change
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => setShowServiceMenu(true)}
-                      >
-                        <Wrench className="w-4 h-4 mr-2" />
-                        Select Service
-                      </Button>
+                          <div className="flex items-center gap-2 p-3 border-2 rounded-lg bg-card/50 hover:bg-card/80 transition-colors">
+                            <Wrench className="w-5 h-5 text-primary flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-base">{selection.service}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {selection.subcategory} • {selection.category}
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleRemoveService(index)}
+                              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                    
+                    <Button
+                      variant="outline"
+                      className="w-full border-dashed"
+                      onClick={() => setShowServiceMenu(true)}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      {serviceSelections.length === 0 ? 'Add Service' : 'Add Another Service'}
+                    </Button>
+                    
+                    {serviceSelections.length === 0 && (
+                      <p className="text-xs text-muted-foreground text-center">
+                        Select at least one service for your job
+                      </p>
                     )}
                   </div>
                 </div>
 
-                {serviceSelection && getServiceSpecificFields() && (
+                {serviceSelections.length > 0 && getServiceSpecificFields() && (
                   <div className="pt-2 border-t">
-                    <Label className="text-sm font-semibold mb-3 block">Service-Specific Details</Label>
+                    <Label className="text-sm font-semibold mb-3 block">
+                      Service-Specific Details ({serviceSelections[0].service})
+                    </Label>
                     {getServiceSpecificFields()}
                   </div>
                 )}
@@ -626,7 +684,8 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
         onClose={() => setShowServiceMenu(false)}
         onSelect={handleServiceSelect}
         title="Select a Service"
-        initialCategoryId={serviceSelection?.categoryId || null}
+        initialCategoryId={serviceSelections.length > 0 ? serviceSelections[serviceSelections.length - 1].categoryId : null}
+        allowMultiple={true}
       />
     </motion.div>
   );

@@ -24,6 +24,7 @@ interface ServiceCategoryMegaMenuProps {
   onSelect: (selection: ServiceSelection) => void;
   title?: string;
   initialCategoryId?: string | null;
+  allowMultiple?: boolean; // If true, menu stays open after selection
 }
 
 // Icon mapping for dynamic icon rendering
@@ -38,7 +39,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 
 type ViewState = 'categories' | 'subcategories' | 'services';
 
-export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Select a Service', initialCategoryId }: ServiceCategoryMegaMenuProps) {
+export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Select a Service', initialCategoryId, allowMultiple = false }: ServiceCategoryMegaMenuProps) {
   const [view, setView] = useState<ViewState>('categories');
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<ServiceSubcategory | null>(null);
@@ -83,7 +84,15 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
     };
 
     onSelect(selection);
-    handleClose();
+    
+    // If allowMultiple is true, go back to subcategories view instead of closing
+    // This allows user to add more services from the same subcategory
+    if (allowMultiple) {
+      setView('subcategories');
+      setSelectedSubcategory(null);
+    } else {
+      handleClose();
+    }
   };
 
   const handleBack = () => {
