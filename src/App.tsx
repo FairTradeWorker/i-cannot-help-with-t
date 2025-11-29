@@ -322,19 +322,11 @@ function App() {
                       <Briefcase className="w-5 h-5 mr-3" />
                       Jobs
                     </Button>
-                    <Button
-                      variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('contractors-browse')}
-                      className="justify-start w-full h-12"
-                    >
-                      <Hammer className="w-5 h-5 mr-3" />
-                      Contractors
-                    </Button>
                     
                     <div className="border-t my-2" />
                     
                     <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
-                      Homeowner
+                      Homeowners
                     </div>
                     <Button
                       variant={activeTab === 'homeowner' && activeSubTab === 'profile' ? 'default' : 'ghost'}
@@ -354,60 +346,67 @@ function App() {
                     <div className="border-t my-2" />
                     
                     <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                      For Pros
+                    </div>
+                    <Button
+                      variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('contractors-browse')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      Browse Contractors
+                    </Button>
+                    <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
                       Contractor
                     </div>
                     <Button
                       variant={activeTab === 'contractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
                       onClick={() => handleNavClick('contractor', 'dashboard')}
-                      className="justify-start w-full h-12 pl-8"
+                      className="justify-start w-full h-12 pl-12"
                     >
                       Dashboard
                     </Button>
                     <Button
                       variant={activeTab === 'contractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
                       onClick={() => handleNavClick('contractor', 'my-jobs')}
-                      className="justify-start w-full h-12 pl-8"
+                      className="justify-start w-full h-12 pl-12"
                     >
                       My Estimates
                     </Button>
                     <Button
                       variant={activeTab === 'contractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
                       onClick={() => handleNavClick('contractor', 'route')}
-                      className="justify-start w-full h-12 pl-8"
+                      className="justify-start w-full h-12 pl-12"
                     >
                       Route Planner
                     </Button>
                     <Button
                       variant={activeTab === 'dispatch' ? 'default' : 'ghost'}
                       onClick={() => handleNavClick('dispatch')}
-                      className="justify-start w-full h-12 pl-8"
+                      className="justify-start w-full h-12 pl-12"
                     >
                       Dispatch Map
                     </Button>
-                    
-                    <div className="border-t my-2" />
-                    
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                    <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
                       Subcontractor
                     </div>
                     <Button
                       variant={activeTab === 'subcontractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
                       onClick={() => handleNavClick('subcontractor', 'dashboard')}
-                      className="justify-start w-full h-12 pl-8"
+                      className="justify-start w-full h-12 pl-12"
                     >
                       Dashboard
                     </Button>
                     <Button
                       variant={activeTab === 'subcontractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
                       onClick={() => handleNavClick('subcontractor', 'my-jobs')}
-                      className="justify-start w-full h-12 pl-8"
+                      className="justify-start w-full h-12 pl-12"
                     >
                       My Estimates
                     </Button>
                     <Button
                       variant={activeTab === 'subcontractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
                       onClick={() => handleNavClick('subcontractor', 'route')}
-                      className="justify-start w-full h-12 pl-8"
+                      className="justify-start w-full h-12 pl-12"
                     >
                       Route Planner
                     </Button>
@@ -416,7 +415,8 @@ function App() {
               </Sheet>
             )}
             
-            <nav className="hidden md:flex items-center gap-1.5 flex-1">
+            {/* LEFT SIDE NAVIGATION */}
+            <nav className="hidden md:flex items-center gap-1.5">
               <Button
                 variant={activeTab === 'home' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('home')}
@@ -444,15 +444,6 @@ function App() {
                 Jobs
               </Button>
 
-              <Button
-                variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('contractors-browse')}
-                className="button-interactive"
-                size="sm"
-              >
-                Contractors
-              </Button>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -460,7 +451,7 @@ function App() {
                     className="button-interactive"
                     size="sm"
                   >
-                    Homeowner
+                    Homeowners
                     <CaretDown className="w-3 h-3 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -477,15 +468,20 @@ function App() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={activeTab === 'contractor' ? 'default' : 'ghost'}
+                    variant={activeTab === 'contractor' || activeTab === 'subcontractor' || activeTab === 'contractors-browse' ? 'default' : 'ghost'}
                     className="button-interactive"
                     size="sm"
                   >
-                    Contractor
+                    For Pros
                     <CaretDown className="w-3 h-3 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="border-2 border-black">
+                  <DropdownMenuItem onClick={() => handleNavClick('contractors-browse')}>
+                    Browse Contractors
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Contractor</DropdownMenuLabel>
                   <DropdownMenuItem onClick={() => handleNavClick('contractor', 'dashboard')}>
                     Dashboard
                   </DropdownMenuItem>
@@ -498,21 +494,8 @@ function App() {
                   <DropdownMenuItem onClick={() => handleNavClick('dispatch')}>
                     Dispatch Map
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={activeTab === 'subcontractor' ? 'default' : 'ghost'}
-                    className="button-interactive"
-                    size="sm"
-                  >
-                    Subcontractor
-                    <CaretDown className="w-3 h-3 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="border-2 border-black">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Subcontractor</DropdownMenuLabel>
                   <DropdownMenuItem onClick={() => handleNavClick('subcontractor', 'dashboard')}>
                     Dashboard
                   </DropdownMenuItem>
@@ -547,16 +530,8 @@ function App() {
 
             <div className="flex-1" />
 
+            {/* RIGHT SIDE NAVIGATION */}
             <nav className="flex items-center gap-1.5 mr-4">
-              <Button
-                variant={activeTab === 'api' ? 'default' : 'ghost'}
-                onClick={() => handleNavClick('api')}
-                className="button-interactive"
-                size="sm"
-              >
-                API
-              </Button>
-
               <Button
                 variant={activeTab === 'partners' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('partners')}
