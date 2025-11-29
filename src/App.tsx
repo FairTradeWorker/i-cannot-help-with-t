@@ -1744,61 +1744,38 @@ function App() {
         />
       )}
       
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation - Simple Home Button */}
       {isMobile && (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border md:hidden">
-          <div className="flex items-center justify-around h-16">
-            <Button
-              variant={activeTab === 'home' ? 'default' : 'ghost'}
-              onClick={() => handleNavClick('home')}
-              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
-              size="sm"
-            >
-              <House className="w-5 h-5" weight={activeTab === 'home' ? 'fill' : 'regular'} />
-              <span className="text-xs">Home</span>
-            </Button>
-            <Button
-              variant={activeTab === 'territories' ? 'default' : 'ghost'}
-              onClick={() => handleNavClick('territories', 'overview')}
-              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
-              size="sm"
-            >
-              <MapTrifold className="w-5 h-5" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
-              <span className="text-xs">Territories</span>
-            </Button>
-            <Button
-              variant={activeTab === 'jobs' ? 'default' : 'ghost'}
-              onClick={() => handleNavClick('jobs')}
-              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
-              size="sm"
-            >
-              <Briefcase className="w-5 h-5" weight={activeTab === 'jobs' ? 'fill' : 'regular'} />
-              <span className="text-xs">Jobs</span>
-            </Button>
-            <Button
-              variant={activeTab === 'messages' ? 'default' : 'ghost'}
-              onClick={() => handleNavClick('messages')}
-              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
-              size="sm"
-            >
-              <ChatCircle className="w-5 h-5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
-              <span className="text-xs">Messages</span>
-            </Button>
-            <Button
-              variant={activeTab === 'notifications' ? 'default' : 'ghost'}
-              onClick={() => handleNavClick('notifications')}
-              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
-              size="sm"
-            >
-              <BellRinging className="w-5 h-5" weight={activeTab === 'notifications' ? 'fill' : 'regular'} />
-              <span className="text-xs">Alerts</span>
-            </Button>
-          </div>
+        <nav 
+          className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+          style={{
+            backgroundColor: 'white',
+            height: '60px',
+            boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <Button
+            variant={activeTab === 'home' ? 'default' : 'ghost'}
+            onClick={() => handleNavClick('home')}
+            className="flex flex-col items-center gap-1"
+            size="sm"
+            style={{
+              height: '100%',
+              minWidth: 'auto',
+              padding: '8px 24px'
+            }}
+          >
+            <House className="w-5 h-5" weight={activeTab === 'home' ? 'fill' : 'regular'} />
+            <span className="text-xs">Home</span>
+          </Button>
         </nav>
       )}
       
       {/* Add padding to main content on mobile to account for bottom nav */}
-      {isMobile && <div className="h-16" />}
+      {isMobile && <div style={{ height: '60px' }} />}
     </div>
   );
 }
