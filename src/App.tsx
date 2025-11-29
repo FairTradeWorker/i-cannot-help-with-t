@@ -878,6 +878,59 @@ function App() {
                                 </div>
                               </div>
 
+                              {/* Testimonials Section */}
+                              <div className="border-t border-border/50 pt-6 mt-6">
+                                <h4 className="text-base md:text-lg font-semibold mb-4 text-center">
+                                  What Homeowners Are Saying
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                  {/* Testimonial Card 1 */}
+                                  <div className="bg-white rounded-lg shadow-sm p-6">
+                                    <div className="flex gap-1 mb-3">
+                                      {[1, 2, 3, 4, 5].map((i) => (
+                                        <Star key={i} className="w-4 h-4" weight="fill" style={{ color: '#fbbf24' }} />
+                                      ))}
+                                    </div>
+                                    <p className="text-sm md:text-base italic text-foreground mb-4">
+                                      "Got 5 quotes in 24 hours. Way faster than Angi or Thumbtack."
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      — Sarah M., Austin TX
+                                    </p>
+                                  </div>
+
+                                  {/* Testimonial Card 2 */}
+                                  <div className="bg-white rounded-lg shadow-sm p-6">
+                                    <div className="flex gap-1 mb-3">
+                                      {[1, 2, 3, 4, 5].map((i) => (
+                                        <Star key={i} className="w-4 h-4" weight="fill" style={{ color: '#fbbf24' }} />
+                                      ))}
+                                    </div>
+                                    <p className="text-sm md:text-base italic text-foreground mb-4">
+                                      "Finally, a platform that doesn't charge contractors crazy fees. Better pros signed up."
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      — Marcus T., Denver CO
+                                    </p>
+                                  </div>
+
+                                  {/* Testimonial Card 3 */}
+                                  <div className="bg-white rounded-lg shadow-sm p-6">
+                                    <div className="flex gap-1 mb-3">
+                                      {[1, 2, 3, 4, 5].map((i) => (
+                                        <Star key={i} className="w-4 h-4" weight="fill" style={{ color: '#fbbf24' }} />
+                                      ))}
+                                    </div>
+                                    <p className="text-sm md:text-base italic text-foreground mb-4">
+                                      "Posted a video of my leaky roof. Contractor knew exactly what to quote. So easy."
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      — Jennifer L., Phoenix AZ
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
                               {/* Benefits & Stats */}
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-3">
                                 <div className="text-center">
