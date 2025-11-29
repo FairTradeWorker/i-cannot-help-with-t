@@ -41,6 +41,7 @@ import { validateTerritoryClaim, recordTerritoryOwnership, getOwnedTerritories, 
 import { getTerritoryPricing, processTerritoryClaim } from '@/lib/territory-pricing';
 import { getFirst300Count, isFirst300Complete } from '@/lib/first300';
 import { First300Counter } from '@/components/First300Counter';
+import { RealTimeTerritoryMap } from '@/components/RealTimeTerritoryMap';
 import { dataStore } from '@/lib/store';
 import type { User } from '@/lib/types';
 
