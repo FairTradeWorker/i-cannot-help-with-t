@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
-import { TrendUp, CheckCircle, XCircle, Clock } from '@phosphor-icons/react';
+import { useState, useEffect, useRef } from 'react';
+import { TrendUp, CheckCircle, XCircle, Clock, Brain, Sparkle } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { learningDB, type LearningFeedback } from '@/lib/learning-db';
 
 export function LearningDashboard() {
   const [feedback, setFeedback] = useState<LearningFeedback[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const hasCelebratedRef = useRef(false);
 
   useEffect(() => {
     loadFeedback();
@@ -17,6 +20,18 @@ export function LearningDashboard() {
     try {
       const data = await learningDB.getAll();
       setFeedback(data);
+      
+      // FIXED: Check if accuracy crossed 90% for the first time
+      const scopeFeedback = data.filter((f): f is LearningFeedback => f.predictionType === "scope");
+      if (scopeFeedback.length > 0 && !hasCelebratedRef.current) {
+        const recent = scopeFeedback.slice(-30);
+        const avgAccuracy = recent.reduce((sum, f) => sum + (f.performanceMetrics.accuracy || 0), 0) / recent.length;
+        if (avgAccuracy >= 0.9) {
+          setShowConfetti(true);
+          hasCelebratedRef.current = true;
+          setTimeout(() => setShowConfetti(false), 3000);
+        }
+      }
     } catch (error) {
       console.error('Failed to load feedback:', error);
     } finally {
@@ -30,23 +45,38 @@ export function LearningDashboard() {
         totalPredictions: 0,
         avgAccuracy: 0,
         scopePredictions: 0,
-        pricingPredictions: 0
+        pricingPredictions: 0,
+        jobsTaughtAI: 0
       };
     }
 
+    // FIXED: Use type guards for filtering
+    const scopeFeedback = feedback.filter((f): f is LearningFeedback => f.predictionType === "scope");
+    const pricingFeedback = feedback.filter((f): f is LearningFeedback => f.predictionType === "pricing");
+
     const avgAccuracy = feedback.reduce((sum, f) => sum + (f.performanceMetrics.accuracy || 0), 0) / feedback.length;
-    const scopePredictions = feedback.filter(f => f.predictionType === 'scope').length;
-    const pricingPredictions = feedback.filter(f => f.predictionType === 'pricing').length;
 
     return {
       totalPredictions: feedback.length,
       avgAccuracy: (avgAccuracy * 100).toFixed(1),
-      scopePredictions,
-      pricingPredictions
+      scopePredictions: scopeFeedback.length,
+      pricingPredictions: pricingFeedback.length,
+      jobsTaughtAI: feedback.length
     };
   };
 
   const stats = calculateStats();
+
+  // FIXED: Prepare chart data with timestamps
+  const chartData = feedback
+    .filter((f): f is LearningFeedback => f.predictionType === "scope")
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+    .map((f, index) => ({
+      index,
+      date: new Date(f.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      accuracy: (f.performanceMetrics.accuracy || 0) * 100,
+      timestamp: new Date(f.timestamp).getTime()
+    }));
 
   if (loading) {
     return (
@@ -61,6 +91,29 @@ export function LearningDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* FIXED: Confetti celebration */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-6xl animate-bounce">🎉</div>
+          </div>
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-ping"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${1 + Math.random()}s`
+              }}
+            >
+              <Sparkle className="w-4 h-4 text-yellow-400" weight="fill" />
+            </div>
+          ))}
+        </div>
+      )}
+
       <Card className="p-8">
         <div className="flex items-center gap-3 mb-6">
           <TrendUp className="w-8 h-8 text-primary" weight="fill" />
@@ -71,6 +124,62 @@ export function LearningDashboard() {
         </div>
 
         <Separator className="my-6" />
+
+        {/* FIXED: Jobs Taught AI and Accuracy in big bold numbers */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg p-8 border-2 border-primary/30">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+              <Brain className="w-5 h-5" weight="bold" />
+              <span>Jobs Taught AI</span>
+            </div>
+            <p className="text-5xl font-bold text-primary font-mono">{stats.jobsTaughtAI}</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg p-8 border-2 border-accent/30">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+              <TrendUp className="w-5 h-5" weight="bold" />
+              <span>Current Avg Accuracy</span>
+            </div>
+            <p className="text-5xl font-bold text-accent font-mono">{stats.avgAccuracy}%</p>
+          </div>
+        </div>
+
+        {/* FIXED: Real-time accuracy trend chart */}
+        {chartData.length > 0 && (
+          <Card className="p-6 mb-6">
+            <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <TrendUp className="w-5 h-5 text-primary" />
+              Accuracy Trend Over Time
+            </h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 12 }}
+                  interval="preserveStartEnd"
+                />
+                <YAxis 
+                  domain={[0, 100]}
+                  tick={{ fontSize: 12 }}
+                  label={{ value: 'Accuracy %', angle: -90, position: 'insideLeft' }}
+                />
+                <Tooltip 
+                  formatter={(value: number) => [`${value.toFixed(1)}%`, 'Accuracy']}
+                  labelFormatter={(label) => `Date: ${label}`}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="accuracy" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={3}
+                  dot={{ fill: 'hsl(var(--primary))', r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-primary/10 rounded-lg p-6 border-2 border-primary/20">
@@ -128,15 +237,16 @@ export function LearningDashboard() {
                       {new Date(item.timestamp).toLocaleDateString()}
                     </span>
                   </div>
+                  {/* FIXED: Safe optional chaining for userFeedback */}
                   {item.userFeedback && (
                     <div className="flex items-center gap-2 mt-2">
                       {item.userFeedback.wasAccurate ? (
                         <CheckCircle className="w-4 h-4 text-accent" weight="fill" />
-                      ) : (
+                      ) : item.userFeedback.wasAccurate === false ? (
                         <XCircle className="w-4 h-4 text-destructive" weight="fill" />
-                      )}
+                      ) : null}
                       <span className="text-sm">
-                        Rating: {item.userFeedback.rating}/5
+                        Rating: {item.userFeedback.rating ?? "—"}
                       </span>
                     </div>
                   )}

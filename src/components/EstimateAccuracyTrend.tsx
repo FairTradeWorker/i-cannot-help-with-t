@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +13,7 @@ import {
   Lightning,
   Sparkle,
 } from '@phosphor-icons/react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { learningDB, type LearningFeedback } from '@/lib/learning-db';
 
 interface EstimateAccuracyTrendProps {
@@ -22,6 +23,8 @@ interface EstimateAccuracyTrendProps {
 export function EstimateAccuracyTrend({ contractorId }: EstimateAccuracyTrendProps) {
   const [feedback, setFeedback] = useState<LearningFeedback[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const hasCelebratedRef = useRef(false);
 
   useEffect(() => {
     loadFeedback();
@@ -31,7 +34,20 @@ export function EstimateAccuracyTrend({ contractorId }: EstimateAccuracyTrendPro
     setLoading(true);
     try {
       const allFeedback = await learningDB.getAll();
-      setFeedback(allFeedback.filter(f => f.predictionType === 'scope'));
+      // FIXED: Use type guard for filtering
+      const scopeFeedback = allFeedback.filter((f): f is LearningFeedback => f.predictionType === "scope");
+      setFeedback(scopeFeedback);
+      
+      // FIXED: Check if accuracy crossed 90% for the first time
+      if (scopeFeedback.length > 0 && !hasCelebratedRef.current) {
+        const recent = scopeFeedback.slice(-30);
+        const avgAccuracy = recent.reduce((sum, f) => sum + (f.performanceMetrics.accuracy || 0), 0) / recent.length;
+        if (avgAccuracy >= 0.9) {
+          setShowConfetti(true);
+          hasCelebratedRef.current = true;
+          setTimeout(() => setShowConfetti(false), 3000);
+        }
+      }
     } catch (error) {
       console.error('Failed to load feedback:', error);
     } finally {
@@ -84,6 +100,16 @@ export function EstimateAccuracyTrend({ contractorId }: EstimateAccuracyTrendPro
 
   const metrics = calculateMetrics();
 
+  // FIXED: Prepare chart data with timestamps
+  const chartData = feedback
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+    .map((f, index) => ({
+      index,
+      date: new Date(f.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      accuracy: (f.performanceMetrics.accuracy || 0) * 100,
+      timestamp: new Date(f.timestamp).getTime()
+    }));
+
   if (loading) {
     return (
       <Card className="glass-card p-6">
@@ -122,6 +148,29 @@ export function EstimateAccuracyTrend({ contractorId }: EstimateAccuracyTrendPro
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
+      {/* FIXED: Confetti celebration */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-6xl animate-bounce">🎉</div>
+          </div>
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-ping"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${1 + Math.random()}s`
+              }}
+            >
+              <Sparkle className="w-4 h-4 text-yellow-400" weight="fill" />
+            </div>
+          ))}
+        </div>
+      )}
+
       <Card className="glass-card p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -139,6 +188,62 @@ export function EstimateAccuracyTrend({ contractorId }: EstimateAccuracyTrendPro
             {metrics.accuracyRating}
           </Badge>
         </div>
+
+        {/* FIXED: Jobs Taught AI and Accuracy in big bold numbers */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg p-6 border-2 border-primary/30">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+              <Brain className="w-5 h-5" weight="bold" />
+              <span>Jobs Taught AI</span>
+            </div>
+            <p className="text-4xl font-bold text-primary font-mono">{metrics.totalPredictions}</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg p-6 border-2 border-accent/30">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+              <TrendUp className="w-5 h-5" weight="bold" />
+              <span>Current Avg Accuracy</span>
+            </div>
+            <p className="text-4xl font-bold text-accent font-mono">{metrics.overallAccuracy.toFixed(1)}%</p>
+          </div>
+        </div>
+
+        {/* FIXED: Real-time accuracy trend chart */}
+        {chartData.length > 0 && (
+          <div className="mb-6">
+            <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <TrendUp className="w-5 h-5 text-primary" />
+              Accuracy Trend Over Time
+            </h4>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 12 }}
+                  interval="preserveStartEnd"
+                />
+                <YAxis 
+                  domain={[0, 100]}
+                  tick={{ fontSize: 12 }}
+                  label={{ value: 'Accuracy %', angle: -90, position: 'insideLeft' }}
+                />
+                <Tooltip 
+                  formatter={(value: number) => [`${value.toFixed(1)}%`, 'Accuracy']}
+                  labelFormatter={(label) => `Date: ${label}`}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="accuracy" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={3}
+                  dot={{ fill: 'hsl(var(--primary))', r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
 
         <div className="space-y-6">
           <div>

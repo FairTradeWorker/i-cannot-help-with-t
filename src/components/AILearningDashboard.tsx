@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +20,7 @@ import {
   Sparkle,
   Robot,
 } from '@phosphor-icons/react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { learningDB, type LearningFeedback } from '@/lib/learning-db';
 
 interface AILearningDashboardProps {
@@ -29,7 +30,9 @@ interface AILearningDashboardProps {
 export function AILearningDashboard({ contractorId }: AILearningDashboardProps) {
   const [feedback, setFeedback] = useState<LearningFeedback[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedType, setSelectedType] = useState<'scope' | 'pricing' | 'matching'>('scope');
+  const [selectedType, setSelectedType] = useState<'scope' | 'pricing'>('scope');
+  const [showConfetti, setShowConfetti] = useState(false);
+  const hasCelebratedRef = useRef(false);
 
   useEffect(() => {
     loadFeedback();
@@ -40,6 +43,18 @@ export function AILearningDashboard({ contractorId }: AILearningDashboardProps) 
     try {
       const allFeedback = await learningDB.getAll();
       setFeedback(allFeedback);
+      
+      // FIXED: Check if accuracy crossed 90% for the first time
+      const scopeFeedback = allFeedback.filter((f): f is LearningFeedback => f.predictionType === "scope");
+      if (scopeFeedback.length > 0 && !hasCelebratedRef.current) {
+        const recent = scopeFeedback.slice(-30);
+        const avgAccuracy = recent.reduce((sum, f) => sum + (f.performanceMetrics.accuracy || 0), 0) / recent.length;
+        if (avgAccuracy >= 0.9) {
+          setShowConfetti(true);
+          hasCelebratedRef.current = true;
+          setTimeout(() => setShowConfetti(false), 3000);
+        }
+      }
     } catch (error) {
       console.error('Failed to load feedback:', error);
     } finally {
@@ -47,8 +62,9 @@ export function AILearningDashboard({ contractorId }: AILearningDashboardProps) 
     }
   };
 
-  const calculateMetrics = (type: string) => {
-    const typeFeedback = feedback.filter(f => f.predictionType === type);
+  const calculateMetrics = (type: "scope" | "pricing") => {
+    // FIXED: Use type guard for filtering
+    const typeFeedback = feedback.filter((f): f is LearningFeedback => f.predictionType === type);
     const recent = typeFeedback.slice(-30);
     
     if (recent.length === 0) {
@@ -87,12 +103,46 @@ export function AILearningDashboard({ contractorId }: AILearningDashboardProps) 
 
   const scopeMetrics = calculateMetrics('scope');
   const pricingMetrics = calculateMetrics('pricing');
-  const matchingMetrics = calculateMetrics('matching');
 
-  const overallAccuracy = (scopeMetrics.accuracy + pricingMetrics.accuracy + matchingMetrics.accuracy) / 3;
+  const overallAccuracy = (scopeMetrics.accuracy + pricingMetrics.accuracy) / 2;
+  const jobsTaughtAI = feedback.length;
+
+  // FIXED: Prepare chart data for selected type
+  const chartData = feedback
+    .filter((f): f is LearningFeedback => f.predictionType === selectedType)
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+    .map((f, index) => ({
+      index,
+      date: new Date(f.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      accuracy: (f.performanceMetrics.accuracy || 0) * 100,
+      timestamp: new Date(f.timestamp).getTime()
+    }));
 
   return (
     <div className="space-y-6">
+      {/* FIXED: Confetti celebration */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-6xl animate-bounce">🎉</div>
+          </div>
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-ping"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${1 + Math.random()}s`
+              }}
+            >
+              <Sparkle className="w-4 h-4 text-yellow-400" weight="fill" />
+            </div>
+          ))}
+        </div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -109,6 +159,25 @@ export function AILearningDashboard({ contractorId }: AILearningDashboardProps) 
           </div>
         </div>
       </motion.div>
+
+      {/* FIXED: Jobs Taught AI and Accuracy in big bold numbers */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <Card className="glass-card p-6 bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/30">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Brain className="w-5 h-5" weight="bold" />
+            <span>Jobs Taught AI</span>
+          </div>
+          <p className="text-5xl font-bold text-primary font-mono">{jobsTaughtAI}</p>
+        </Card>
+
+        <Card className="glass-card p-6 bg-gradient-to-br from-accent/20 to-accent/5 border-2 border-accent/30">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <TrendUp className="w-5 h-5" weight="bold" />
+            <span>Current Avg Accuracy</span>
+          </div>
+          <p className="text-5xl font-bold text-accent font-mono">{overallAccuracy.toFixed(1)}%</p>
+        </Card>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
@@ -184,11 +253,43 @@ export function AILearningDashboard({ contractorId }: AILearningDashboardProps) 
             <h3 className="text-xl font-bold">Learning Progress</h3>
           </div>
 
+          {/* FIXED: Real-time accuracy trend chart */}
+          {chartData.length > 0 && (
+            <div className="mb-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fontSize: 12 }}
+                    interval="preserveStartEnd"
+                  />
+                  <YAxis 
+                    domain={[0, 100]}
+                    tick={{ fontSize: 12 }}
+                    label={{ value: 'Accuracy %', angle: -90, position: 'insideLeft' }}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [`${value.toFixed(1)}%`, 'Accuracy']}
+                    labelFormatter={(label) => `Date: ${label}`}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="accuracy" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={3}
+                    dot={{ fill: 'hsl(var(--primary))', r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
           <Tabs value={selectedType} onValueChange={(value: any) => setSelectedType(value)}>
-            <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="scope">Scope Analysis</TabsTrigger>
               <TabsTrigger value="pricing">Pricing</TabsTrigger>
-              <TabsTrigger value="matching">Matching</TabsTrigger>
             </TabsList>
 
             <TabsContent value="scope" className="space-y-4">
@@ -258,41 +359,6 @@ export function AILearningDashboard({ contractorId }: AILearningDashboardProps) 
                       <p className="font-semibold mb-1">Dynamic Pricing Active</p>
                       <p className="text-sm text-muted-foreground">
                         AI adjusts pricing based on demand, seasonality, and your win rate history.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="matching" className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Match Quality</span>
-                  <span className="text-lg font-bold text-secondary">{matchingMetrics.accuracy.toFixed(1)}%</span>
-                </div>
-                <Progress value={matchingMetrics.accuracy} className="h-3" />
-                
-                <Separator className="my-4" />
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Jobs Matched</span>
-                    <span className="font-semibold">{matchingMetrics.total}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Performance</span>
-                    <Badge variant="default">Excellent</Badge>
-                  </div>
-                </div>
-
-                <div className="mt-6 p-4 rounded-lg bg-secondary/5 border border-secondary/20">
-                  <div className="flex items-start gap-3">
-                    <Robot className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" weight="fill" />
-                    <div>
-                      <p className="font-semibold mb-1">Smart Matching</p>
-                      <p className="text-sm text-muted-foreground">
-                        AI learns which jobs you're most likely to win based on your skills and history.
                       </p>
                     </div>
                   </div>

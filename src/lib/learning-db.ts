@@ -1,11 +1,12 @@
 // src/lib/learning-db.ts
 // Core of exponential learning
 
+// FIXED: Updated interface to support both scope and pricing, added optional userFeedback
 export interface LearningFeedback {
   predictionId: string;
   jobId: string;
   timestamp: Date;
-  predictionType: "scope";
+  predictionType: "scope" | "pricing";
   prediction: any;
   actualOutcome: { materials: any[]; laborHours: number; totalCost: number };
   performanceMetrics: {
@@ -13,6 +14,11 @@ export interface LearningFeedback {
     costAccuracy: number;
     laborAccuracy: number;
     errorMargin: number;
+  };
+  userFeedback?: {
+    rating?: number;
+    wasAccurate?: boolean;
+    comments?: string;
   };
 }
 
@@ -35,7 +41,8 @@ class LearningDatabase {
   }
 
   async getContext(trade?: string, zipPrefix?: string): Promise<any> {
-    const all = (await this.getAll()).filter(f => f.predictionType === "scope");
+    // FIXED: Use type guard for filtering
+    const all = (await this.getAll()).filter((f): f is LearningFeedback => f.predictionType === "scope");
     const recent = all.slice(-100);
 
     const avgAccuracy = recent.length
@@ -53,5 +60,5 @@ class LearningDatabase {
   }
 }
 
+// FIXED: Export learningDB and LearningFeedback
 export const learningDB = new LearningDatabase();
-
