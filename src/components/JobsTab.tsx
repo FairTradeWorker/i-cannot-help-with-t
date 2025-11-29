@@ -751,19 +751,30 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
         >
           {/* TOP SECTION */}
           <div className="relative mb-3">
-            {/* Play button in top-right corner if video exists */}
+            {/* Small video icon in top-right corner if video exists */}
             {job.videoUrl && (
               <div className="absolute top-0 right-0 z-10">
-                <div className="w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
-                  <Play className="w-4 h-4 text-white" weight="fill" />
+                <div className="w-5 h-5 rounded bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                  <Play className="w-3 h-3 text-white" weight="fill" />
                 </div>
               </div>
             )}
             
-            {/* Job title */}
-            <h3 className="font-bold text-white pr-8" style={{ fontSize: '16px' }}>
-              {job.title}
-            </h3>
+            {/* Job title with optional Video badge */}
+            <div className="flex items-center gap-2 pr-6">
+              <h3 className="font-bold text-white" style={{ fontSize: '16px' }}>
+                {job.title}
+              </h3>
+              {job.videoUrl && (
+                <Badge 
+                  variant="outline" 
+                  className="bg-white/20 border-white/30 text-white text-xs px-1.5 py-0 h-5"
+                  style={{ fontSize: '10px' }}
+                >
+                  Video
+                </Badge>
+              )}
+            </div>
             
             {/* Description */}
             <p 
@@ -873,7 +884,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
           <div className="relative aspect-video bg-muted overflow-hidden">
             {job.videoUrl ? (
               <>
-                {/* Video thumbnail with play overlay */}
+                {/* Video thumbnail */}
                 <img
                   src={job.videoUrl}
                   alt={job.title}
@@ -884,11 +895,14 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className={`w-16 h-16 rounded-full ${getUrgencyColor(job.urgency)} flex items-center justify-center transition-transform ${isHovered ? 'scale-110' : 'scale-100'}`}>
-                    <Play className="w-8 h-8 text-white" weight="fill" />
+                
+                {/* Small video icon in top-right corner */}
+                <div className="absolute top-2 right-2 z-10">
+                  <div className="w-5 h-5 rounded bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                    <Play className="w-3 h-3 text-white" weight="fill" />
                   </div>
                 </div>
+                
                 <div className="absolute bottom-2 left-2 right-2">
                   <Badge className={getUrgencyColor(job.urgency)}>
                     {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
@@ -900,9 +914,6 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
               /* Placeholder when no video */
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
                 <div className="text-center">
-                  <div className={`w-16 h-16 rounded-full ${getUrgencyColor(job.urgency)} flex items-center justify-center mx-auto mb-2 transition-transform ${isHovered ? 'scale-110' : 'scale-100'}`}>
-                    <Play className="w-8 h-8 text-white" weight="fill" />
-                  </div>
                   <Badge className={getUrgencyColor(job.urgency)}>
                     {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
                     {job.urgency.toUpperCase()}
