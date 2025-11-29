@@ -127,9 +127,13 @@ export interface Job {
   thumbnailUrl?: string;
   scope?: JobScope;
   predictionId?: string;
-  estimatedCost: { min: number; max: number };
+  estimatedCost?: { min: number; max: number };
+  laborHours?: number;
   actualCost?: number;
-  laborHours: number;
+  actualLaborHours?: number;
+  actualMaterials?: Material[];
+  feedbackCollected?: boolean;
+  feedbackCollectedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
   scheduledStart?: Date;
@@ -144,14 +148,14 @@ export interface Job {
 export interface JobScope {
   jobTitle: string;
   summary: string;
-  estimatedSquareFootage: number;
-  materials: Material[];
   laborHours: number;
   estimatedCost: { min: number; max: number };
+  materials: Material[];
   confidenceScore: number;
-  recommendations: string[];
-  warningsAndRisks: string[];
-  permitRequired: boolean;
+  estimatedSquareFootage?: number;
+  recommendations?: string[];
+  warningsAndRisks?: string[];
+  permitRequired?: boolean;
 }
 
 export interface Material {
@@ -159,6 +163,7 @@ export interface Material {
   quantity: number;
   unit: string;
   estimatedCost: number;
+  notes?: string;
   supplier?: string;
   ordered?: boolean;
 }

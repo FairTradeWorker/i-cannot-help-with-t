@@ -615,7 +615,7 @@ export function JobsTab({ user, onPostJob, onJobSelect, initialSearchTerm }: Job
                     <Card className="p-4">
                       <p className="text-xs text-muted-foreground mb-1">Budget Range</p>
                       <p className="text-xl font-bold">
-                        ${selectedJob.estimatedCost.min.toLocaleString()} - ${selectedJob.estimatedCost.max.toLocaleString()}
+                        ${(selectedJob.estimatedCost?.min || 0).toLocaleString()} - ${(selectedJob.estimatedCost?.max || 0).toLocaleString()}
                       </p>
                     </Card>
                     <Card className="p-4">
@@ -901,7 +901,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
             <div className="text-right flex-shrink-0">
               <span className="text-white/80" style={{ fontSize: '12px' }}>Budget: </span>
               <span className="text-white font-bold" style={{ fontSize: '16px' }}>
-                {formatBudget(job.estimatedCost)}
+                {formatBudget(job.estimatedCost || { min: 0, max: 0 })}
               </span>
             </div>
           </div>
@@ -1017,7 +1017,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      <span>{job.laborHours}h</span>
+                      <span>{job.laborHours || 0}h</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Users className="w-3 h-3" />
@@ -1032,7 +1032,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                 <div className="text-right space-y-2 pointer-events-auto">
                   <p className="text-[11px] text-white/80">Budget</p>
                   <p className="text-xl font-bold text-white drop-shadow-md">
-                    {formatBudget(job.estimatedCost)}
+                    {formatBudget(job.estimatedCost || { min: 0, max: 0 })}
                   </p>
                   <Button
                     size="sm"
@@ -1084,7 +1084,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>{job.laborHours}h</span>
+                    <span>{job.laborHours || 0}h</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
@@ -1095,7 +1095,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
               
               <div className="text-right flex-shrink-0">
                 <p className="text-xs text-muted-foreground mb-1">Budget</p>
-                <p className="font-bold text-xl">{formatBudget(job.estimatedCost)}</p>
+                <p className="font-bold text-xl">{formatBudget(job.estimatedCost || { min: 0, max: 0 })}</p>
               </div>
             </div>
           </div>

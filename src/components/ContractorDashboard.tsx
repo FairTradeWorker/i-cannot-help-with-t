@@ -334,8 +334,8 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
           const distB = b.match.matchBreakdown.distanceScore;
           return distB - distA;
         case 'value':
-          const valueA = a.job.estimatedCost.max;
-          const valueB = b.job.estimatedCost.max;
+          const valueA = a.job.estimatedCost?.max || 0;
+          const valueB = b.job.estimatedCost?.max || 0;
           return valueB - valueA;
         case 'urgency':
           const urgencyOrder = { emergency: 3, urgent: 2, normal: 1 };
@@ -638,9 +638,9 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
                       </div>
                       <div className="text-right">
                         <p className="text-2xl font-bold text-accent font-mono">
-                          ${job.estimatedCost.min.toLocaleString()}
+                          ${(job.estimatedCost?.min || 0).toLocaleString()}
                         </p>
-                        <p className="text-sm text-muted-foreground">{job.laborHours}h estimated</p>
+                        <p className="text-sm text-muted-foreground">{job.laborHours || 0}h estimated</p>
                       </div>
                     </div>
                   </Card>
@@ -670,7 +670,7 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
                     lng: job.address.lng || 0,
                   },
                   urgency: job.urgency,
-                  estimatedDuration: job.laborHours ? job.laborHours * 3600 : undefined,
+                  estimatedDuration: job.laborHours ? (job.laborHours * 3600) : undefined,
                 }))}
                 contractorLocation={{
                   lat: profile.location.lat,
@@ -711,7 +711,7 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
                       </div>
                       <div className="text-right">
                         <p className="text-2xl font-bold text-foreground font-mono">
-                          ${job.actualCost?.toLocaleString() || job.estimatedCost.min.toLocaleString()}
+                          ${job.actualCost?.toLocaleString() || (job.estimatedCost?.min || 0).toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -806,7 +806,7 @@ function JobList({ jobs, onJobSelect }: { jobs: Array<{ job: Job; match: any }>;
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span>{job.laborHours}h</span>
+                  <span>{job.laborHours || 0}h</span>
                 </div>
                 {match && match.reasons.length > 0 && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -817,7 +817,7 @@ function JobList({ jobs, onJobSelect }: { jobs: Array<{ job: Job; match: any }>;
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-accent font-mono">
-                ${job.estimatedCost.max.toLocaleString()}
+                ${(job.estimatedCost?.max || 0).toLocaleString()}
               </p>
               <p className="text-sm text-muted-foreground">{job.bids.length} bids</p>
             </div>

@@ -28,7 +28,7 @@ interface JobDetailsProps {
 
 export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps) {
   const [activeTab, setActiveTab] = useState('details');
-  const [bidAmount, setBidAmount] = useState(job.estimatedCost.min.toString());
+  const [bidAmount, setBidAmount] = useState((job.estimatedCost?.min || 0).toString());
   const [bidMessage, setBidMessage] = useState('');
   const [bidTimeline, setBidTimeline] = useState({ start: '', end: '' });
   const [messageText, setMessageText] = useState('');
@@ -268,7 +268,7 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
                     <Clock className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="text-sm font-medium">Estimated Time</p>
-                      <p className="text-sm text-muted-foreground">{job.laborHours} hours</p>
+                      <p className="text-sm text-muted-foreground">{job.laborHours || 0} hours</p>
                     </div>
                   </div>
                   
@@ -277,7 +277,7 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
                     <div>
                       <p className="text-sm font-medium">Budget Range</p>
                       <p className="text-sm text-muted-foreground">
-                        ${job.estimatedCost.min.toLocaleString()} - ${job.estimatedCost.max.toLocaleString()}
+                        ${(job.estimatedCost?.min || 0).toLocaleString()} - ${(job.estimatedCost?.max || 0).toLocaleString()}
                       </p>
                     </div>
                   </div>
