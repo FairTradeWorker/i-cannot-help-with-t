@@ -9,6 +9,9 @@ import HomeScreen from '@/screens/HomeScreen';
 import JobPostScreen from '@/screens/JobPostScreen';
 import JobDetailsScreen from '@/screens/JobDetailsScreen';
 import SubmitBidScreen from '@/screens/SubmitBidScreen';
+import VideoJobCreationScreen from '@/screens/VideoJobCreationScreen';
+import LoginScreen from '@/screens/LoginScreen';
+import PaymentScreen from '@/screens/PaymentScreen';
 import TerritoriesScreen from '@/screens/TerritoriesScreen';
 import JobsScreen from '@/screens/JobsScreen';
 import MessagesScreen from '@/screens/MessagesScreen';
@@ -24,6 +27,14 @@ export type RootStackParamList = {
   Route: undefined;
   Settings: undefined;
   SubmitBid: { jobId: string };
+  VideoJobCreation: undefined;
+  Login: undefined;
+  Payment: { 
+    territoryId?: string; 
+    amount?: number; 
+    zipCode?: string; 
+    type: 'territory_claim' | 'subscription' 
+  };
 };
 
 export type MainTabParamList = {
@@ -147,6 +158,30 @@ export default function AppNavigator() {
         <Stack.Screen
           name="SubmitBid"
           component={SubmitBidScreen}
+          options={{ 
+            headerShown: false,
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen
+          name="VideoJobCreation"
+          component={VideoJobCreationScreen}
+          options={{ 
+            headerShown: false,
+            presentation: 'fullScreenModal',
+          }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ 
+            headerShown: false,
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen
+          name="Payment"
+          component={PaymentScreen}
           options={{ 
             headerShown: false,
             presentation: 'modal',
