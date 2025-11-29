@@ -34,6 +34,10 @@ import {
   ShieldCheck,
   Plus,
   List,
+  VideoCamera,
+  Clock,
+  Star,
+  CheckCircle as CheckCircleIcon,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -723,13 +727,13 @@ function App() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={() => {
                       setLoginModalMode('login');
                       setShowLogin(true);
                     }}
-                    className="button-interactive"
+                    className="button-interactive border-border text-foreground bg-white/70 hover:bg-white"
                   >
                     <SignIn className="w-4 h-4 mr-2" />
                     Sign In
@@ -741,7 +745,7 @@ function App() {
                       setLoginModalMode('signup');
                       setShowLogin(true);
                     }}
-                    className="button-interactive"
+                    className="button-interactive bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     <UserPlus className="w-4 h-4 mr-2" />
                     Sign Up
@@ -817,24 +821,109 @@ function App() {
                       {/* Top section with Post Job and Mini Map */}
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                           <Card 
-                            className="glass-card p-2 md:p-2.5 border-0 bg-transparent hover:bg-transparent cursor-pointer lg:col-span-2 order-1"
+                            className="glass-card p-4 md:p-5 border-0 bg-transparent hover:bg-transparent cursor-pointer lg:col-span-2 order-1"
                             onClick={() => handleCreateJob()}
                           >
-                            <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5">
-                              <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className="p-2.5 rounded-xl bg-primary flex-shrink-0">
-                                  <Plus className="w-5 h-5 text-white" weight="bold" />
+                            <div className="flex flex-col gap-4">
+                              <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                  <div className="p-2.5 rounded-xl bg-primary flex-shrink-0">
+                                    <Plus className="w-5 h-5 text-white" weight="bold" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h3 className="text-base md:text-lg font-bold mb-0.5">Post a New Job</h3>
+                                    <p className="text-xs text-muted-foreground line-clamp-1">
+                                      Get estimates from qualified contractors in your area
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="min-w-0">
-                                  <h3 className="text-base font-bold mb-0.5">Post a New Job</h3>
-                                  <p className="text-xs text-muted-foreground line-clamp-1">
-                                    Get estimates from qualified contractors in your area
-                                  </p>
+                                <Button size="sm" className="h-8 px-3 text-xs rounded-full">
+                                  Get Started
+                                </Button>
+                              </div>
+                              <div className="flex flex-wrap gap-3 text-[11px] text-muted-foreground">
+                                <div className="flex items-center gap-1.5">
+                                  <VideoCamera className="w-3.5 h-3.5" />
+                                  <span>Post by video, photos, or text</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <Lightning className="w-3.5 h-3.5" />
+                                  <span>Instant matches to nearby pros</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <ShieldCheck className="w-3.5 h-3.5" />
+                                  <span>No platform fees for contractors</span>
                                 </div>
                               </div>
-                              <Button size="sm" className="h-8 px-3 text-xs rounded-full">
-                                Get Started
-                              </Button>
+                              
+                              {/* How It Works Section */}
+                              <div className="border-t border-border/50 pt-4">
+                                <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                                  <Brain className="w-4 h-4 text-primary" />
+                                  How It Works
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                  <div className="flex items-start gap-2">
+                                    <div className="p-1.5 rounded-lg bg-primary/10 flex-shrink-0 mt-0.5">
+                                      <span className="text-xs font-bold text-primary">1</span>
+                                    </div>
+                                    <div>
+                                      <p className="text-xs font-medium mb-0.5">Post Your Job</p>
+                                      <p className="text-[10px] text-muted-foreground">Upload video, photos, or describe your project</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <div className="p-1.5 rounded-lg bg-accent/10 flex-shrink-0 mt-0.5">
+                                      <span className="text-xs font-bold text-accent">2</span>
+                                    </div>
+                                    <div>
+                                      <p className="text-xs font-medium mb-0.5">Get Matched</p>
+                                      <p className="text-[10px] text-muted-foreground">AI connects you with verified local contractors</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-start gap-2">
+                                    <div className="p-1.5 rounded-lg bg-secondary/10 flex-shrink-0 mt-0.5">
+                                      <span className="text-xs font-bold text-secondary">3</span>
+                                    </div>
+                                    <div>
+                                      <p className="text-xs font-medium mb-0.5">Compare & Choose</p>
+                                      <p className="text-[10px] text-muted-foreground">Review bids, ratings, and select the best fit</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Benefits & Stats */}
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                                <div className="text-center">
+                                  <div className="flex items-center justify-center gap-1 mb-1">
+                                    <Clock className="w-3.5 h-3.5 text-primary" />
+                                    <span className="text-xs font-bold">24hr</span>
+                                  </div>
+                                  <p className="text-[10px] text-muted-foreground">Avg Response</p>
+                                </div>
+                                <div className="text-center">
+                                  <div className="flex items-center justify-center gap-1 mb-1">
+                                    <Star className="w-3.5 h-3.5 text-amber-500" weight="fill" />
+                                    <span className="text-xs font-bold">4.8/5</span>
+                                  </div>
+                                  <p className="text-[10px] text-muted-foreground">Avg Rating</p>
+                                </div>
+                                <div className="text-center">
+                                  <div className="flex items-center justify-center gap-1 mb-1">
+                                    <Users className="w-3.5 h-3.5 text-accent" />
+                                    <span className="text-xs font-bold">3.5K+</span>
+                                  </div>
+                                  <p className="text-[10px] text-muted-foreground">Contractors</p>
+                                </div>
+                                <div className="text-center">
+                                  <div className="flex items-center justify-center gap-1 mb-1">
+                                    <CheckCircleIcon className="w-3.5 h-3.5 text-secondary" weight="fill" />
+                                    <span className="text-xs font-bold">$20</span>
+                                  </div>
+                                  <p className="text-[10px] text-muted-foreground">One-time Fee</p>
+                                </div>
+                              </div>
                             </div>
                           </Card>
                         

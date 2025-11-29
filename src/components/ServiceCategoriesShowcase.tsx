@@ -40,8 +40,8 @@ export function ServiceCategoriesShowcase({
     <div className="space-y-2 rounded-2xl border border-border/60 bg-white px-3 py-2 md:px-4 md:py-2 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-xs md:text-sm font-semibold text-foreground">What do you need done?</h2>
-          <p className="text-[10px] md:text-[11px] text-muted-foreground">
+          <h2 className="text-sm md:text-base font-semibold text-foreground">What do you need done?</h2>
+          <p className="text-[11px] md:text-xs text-muted-foreground">
             Tap a category to start a job post.
           </p>
         </div>
@@ -57,7 +57,7 @@ export function ServiceCategoriesShowcase({
 
       {/* Core home categories */}
       <div className="space-y-1">
-        <p className="text-[9px] uppercase tracking-wide text-muted-foreground/80 font-medium">
+        <p className="text-[10px] uppercase tracking-wide text-muted-foreground/80 font-medium">
           Home & Systems
         </p>
         <div className="grid grid-cols-3 gap-2 md:gap-2.5">
@@ -88,18 +88,18 @@ export function ServiceCategoriesShowcase({
                 whileTap={{ scale: 0.97 }}
               >
                 <Card 
-                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
+                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/80 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
                   onClick={() => onCategoryClick?.(category.id)}
                 >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full ${color}`}>
-                      <Icon className="w-5 h-5 md:w-6 md:h-6" weight="fill" />
+                  <div className="flex flex-col items-center gap-1.5">
+                    <div className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full ${color}`}>
+                      <Icon className="w-5.5 h-5.5 md:w-7 md:h-7" weight="fill" />
                     </div>
                     <div className="space-y-0.5">
-                      <h3 className="text-[10px] md:text-[11px] font-semibold text-foreground line-clamp-1">
+                      <h3 className="text-[11px] md:text-[12px] font-semibold text-foreground line-clamp-1">
                         {category.title}
                       </h3>
-                      <p className="text-[9px] md:text-[10px] text-muted-foreground line-clamp-2">
+                      <p className="text-[10px] md:text-[11px] text-muted-foreground line-clamp-2">
                         {category.description}
                       </p>
                     </div>
@@ -113,7 +113,7 @@ export function ServiceCategoriesShowcase({
 
       {/* Outdoor & lifestyle categories */}
       <div className="space-y-1">
-        <p className="text-[9px] uppercase tracking-wide text-muted-foreground/80 font-medium">
+        <p className="text-[10px] uppercase tracking-wide text-muted-foreground/80 font-medium">
           Outdoor & Lifestyle
         </p>
         <div className="grid grid-cols-3 gap-2 md:gap-2.5">
@@ -140,18 +140,18 @@ export function ServiceCategoriesShowcase({
                 whileTap={{ scale: 0.97 }}
               >
                 <Card 
-                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
+                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/80 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
                   onClick={() => onCategoryClick?.(category.id)}
                 >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full ${color}`}>
-                      <Icon className="w-5 h-5 md:w-6 md:h-6" weight="fill" />
+                  <div className="flex flex-col items-center gap-1.5">
+                    <div className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full ${color}`}>
+                      <Icon className="w-5.5 h-5.5 md:w-7 md:h-7" weight="fill" />
                     </div>
                     <div className="space-y-0.5">
-                      <h3 className="text-[10px] md:text-[11px] font-semibold text-foreground line-clamp-1">
+                      <h3 className="text-[11px] md:text-[12px] font-semibold text-foreground line-clamp-1">
                         {category.title}
                       </h3>
-                      <p className="text-[9px] md:text-[10px] text-muted-foreground line-clamp-2">
+                      <p className="text-[10px] md:text-[11px] text-muted-foreground line-clamp-2">
                         {category.description}
                       </p>
                     </div>
