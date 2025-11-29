@@ -1133,6 +1133,81 @@ function App() {
                           </div>
                         </div>
                         </Card>
+
+                        {/* Why FairTradeWorker? Comparison Section */}
+                        <div className="mt-12 space-y-6">
+                          <div className="text-center">
+                            <h3 className="text-3xl font-bold mb-2">The Fairer Way to Hire</h3>
+                            <p className="text-muted-foreground">See how we compare to traditional platforms</p>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Left Column - Traditional Platforms */}
+                            <Card className="p-6 shadow-md rounded-lg" style={{ backgroundColor: '#fef2f2' }}>
+                              <h4 className="text-xl font-bold mb-4">Traditional Platforms</h4>
+                              <ul className="space-y-3">
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#ef4444' }}>❌</span>
+                                  <span className="text-sm">Platform fees up to 20%</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#ef4444' }}>❌</span>
+                                  <span className="text-sm">Contractors pay for every lead</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#ef4444' }}>❌</span>
+                                  <span className="text-sm">Generic matching algorithms</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#ef4444' }}>❌</span>
+                                  <span className="text-sm">Slow response times</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#ef4444' }}>❌</span>
+                                  <span className="text-sm">Race to the bottom pricing</span>
+                                </li>
+                              </ul>
+                            </Card>
+
+                            {/* Right Column - FairTradeWorker */}
+                            <Card className="p-6 shadow-md rounded-lg" style={{ backgroundColor: '#f0fdf4' }}>
+                              <h4 className="text-xl font-bold mb-4">FairTradeWorker</h4>
+                              <ul className="space-y-3">
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#22c55e' }}>✅</span>
+                                  <span className="text-sm">Zero platform fees</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#22c55e' }}>✅</span>
+                                  <span className="text-sm">Free for contractors to quote</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#22c55e' }}>✅</span>
+                                  <span className="text-sm">AI-powered instant matching</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#22c55e' }}>✅</span>
+                                  <span className="text-sm">24hr average response time</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                  <span className="text-xl" style={{ color: '#22c55e' }}>✅</span>
+                                  <span className="text-sm">Quality pros, fair prices</span>
+                                </li>
+                              </ul>
+                            </Card>
+                          </div>
+
+                          {/* CTA Button */}
+                          <div className="text-center">
+                            <Button 
+                              size="lg" 
+                              onClick={() => handleCreateJob()}
+                              className="bg-blue-600 hover:bg-blue-700 text-white"
+                            >
+                              Post Your First Job — It's Free
+                            </Button>
+                          </div>
+                        </div>
                     </div>
                   )}
                   {activeTab === 'jobs' && (
