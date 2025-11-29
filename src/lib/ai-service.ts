@@ -233,7 +233,7 @@ export async function suggestOptimalPricing(
 
 LEARNING CONTEXT:
 - Historical pricing accuracy: ${(context.avgAccuracy * 100).toFixed(1)}%
-- Successful bids analyzed: ${context.totalFeedback}
+- Successful bids analyzed: ${context.totalJobs}
 
 Consider: market rates, urgency, contractor reputation, materials cost, overhead (20%), profit (25-40%).
 
