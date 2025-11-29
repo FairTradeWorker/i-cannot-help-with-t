@@ -2,17 +2,13 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-// Fix for default marker icons in Leaflet with Vite
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Marker,
+  createCoordinates
+} from '@vnedyalk0v/react19-simple-maps';
 import { MapPin, CheckCircle, Lock, Clock } from '@phosphor-icons/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -165,7 +161,7 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
       .filter(t => t.latitude && t.longitude)
       .map(t => ({
         zip: t.zip,
-        coordinates: [t.longitude, t.latitude] as [number, number],
+        coordinates: createCoordinates(t.longitude, t.latitude),
         status: territoryStatuses.get(t.zip)?.status || 'available',
         priorityStatus: territoryStatuses.get(t.zip)?.priorityStatus,
         city: t.city,
@@ -311,16 +307,30 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
         </CardHeader>
         <CardContent>
           <div className="relative w-full h-[600px] rounded-lg overflow-hidden border-2 border-border">
-            <MapContainer
-              center={[39.8283, -98.5795]}
-              zoom={4}
-              style={{ height: '100%', width: '100%' }}
-              className="z-0"
+            <ComposableMap
+              projection="geoAlbersUsa"
+              projectionConfig={{ scale: 1000 }}
+              className="w-full h-full"
             >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+              {/* US States base map */}
+              <Geographies geography="https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json">
+                {({ geographies }) =>
+                  geographies.map((geo, index) => (
+                    <Geography
+                      key={geo.properties?.name || `geo-${index}`}
+                      geography={geo}
+                      fill="#F3F4F6"
+                      stroke="#D1D5DB"
+                      strokeWidth={0.5}
+                      style={{
+                        default: { outline: 'none' },
+                        hover: { outline: 'none' },
+                        pressed: { outline: 'none' }
+                      }}
+                    />
+                  ))
+                }
+              </Geographies>
 
               {/* Territory zip codes as markers/circles */}
               {territoryCoordinates.map((territory) => {
@@ -332,45 +342,38 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
                 const radius = status.status === 'yours' ? 8 : status.status === 'taken' ? 6 : 4;
 
                 return (
-                  <CircleMarker
-                    key={territory.zip}
-                    center={[territory.coordinates[1], territory.coordinates[0]]}
-                    radius={radius}
-                    pathOptions={{
-                      fillColor: fillColor,
-                      fillOpacity: 0.8,
-                      color: strokeColor,
-                      weight: status.status === 'yours' ? 2 : 1
-                    }}
-                    eventHandlers={{
-                      click: () => handleTerritoryClick(territory.zip),
-                      mouseover: (e) => {
-                        const layer = e.target;
-                        layer.setStyle({ fillOpacity: 1, weight: 2 });
-                      },
-                      mouseout: (e) => {
-                        const layer = e.target;
-                        layer.setStyle({ fillOpacity: 0.8, weight: status.status === 'yours' ? 2 : 1 });
-                      }
-                    }}
-                  >
-                    <Popup>
-                      <div className="space-y-1">
-                        <p className="font-semibold">Zip: {territory.zip}</p>
-                        <p className="text-sm">{territory.city}, {territory.state}</p>
-                        <p className="text-sm">
-                          {status.status === 'available' && 'Available - Click to claim'}
-                          {status.status === 'taken' && `First Priority Taken${status.priorityStatus === 'first_priority' ? ' (First 300)' : ' (Paid)'}`}
-                          {status.status === 'yours' && `Your Territory${status.priorityStatus === 'first_priority' ? ' (First 300 - Free Forever)' : ' (Paid)'}`}
-                        </p>
-                        {status.claimedAt && (
-                          <p className="text-xs text-muted-foreground">
-                            Claimed {new Date(status.claimedAt).toLocaleDateString()}
+                  <TooltipProvider key={territory.zip}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Marker coordinates={territory.coordinates}>
+                          <circle
+                            r={radius}
+                            fill={fillColor}
+                            stroke={strokeColor}
+                            strokeWidth={status.status === 'yours' ? 2 : 1}
+                            style={{ cursor: status.status === 'available' ? 'pointer' : 'default' }}
+                            onClick={() => handleTerritoryClick(territory.zip)}
+                          />
+                        </Marker>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <div className="space-y-1">
+                          <p className="font-semibold">Zip: {territory.zip}</p>
+                          <p className="text-sm">{territory.city}, {territory.state}</p>
+                          <p className="text-sm">
+                            {status.status === 'available' && 'Available - Click to claim'}
+                            {status.status === 'taken' && `First Priority Taken${status.priorityStatus === 'first_priority' ? ' (First 300)' : ' (Paid)'}`}
+                            {status.status === 'yours' && `Your Territory${status.priorityStatus === 'first_priority' ? ' (First 300 - Free Forever)' : ' (Paid)'}`}
                           </p>
-                        )}
-                      </div>
-                    </Popup>
-                  </CircleMarker>
+                          {status.claimedAt && (
+                            <p className="text-xs text-muted-foreground">
+                              Claimed {new Date(status.claimedAt).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 );
               })}
 
@@ -380,30 +383,24 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
                 if (!territory || !territory.latitude || !territory.longitude) return null;
 
                 return (
-                  <CircleMarker
+                  <Marker
                     key={`recent-${claim.zip}-${index}`}
-                    center={[territory.latitude, territory.longitude]}
-                    radius={5}
-                    pathOptions={{
-                      fillColor: '#EF4444',
-                      fillOpacity: 0.8,
-                      color: '#DC2626',
-                      weight: 2
-                    }}
+                    coordinates={createCoordinates(territory.longitude, territory.latitude)}
                   >
-                    <Popup>
-                      <div className="text-sm">
-                        <p className="font-semibold">Recent Claim</p>
-                        <p>{claim.city}, {claim.state} {claim.zip}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(claim.timestamp).toLocaleString()}
-                        </p>
-                      </div>
-                    </Popup>
-                  </CircleMarker>
+                    <g>
+                      <circle
+                        r={6}
+                        fill="#EF4444"
+                        stroke="#DC2626"
+                        strokeWidth={2}
+                        opacity={0.8}
+                        className="animate-pulse"
+                      />
+                    </g>
+                  </Marker>
                 );
               })}
-            </MapContainer>
+            </ComposableMap>
 
             {/* Legend */}
             <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
