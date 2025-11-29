@@ -1,4 +1,4 @@
-// REAL-TIME TERRITORY MAP: US zip code map with live updates
+// REAL-TIME TERRITORY MAP: US zip code map with live updates using react-simple-maps
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -6,12 +6,13 @@ import {
   ComposableMap,
   Geographies,
   Geography,
-  Marker,
-  createCoordinates
+  Marker
 } from '@vnedyalk0v/react19-simple-maps';
-import { MapPin, CheckCircle, Lock, Clock } from '@phosphor-icons/react';
+import { createCoordinates } from '@vnedyalk0v/react19-simple-maps';
+import { MapPin, CheckCircle, Lock, Clock, MagnifyingGlass } from '@phosphor-icons/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -32,8 +33,9 @@ import { territoryZips, type TerritoryZip } from '@/lib/territory-data';
 import { getFirst300ClaimedZips, type First300Claim } from '@/lib/first300';
 import { getTerritoryPricing, processTerritoryClaim } from '@/lib/territory-pricing';
 import { validateTerritoryClaim, recordTerritoryOwnership, getOwnedTerritories, type EntityType } from '@/lib/territory-validation';
-import { dataStore } from '@/lib/store';
 import type { User } from '@/lib/types';
+
+const geoUrl = '/data/us-zips-medium.json'; // GeoJSON file (will fallback to states if not available)
 
 interface TerritoryStatus {
   zip: string;
@@ -67,8 +69,12 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
   const [validating, setValidating] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [pricing, setPricing] = useState<{ isFirst300: boolean; initialFee: number; monthlyFee: number; priorityStatus: 'first_priority' | 'second_priority'; description: string } | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedState, setSelectedState] = useState<string>('');
+  const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const [geoJsonError, setGeoJsonError] = useState(false);
 
-  // Fetch territory statuses and recent claims
+  // Fetch territory statuses and recent claims (real-time via polling)
   const fetchTerritoryData = async () => {
     try {
       // Get claimed territories from First 300 system
@@ -148,9 +154,28 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
     }
   };
 
+  // Load GeoJSON data for zip boundaries
+  useEffect(() => {
+    const loadGeoJSON = async () => {
+      try {
+        const response = await fetch(geoUrl);
+        if (response.ok) {
+          const data = await response.json();
+          setGeoJsonData(data);
+        } else {
+          setGeoJsonError(true);
+        }
+      } catch (error) {
+        console.warn('GeoJSON file not found, using marker-based map:', error);
+        setGeoJsonError(true);
+      }
+    };
+    loadGeoJSON();
+  }, []);
+
   useEffect(() => {
     fetchTerritoryData();
-    // Poll every 5 seconds for real-time updates
+    // Poll every 5 seconds for real-time updates (replaces Supabase subscriptions)
     const interval = setInterval(fetchTerritoryData, 5000);
     return () => clearInterval(interval);
   }, [currentUser, entityType, taxId]);
@@ -279,14 +304,23 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
     return '#10B981'; // Green (available)
   };
 
+  // Calculate stats
+  const stats = useMemo(() => {
+    const total = territoryZips.length;
+    const available = Array.from(territoryStatuses.values()).filter(s => s.status === 'available').length;
+    const taken = Array.from(territoryStatuses.values()).filter(s => s.status === 'taken').length;
+    const yours = Array.from(territoryStatuses.values()).filter(s => s.status === 'yours').length;
+    const states = new Set(territoryZips.map(t => t.state)).size;
+    return { total, available, taken, yours, states };
+  }, [territoryStatuses]);
 
   if (loading) {
     return (
-      <Card className="glass-card border-2 border-primary/20">
+      <Card className="glass-card border-2 border-primary/20 backdrop-blur-xl bg-background/80">
         <CardContent className="p-12 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Loading territory map...</p>
+            <p className="text-muted-foreground">Loading live territories...</p>
           </div>
         </CardContent>
       </Card>
@@ -307,6 +341,64 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
         </CardHeader>
         <CardContent>
           <div className="relative w-full h-[600px] rounded-lg overflow-hidden border-2 border-border">
+            {/* Legend */}
+            <div className="absolute top-4 left-4 z-10 bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-green-500/80 border border-green-600"></div>
+                  <span>Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-red-500/80 border border-red-600"></div>
+                  <span>First Priority Taken</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-blue-500/80 border-2 border-blue-600"></div>
+                  <span>Your Territory</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="absolute top-4 right-4 z-10 flex gap-2 flex-wrap max-w-2xl">
+              <Card className="bg-background/90 backdrop-blur-sm p-3 border shadow-lg text-center min-w-[100px]">
+                <div className="text-2xl font-bold text-primary">{stats.total.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">Total Territories</div>
+              </Card>
+              <Card className="bg-background/90 backdrop-blur-sm p-3 border shadow-lg text-center min-w-[100px]">
+                <div className="text-2xl font-bold text-green-600">{stats.available.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">Available Now</div>
+              </Card>
+              <Card className="bg-background/90 backdrop-blur-sm p-3 border shadow-lg text-center min-w-[100px]">
+                <div className="text-2xl font-bold text-blue-600">
+                  {stats.yours > 0 ? stats.yours : '—'}
+                </div>
+                <div className="text-xs text-muted-foreground">Your Territories</div>
+              </Card>
+              <Card className="bg-background/90 backdrop-blur-sm p-3 border shadow-lg text-center min-w-[100px]">
+                <div className="text-2xl font-bold text-red-600">{stats.states}</div>
+                <div className="text-xs text-muted-foreground">States Available</div>
+              </Card>
+            </div>
+
+            {/* Recent claims indicator */}
+            {recentClaims.length > 0 && (
+              <div className="absolute bottom-20 left-4 z-10 bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold">Recent Claims</span>
+                </div>
+                <div className="space-y-1 max-h-32 overflow-y-auto">
+                  {recentClaims.slice(0, 5).map((claim) => (
+                    <div key={claim.zip} className="text-xs text-muted-foreground">
+                      {claim.city}, {claim.state} {claim.zip}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* The Map */}
             <ComposableMap
               projection="geoAlbersUsa"
               projectionConfig={{ scale: 1000 }}
@@ -332,8 +424,84 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
                 }
               </Geographies>
 
-              {/* Territory zip codes as markers/circles */}
-              {territoryCoordinates.map((territory) => {
+              {/* Zip code boundaries from GeoJSON (if available) */}
+              {geoJsonData && (
+                <Geographies geography={geoJsonData}>
+                  {({ geographies }) =>
+                    geographies.map((geo) => {
+                      const zip = geo.properties?.ZCTA5CE10 || geo.properties?.ZIP || geo.properties?.GEOID || geo.properties?.ZCTA5CE20;
+                      if (!zip) return null;
+
+                      const status = territoryStatuses.get(zip);
+                      if (!status) {
+                        // Default gray for territories not in our system
+                        return (
+                          <Geography
+                            key={zip}
+                            geography={geo}
+                            fill="#E5E7EB"
+                            stroke="#9CA3AF"
+                            strokeWidth={0.3}
+                            style={{
+                              default: { outline: 'none' },
+                              hover: { outline: 'none', fill: '#D1D5DB' },
+                              pressed: { outline: 'none' }
+                            }}
+                          />
+                        );
+                      }
+
+                      const fillColor = getTerritoryColor(status);
+                      const isYours = status.status === 'yours';
+
+                      return (
+                        <TooltipProvider key={zip}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Geography
+                                geography={geo}
+                                fill={fillColor}
+                                fillOpacity={0.7}
+                                stroke={fillColor}
+                                strokeWidth={isYours ? 2 : 0.5}
+                                style={{
+                                  default: { outline: 'none', cursor: status.status === 'available' ? 'pointer' : 'default' },
+                                  hover: {
+                                    outline: 'none',
+                                    fill: status.status === 'available' ? '#059669' : fillColor,
+                                    fillOpacity: 0.9,
+                                    strokeWidth: 1.5
+                                  },
+                                  pressed: { outline: 'none' }
+                                }}
+                                onClick={() => handleTerritoryClick(zip)}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <div className="space-y-1">
+                                <p className="font-semibold">Zip: {zip}</p>
+                                <p className="text-sm">
+                                  {status.status === 'available' && 'Available - Click to claim'}
+                                  {status.status === 'taken' && `First Priority Taken${status.priorityStatus === 'first_priority' ? ' (First 300)' : ' (Paid)'}`}
+                                  {status.status === 'yours' && `Your Territory${status.priorityStatus === 'first_priority' ? ' (First 300 - Free Forever)' : ' (Paid)'}`}
+                                </p>
+                                {status.claimedAt && (
+                                  <p className="text-xs text-muted-foreground">
+                                    Claimed {new Date(status.claimedAt).toLocaleDateString()}
+                                  </p>
+                                )}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      );
+                    })
+                  }
+                </Geographies>
+              )}
+
+              {/* Territory zip codes as markers (fallback if no GeoJSON) */}
+              {geoJsonError && territoryCoordinates.map((territory) => {
                 const status = territoryStatuses.get(territory.zip);
                 if (!status) return null;
 
@@ -402,40 +570,29 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
               })}
             </ComposableMap>
 
-            {/* Legend */}
-            <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-green-500/80 border border-green-600"></div>
-                  <span>Available</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-red-500/80 border border-red-600"></div>
-                  <span>First Priority Taken</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-blue-500/80 border-2 border-blue-600"></div>
-                  <span>Your Territory</span>
-                </div>
+            {/* Search Bar */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg flex gap-2 w-full max-w-md">
+              <select
+                value={selectedState}
+                onChange={(e) => setSelectedState(e.target.value)}
+                className="flex-1 p-2 border rounded-md bg-background text-sm"
+              >
+                <option value="">All States</option>
+                {Array.from(new Set(territoryZips.map(t => t.state))).sort().map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
+              <div className="relative flex-1">
+                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search zip, city, state..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 text-sm"
+                />
               </div>
             </div>
-
-            {/* Recent claims indicator */}
-            {recentClaims.length > 0 && (
-              <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm rounded-lg p-3 border shadow-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-semibold">Recent Claims</span>
-                </div>
-                <div className="space-y-1 max-h-32 overflow-y-auto">
-                  {recentClaims.slice(0, 5).map((claim) => (
-                    <div key={claim.zip} className="text-xs text-muted-foreground">
-                      {claim.city}, {claim.state} {claim.zip}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
@@ -572,4 +729,3 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
     </>
   );
 }
-
