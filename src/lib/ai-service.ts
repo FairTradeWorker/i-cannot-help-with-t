@@ -254,6 +254,9 @@ export async function uploadInvoiceImages(
   const imageBase64Array = await Promise.all(imagePromises);
 
   // Use GPT-4o Vision to extract invoice data
+  // Combine all images into the prompt for vision analysis
+  const imagesText = imageBase64Array.map((img, i) => `IMAGE ${i + 1}:\n${img}`).join('\n\n');
+  
   const promptText = `You are an expert at reading construction invoices and receipts.
 
 Analyze these invoice/receipt images and extract:
@@ -273,7 +276,7 @@ Return valid JSON in this exact format:
 
 If a field is not found, use 0 or empty array. Be precise with numbers.
 
-IMAGES: ${imageBase64Array.map((img, i) => `Image ${i + 1}: ${img.substring(0, 100)}...`).join('\n')}`;
+${imagesText}`;
 
   const response = await window.spark.llm(promptText, "gpt-4o", true);
   
