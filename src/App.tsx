@@ -99,6 +99,7 @@ function App() {
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [jobsSearchQuery, setJobsSearchQuery] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
@@ -237,6 +238,15 @@ function App() {
     if (isMobile) {
       setMobileMenuOpen(false); // Close mobile menu after navigation
     }
+  };
+
+  const handleSearch = (query: string) => {
+    setJobsSearchQuery(query);
+    handleNavClick('jobs');
+    // Clear the search query after a short delay to allow JobsTab to read it
+    setTimeout(() => {
+      setJobsSearchQuery('');
+    }, 100);
   };
 
   const handleCreateJob = (selection?: ServiceSelection) => {
@@ -831,6 +841,7 @@ function App() {
                           setPreselectedCategoryId(null);
                           setShowServiceMenu(true);
                         }}
+                        onSearch={handleSearch}
                       />
 
                       {/* Top section with Post Job */}
@@ -1297,6 +1308,7 @@ function App() {
                       onJobSelect={(job) => {
                         toast.success(`Selected job: ${job.title}`);
                       }}
+                      initialSearchTerm={jobsSearchQuery}
                     />
                   )}
                   {activeTab === 'contractors-browse' && <ContractorBrowser />}

@@ -41,6 +41,7 @@ interface JobsTabProps {
   user?: User;
   onPostJob?: () => void;
   onJobSelect?: (job: Job) => void;
+  initialSearchTerm?: string;
 }
 
 // Sample jobs for demonstration (will be combined with dataStore jobs)
@@ -180,11 +181,11 @@ const sampleJobs: Job[] = [
   },
 ];
 
-export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
+export function JobsTab({ user, onPostJob, onJobSelect, initialSearchTerm }: JobsTabProps) {
   const [storedJobs, setStoredJobs] = useKV<Job[]>('posted-jobs', []);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm || '');
   const [selectedState, setSelectedState] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -193,6 +194,12 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
   useEffect(() => {
     loadJobs();
   }, [storedJobs]);
+
+  useEffect(() => {
+    if (initialSearchTerm) {
+      setSearchTerm(initialSearchTerm);
+    }
+  }, [initialSearchTerm]);
 
   const loadJobs = async () => {
     setLoading(true);

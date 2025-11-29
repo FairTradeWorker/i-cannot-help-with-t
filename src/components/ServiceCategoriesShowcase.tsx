@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { 
   House, 
   Wrench, 
@@ -6,11 +7,13 @@ import {
   Tree, 
   Hammer, 
   Broom,
-  ArrowRight
+  ArrowRight,
+  MagnifyingGlass
 } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { SERVICE_CATEGORIES } from '@/types/service-categories';
 
 // Icon mapping
@@ -26,12 +29,22 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 interface ServiceCategoriesShowcaseProps {
   onCategoryClick?: (categoryId: string) => void;
   onServiceSelect?: () => void;
+  onSearch?: (query: string) => void;
 }
 
 export function ServiceCategoriesShowcase({ 
   onCategoryClick, 
-  onServiceSelect 
+  onServiceSelect,
+  onSearch
 }: ServiceCategoriesShowcaseProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim() && onSearch) {
+      onSearch(searchQuery.trim());
+    }
+  };
 
   return (
     <div className="space-y-4 rounded-2xl border border-border/60 bg-white px-4 py-3 md:px-6 md:py-4 shadow-sm">
@@ -47,9 +60,42 @@ export function ServiceCategoriesShowcase({
         </h2>
         
         {/* Subheadline */}
-        <p className="text-sm md:text-base text-muted-foreground font-normal">
+        <p className="text-sm md:text-base text-muted-foreground font-normal mb-6">
           Tap a category to start a job post.
         </p>
+
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="flex justify-center mb-4">
+          <div className="relative w-[90%] md:w-[50%]">
+            <MagnifyingGlass 
+              className="absolute left-4 top-1/2 transform -translate-y-1/2"
+              style={{ width: '20px', height: '20px', color: '#6b7280' }}
+              weight="regular"
+            />
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Describe your project or search for a service..."
+              className="pl-12 pr-4 transition-all duration-200"
+              style={{
+                height: '44px',
+                borderRadius: '24px',
+                border: '1px solid #d1d5db',
+                padding: '0 20px 0 48px',
+                fontSize: '14px',
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#2563eb';
+                e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#d1d5db';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+        </form>
       </div>
 
       {/* All 6 category cards in one row */}
