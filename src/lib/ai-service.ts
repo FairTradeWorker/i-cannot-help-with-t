@@ -103,6 +103,7 @@ Respond with valid JSON in this exact format:
 }
 
 import { learningDB } from './learning-db';
+import { getMaterialCorrections } from './material-corrections';
 
 export async function analyzeJobFromVideo(
   videoAnalysis: VideoAnalysis,
@@ -159,6 +160,20 @@ Respond with valid JSON in this exact format:
     
     // Apply learned confidence boost
     scope.confidenceScore = Math.min(100, scope.confidenceScore * context.confidenceBoost);
+    
+    // Apply material corrections based on learned patterns
+    const corrections = await getMaterialCorrections(undefined, zipCode?.substring(0, 3));
+    scope.materials = scope.materials.map(mat => {
+      const corr = corrections.find(c => 
+        c.material.toLowerCase().includes(mat.name.toLowerCase()) &&
+        (!c.zipPrefix || c.zipPrefix === zipCode?.substring(0, 3))
+      );
+      if (corr && Math.abs(corr.adjustmentPct) > 5) {
+        mat.quantity = Math.round(mat.quantity * (1 + corr.adjustmentPct / 100));
+        mat.notes = `AI auto-adjusted ${corr.adjustmentPct > 0 ? '+' : ''}${corr.adjustmentPct.toFixed(0)}% (learned from ${corr.count} jobs)`;
+      }
+      return mat;
+    });
     
     // Store prediction with unique ID
     const predictionId = `pred-${Date.now()}-${Math.floor(Math.random() * 10000)}`;

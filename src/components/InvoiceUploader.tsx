@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { uploadInvoiceImages } from '@/lib/ai-service';
+import { uploadInvoiceImages } from '@/lib/invoice-ocr';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Spinner } from '@phosphor-icons/react';  // ← FIXED
