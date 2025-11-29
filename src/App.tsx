@@ -841,87 +841,87 @@ function App() {
                                   Get Started
                                 </Button>
                               </div>
-                              <div className="flex flex-wrap gap-3 text-[11px] text-muted-foreground">
-                                <div className="flex items-center gap-1.5">
-                                  <VideoCamera className="w-3.5 h-3.5" />
+                              <div className="flex flex-wrap gap-4 text-sm md:text-base text-muted-foreground">
+                                <div className="flex items-center gap-2">
+                                  <VideoCamera className="w-5 h-5 md:w-6 md:h-6" />
                                   <span>Post by video, photos, or text</span>
                                 </div>
-                                <div className="flex items-center gap-1.5">
-                                  <Lightning className="w-3.5 h-3.5" />
+                                <div className="flex items-center gap-2">
+                                  <Lightning className="w-5 h-5 md:w-6 md:h-6" />
                                   <span>Instant matches to nearby pros</span>
                                 </div>
-                                <div className="flex items-center gap-1.5">
-                                  <ShieldCheck className="w-3.5 h-3.5" />
+                                <div className="flex items-center gap-2">
+                                  <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />
                                   <span>No platform fees for contractors</span>
                                 </div>
                               </div>
                               
                               {/* How It Works Section */}
-                              <div className="border-t border-border/50 pt-4">
-                                <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                                  <Brain className="w-4 h-4 text-primary" />
+                              <div className="border-t border-border/50 pt-5">
+                                <h4 className="text-base md:text-lg font-semibold mb-4 flex items-center gap-2">
+                                  <Brain className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                                   How It Works
                                 </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                  <div className="flex items-start gap-2">
-                                    <div className="p-1.5 rounded-lg bg-primary/10 flex-shrink-0 mt-0.5">
-                                      <span className="text-xs font-bold text-primary">1</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                  <div className="flex items-start gap-3">
+                                    <div className="p-2.5 rounded-lg bg-primary/10 flex-shrink-0 mt-0.5">
+                                      <span className="text-base md:text-lg font-bold text-primary">1</span>
                                     </div>
                                     <div>
-                                      <p className="text-xs font-medium mb-0.5">Post Your Job</p>
-                                      <p className="text-[10px] text-muted-foreground">Upload video, photos, or describe your project</p>
+                                      <p className="text-sm md:text-base font-medium mb-1">Post Your Job</p>
+                                      <p className="text-xs md:text-sm text-muted-foreground">Upload video, photos, or describe your project</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-start gap-2">
-                                    <div className="p-1.5 rounded-lg bg-accent/10 flex-shrink-0 mt-0.5">
-                                      <span className="text-xs font-bold text-accent">2</span>
+                                  <div className="flex items-start gap-3">
+                                    <div className="p-2.5 rounded-lg bg-accent/10 flex-shrink-0 mt-0.5">
+                                      <span className="text-base md:text-lg font-bold text-accent">2</span>
                                     </div>
                                     <div>
-                                      <p className="text-xs font-medium mb-0.5">Get Matched</p>
-                                      <p className="text-[10px] text-muted-foreground">AI connects you with verified local contractors</p>
+                                      <p className="text-sm md:text-base font-medium mb-1">Get Matched</p>
+                                      <p className="text-xs md:text-sm text-muted-foreground">AI connects you with verified local contractors</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-start gap-2">
-                                    <div className="p-1.5 rounded-lg bg-secondary/10 flex-shrink-0 mt-0.5">
-                                      <span className="text-xs font-bold text-secondary">3</span>
+                                  <div className="flex items-start gap-3">
+                                    <div className="p-2.5 rounded-lg bg-secondary/10 flex-shrink-0 mt-0.5">
+                                      <span className="text-base md:text-lg font-bold text-secondary">3</span>
                                     </div>
                                     <div>
-                                      <p className="text-xs font-medium mb-0.5">Compare & Choose</p>
-                                      <p className="text-[10px] text-muted-foreground">Review bids, ratings, and select the best fit</p>
+                                      <p className="text-sm md:text-base font-medium mb-1">Compare & Choose</p>
+                                      <p className="text-xs md:text-sm text-muted-foreground">Review bids, ratings, and select the best fit</p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
 
                               {/* Benefits & Stats */}
-                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-3">
                                 <div className="text-center">
-                                  <div className="flex items-center justify-center gap-1 mb-1">
-                                    <Clock className="w-3.5 h-3.5 text-primary" />
-                                    <span className="text-xs font-bold">24hr</span>
+                                  <div className="flex items-center justify-center gap-2 mb-2">
+                                    <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                                    <span className="text-base md:text-lg font-bold">24hr</span>
                                   </div>
-                                  <p className="text-[10px] text-muted-foreground">Avg Response</p>
+                                  <p className="text-xs md:text-sm text-muted-foreground">Avg Response</p>
                                 </div>
                                 <div className="text-center">
-                                  <div className="flex items-center justify-center gap-1 mb-1">
-                                    <Star className="w-3.5 h-3.5 text-amber-500" weight="fill" />
-                                    <span className="text-xs font-bold">4.8/5</span>
+                                  <div className="flex items-center justify-center gap-2 mb-2">
+                                    <Star className="w-5 h-5 md:w-6 md:h-6 text-amber-500" weight="fill" />
+                                    <span className="text-base md:text-lg font-bold">4.8/5</span>
                                   </div>
-                                  <p className="text-[10px] text-muted-foreground">Avg Rating</p>
+                                  <p className="text-xs md:text-sm text-muted-foreground">Avg Rating</p>
                                 </div>
                                 <div className="text-center">
-                                  <div className="flex items-center justify-center gap-1 mb-1">
-                                    <Users className="w-3.5 h-3.5 text-accent" />
-                                    <span className="text-xs font-bold">3.5K+</span>
+                                  <div className="flex items-center justify-center gap-2 mb-2">
+                                    <Users className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+                                    <span className="text-base md:text-lg font-bold">3.5K+</span>
                                   </div>
-                                  <p className="text-[10px] text-muted-foreground">Contractors</p>
+                                  <p className="text-xs md:text-sm text-muted-foreground">Contractors</p>
                                 </div>
                                 <div className="text-center">
-                                  <div className="flex items-center justify-center gap-1 mb-1">
-                                    <CheckCircleIcon className="w-3.5 h-3.5 text-secondary" weight="fill" />
-                                    <span className="text-xs font-bold">$20</span>
+                                  <div className="flex items-center justify-center gap-2 mb-2">
+                                    <CheckCircleIcon className="w-5 h-5 md:w-6 md:h-6 text-secondary" weight="fill" />
+                                    <span className="text-base md:text-lg font-bold">$20</span>
                                   </div>
-                                  <p className="text-[10px] text-muted-foreground">One-time Fee</p>
+                                  <p className="text-xs md:text-sm text-muted-foreground">One-time Fee</p>
                                 </div>
                               </div>
                             </div>
