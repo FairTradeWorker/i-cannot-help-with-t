@@ -5,8 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Users,
   UserPlus,
@@ -215,29 +213,22 @@ export function TeamCollaboration() {
 
       {/* Team Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <GlassSurface id="team-members-stat" context={{...getDefaultGlassContext(), serviceCategory: 'team'}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Team Members</p>
             <p className="text-2xl font-bold">{members.length}</p>
             <p className="text-xs text-green-600">+1 this month</p>
           </Card>
-        </GlassSurface>
-        <GlassSurface id="team-earnings-stat" context={{...getDefaultGlassContext(), serviceCategory: 'team', confidence: 0.9}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Total Earnings</p>
             <p className="text-2xl font-bold">${(totalEarnings / 1000).toFixed(0)}K</p>
             <p className="text-xs text-green-600">+12% vs last year</p>
           </Card>
-        </GlassSurface>
-        <GlassSurface id="team-jobs-stat" context={{...getDefaultGlassContext(), serviceCategory: 'team'}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Jobs Completed</p>
             <p className="text-2xl font-bold">{totalJobs}</p>
             <p className="text-xs text-muted-foreground">All time</p>
           </Card>
-        </GlassSurface>
-        <GlassSurface id="team-rating-stat" context={{...getDefaultGlassContext(), serviceCategory: 'team', confidence: avgRating / 100}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Team Rating</p>
             <div className="flex items-center gap-1">
               <Star className="w-5 h-5 text-yellow-500" weight="fill" />
@@ -245,7 +236,6 @@ export function TeamCollaboration() {
             </div>
             <p className="text-xs text-muted-foreground">Average</p>
           </Card>
-        </GlassSurface>
       </div>
 
       <Tabs defaultValue="members" className="w-full">
@@ -269,16 +259,7 @@ export function TeamCollaboration() {
                   onClick={() => setSelectedMember(member)}
                   className="cursor-pointer"
                 >
-                  <GlassSurface
-                    id={`team-member-${member.id}`}
-                    context={{
-                      ...getDefaultGlassContext(),
-                      serviceCategory: 'team',
-                      confidence: member.rating / 100,
-                      urgency: member.status === 'active' ? 'medium' : 'low'
-                    }}
-                  >
-                    <Card className="p-4 border-0 bg-transparent">
+                    <Card className="glass-card p-4 border-0 bg-transparent">
                       <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="relative">
@@ -326,7 +307,6 @@ export function TeamCollaboration() {
                       </div>
                     </div>
                   </Card>
-                  </GlassSurface>
                 </motion.div>
               );
             })}
@@ -335,17 +315,7 @@ export function TeamCollaboration() {
 
         <TabsContent value="projects" className="space-y-4">
           {projects.map(project => (
-            <GlassSurface
-              key={project.id}
-              id={`team-project-${project.id}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'team',
-                completion: project.progress / 100,
-                urgency: project.status === 'in_progress' ? 'medium' : 'low'
-              }}
-            >
-              <Card className="p-4 border-0 bg-transparent">
+            <Card key={project.id} className="glass-card p-4 border-0 bg-transparent">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <h4 className="font-semibold">{project.title}</h4>
@@ -413,23 +383,12 @@ export function TeamCollaboration() {
                 </div>
               </div>
             </Card>
-            </GlassSurface>
           ))}
         </TabsContent>
 
         <TabsContent value="goals" className="space-y-4">
           {goals.map(goal => (
-            <GlassSurface
-              key={goal.id}
-              id={`team-goal-${goal.id}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'team',
-                completion: goal.current / goal.target,
-                urgency: goal.current / goal.target > 0.8 ? 'high' : 'medium'
-              }}
-            >
-              <Card className="p-4 border-0 bg-transparent">
+            <Card key={goal.id} className="glass-card p-4 border-0 bg-transparent">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2">
@@ -466,20 +425,11 @@ export function TeamCollaboration() {
                 </p>
               </div>
             </Card>
-            </GlassSurface>
           ))}
         </TabsContent>
 
         <TabsContent value="leaderboard" className="space-y-4">
-          <GlassSurface
-            id="team-leaderboard"
-            context={{
-              ...getDefaultGlassContext(),
-              serviceCategory: 'team',
-              confidence: 0.95
-            }}
-          >
-            <Card className="p-4 border-0 bg-transparent">
+          <Card className="glass-card p-4 border-0 bg-transparent">
             <h4 className="font-semibold mb-4 flex items-center gap-2">
               <Trophy className="w-5 h-5 text-yellow-500" weight="fill" />
               Monthly Top Performers
@@ -521,7 +471,6 @@ export function TeamCollaboration() {
                 ))}
             </div>
           </Card>
-          </GlassSurface>
         </TabsContent>
       </Tabs>
     </div>

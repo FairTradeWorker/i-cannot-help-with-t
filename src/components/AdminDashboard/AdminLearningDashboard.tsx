@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { TrendUp, Brain, ChartLine, Lightning, Target, Rocket } from '@phosphor-icons/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { GlassSurface } from '../GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { intelligenceDB } from '@/lib/intelligence-db';
 
 export function AdminLearningDashboard() {

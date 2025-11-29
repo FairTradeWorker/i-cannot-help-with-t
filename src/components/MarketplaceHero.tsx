@@ -8,8 +8,6 @@ import {
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 
 export function MarketplaceHero() {
   const stats = [

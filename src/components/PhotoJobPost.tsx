@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { Image as ImageIcon, Upload, X, ArrowLeft, Camera, Plus } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';

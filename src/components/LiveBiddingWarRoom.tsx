@@ -14,8 +14,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Gavel,
   Lightning,

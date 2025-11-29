@@ -5,8 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   FileText,
   Signature,
@@ -156,36 +154,28 @@ export function DigitalContracts() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <GlassSurface id="contracts-total" context={{...getDefaultGlassContext(), serviceCategory: 'contracts'}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Total Contracts</p>
             <p className="text-2xl font-bold">{contracts.length}</p>
           </Card>
-        </GlassSurface>
-        <GlassSurface id="contracts-pending" context={{...getDefaultGlassContext(), serviceCategory: 'contracts', urgency: 'high'}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Pending Signature</p>
             <p className="text-2xl font-bold text-yellow-600">
               {contracts.filter(c => c.status === 'pending_signature').length}
             </p>
           </Card>
-        </GlassSurface>
-        <GlassSurface id="contracts-signed" context={{...getDefaultGlassContext(), serviceCategory: 'contracts', completion: 1, confidence: 0.95}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Signed</p>
             <p className="text-2xl font-bold text-green-600">
               {contracts.filter(c => c.status === 'signed').length}
             </p>
           </Card>
-        </GlassSurface>
-        <GlassSurface id="contracts-value" context={{...getDefaultGlassContext(), serviceCategory: 'contracts', confidence: 0.9}}>
-          <Card className="p-4 border-0 bg-transparent">
+        <Card className="glass-card p-4 border-0 bg-transparent">
             <p className="text-xs text-muted-foreground">Total Value</p>
             <p className="text-2xl font-bold">
               ${contracts.reduce((sum, c) => sum + (c.value || 0), 0).toLocaleString()}
             </p>
           </Card>
-        </GlassSurface>
       </div>
 
       {/* Filter Tabs */}
@@ -214,16 +204,7 @@ export function DigitalContracts() {
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.01 }}
             >
-              <GlassSurface
-                id={`contract-${contract.id}`}
-                context={{
-                  ...getDefaultGlassContext(),
-                  serviceCategory: 'contracts',
-                  urgency: contract.status === 'pending_signature' ? 'high' : 'low',
-                  completion: contract.status === 'signed' ? 1 : 0
-                }}
-              >
-                <Card className="p-4 border-0 bg-transparent">
+              <Card className="glass-card p-4 border-0 bg-transparent">
                   <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-primary/10">
@@ -305,7 +286,6 @@ export function DigitalContracts() {
                   </div>
                 </div>
               </Card>
-              </GlassSurface>
             </motion.div>
           );
         })}
@@ -316,16 +296,7 @@ export function DigitalContracts() {
         <h3 className="text-lg font-bold mb-4">Contract Templates</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {templates.map(template => (
-            <GlassSurface
-              key={template.id}
-              id={`contract-template-${template.id}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'contracts',
-                confidence: 0.9
-              }}
-            >
-              <Card className="p-4 border-0 bg-transparent cursor-pointer hover:border-primary/50 transition-colors">
+            <Card key={template.id} className="glass-card p-4 border-0 bg-transparent cursor-pointer hover:border-primary/50 transition-colors">
               <div className="flex items-start justify-between">
                 <div>
                   <h4 className="font-semibold">{template.name}</h4>
@@ -343,7 +314,6 @@ export function DigitalContracts() {
                 </Button>
               </div>
             </Card>
-            </GlassSurface>
           ))}
         </div>
       </div>

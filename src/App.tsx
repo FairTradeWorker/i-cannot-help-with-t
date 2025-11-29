@@ -74,8 +74,6 @@ import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
 import { ServiceCategoriesShowcase } from '@/components/ServiceCategoriesShowcase';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
-import { GlassSurface } from '@/components/GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import type { ServiceSelection } from '@/types/service-categories';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
@@ -619,17 +617,10 @@ function App() {
                     <div className="space-y-8">
                       {/* Top section with Post Job and Mini Map */}
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <GlassSurface
-                          id="post-job-card"
-                          context={{
-                            ...getDefaultGlassContext(),
-                            urgency: 'medium',
-                            serviceCategory: 'general'
-                          }}
-                          onClick={handleCreateJob}
-                          className="cursor-pointer lg:col-span-2"
-                        >
-                          <Card className="p-4 border-0 bg-transparent hover:bg-transparent">
+                          <Card 
+                            className="glass-card p-4 border-0 bg-transparent hover:bg-transparent cursor-pointer lg:col-span-2"
+                            onClick={handleCreateJob}
+                          >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
                                 <div className="p-3 rounded-xl bg-primary">
@@ -645,23 +636,16 @@ function App() {
                               </Button>
                             </div>
                           </Card>
-                        </GlassSurface>
                         
                         {/* Mini Dispatch/Territory Map - positioned top right */}
                         <TerritoryMiniMap onExplore={() => handleNavClick('territories', 'overview')} />
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <GlassSurface
-                          id="territories-card"
-                          context={{
-                            ...getDefaultGlassContext(),
-                            serviceCategory: 'territories'
-                          }}
-                          onClick={() => handleNavClick('territories', 'overview')}
-                          className="cursor-pointer h-full"
-                        >
-                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                          <Card 
+                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
+                            onClick={() => handleNavClick('territories', 'overview')}
+                          >
                             <div className="flex items-center gap-4 mb-3">
                               <div className="p-3 rounded-xl bg-primary">
                                 <MapTrifold className="w-7 h-7 text-white" weight="fill" />
@@ -680,19 +664,10 @@ function App() {
                               <Badge variant="outline" className="text-[10px]">+{getStateStats().length - 3} states</Badge>
                             </div>
                           </Card>
-                        </GlassSurface>
-
-                        <GlassSurface
-                          id="jobs-card"
-                          context={{
-                            ...getDefaultGlassContext(),
-                            serviceCategory: 'jobs',
-                            urgency: 'medium'
-                          }}
-                          onClick={() => handleNavClick('jobs')}
-                          className="cursor-pointer h-full"
-                        >
-                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                          <Card 
+                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
+                            onClick={() => handleNavClick('jobs')}
+                          >
                             <div className="flex items-center gap-4 mb-3">
                               <div className="p-3 rounded-xl bg-accent">
                                 <Briefcase className="w-7 h-7 text-white" weight="fill" />
@@ -710,19 +685,11 @@ function App() {
                               <Badge variant="secondary" className="text-[10px]">+12</Badge>
                             </div>
                           </Card>
-                        </GlassSurface>
 
-                        <GlassSurface
-                          id="contractors-card"
-                          context={{
-                            ...getDefaultGlassContext(),
-                            serviceCategory: 'contractors',
-                            confidence: 0.95
-                          }}
-                          onClick={() => handleNavClick('contractors-browse')}
-                          className="cursor-pointer h-full"
-                        >
-                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                          <Card 
+                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
+                            onClick={() => handleNavClick('contractors-browse')}
+                          >
                             <div className="flex items-center gap-4 mb-3">
                               <div className="p-3 rounded-xl bg-secondary">
                                 <Hammer className="w-7 h-7 text-white" weight="fill" />
@@ -739,20 +706,11 @@ function App() {
                               <span className="text-muted-foreground">View ratings & reviews</span>
                             </div>
                           </Card>
-                        </GlassSurface>
 
-                        <GlassSurface
-                          id="api-card"
-                          context={{
-                            ...getDefaultGlassContext(),
-                            serviceCategory: 'api',
-                            urgency: 'low',
-                            confidence: 1.0
-                          }}
-                          onClick={() => handleNavClick('api')}
-                          className="cursor-pointer h-full"
-                        >
-                          <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                          <Card 
+                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
+                            onClick={() => handleNavClick('api')}
+                          >
                             <div className="flex items-center gap-4 mb-3">
                               <div className="p-3 rounded-xl bg-primary">
                                 <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
@@ -769,7 +727,6 @@ function App() {
                               <span className="text-muted-foreground">Real-time data</span>
                             </div>
                           </Card>
-                        </GlassSurface>
                       </div>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
@@ -783,16 +740,7 @@ function App() {
                         onServiceSelect={() => setShowServiceMenu(true)}
                       />
 
-                      <GlassSurface
-                        id="zero-fees-card"
-                        context={{
-                          ...getDefaultGlassContext(),
-                          serviceCategory: 'platform',
-                          confidence: 1.0
-                        }}
-                        className="p-8"
-                      >
-                        <Card className="p-8 border-0 bg-transparent">
+                        <Card className="glass-card p-8 border-0 bg-transparent">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                           <div>
                             <h3 className="text-2xl font-bold mb-2">Zero Fees for Contractors</h3>
@@ -869,7 +817,6 @@ function App() {
                           </div>
                         </div>
                         </Card>
-                      </GlassSurface>
                     </div>
                   )}
                   {activeTab === 'jobs' && (

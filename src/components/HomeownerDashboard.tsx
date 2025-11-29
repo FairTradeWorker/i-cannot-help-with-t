@@ -7,8 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QuickJobPost } from './QuickJobPost';
 import { HomeownerProfileForm } from './HomeownerProfileForm';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import type { User } from '@/lib/types';

@@ -11,8 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
-import { GlassSurface } from '@/components/GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import type { ServiceSelection } from '@/types/service-categories';
 import { getServiceInfo } from '@/types/service-categories';
 
@@ -342,14 +340,7 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
         <div className="grid lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <TabsContent value="photo" className="mt-0">
-              <GlassSurface
-                id="upload-photos-card"
-                context={{
-                  ...getDefaultGlassContext(),
-                  serviceCategory: serviceSelection?.categoryId || 'general'
-                }}
-              >
-                <Card className="border-0 bg-transparent">
+                <Card className="glass-card border-0 bg-transparent">
                   <CardHeader>
                     <h3 className="text-xl font-bold">Upload Photos</h3>
                     <p className="text-sm text-muted-foreground">
@@ -411,18 +402,10 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                   )}
                 </CardContent>
               </Card>
-              </GlassSurface>
             </TabsContent>
 
             <TabsContent value="video" className="mt-0">
-              <GlassSurface
-                id="video-card"
-                context={{
-                  ...getDefaultGlassContext(),
-                  serviceCategory: serviceSelection?.categoryId || 'general'
-                }}
-              >
-                <Card className="border-0 bg-transparent">
+                <Card className="glass-card border-0 bg-transparent">
                   <CardContent className="p-8 text-center">
                     <VideoCamera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-xl font-bold mb-2">Video Walkthrough</h3>
@@ -432,36 +415,19 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                     <Badge variant="secondary">Coming Soon</Badge>
                   </CardContent>
                 </Card>
-              </GlassSurface>
             </TabsContent>
 
             <TabsContent value="text" className="mt-0">
-              <GlassSurface
-                id="text-card"
-                context={{
-                  ...getDefaultGlassContext(),
-                  serviceCategory: serviceSelection?.categoryId || 'general'
-                }}
-              >
-                <Card className="border-0 bg-transparent">
+                <Card className="glass-card border-0 bg-transparent">
                   <CardContent className="p-8">
                     <p className="text-sm text-muted-foreground">
                       Describe your project in detail below
                     </p>
                   </CardContent>
                 </Card>
-              </GlassSurface>
             </TabsContent>
 
-            <GlassSurface
-              id="job-details-card"
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: serviceSelection?.categoryId || 'general',
-                urgency: serviceSelection ? 'medium' : 'low'
-              }}
-            >
-              <Card className="border-0 bg-transparent">
+            <Card className="glass-card border-0 bg-transparent">
                 <CardHeader>
                   <h3 className="text-xl font-bold">Job Details</h3>
                 </CardHeader>
@@ -557,15 +523,10 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                 </div>
               </CardContent>
             </Card>
-            </GlassSurface>
           </div>
 
           <div className="space-y-6">
-            <GlassSurface
-              id="how-it-works-card"
-              context={getDefaultGlassContext()}
-            >
-              <Card className="border-0 bg-transparent">
+            <Card className="glass-card border-0 bg-transparent">
                 <CardHeader>
                   <h3 className="text-lg font-bold">How it Works</h3>
                 </CardHeader>
@@ -616,14 +577,9 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                 </div>
               </CardContent>
             </Card>
-            </GlassSurface>
 
             {activeTab === 'photo' && (
-              <GlassSurface
-                id="photo-tips-card"
-                context={getDefaultGlassContext()}
-              >
-                <Card className="border-0 bg-transparent">
+              <Card className="glass-card border-0 bg-transparent">
                   <CardHeader>
                     <h4 className="font-bold flex items-center gap-2">
                       <Camera className="w-5 h-5" />
@@ -639,21 +595,11 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
                     </ul>
                   </CardContent>
                 </Card>
-              </GlassSurface>
             )}
           </div>
         </div>
 
-        <GlassSurface
-          id="ready-to-post-card"
-          context={{
-            ...getDefaultGlassContext(),
-            urgency: serviceSelection ? 'medium' : 'low',
-            confidence: serviceSelection ? 0.9 : 0.7
-          }}
-          className="mt-6"
-        >
-          <Card className="border-2 border-primary/20 bg-transparent">
+        <Card className="glass-card border-2 border-primary/20 bg-transparent mt-6">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -673,7 +619,6 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
               </div>
             </CardContent>
           </Card>
-        </GlassSurface>
       </Tabs>
 
       <ServiceCategoryMegaMenu

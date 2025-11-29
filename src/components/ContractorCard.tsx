@@ -3,8 +3,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { GlassSurface } from './GlassSurface';
-import { contractorToGlassContext } from '@/lib/glass-context-utils';
 import type { User } from '@/lib/types';
 
 interface ContractorCardProps {
@@ -65,15 +63,6 @@ export function ContractorCard({ contractor, compact = false, showActions = true
     return { label: 'Average', variant: 'outline' as const };
   };
 
-  // Get glass context
-  const glassContext = 'contractorProfile' in contractor
-    ? contractorToGlassContext(contractor)
-    : {
-        urgency: 'low' as const,
-        confidence: rating / 100,
-        serviceCategory: contractorSpecialties[0]?.toLowerCase() || 'general',
-        dataComplexity: 'simple' as const
-  };
 
   if (compact) {
     return (
@@ -115,13 +104,10 @@ export function ContractorCard({ contractor, compact = false, showActions = true
   const ratingBadge = getRatingBadge(rating);
 
   return (
-    <GlassSurface
-      id={`contractor-${contractor.id}`}
-      context={glassContext}
+    <Card 
+      className="glass-card p-6 border-0 bg-transparent hover:bg-transparent cursor-pointer" 
       onClick={onSelect}
-      className="cursor-pointer"
     >
-      <Card className="p-6 border-0 bg-transparent hover:bg-transparent">
       <div className="flex items-start gap-4">
         <div className="relative flex-shrink-0">
           <Avatar className="w-16 h-16 border-2 border-border shadow-lg">
@@ -199,6 +185,5 @@ export function ContractorCard({ contractor, compact = false, showActions = true
         </div>
       </div>
     </Card>
-    </GlassSurface>
   );
 }

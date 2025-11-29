@@ -12,8 +12,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SERVICE_CATEGORIES } from '@/types/service-categories';
-import { GlassSurface } from './GlassSurface';
-import type { GlassContext } from '@/lib/glassmorphism-engine';
 
 // Icon mapping
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -34,26 +32,6 @@ export function ServiceCategoriesShowcase({
   onCategoryClick, 
   onServiceSelect 
 }: ServiceCategoriesShowcaseProps) {
-  const getCategoryGlassContext = (categoryId: string): GlassContext => {
-    // Map category IDs to service categories for glass tinting
-    const categoryMap: Record<string, string> = {
-      'interior-finishing': 'interior',
-      'kitchen-bath-plumbing': 'plumbing',
-      'electrical-hvac-tech': 'electrical',
-      'exterior-garden': 'landscaping',
-      'construction-heavy': 'construction',
-      'cleaning-lifestyle': 'cleaning',
-    };
-
-    return {
-      urgency: 'low',
-      confidence: 0.9,
-      serviceCategory: categoryMap[categoryId] || 'general',
-      weather: 'sunny',
-      timeOfDay: 'afternoon',
-      completion: 1,
-    };
-  };
 
   return (
     <div className="space-y-6">
@@ -97,13 +75,10 @@ export function ServiceCategoriesShowcase({
                 ease: [0.4, 0, 0.2, 1]
               }}
             >
-              <GlassSurface
-                id={`category-${category.id}`}
-                context={getCategoryGlassContext(category.id)}
-                onClick={() => onCategoryClick?.(category.id)}
-                className="cursor-pointer h-full"
-              >
-                <Card className="p-6 h-full border-0 bg-transparent hover:bg-transparent">
+                <Card 
+                  className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
+                  onClick={() => onCategoryClick?.(category.id)}
+                >
                   <div className="flex items-start justify-between mb-4">
                     <div className="p-3 rounded-xl bg-primary/10">
                       <Icon className="w-8 h-8 text-primary" weight="fill" />
@@ -159,7 +134,6 @@ export function ServiceCategoriesShowcase({
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Card>
-              </GlassSurface>
             </motion.div>
           );
         })}

@@ -17,8 +17,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { 
   territoryZips, 
   getStateStats, 
@@ -391,17 +389,7 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.02 }}
                   >
-                    <GlassSurface
-                      id={`territory-${territory.zip}`}
-                      context={{
-                        ...getDefaultGlassContext(),
-                        serviceCategory: 'territories',
-                        urgency: isClaimed ? 'medium' : 'low',
-                        confidence: isAvailable ? 0.9 : 0.5
-                      }}
-                      className={isClaimed ? 'border-primary border-2' : ''}
-                    >
-                      <Card className={`p-6 border-0 bg-transparent ${!isAvailable && !isClaimed ? 'opacity-60' : ''}`}>
+                      <Card className={`glass-card p-6 border-0 bg-transparent ${!isAvailable && !isClaimed ? 'opacity-60' : ''} ${isClaimed ? 'border-primary border-2' : ''}`}>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -459,7 +447,6 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
                         </Button>
                       </div>
                     </Card>
-                    </GlassSurface>
                   </motion.div>
                 );
               })}

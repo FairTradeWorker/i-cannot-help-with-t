@@ -6,8 +6,6 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import {
   Handshake,
   CurrencyDollar,
@@ -106,15 +104,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <GlassSurface
-              id={`partner-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'partner',
-                confidence: 0.9
-              }}
-            >
-              <Card className="p-6 border-0 bg-transparent">
+            <Card className="glass-card p-6 border-0 bg-transparent">
                 <div className="flex items-center justify-between mb-3">
                   <stat.icon className="w-8 h-8 text-primary" weight="duotone" />
                   <TrendUp className="w-5 h-5 text-accent" weight="bold" />
@@ -122,21 +112,12 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
                 <p className="text-3xl font-bold">{stat.value}</p>
               </Card>
-            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <GlassSurface
-          id="partner-featured-materials"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            dataComplexity: 'moderate'
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">Featured Materials Partners</h3>
           <Separator className="mb-4" />
           <div className="space-y-4">
@@ -171,17 +152,8 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             ))}
           </div>
         </Card>
-        </GlassSurface>
 
-        <GlassSurface
-          id="partner-benefits-materials"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            confidence: 0.95
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
             <Separator className="mb-4" />
             <div className="space-y-4">
@@ -210,7 +182,6 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             </Button>
           </div>
         </Card>
-        </GlassSurface>
       </div>
     </div>
   );
@@ -244,15 +215,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <GlassSurface
-              id={`partner-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'partner',
-                confidence: 0.9
-              }}
-            >
-              <Card className="p-6 border-0 bg-transparent">
+            <Card className="glass-card p-6 border-0 bg-transparent">
                 <div className="flex items-center justify-between mb-3">
                   <stat.icon className="w-8 h-8 text-secondary" weight="duotone" />
                   <TrendUp className="w-5 h-5 text-accent" weight="bold" />
@@ -260,21 +223,12 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
                 <p className="text-3xl font-bold">{stat.value}</p>
               </Card>
-            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <GlassSurface
-          id="partner-insurance-coverage"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            dataComplexity: 'moderate'
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">Insurance Coverage Types</h3>
           <Separator className="mb-4" />
           <div className="space-y-3">
@@ -304,17 +258,8 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             ))}
           </div>
         </Card>
-        </GlassSurface>
 
-        <GlassSurface
-          id="partner-benefits"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            confidence: 0.9
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
           <Separator className="mb-4" />
           <div className="space-y-4">
@@ -343,7 +288,6 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             </Button>
           </div>
         </Card>
-        </GlassSurface>
       </div>
     </div>
   );
@@ -365,16 +309,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
         </div>
       </motion.div>
 
-      <GlassSurface
-        id="partner-private-equity-main"
-        context={{
-          ...getDefaultGlassContext(),
-          serviceCategory: 'partner',
-          urgency: 'high',
-          confidence: 0.95
-        }}
-      >
-        <Card className="p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-2 border-0 bg-transparent">
+        <Card className="glass-card p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-2 border-0 bg-transparent">
           <div className="text-center space-y-6">
             <div className="inline-block p-4 rounded-full bg-primary/10">
               <Bank className="w-16 h-16 text-primary" weight="duotone" />
@@ -496,7 +431,6 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
           </div>
         </div>
       </Card>
-      </GlassSurface>
     </div>
   );
 
@@ -529,15 +463,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <GlassSurface
-              id={`partner-re-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'partner',
-                confidence: 0.9
-              }}
-            >
-              <Card className="p-6 border-0 bg-transparent">
+            <Card className="glass-card p-6 border-0 bg-transparent">
                 <div className="flex items-center justify-between mb-3">
                   <stat.icon className="w-8 h-8 text-accent" weight="duotone" />
                   <TrendUp className="w-5 h-5 text-accent" weight="bold" />
@@ -545,21 +471,12 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
                 <p className="text-3xl font-bold">{stat.value}</p>
               </Card>
-            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <GlassSurface
-          id="partner-re-benefits"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            confidence: 0.9
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">Partnership Benefits</h3>
           <Separator className="mb-4" />
           <div className="space-y-4">
@@ -585,17 +502,8 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             ))}
           </div>
         </Card>
-        </GlassSurface>
 
-        <GlassSurface
-          id="partner-re-use-cases"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            dataComplexity: 'moderate'
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <h3 className="text-xl font-bold mb-4">Use Cases</h3>
           <Separator className="mb-4" />
           <div className="space-y-3">
@@ -628,7 +536,6 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             Become a Real Estate Partner
           </Button>
         </Card>
-        </GlassSurface>
       </div>
     </div>
   );
@@ -749,15 +656,7 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <GlassSurface
-                id={`partner-overview-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
-                context={{
-                  ...getDefaultGlassContext(),
-                  serviceCategory: 'partner',
-                  confidence: 0.9
-                }}
-              >
-                <Card className="p-6 border-0 bg-transparent">
+                <Card className="glass-card p-6 border-0 bg-transparent">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className={`p-2 rounded-lg ${stat.bgColor}`}>
@@ -771,7 +670,6 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
                     </div>
                   </div>
                 </Card>
-              </GlassSurface>
             </motion.div>
           );
         })}
@@ -790,37 +688,19 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
           >
-            <GlassSurface
-              id={`partner-category-${category.label.toLowerCase().replace(/\s+/g, '-')}`}
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'partner',
-                confidence: 0.9
-              }}
-            >
-              <Card className="p-6 border-0 bg-transparent hover:shadow-xl transition-shadow cursor-pointer">
+              <Card className="glass-card p-6 border-0 bg-transparent hover:shadow-xl transition-shadow cursor-pointer">
               <div className={`p-3 rounded-xl bg-gradient-to-br ${category.color} mb-4 inline-block`}>
                 <category.icon className="w-7 h-7 text-white" weight="duotone" />
               </div>
               <p className="text-sm text-muted-foreground">{category.label}</p>
               <p className="text-2xl font-bold">{category.count}</p>
               </Card>
-            </GlassSurface>
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <GlassSurface
-          id="partner-commission-breakdown"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            dataComplexity: 'moderate',
-            confidence: 0.9
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <ChartLine className="w-5 h-5 text-primary" weight="duotone" />
@@ -848,17 +728,8 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
               </div>
             </div>
           </Card>
-        </GlassSurface>
 
-        <GlassSurface
-          id="partner-finance-options"
-          context={{
-            ...getDefaultGlassContext(),
-            serviceCategory: 'partner',
-            confidence: 0.9
-          }}
-        >
-          <Card className="p-6 border-0 bg-transparent">
+        <Card className="glass-card p-6 border-0 bg-transparent">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Bank className="w-5 h-5 text-secondary" weight="duotone" />
@@ -881,7 +752,6 @@ export function PartnerDashboard({ activeSubTab }: PartnerDashboardProps) {
             </div>
           </div>
         </Card>
-        </GlassSurface>
       </div>
     </div>
   );

@@ -21,8 +21,6 @@ import { AILearningDashboard } from './AILearningDashboard';
 import { matchContractorsToJob, isBestMatch } from '@/lib/contractor-matching';
 import { SERVICE_CATEGORIES, getCategoryById } from '@/types/service-categories';
 import { SubcontractorFinder } from './SubcontractorFinder';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext, jobToGlassContext } from '@/lib/glass-context-utils';
 
 interface ContractorDashboardProps {
   user?: User;
@@ -516,15 +514,7 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
           </TabsContent>
 
           <TabsContent value="learning">
-            <GlassSurface
-              id="ai-learning-card"
-              context={{
-                ...getDefaultGlassContext(),
-                serviceCategory: 'ai',
-                confidence: 0.95
-              }}
-            >
-              <Card className="p-6 border-0 bg-transparent">
+            <Card className="glass-card p-6 border-0 bg-transparent">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent">
                     <Brain className="w-7 h-7 text-white" weight="duotone" />
@@ -536,7 +526,6 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
               </div>
               <AILearningDashboard contractorId={user.id} />
             </Card>
-            </GlassSurface>
           </TabsContent>
 
           <TabsContent value="compliance">

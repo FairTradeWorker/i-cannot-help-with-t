@@ -18,8 +18,6 @@ import {
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { GlassSurface } from './GlassSurface';
-import { getDefaultGlassContext } from '@/lib/glass-context-utils';
 import { Input } from '@/components/ui/input';
 import { MarketplaceHero } from '@/components/MarketplaceHero';
 import { SERVICE_CATEGORY_NAMES, getServicesByCategory } from '@/lib/service-categories';
