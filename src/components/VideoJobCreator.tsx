@@ -37,6 +37,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
   const [extractedFrame, setExtractedFrame] = useState<string>('');
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [jobScope, setJobScope] = useState<JobScope | null>(null);
+  const [predictionId, setPredictionId] = useState<string | null>(null);
   const [videoAnalysis, setVideoAnalysis] = useState<VideoAnalysis | null>(null);
   const [error, setError] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
@@ -86,8 +87,14 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
       setAnalysisProgress(70);
       
       toast.info('Generating job scope...');
-      const result = await analyzeJobFromVideo(analysis);
-      setJobScope(result.scope);
+      // Get user zip code if available (from localStorage or context)
+      const userData = localStorage.getItem('user');
+      const user = userData ? JSON.parse(userData) : null;
+      const zipCode = user?.address?.zip || user?.homeownerProfile?.address?.zip;
+      
+      const { scope, predictionId } = await analyzeJobFromVideo(analysis, zipCode);
+      setJobScope(scope);
+      setPredictionId(predictionId); // Save it!
       setAnalysisProgress(100);
       
       setCurrentStep('scope');
@@ -101,35 +108,18 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
   };
 
   const handleCreateJob = async () => {
-    if (!jobScope || !videoFile || !videoAnalysis) return;
-    
-    // Generate prediction ID
-    const predictionId = `pred-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    if (!jobScope || !videoFile || !videoAnalysis || !predictionId) return;
     
     // Use extracted frame as thumbnail
     const thumbnailDataUrl = extractedFrame;
     
-    // Call onJobCreated with all data
+    // Call onJobCreated with all data (predictionId already stored by analyzeJobFromVideo)
     onJobCreated({
       scope: jobScope,
       videoUrl: videoPreview,
       thumbnailUrl: thumbnailDataUrl,
       predictionId: predictionId
     });
-    
-    // Store prediction in KV
-    try {
-      await window.spark.kv.set(`prediction:${predictionId}`, {
-        type: 'scope',
-        prediction: jobScope,
-        createdAt: new Date().toISOString(),
-        damageType: videoAnalysis.damageType,
-        urgency: videoAnalysis.urgencyLevel
-      });
-    } catch (err) {
-      console.error('Failed to store prediction:', err);
-      // Don't block job creation if storage fails
-    }
     
     setCurrentStep('complete');
     toast.success('Job created successfully!');
