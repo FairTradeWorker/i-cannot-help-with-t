@@ -3,7 +3,8 @@ import { MapContainer, TileLayer, Circle, Marker, Popup, useMap } from 'react-le
 import L from 'leaflet';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Lightning, CheckCircle } from '@phosphor-icons/react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { MapPin, Lightning, CheckCircle, Info } from '@phosphor-icons/react';
 import { territoryZips } from '@/lib/territory-data';
 import { useIsMobile } from '@/hooks/use-mobile';
 import 'leaflet/dist/leaflet.css';
@@ -60,6 +61,21 @@ export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
           <div className="flex items-center gap-2">
             <Lightning className="w-5 h-5 text-primary" weight="fill" />
             <h3 className="font-bold text-sm">Priority Leads Map</h3>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Learn more about priority leads">
+                    <Info className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs">
+                    Priority territories are high-value zip codes with exclusive lead rights. 
+                    Territory operators pay $45/month for exclusive access to leads in their area.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <Badge variant="secondary" className="text-xs">
             {priorityTerritories.length} Territories
@@ -143,16 +159,19 @@ export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
                 >
                   <Popup>
                     <div className="p-2 min-w-[180px]">
-                      <h4 className="font-bold">{territory.city}, {territory.state}</h4>
-                      <p className="text-xs text-muted-foreground mb-1">{territory.zip}</p>
+                      <h4 className="font-bold mb-1">{territory.city}, {territory.state}</h4>
+                      <p className="text-xs text-muted-foreground mb-2">{territory.zip}</p>
                       <div className="flex justify-between text-xs mb-2">
                         <span>Population:</span>
                         <span className="font-semibold">{(territory.population / 1000).toFixed(1)}K</span>
                       </div>
-                      <Badge className="bg-green-600 w-full justify-center text-xs">
+                      <Badge className="bg-green-600 w-full justify-center text-xs mb-2">
                         <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
                         Available - ${territory.monthlyPrice}/mo
                       </Badge>
+                      <p className="text-[10px] text-muted-foreground text-center">
+                        Exclusive lead rights in this territory
+                      </p>
                     </div>
                   </Popup>
                 </Marker>
@@ -164,13 +183,20 @@ export function PriorityLeadsMap({ onExplore }: PriorityLeadsMapProps) {
       
       <div className="p-3 border-t bg-muted/30">
         <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-green-600 border border-white" />
-              <span className="text-muted-foreground">High-value territories</span>
-            </div>
-          </div>
-          <Badge variant="outline" className="text-xs">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1.5 cursor-help">
+                  <div className="w-3 h-3 rounded-full bg-green-600 border border-white" />
+                  <span className="text-muted-foreground">High-value territories</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Green markers indicate available territories with high population and exclusive lead rights</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <Badge variant="outline" className="text-xs cursor-pointer hover:bg-accent transition-colors" onClick={onExplore}>
             <MapPin className="w-3 h-3 mr-1" />
             Click to explore
           </Badge>

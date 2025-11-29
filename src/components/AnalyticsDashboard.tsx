@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   Users,
   Briefcase,
@@ -10,6 +11,7 @@ import {
   ChartBar,
   MapPin,
   Star,
+  Info,
 } from '@phosphor-icons/react';
 import type { Analytics } from '@/lib/types';
 
@@ -65,12 +67,37 @@ export function AnalyticsDashboard({ analytics }: AnalyticsDashboardProps) {
         className="flex items-center justify-between"
       >
         <div>
-          <h2 className="text-3xl font-bold">Analytics Dashboard</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-3xl font-bold">Analytics Dashboard</h2>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Analytics help">
+                    <Info className="w-5 h-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs">
+                    View real-time platform metrics including user growth, job completion rates, and revenue trends
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <p className="text-muted-foreground">Platform performance and insights</p>
         </div>
-        <Badge variant="secondary" className="text-sm px-4 py-2">
-          Last updated: {new Date().toLocaleDateString()}
-        </Badge>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="secondary" className="text-sm px-4 py-2 cursor-help">
+                Last updated: {new Date().toLocaleDateString()}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Data refreshes automatically every hour</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

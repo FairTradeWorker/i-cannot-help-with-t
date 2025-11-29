@@ -30,6 +30,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { EmptyState } from '@/components/EmptyState';
 import { dataStore } from '@/lib/store';
 import { getStateStats } from '@/lib/territory-data';
 import type { Job, User } from '@/lib/types';
@@ -266,10 +268,34 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
 
   if (loading) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-3 border-primary/20 border-t-primary rounded-full mx-auto mb-4 animate-spin" />
-          <p className="text-sm font-medium text-muted-foreground">Loading jobs...</p>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <div className="h-9 w-48 bg-muted rounded-md animate-pulse mb-2" />
+            <div className="h-5 w-64 bg-muted rounded-md animate-pulse" />
+          </div>
+          <div className="h-10 w-32 bg-muted rounded-md animate-pulse" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="p-4">
+              <div className="h-12 w-12 bg-muted rounded-lg animate-pulse mb-3" />
+              <div className="h-8 w-16 bg-muted rounded-md animate-pulse mb-2" />
+              <div className="h-4 w-24 bg-muted rounded-md animate-pulse" />
+            </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="overflow-hidden">
+              <div className="aspect-video bg-muted animate-pulse" />
+              <div className="p-4 space-y-3">
+                <div className="h-5 w-3/4 bg-muted rounded-md animate-pulse" />
+                <div className="h-4 w-full bg-muted rounded-md animate-pulse" />
+                <div className="h-4 w-2/3 bg-muted rounded-md animate-pulse" />
+              </div>
+            </Card>
+          ))}
         </div>
       </div>
     );
@@ -288,84 +314,144 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
             <h1 className="text-3xl font-bold mb-2">Jobs Marketplace</h1>
             <p className="text-muted-foreground">Find work opportunities in your area</p>
           </div>
-          <Button size="lg" onClick={onPostJob}>
-            <Plus className="w-5 h-5 mr-2" />
-            Post a Job
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="lg" onClick={onPostJob} aria-label="Post a new job">
+                  <Plus className="w-5 h-5 mr-2" />
+                  Post a Job
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Create a job posting to get bids from qualified contractors</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Briefcase className="w-5 h-5 text-primary" weight="fill" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{jobs.length}</p>
-                <p className="text-xs text-muted-foreground">Total Jobs</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-destructive/10">
-                <Lightning className="w-5 h-5 text-destructive" weight="fill" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{urgentJobs.length}</p>
-                <p className="text-xs text-muted-foreground">Urgent Jobs</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-accent/10">
-                <MapTrifold className="w-5 h-5 text-accent" weight="fill" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{statesWithJobs.length}</p>
-                <p className="text-xs text-muted-foreground">States</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-secondary/10">
-                <Users className="w-5 h-5 text-secondary" weight="fill" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{jobs.reduce((acc, j) => acc + j.bids.length, 0)}</p>
-                <p className="text-xs text-muted-foreground">Active Bids</p>
-              </div>
-            </div>
-          </Card>
-        </div>
+        <TooltipProvider>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Card className="p-4 cursor-help hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Briefcase className="w-5 h-5 text-primary" weight="fill" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{jobs.length}</p>
+                      <p className="text-xs text-muted-foreground">Total Jobs</p>
+                    </div>
+                  </div>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total number of available jobs across all states</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Card className="p-4 cursor-help hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-destructive/10">
+                      <Lightning className="w-5 h-5 text-destructive" weight="fill" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{urgentJobs.length}</p>
+                      <p className="text-xs text-muted-foreground">Urgent Jobs</p>
+                    </div>
+                  </div>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Jobs marked as urgent or emergency priority</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Card className="p-4 cursor-help hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-accent/10">
+                      <MapTrifold className="w-5 h-5 text-accent" weight="fill" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{statesWithJobs.length}</p>
+                      <p className="text-xs text-muted-foreground">States</p>
+                    </div>
+                  </div>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Number of states with available jobs</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Card className="p-4 cursor-help hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-secondary/10">
+                      <Users className="w-5 h-5 text-secondary" weight="fill" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{jobs.reduce((acc, j) => acc + j.bids.length, 0)}</p>
+                      <p className="text-xs text-muted-foreground">Active Bids</p>
+                    </div>
+                  </div>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total number of bids submitted by contractors</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
 
         {/* Search and Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input
-              placeholder="Search jobs by title, description, or location..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={selectedState} onValueChange={setSelectedState}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All States" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All States</SelectItem>
-              {statesWithJobs.map(state => (
-                <SelectItem key={state} value={state}>
-                  {state} ({jobsByState[state]?.length || 0})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <TooltipProvider>
+            <div className="relative flex-1">
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                placeholder="Search jobs by title, description, or location..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+                aria-label="Search jobs"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Select value={selectedState} onValueChange={setSelectedState}>
+                    <SelectTrigger className="w-[180px]" aria-label="Filter by state">
+                      <SelectValue placeholder="All States" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All States</SelectItem>
+                      {statesWithJobs.map(state => (
+                        <SelectItem key={state} value={state}>
+                          {state} ({jobsByState[state]?.length || 0})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Filter jobs by state</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </motion.div>
 
@@ -388,17 +474,16 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
 
         <TabsContent value="all" className="mt-0">
           {filteredJobs.length === 0 ? (
-            <Card className="p-12 text-center">
-              <MagnifyingGlass className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-              <h4 className="text-xl font-bold mb-2">No Jobs Found</h4>
-              <p className="text-muted-foreground mb-4">
-                {searchTerm ? 'Try a different search' : 'No jobs available at the moment'}
-              </p>
-              <Button onClick={onPostJob}>
-                <Plus className="w-4 h-4 mr-2" />
-                Post the First Job
-              </Button>
-            </Card>
+            <EmptyState
+              type="search"
+              title={searchTerm ? "No jobs match your search" : "No jobs available"}
+              description={searchTerm 
+                ? "Try adjusting your search terms or filters to find more opportunities"
+                : "Check back later for new job opportunities, or be the first to post a job"
+              }
+              actionLabel={searchTerm ? "Clear Search" : "Post a Job"}
+              onAction={searchTerm ? () => setSearchTerm('') : onPostJob}
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredJobs.map((job, index) => (
@@ -443,11 +528,12 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
 
         <TabsContent value="urgent" className="mt-0">
           {urgentJobs.length === 0 ? (
-            <Card className="p-12 text-center">
-              <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-500" />
-              <h4 className="text-xl font-bold mb-2">No Urgent Jobs</h4>
-              <p className="text-muted-foreground">All jobs are standard priority right now</p>
-            </Card>
+            <EmptyState
+              type="jobs"
+              title="No urgent jobs at the moment"
+              description="All current jobs are standard priority. Check back later for urgent opportunities."
+              icon={<CheckCircle className="w-16 h-16 text-green-500" weight="fill" />}
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {urgentJobs.map((job, index) => (
@@ -576,19 +662,25 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
                 </div>
               </ScrollArea>
 
-              <div className="p-6 border-t">
+              <div className="p-6 border-t space-y-3">
                 <Button
                   size="lg"
                   className="w-full"
                   onClick={() => {
                     onJobSelect?.(selectedJob);
                     setSelectedJob(null);
-                    toast.success('Job details opened');
+                    toast.success('Job details opened', {
+                      description: 'You can now view full details and submit your bid',
+                      duration: 3000,
+                    });
                   }}
                 >
                   View Full Details & Submit Bid
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
+                <p className="text-xs text-center text-muted-foreground">
+                  💡 Tip: Review the job description and contractor bids before submitting your own
+                </p>
               </div>
             </motion.div>
           </motion.div>

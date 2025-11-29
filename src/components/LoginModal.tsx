@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { EnvelopeSimple, Lock, Eye, EyeSlash, UserCircle, Hammer, HardHat, House, MapTrifold, X } from '@phosphor-icons/react';
+import { EnvelopeSimple, Lock, Eye, EyeSlash, UserCircle, Hammer, HardHat, House, MapTrifold, X, Question } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface LoginModalProps {
   onLogin: (email: string, password: string, role: 'homeowner' | 'contractor' | 'subcontractor') => void;
@@ -244,9 +245,23 @@ export function LoginModal({ onLogin, onSignUp, onClose, initialMode = 'login' }
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium">
-                      Email
-                    </Label>
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="email" className="text-sm font-medium">
+                        Email
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email help">
+                              <Question className="w-4 h-4" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>We'll use this email to send you job updates and notifications</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <div className="relative">
                       <EnvelopeSimple className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <Input
@@ -257,14 +272,35 @@ export function LoginModal({ onLogin, onSignUp, onClose, initialMode = 'login' }
                         onChange={(e) => setEmail(e.target.value)}
                         className="pl-10"
                         required
+                        aria-describedby="email-help"
+                        aria-invalid={email && !email.includes('@')}
                       />
                     </div>
+                    {email && !email.includes('@') && (
+                      <p className="text-xs text-destructive" id="email-help">
+                        Please enter a valid email address
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-medium">
-                      Password
-                    </Label>
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="password" className="text-sm font-medium">
+                        Password
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Password help">
+                              <Question className="w-4 h-4" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Use at least 8 characters with a mix of letters and numbers for better security</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <Input
@@ -275,11 +311,15 @@ export function LoginModal({ onLogin, onSignUp, onClose, initialMode = 'login' }
                         onChange={(e) => setPassword(e.target.value)}
                         className="pl-10 pr-10"
                         required
+                        aria-describedby="password-help"
+                        aria-invalid={password && password.length < 8}
+                        minLength={8}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? (
                           <EyeSlash className="w-5 h-5" />
@@ -288,6 +328,11 @@ export function LoginModal({ onLogin, onSignUp, onClose, initialMode = 'login' }
                         )}
                       </button>
                     </div>
+                    {password && password.length > 0 && password.length < 8 && (
+                      <p className="text-xs text-destructive" id="password-help">
+                        Password must be at least 8 characters
+                      </p>
+                    )}
                   </div>
                 </div>
 
