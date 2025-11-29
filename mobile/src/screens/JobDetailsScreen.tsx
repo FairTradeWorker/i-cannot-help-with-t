@@ -18,8 +18,23 @@ import {
   User
 } from 'lucide-react-native';
 import { BidCard } from '@/components/BidCard';
-import { dataStore } from '@fairtradeworker/shared';
+// TODO: Import from shared package once configured
+// import { dataStore } from '@fairtradeworker/shared';
 import type { Job, Bid, User as UserType, UrgencyLevel } from '@/types';
+
+// Temporary dataStore for mobile
+const dataStore = {
+  getJobById: async (id: string): Promise<Job | null> => {
+    // TODO: Connect to real API
+    return null;
+  },
+  getCurrentUser: async (): Promise<UserType | null> => {
+    return null;
+  },
+  saveJob: async (job: Job): Promise<void> => {
+    // TODO: Save via API
+  },
+};
 
 interface RouteParams {
   jobId: string;
