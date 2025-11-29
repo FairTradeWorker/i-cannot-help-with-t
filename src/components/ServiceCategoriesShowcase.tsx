@@ -88,12 +88,12 @@ export function ServiceCategoriesShowcase({
                 whileTap={{ scale: 0.97 }}
               >
                 <Card 
-                  className="p-2 md:p-2.5 h-full border-0 bg-transparent hover:bg-muted/80 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
+                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
                   onClick={() => onCategoryClick?.(category.id)}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <div className={`flex items-center justify-center w-7 h-7 md:w-9 md:h-9 rounded-full ${color}`}>
-                      <Icon className="w-3.5 h-3.5 md:w-5 md:h-5" weight="fill" />
+                    <div className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full ${color}`}>
+                      <Icon className="w-5 h-5 md:w-6 md:h-6" weight="fill" />
                     </div>
                     <div className="space-y-0.5">
                       <h3 className="text-[10px] md:text-[11px] font-semibold text-foreground line-clamp-1">
@@ -140,12 +140,12 @@ export function ServiceCategoriesShowcase({
                 whileTap={{ scale: 0.97 }}
               >
                 <Card 
-                  className="p-2 md:p-2.5 h-full border-0 bg-transparent hover:bg-muted/80 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
+                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-slate-900 cursor-pointer text-center rounded-xl transition-colors"
                   onClick={() => onCategoryClick?.(category.id)}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <div className={`flex items-center justify-center w-7 h-7 md:w-9 md:h-9 rounded-full ${color}`}>
-                      <Icon className="w-3.5 h-3.5 md:w-5 md:h-5" weight="fill" />
+                    <div className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full ${color}`}>
+                      <Icon className="w-5 h-5 md:w-6 md:h-6" weight="fill" />
                     </div>
                     <div className="space-y-0.5">
                       <h3 className="text-[10px] md:text-[11px] font-semibold text-foreground line-clamp-1">
