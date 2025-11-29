@@ -159,17 +159,24 @@ Respond with valid JSON in this exact format:
   }
 }
 
-export async function analyzeJobFromVideo(videoAnalysis: VideoAnalysis): Promise<JobScope> {
-  const context = await learningDB.getLearningContext("scope");
+import { learningDB } from './learning-db';
+
+export async function analyzeJobFromVideo(
+  videoAnalysis: VideoAnalysis,
+  zipCode?: string
+): Promise<{ scope: JobScope; predictionId: string }> {
+  // Get learning context
+  const context = await learningDB.getContext();
   
   const observations = videoAnalysis.keyObservations.map((obs: string) => `- ${obs}`).join('\n');
   
   const promptText = `You are an expert construction estimator with 20+ years of experience.
 
 LEARNING CONTEXT:
-- Total predictions made: ${context.totalFeedback}
+- Total predictions made: ${context.totalJobs}
 - Current accuracy: ${(context.avgAccuracy * 100).toFixed(1)}%
-- Confidence adjustment: ${context.confidenceAdjustment}x
+- Confidence boost: ${context.confidenceBoost}x
+- Learning active: ${context.isLearning ? 'Yes' : 'No'}
 
 Analyze home repair videos and provide detailed scopes. Be specific with measurements, materials, labor hours, and costs.
 
@@ -205,9 +212,26 @@ Respond with valid JSON in this exact format:
   const response = await window.spark.llm(promptText, "gpt-4o", true);
   
   try {
-    const result = JSON.parse(response) as JobScope;
-    result.confidenceScore = Math.min(100, result.confidenceScore * context.confidenceAdjustment);
-    return result;
+    const scope = JSON.parse(response) as JobScope;
+    
+    // Apply learned confidence boost
+    scope.confidenceScore = Math.min(100, scope.confidenceScore * context.confidenceBoost);
+    
+    // Store prediction with unique ID
+    const predictionId = `pred-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    await window.spark.kv.set(`prediction:${predictionId}`, {
+      id: predictionId,
+      type: 'scope',
+      prediction: scope,
+      createdAt: new Date().toISOString(),
+      damageType: videoAnalysis.damageType,
+      urgency: videoAnalysis.urgencyLevel,
+      metadata: { zipCode, createdAt: new Date().toISOString() }
+    });
+
+    console.log("AI Prediction stored:", predictionId, "Confidence:", scope.confidenceScore);
+
+    return { scope, predictionId };
   } catch (error) {
     console.error("Failed to parse job scope:", error);
     throw new Error("Failed to generate job scope");

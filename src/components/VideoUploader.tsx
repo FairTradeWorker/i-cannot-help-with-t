@@ -92,7 +92,8 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
       setProgress(60);
 
       setStage('generating-scope');
-      const jobScope = await analyzeJobFromVideo(visionAnalysis);
+      const result = await analyzeJobFromVideo(visionAnalysis);
+      const jobScope = result.scope;
       setProgress(100);
 
       setScope(jobScope);

@@ -86,8 +86,8 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
       setAnalysisProgress(70);
       
       toast.info('Generating job scope...');
-      const scope = await analyzeJobFromVideo(analysis);
-      setJobScope(scope);
+      const result = await analyzeJobFromVideo(analysis);
+      setJobScope(result.scope);
       setAnalysisProgress(100);
       
       setCurrentStep('scope');
