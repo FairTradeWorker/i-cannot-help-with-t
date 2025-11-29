@@ -681,6 +681,16 @@ button.success-pulse {
   background: oklch(0.5 0 0 / 0.35);
 }
 
+/* Hide scrollbar for horizontal category menu */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Tooltip arrow animation */
 .tooltip-animated {
   animation: tooltipFadeIn 0.15s ease-out;

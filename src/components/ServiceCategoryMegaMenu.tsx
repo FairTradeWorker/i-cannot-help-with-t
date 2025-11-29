@@ -113,7 +113,7 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-5xl max-h-[92vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-6xl max-h-[92vh] p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-5 border-b bg-gradient-to-r from-primary/5 to-transparent">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -146,41 +146,60 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
               {view === 'categories' && (
                 <motion.div
                   key="categories"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+                  className="w-full"
                 >
-                  {SERVICE_CATEGORIES.map((category) => {
-                    const Icon = iconMap[category.icon] || House;
-                    return (
-                      <motion.div
-                        key={category.id}
-                        whileHover={{ scale: 1.03, y: -6 }}
-                        whileTap={{ scale: 0.97 }}
-                      >
-                        <Card
-                          className="p-6 md:p-7 cursor-pointer border-2 hover:border-primary transition-all duration-300 bg-gradient-to-br from-card/80 to-card/50 hover:from-primary/5 hover:to-primary/10 shadow-md hover:shadow-lg group"
-                          onClick={() => handleCategorySelect(category)}
+                  {/* Single horizontal row with smooth scrolling */}
+                  <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+                    {SERVICE_CATEGORIES.map((category, index) => {
+                      const Icon = iconMap[category.icon] || House;
+                      return (
+                        <motion.div
+                          key={category.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05, duration: 0.3 }}
+                          whileHover={{ scale: 1.05, y: -8 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="flex-shrink-0 w-[280px] md:w-[320px] snap-center"
                         >
-                          <div className="flex flex-col items-center text-center space-y-4">
-                            <div className="p-5 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
-                              <Icon className="w-10 h-10 text-primary" weight="duotone" />
+                          <Card
+                            className="h-full p-6 cursor-pointer border-2 hover:border-primary transition-all duration-300 bg-gradient-to-br from-card/90 to-card/70 hover:from-primary/10 hover:to-primary/5 shadow-lg hover:shadow-xl group"
+                            onClick={() => handleCategorySelect(category)}
+                          >
+                            <div className="flex flex-col items-center text-center space-y-4 h-full">
+                              <div className="p-4 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                                <Icon className="w-12 h-12 text-primary" weight="duotone" />
+                              </div>
+                              <div className="flex-1 flex flex-col justify-center">
+                                <h3 className="font-bold text-lg md:text-xl mb-2 group-hover:text-primary transition-colors">
+                                  {category.title}
+                                </h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                                  {category.description}
+                                </p>
+                                <div className="flex items-center justify-center gap-2 text-sm font-semibold text-primary/80 group-hover:text-primary transition-colors">
+                                  <span>{category.subcategories.length} subcategories</span>
+                                  <CaretRight className="w-4 h-4" />
+                                </div>
+                              </div>
                             </div>
-                            <div>
-                              <h3 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors">{category.title}</h3>
-                              <p className="text-sm text-muted-foreground leading-relaxed">{category.description}</p>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm font-medium text-primary/80 group-hover:text-primary transition-colors">
-                              <span>{category.subcategories.length} subcategories</span>
-                              <CaretRight className="w-4 h-4" />
-                            </div>
-                          </div>
-                        </Card>
-                      </motion.div>
-                    );
-                  })}
+                          </Card>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Scroll indicator hint */}
+                  {SERVICE_CATEGORIES.length > 3 && (
+                    <div className="flex items-center justify-center gap-2 mt-4 text-xs text-muted-foreground">
+                      <CaretRight className="w-4 h-4 animate-pulse" />
+                      <span>Scroll to see more categories</span>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
