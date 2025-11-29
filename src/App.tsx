@@ -815,22 +815,27 @@ function App() {
                       />
 
                       {/* Top section with Post Job and Mini Map */}
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
                           <Card 
-                            className="glass-card p-4 border-0 bg-transparent hover:bg-transparent cursor-pointer lg:col-span-2 order-1"
+                            className="glass-card p-3 md:p-3.5 border-0 bg-transparent hover:bg-transparent cursor-pointer lg:col-span-2 order-1"
                             onClick={() => handleCreateJob()}
                           >
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                              <div className="flex items-center gap-3 flex-1">
-                                <div className="p-3 rounded-xl bg-primary flex-shrink-0">
-                                  <Plus className="w-6 h-6 text-white" weight="bold" />
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                                <div className="p-2.5 rounded-xl bg-primary flex-shrink-0">
+                                  <Plus className="w-5 h-5 text-white" weight="bold" />
                                 </div>
                                 <div className="min-w-0">
-                                  <h3 className="text-lg font-bold mb-0.5">Post a New Job</h3>
-                                  <p className="text-xs text-muted-foreground">Get estimates from qualified contractors in your area</p>
+                                  <h3 className="text-sm md:text-base font-semibold mb-0.5">Post a New Job</h3>
+                                  <p className="text-[11px] md:text-xs text-muted-foreground line-clamp-1">
+                                    Get estimates from qualified contractors in your area
+                                  </p>
                                 </div>
                               </div>
-                              <Button size="default" className="h-12 w-full sm:w-auto">
+                              <Button 
+                                size="sm" 
+                                className="h-8 px-3 text-xs rounded-full whitespace-nowrap"
+                              >
                                 Get Started
                               </Button>
                             </div>
