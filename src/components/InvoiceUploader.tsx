@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { uploadInvoiceImages } from '@/lib/ai-service';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { FileImage, Loader } from '@phosphor-icons/react';
+import { Spinner } from '@phosphor-icons/react';  // ← FIXED
 
 export function InvoiceUploader({ jobId }: { jobId: string }) {
   const [uploading, setUploading] = useState(false);
@@ -18,35 +18,33 @@ export function InvoiceUploader({ jobId }: { jobId: string }) {
     try {
       await uploadInvoiceImages(jobId, Array.from(files));
       toast.success('Invoice processed — AI just learned from this job!');
-    } catch (error) {
-      console.error('Failed to process invoice:', error);
+    } catch (err) {
       toast.error('Failed to read invoice');
     } finally {
       setUploading(false);
-      // Reset input
-      e.target.value = '';
     }
   };
 
   return (
-    <div className="mt-4">
-      <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-        <FileImage className="w-4 h-4" />
-        Upload final invoice photos (AI reads them automatically)
+    <div className="mt-6">
+      <label className="block text-sm font-medium text-foreground mb-3">
+        Upload final invoice photos <span className="text-muted-foreground">(AI reads automatically)</span>
       </label>
+      
       <input
         type="file"
         accept="image/*"
         multiple
         onChange={handleUpload}
         disabled={uploading}
-        className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
       />
+      
       {uploading && (
-        <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
-          <Loader className="w-4 h-4 animate-spin" />
-          AI is reading invoice...
-        </p>
+        <div className="flex items-center gap-2 mt-3 text-sm text-muted-foreground">
+          <Spinner className="w-4 h-4 animate-spin" weight="bold" />
+          <span>AI is reading your invoice...</span>
+        </div>
       )}
     </div>
   );
