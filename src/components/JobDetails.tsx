@@ -184,7 +184,8 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
       toast.success('Job marked as completed!');
       setShowCompletionForm(false);
       
-      if (job.scope) {
+      // FIXED: Show feedback modal if job has predictionId (from AI analysis)
+      if (job.predictionId) {
         setShowFeedbackModal(true);
       } else {
         onJobUpdated();
@@ -669,7 +670,7 @@ export function JobDetails({ job, user, onClose, onJobUpdated }: JobDetailsProps
         </Tabs>
       </DialogContent>
 
-      {showFeedbackModal && job.scope && (
+      {showFeedbackModal && job.scope && job.predictionId && (
         <JobFeedbackModal
           open={showFeedbackModal}
           onClose={handleFeedbackClose}

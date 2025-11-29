@@ -25,7 +25,7 @@ import {
   Package,
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
-import { recordPredictionOutcome } from '@/lib/ai-service';
+import { recordPredictionOutcome, recordLearningFeedback } from '@/lib/ai-service';
 import type { Job, JobScope } from '@/lib/types';
 
 interface JobFeedbackModalProps {
@@ -77,6 +77,15 @@ export function JobFeedbackModal({
       // Use predictionId from job if available, otherwise use job.id
       const predictionId = (job as any).predictionId || `job-${job.id}`;
       
+      // FIXED: Record learning feedback for AI improvement
+      if (job.predictionId) {
+        await recordLearningFeedback(
+          job.predictionId,
+          job.id,
+          { totalCost: actualCost, laborHours: actualLaborHours }
+        );
+      }
+      
       await recordPredictionOutcome(
         predictionId,
         'scope',
@@ -97,7 +106,7 @@ export function JobFeedbackModal({
         }
       );
 
-      toast.success('Feedback submitted! AI is learning from this job.', {
+      toast.success('Thank you! Our AI just got smarter', {
         description: 'Your feedback helps improve future estimates.',
       });
 
