@@ -37,7 +37,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
   const [extractedFrame, setExtractedFrame] = useState<string>('');
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [jobScope, setJobScope] = useState<JobScope | null>(null);
-  const [predictionId, setPredictionId] = useState<string | null>(null);
+  const [predictionId, setPredictionId] = useState<string>("");
   const [videoAnalysis, setVideoAnalysis] = useState<VideoAnalysis | null>(null);
   const [error, setError] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
