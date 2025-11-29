@@ -84,6 +84,7 @@ import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
 import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
 import { ServiceCategoriesShowcase } from '@/components/ServiceCategoriesShowcase';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
+import { ScrollAnimatedSection } from '@/components/ScrollAnimatedSection';
 import type { ServiceSelection } from '@/types/service-categories';
 import { dataStore } from '@/lib/store';
 import { initializeDemoData } from '@/lib/demo-data';
@@ -845,7 +846,8 @@ function App() {
                       />
 
                       {/* Top section with Post Job */}
-                      <div>
+                      <ScrollAnimatedSection>
+                        <div>
                           <Card 
                             className="glass-card p-4 md:p-5 border-0 bg-transparent hover:bg-transparent cursor-pointer"
                             onClick={() => handleCreateJob()}
@@ -910,7 +912,8 @@ function App() {
                                   How It Works
                                 </h4>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                  <div className="flex items-start gap-3">
+                                  <ScrollAnimatedSection staggerDelay={0}>
+                                    <div className="flex items-start gap-3">
                                     <div className="p-2.5 rounded-lg bg-primary/10 flex-shrink-0 mt-0.5">
                                       <span className="text-base md:text-lg font-bold text-primary">1</span>
                                     </div>
@@ -919,16 +922,20 @@ function App() {
                                       <p className="text-xs md:text-sm text-muted-foreground">Upload video, photos, or describe your project</p>
                                     </div>
                                   </div>
-                                  <div className="flex items-start gap-3">
-                                    <div className="p-2.5 rounded-lg bg-accent/10 flex-shrink-0 mt-0.5">
-                                      <span className="text-base md:text-lg font-bold text-accent">2</span>
+                                  </ScrollAnimatedSection>
+                                  <ScrollAnimatedSection staggerDelay={0.15}>
+                                    <div className="flex items-start gap-3">
+                                      <div className="p-2.5 rounded-lg bg-accent/10 flex-shrink-0 mt-0.5">
+                                        <span className="text-base md:text-lg font-bold text-accent">2</span>
+                                      </div>
+                                      <div>
+                                        <p className="text-sm md:text-base font-medium mb-1">Get Matched</p>
+                                        <p className="text-xs md:text-sm text-muted-foreground">AI connects you with verified local contractors</p>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <p className="text-sm md:text-base font-medium mb-1">Get Matched</p>
-                                      <p className="text-xs md:text-sm text-muted-foreground">AI connects you with verified local contractors</p>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-start gap-3">
+                                  </ScrollAnimatedSection>
+                                  <ScrollAnimatedSection staggerDelay={0.3}>
+                                    <div className="flex items-start gap-3">
                                     <div className="p-2.5 rounded-lg bg-secondary/10 flex-shrink-0 mt-0.5">
                                       <span className="text-base md:text-lg font-bold text-secondary">3</span>
                                     </div>
@@ -937,11 +944,13 @@ function App() {
                                       <p className="text-xs md:text-sm text-muted-foreground">Review bids, ratings, and select the best fit</p>
                                     </div>
                                   </div>
+                                  </ScrollAnimatedSection>
                                 </div>
                               </div>
 
                               {/* Testimonials Section */}
-                              <div className="border-t border-border/50 pt-6 mt-6">
+                              <ScrollAnimatedSection>
+                                <div className="border-t border-border/50 pt-6 mt-6">
                                 <h4 className="text-base md:text-lg font-semibold mb-4 text-center">
                                   What Homeowners Are Saying
                                 </h4>
@@ -992,9 +1001,11 @@ function App() {
                                   </div>
                                 </div>
                               </div>
+                              </ScrollAnimatedSection>
 
                               {/* Benefits & Stats */}
-                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-3">
+                              <ScrollAnimatedSection>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-3">
                                 <div className="text-center">
                                   <div className="flex items-center justify-center gap-2 mb-2">
                                     <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary" />
@@ -1024,9 +1035,11 @@ function App() {
                                   <p className="text-xs md:text-sm text-muted-foreground">One-time Fee</p>
                                 </div>
                               </div>
+                              </ScrollAnimatedSection>
                             </div>
                           </Card>
-                      </div>
+                        </div>
+                      </ScrollAnimatedSection>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                           <Card 
@@ -1214,7 +1227,8 @@ function App() {
                         </Card>
 
                         {/* Why FairTradeWorker? Comparison Section */}
-                        <div className="mt-12 space-y-6">
+                        <ScrollAnimatedSection>
+                          <div className="mt-12 space-y-6">
                           <div className="text-center">
                             <h3 className="text-3xl font-bold mb-2">The Fairer Way to Hire</h3>
                             <p className="text-muted-foreground">See how we compare to traditional platforms</p>
@@ -1298,7 +1312,8 @@ function App() {
                               Post Your First Job — It's Free
                             </Button>
                           </div>
-                        </div>
+                          </div>
+                        </ScrollAnimatedSection>
                     </div>
                   )}
                   {activeTab === 'jobs' && (

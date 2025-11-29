@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { SERVICE_CATEGORIES } from '@/types/service-categories';
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
 // Icon mapping
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -38,6 +39,10 @@ export function ServiceCategoriesShowcase({
   onSearch
 }: ServiceCategoriesShowcaseProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const { elementRef: categoryCardsRef, isVisible: categoryCardsVisible } = useIntersectionObserver({
+    rootMargin: '50px',
+    triggerOnce: true,
+  });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,7 +105,10 @@ export function ServiceCategoriesShowcase({
 
       {/* All 6 category cards in one row */}
       {/* Mobile: 2 columns (2x3), Tablet: 3 columns (3x2), Desktop: 6 columns (6x1) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+      <div 
+        ref={categoryCardsRef as React.RefObject<HTMLDivElement>}
+        className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 animate-on-scroll ${categoryCardsVisible ? 'visible' : ''}`}
+      >
         {SERVICE_CATEGORIES.map((category, index) => {
           const Icon = iconMap[category.icon] || House;
 
