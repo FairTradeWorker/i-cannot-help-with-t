@@ -34,7 +34,7 @@ import {
 import { toast } from 'sonner';
 import { US_STATES, type StateData } from '@/lib/us-states-data';
 import { territoryZips, type TerritoryZip } from '@/lib/territory-data';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { validateTerritoryClaim, recordTerritoryOwnership, getOwnedTerritories, type EntityType } from '@/lib/territory-validation';
@@ -158,13 +158,54 @@ function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick,
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           
-          {/* Territory Markers */}
+          {/* Zip Code Boundaries - Circles representing territory areas */}
+          {validTerritories.map(territory => {
+            const isSelected = selectedTerritory?.zip === territory.zip;
+            
+            // Calculate radius based on population (larger population = larger area)
+            // Typical zip code radius: 3-10 miles, convert to meters
+            const radiusMeters = Math.max(3000, Math.min(16000, territory.population / 10));
+            
+            let fillColor: string;
+            let borderColor: string;
+            
+            if (territory.status === 'claimed') {
+              fillColor = 'rgba(239, 68, 68, 0.3)'; // red
+              borderColor = '#ef4444';
+            } else if (territory.status === 'available') {
+              fillColor = 'rgba(34, 197, 94, 0.25)'; // green
+              borderColor = '#22c55e';
+            } else {
+              fillColor = 'rgba(107, 114, 128, 0.2)'; // gray
+              borderColor = '#6b7280';
+            }
+            
+            return (
+              <Circle
+                key={`circle-${territory.zip}`}
+                center={[territory.latitude, territory.longitude]}
+                radius={radiusMeters}
+                pathOptions={{
+                  fillColor,
+                  color: borderColor,
+                  fillOpacity: isSelected ? 0.4 : 0.25,
+                  weight: isSelected ? 3 : 2,
+                  opacity: isSelected ? 0.8 : 0.6,
+                }}
+                eventHandlers={{
+                  click: () => onTerritoryClick(territory),
+                }}
+              />
+            );
+          })}
+          
+          {/* Territory Markers - on top of boundaries */}
           {validTerritories.map(territory => {
             const isSelected = selectedTerritory?.zip === territory.zip;
             
             return (
               <Marker
-                key={territory.zip}
+                key={`marker-${territory.zip}`}
                 position={[territory.latitude, territory.longitude]}
                 icon={createTerritoryIcon(territory, isSelected)}
                 eventHandlers={{
@@ -214,20 +255,41 @@ function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick,
         </MapContainer>
         
         {/* Legend */}
-        <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border">
-          <p className="text-xs font-semibold mb-2">Legend</p>
-          <div className="space-y-1.5 text-xs">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-green-600 border-2 border-white" />
-              <span>Available</span>
+        <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg border max-w-[200px]">
+          <p className="text-xs font-semibold mb-3">Zip Code Territories</p>
+          <div className="space-y-2 text-xs">
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <div className="w-4 h-4 rounded-full bg-green-600 border-2 border-white" />
+                <div className="w-6 h-6 rounded-full border-2 border-green-600 -mt-2 -ml-1 opacity-30" />
+              </div>
+              <div>
+                <span className="font-medium">Available</span>
+                <p className="text-[10px] text-muted-foreground">Click to claim</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-red-600 border-2 border-white" />
-              <span>Claimed</span>
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <div className="w-4 h-4 rounded-full bg-red-600 border-2 border-white" />
+                <div className="w-6 h-6 rounded-full border-2 border-red-600 -mt-2 -ml-1 opacity-30" />
+              </div>
+              <div>
+                <span className="font-medium">Claimed</span>
+                <p className="text-[10px] text-muted-foreground">Territory owned</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-gray-500 border-2 border-white" />
-              <span>Unavailable</span>
+            <div className="flex items-start gap-2">
+              <div className="mt-0.5">
+                <div className="w-4 h-4 rounded-full bg-gray-500 border-2 border-white" />
+                <div className="w-6 h-6 rounded-full border-2 border-gray-500 -mt-2 -ml-1 opacity-30" />
+              </div>
+              <div>
+                <span className="font-medium">Unavailable</span>
+                <p className="text-[10px] text-muted-foreground">Not for sale</p>
+              </div>
+            </div>
+            <div className="pt-2 mt-2 border-t text-[10px] text-muted-foreground">
+              Circles show approximate zip code boundaries
             </div>
           </div>
         </div>

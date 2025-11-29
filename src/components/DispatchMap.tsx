@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin,
@@ -321,8 +321,8 @@ export function DispatchMap() {
     return null;
   }
 
-  // Create custom worker icon
-  const createWorkerIcon = (worker: Worker, isSelected: boolean, isHovered: boolean) => {
+  // Memoized icon creators for performance
+  const createWorkerIcon = useCallback((worker: Worker, isSelected: boolean, isHovered: boolean) => {
     const statusColors: Record<Worker['status'], string> = {
       available: '#10b981',
       'on-route': '#3b82f6',
@@ -353,10 +353,10 @@ export function DispatchMap() {
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     });
-  };
+  }, []);
 
-  // Create custom job icon
-  const createJobIcon = (job: DispatchJob, isSelected: boolean, isHovered: boolean) => {
+  // Memoized job icon creator
+  const createJobIcon = useCallback((job: DispatchJob, isSelected: boolean, isHovered: boolean) => {
     const colors: Record<DispatchJob['urgency'], string> = {
       normal: '#6b7280',
       urgent: '#f59e0b',
@@ -388,7 +388,22 @@ export function DispatchMap() {
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     });
-  };
+  }, []);
+
+  // Memoize route polylines
+  const routePolylines = useMemo(() => {
+    return routes
+      .map(route => {
+        const worker = workers.find(w => w.id === route.workerId);
+        const job = jobs.find(j => j.id === route.jobId);
+        if (!worker || !job) return null;
+        
+        const polylinePositions = route.polyline.map(([lng, lat]) => [lat, lng] as [number, number]);
+        
+        return { route, polylinePositions, key: `route-${route.workerId}-${route.jobId}` };
+      })
+      .filter((item): item is { route: RouteConnection; polylinePositions: [number, number][]; key: string } => item !== null);
+  }, [routes, workers, jobs]);
 
   const handleAssignWorker = (workerId: string, jobId: string) => {
     setJobs(prev => prev.map(job => 
@@ -837,27 +852,19 @@ export function DispatchMap() {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 
-                {/* Route Polylines */}
-                {routes.map(route => {
-                  const worker = workers.find(w => w.id === route.workerId);
-                  const job = jobs.find(j => j.id === route.jobId);
-                  if (!worker || !job) return null;
-                  
-                  const polylinePositions = route.polyline.map(([lng, lat]) => [lat, lng] as [number, number]);
-                  
-                  return (
-                    <Polyline
-                      key={`route-${route.workerId}-${route.jobId}`}
-                      positions={polylinePositions}
-                      pathOptions={{
-                        color: '#3b82f6',
-                        weight: 4,
-                        opacity: 0.7,
-                        dashArray: '10, 5',
-                      }}
-                    />
-                  );
-                })}
+                {/* Route Polylines - Memoized */}
+                {routePolylines.map(({ polylinePositions, key }) => (
+                  <Polyline
+                    key={key}
+                    positions={polylinePositions}
+                    pathOptions={{
+                      color: '#3b82f6',
+                      weight: 4,
+                      opacity: 0.7,
+                      dashArray: '10, 5',
+                    }}
+                  />
+                ))}
                 
                 {/* Worker Markers */}
                 {workers.map(worker => {
