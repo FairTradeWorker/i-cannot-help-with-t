@@ -1,14 +1,16 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+// Enhanced Home Screen
+// Dashboard for all user types
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Video, Briefcase, MapPin, TrendingUp, Shield, DollarSign, Users, Zap } from 'lucide-react-native';
-import type { RootStackParamList } from '@/navigation/AppNavigator';
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-const { width } = Dimensions.get('window');
+import { 
+  Video, Briefcase, MapPin, TrendingUp, Shield, DollarSign, Users, Zap,
+  Plus, ArrowRight, CheckCircle, AlertCircle
+} from 'lucide-react-native';
+import { dataStore } from '@fairtradeworker/shared';
+import type { User as UserType, Job } from '@/types';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -16,10 +18,11 @@ interface StatCardProps {
   value: string;
   subtitle: string;
   color: string;
+  onPress?: () => void;
 }
 
-function StatCard({ icon, title, value, subtitle, color }: StatCardProps) {
-  return (
+function StatCard({ icon, title, value, subtitle, color, onPress }: StatCardProps) {
+  const content = (
     <View className="bg-white rounded-xl p-4 shadow-sm flex-1 min-w-[45%] m-1">
       <View className={`w-10 h-10 rounded-lg items-center justify-center mb-3`} style={{ backgroundColor: color }}>
         {icon}
@@ -29,133 +32,299 @@ function StatCard({ icon, title, value, subtitle, color }: StatCardProps) {
       <Text className="text-gray-500 text-xs mt-1">{subtitle}</Text>
     </View>
   );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        {content}
+      </TouchableOpacity>
+    );
+  }
+
+  return content;
 }
 
 export default function HomeScreen() {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation();
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const stats = [
-    {
-      icon: <Briefcase color="#ffffff" size={20} />,
-      title: 'Active Jobs',
-      value: '12',
-      subtitle: '+3 this week',
-      color: '#0ea5e9',
-    },
-    {
-      icon: <TrendingUp color="#ffffff" size={20} />,
-      title: 'Earnings',
-      value: '$8,450',
-      subtitle: 'This month',
-      color: '#22c55e',
-    },
-    {
-      icon: <Users color="#ffffff" size={20} />,
-      title: 'Contractors',
-      value: '847',
-      subtitle: 'In your area',
-      color: '#8b5cf6',
-    },
-    {
-      icon: <Zap color="#ffffff" size={20} />,
-      title: 'AI Accuracy',
-      value: '94.2%',
-      subtitle: 'Compounding',
-      color: '#f59e0b',
-    },
-  ];
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [user, allJobs] = await Promise.all([
+        dataStore.getCurrentUser(),
+        dataStore.getJobs(),
+      ]);
+      
+      setCurrentUser(user);
+      
+      // Get user-specific jobs
+      if (user) {
+        if (user.role === 'homeowner') {
+          setJobs(allJobs.filter(j => j.homeownerId === user.id));
+        } else if (user.role === 'contractor' || user.role === 'subcontractor') {
+          setJobs(allJobs.filter(j => j.contractorId === user.id));
+        } else {
+          setJobs(allJobs.slice(0, 5)); // Show recent jobs
+        }
+      } else {
+        setJobs(allJobs.slice(0, 5));
+      }
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+        <ActivityIndicator size="large" color="#0ea5e9" />
+        <Text className="text-gray-600 mt-4">Loading dashboard...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const userRole = currentUser?.role || 'homeowner';
+  const recentJobs = jobs.slice(0, 3);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={['bottom']}>
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Post a Job Card */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('JobPost')}
-          className="mx-4 mt-4 bg-primary-500 rounded-2xl p-6 shadow-lg"
-          activeOpacity={0.9}
-        >
-          <View className="flex-row items-center">
-            <View className="w-16 h-16 bg-white/20 rounded-full items-center justify-center mr-4">
-              <Video color="#ffffff" size={32} />
-            </View>
-            <View className="flex-1">
-              <Text className="text-white text-xl font-bold mb-1">Post a Job</Text>
-              <Text className="text-white/80 text-sm">
-                Record a 60-second video and let AI analyze the scope
-              </Text>
-            </View>
-          </View>
-          <View className="flex-row items-center mt-4 bg-white/10 rounded-lg p-3">
-            <Shield color="#ffffff" size={16} />
-            <Text className="text-white/90 text-xs ml-2 flex-1">
-              AI-powered scope generation • Instant quotes • Verified contractors
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        {/* Stats Grid */}
-        <View className="mx-4 mt-4">
-          <Text className="text-lg font-bold text-gray-900 mb-3">Dashboard</Text>
-          <View className="flex-row flex-wrap -m-1">
-            {stats.map((stat, index) => (
-              <StatCard key={index} {...stat} />
-            ))}
-          </View>
-        </View>
-
-        {/* Territory Teaser */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('MainTabs', { screen: 'Territories' } as never)}
-          className="mx-4 mt-4 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-5 shadow-lg overflow-hidden"
-          activeOpacity={0.9}
-          style={{ backgroundColor: '#8b5cf6' }}
-        >
-          <View className="flex-row items-center">
-            <View className="flex-1">
-              <Text className="text-white text-lg font-bold mb-1">Own Your Territory</Text>
-              <Text className="text-white/80 text-sm mb-3">
-                Claim exclusive rights to neighborhoods and build your empire
-              </Text>
-              <View className="flex-row">
-                <View className="bg-white/20 rounded-full px-3 py-1 mr-2">
-                  <Text className="text-white text-xs font-medium">$2,500-$50,000</Text>
-                </View>
-                <View className="bg-white/20 rounded-full px-3 py-1">
-                  <Text className="text-white text-xs font-medium">15% Revenue Share</Text>
-                </View>
-              </View>
-            </View>
-            <View className="w-16 h-16 bg-white/20 rounded-full items-center justify-center">
-              <MapPin color="#ffffff" size={32} />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        {/* Zero Fees Card */}
-        <View className="mx-4 mt-4 mb-6 bg-white rounded-2xl p-5 shadow-sm border border-green-100">
-          <View className="flex-row items-center mb-3">
-            <View className="w-12 h-12 bg-green-100 rounded-full items-center justify-center mr-3">
-              <DollarSign color="#22c55e" size={24} />
-            </View>
-            <View className="flex-1">
-              <Text className="text-lg font-bold text-gray-900">Zero Platform Fees</Text>
-              <Text className="text-gray-600 text-sm">Death of the Middleman</Text>
-            </View>
-          </View>
-          <View className="bg-gray-50 rounded-lg p-4">
-            <View className="flex-row justify-between mb-2">
-              <Text className="text-gray-600 text-sm">Traditional platforms</Text>
-              <Text className="text-red-500 font-bold">15-30% fees</Text>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-gray-600 text-sm">FairTradeWorker</Text>
-              <Text className="text-green-500 font-bold">0% fees</Text>
-            </View>
-          </View>
-          <Text className="text-gray-500 text-xs mt-3 text-center">
-            Contractors keep 100% of their earnings. Territory owners earn through revenue share.
+    <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {/* Header */}
+        <View className="bg-white px-4 py-6 border-b border-gray-200">
+          <Text className="text-2xl font-bold text-gray-900 mb-1">
+            {currentUser ? `Welcome back, ${currentUser.name.split(' ')[0]}!` : 'Welcome to FairTradeWorker'}
+          </Text>
+          <Text className="text-gray-600">
+            {userRole === 'homeowner' && 'Post jobs and find contractors'}
+            {userRole === 'contractor' && 'Find jobs and grow your business'}
+            {userRole === 'operator' && 'Manage your territories'}
+            {!currentUser && 'Connect with local contractors'}
           </Text>
         </View>
+
+        {/* Quick Actions */}
+        <View className="px-4 py-6">
+          <Text className="text-lg font-bold text-gray-900 mb-4">Quick Actions</Text>
+          
+          <View className="flex-row flex-wrap -m-2">
+            {userRole === 'homeowner' && (
+              <>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('JobPost' as never)}
+                  className="w-1/2 p-2"
+                >
+                  <View className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 items-center">
+                    <Video size={32} color="#ffffff" />
+                    <Text className="text-white font-semibold mt-2 text-center">Post a Job</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Jobs' as never)}
+                  className="w-1/2 p-2"
+                >
+                  <View className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 items-center">
+                    <Briefcase size={32} color="#ffffff" />
+                    <Text className="text-white font-semibold mt-2 text-center">My Jobs</Text>
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
+
+            {userRole === 'contractor' && (
+              <>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Jobs' as never)}
+                  className="w-1/2 p-2"
+                >
+                  <View className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 items-center">
+                    <Briefcase size={32} color="#ffffff" />
+                    <Text className="text-white font-semibold mt-2 text-center">Browse Jobs</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Route' as never)}
+                  className="w-1/2 p-2"
+                >
+                  <View className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 items-center">
+                    <MapPin size={32} color="#ffffff" />
+                    <Text className="text-white font-semibold mt-2 text-center">Plan Route</Text>
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
+
+            {userRole === 'operator' && (
+              <>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Territories' as never)}
+                  className="w-1/2 p-2"
+                >
+                  <View className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 items-center">
+                    <MapPin size={32} color="#ffffff" />
+                    <Text className="text-white font-semibold mt-2 text-center">My Territories</Text>
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+
+        {/* Stats */}
+        {currentUser && (
+          <View className="px-4 py-2">
+            <Text className="text-lg font-bold text-gray-900 mb-4">Overview</Text>
+            
+            <View className="flex-row flex-wrap -m-1">
+              {userRole === 'contractor' && (
+                <>
+                  <StatCard
+                    icon={<Briefcase color="#ffffff" size={20} />}
+                    title="Active Jobs"
+                    value={jobs.filter(j => j.status === 'in_progress' || j.status === 'assigned').length.toString()}
+                    subtitle="In progress"
+                    color="#0ea5e9"
+                    onPress={() => navigation.navigate('Jobs' as never)}
+                  />
+                  <StatCard
+                    icon={<DollarSign color="#ffffff" size={20} />}
+                    title="Earnings"
+                    value="$0"
+                    subtitle="This month"
+                    color="#22c55e"
+                  />
+                </>
+              )}
+
+              {userRole === 'homeowner' && (
+                <>
+                  <StatCard
+                    icon={<Briefcase color="#ffffff" size={20} />}
+                    title="My Jobs"
+                    value={jobs.length.toString()}
+                    subtitle="Total posted"
+                    color="#0ea5e9"
+                    onPress={() => navigation.navigate('Jobs' as never)}
+                  />
+                  <StatCard
+                    icon={<CheckCircle color="#ffffff" size={20} />}
+                    title="Completed"
+                    value={jobs.filter(j => j.status === 'completed').length.toString()}
+                    subtitle="Jobs finished"
+                    color="#22c55e"
+                  />
+                </>
+              )}
+            </View>
+          </View>
+        )}
+
+        {/* Recent Jobs */}
+        {recentJobs.length > 0 && (
+          <View className="px-4 py-6">
+            <View className="flex-row items-center justify-between mb-4">
+              <Text className="text-lg font-bold text-gray-900">
+                {userRole === 'homeowner' ? 'My Recent Jobs' : 'Recent Jobs'}
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Jobs' as never)}>
+                <Text className="text-primary-500 font-semibold">View All</Text>
+              </TouchableOpacity>
+            </View>
+
+            {recentJobs.map((job) => (
+              <TouchableOpacity
+                key={job.id}
+                onPress={() => navigation.navigate('JobDetails' as never, { jobId: job.id } as never)}
+                className="bg-white rounded-xl p-4 mb-3 shadow-sm"
+              >
+                <View className="flex-row items-start justify-between mb-2">
+                  <View className="flex-1">
+                    <Text className="text-base font-bold text-gray-900" numberOfLines={1}>
+                      {job.title}
+                    </Text>
+                    <Text className="text-sm text-gray-500 mt-1">
+                      {job.address.city}, {job.address.state}
+                    </Text>
+                  </View>
+                  <View className={`px-2 py-1 rounded ${
+                    job.status === 'completed' ? 'bg-green-100' :
+                    job.status === 'in_progress' ? 'bg-blue-100' :
+                    'bg-yellow-100'
+                  }`}>
+                    <Text className={`text-xs font-medium ${
+                      job.status === 'completed' ? 'text-green-700' :
+                      job.status === 'in_progress' ? 'text-blue-700' :
+                      'text-yellow-700'
+                    }`}>
+                      {job.status.replace('_', ' ')}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* First 300 Teaser */}
+        {userRole === 'operator' && (
+          <View className="mx-4 mb-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6">
+            <View className="flex-row items-center mb-3">
+              <Zap size={24} color="#ffffff" />
+              <Text className="text-white font-bold text-lg ml-2">First 300 Launch</Text>
+            </View>
+            <Text className="text-white/90 mb-4">
+              Claim First Priority forever - FREE! Only {300 - (jobs.length || 0)} spots left.
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Territories' as never)}
+              className="bg-white rounded-lg py-3 px-4 flex-row items-center justify-center"
+            >
+              <Text className="text-primary-600 font-bold mr-2">Claim Now</Text>
+              <ArrowRight size={20} color="#0ea5e9" />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Sign In Prompt */}
+        {!currentUser && (
+          <View className="mx-4 mb-6 bg-white rounded-xl p-6">
+            <Text className="text-lg font-bold text-gray-900 mb-2">Get Started</Text>
+            <Text className="text-gray-600 mb-4">
+              Sign in or create an account to post jobs, find contractors, and manage your projects.
+            </Text>
+            <TouchableOpacity
+              className="bg-primary-500 rounded-lg py-3 px-4 items-center"
+              onPress={() => {
+                // Navigate to login/signup
+              }}
+            >
+              <Text className="text-white font-bold">Sign In</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
