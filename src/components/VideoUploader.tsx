@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { VideoCamera, Eye, Package, Clock, CurrencyDollar, CheckCircle, Warning, Certificate } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,15 @@ export function VideoUploader({ homeownerId, onJobCreated }: VideoUploaderProps 
   const [progress, setProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Cleanup blob URL on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (videoPreview) {
+        URL.revokeObjectURL(videoPreview);
+      }
+    };
+  }, [videoPreview]);
 
   const extractFrameFromVideo = async (videoFile: File): Promise<string> => {
     return new Promise((resolve, reject) => {

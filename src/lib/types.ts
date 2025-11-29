@@ -124,7 +124,13 @@ export interface Job {
   address: Address;
   urgency: UrgencyLevel;
   videoUrl?: string;
+  thumbnailUrl?: string; // Base64 or URL for video thumbnail image
   scope?: JobScope;
+  serviceSelection?: {
+    category: string;
+    subcategory: string;
+    service: string;
+  };
   estimatedCost: { min: number; max: number };
   actualCost?: number;
   laborHours: number;

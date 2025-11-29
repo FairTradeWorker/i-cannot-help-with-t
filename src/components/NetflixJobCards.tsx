@@ -20,13 +20,13 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ServiceCategoryMegaMenu } from './ServiceCategoryMegaMenu';
 import { dataStore } from '@/lib/store';
-import type { Job } from '@/lib/types';
+import type { Job, User } from '@/lib/types';
 import type { ServiceSelection } from '@/types/service-categories';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface NetflixJobCardsProps {
   onJobSelect?: (job: Job) => void;
-  user?: any;
+  user?: User;
 }
 
 export function NetflixJobCards({ onJobSelect, user }: NetflixJobCardsProps) {
@@ -51,7 +51,10 @@ export function NetflixJobCards({ onJobSelect, user }: NetflixJobCardsProps) {
       );
       setJobs(availableJobs);
     } catch (error) {
-      console.error('Failed to load jobs:', error);
+      // Only log errors in development
+      if (import.meta.env.DEV) {
+        console.error('Failed to load jobs:', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -71,8 +74,7 @@ export function NetflixJobCards({ onJobSelect, user }: NetflixJobCardsProps) {
 
     // Service filter
     if (selectedService) {
-      const jobService = (job as any).serviceSelection;
-      if (!jobService || jobService.service !== selectedService.service) {
+      if (!job.serviceSelection || job.serviceSelection.service !== selectedService.service) {
         return false;
       }
     }

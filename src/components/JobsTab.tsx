@@ -218,7 +218,10 @@ export function JobsTab({ user, onPostJob, onJobSelect, initialSearchTerm }: Job
       );
       setJobs(availableJobs);
     } catch (error) {
-      console.error('Failed to load jobs:', error);
+      // Only log errors in development
+      if (import.meta.env.DEV) {
+        console.error('Failed to load jobs:', error);
+      }
       setJobs(sampleJobs);
     } finally {
       setLoading(false);
@@ -719,10 +722,17 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
   const formatTimeAgo = (date: Date) => {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
+
+    // Handle future dates (clock skew or errors)
+    if (diffMs < 0) {
+      return 'just now';
+    }
+
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-    
+
+    if (diffMins < 1) return 'just now';
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
@@ -777,7 +787,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
         >
           {/* VIDEO THUMBNAIL (only if video exists) */}
           {job.videoUrl && (
-            <div 
+            <div
               className="relative w-full overflow-hidden"
               style={{
                 height: '160px',
@@ -785,9 +795,9 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                 backgroundColor: `rgba(0, 0, 0, 0.2)`
               }}
             >
-              {!imageError ? (
+              {job.thumbnailUrl && !imageError ? (
                 <img
-                  src={job.videoUrl}
+                  src={job.thumbnailUrl}
                   alt={job.title}
                   className="w-full h-full object-cover"
                   onError={() => {
@@ -795,8 +805,8 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
                   }}
                 />
               ) : (
-                /* Placeholder when thumbnail fails to load */
-                <div 
+                /* Placeholder when thumbnail fails to load or doesn't exist */
+                <div
                   className="w-full h-full flex flex-col items-center justify-center"
                   style={{
                     backgroundColor: 'rgba(0, 0, 0, 0.2)'
@@ -945,34 +955,34 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
             {job.videoUrl ? (
               <>
                 {/* Video thumbnail */}
-                <img
-                  src={job.videoUrl}
-                  alt={job.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Fallback if image fails to load
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                
-                {/* Small video badge in top-right corner */}
-                {job.videoUrl && (
-                  <div 
-                    className="absolute z-10 flex items-center gap-1 px-2 text-white"
-                    style={{
-                      top: '8px',
-                      right: '8px',
-                      height: '24px',
-                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                      borderRadius: '4px',
-                      fontSize: '11px'
+                {job.thumbnailUrl && (
+                  <img
+                    src={job.thumbnailUrl}
+                    alt={job.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback if image fails to load
+                      e.currentTarget.style.display = 'none';
                     }}
-                  >
-                    <Play className="w-3 h-3" weight="fill" />
-                    <span>Video</span>
-                  </div>
+                  />
                 )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+
+                {/* Small video badge in top-right corner */}
+                <div
+                  className="absolute z-10 flex items-center gap-1 px-2 text-white"
+                  style={{
+                    top: '8px',
+                    right: '8px',
+                    height: '24px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    borderRadius: '4px',
+                    fontSize: '11px'
+                  }}
+                >
+                  <Play className="w-3 h-3" weight="fill" />
+                  <span>Video</span>
+                </div>
                 
                 <div className="absolute bottom-2 left-2 right-2">
                   <Badge className={getUrgencyColor(job.urgency)}>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   VideoCamera, 
@@ -24,7 +24,7 @@ import type { JobScope } from '@/lib/types';
 import { toast } from 'sonner';
 
 interface VideoJobCreatorProps {
-  onJobCreated: (jobData: { scope: JobScope; videoUrl: string }) => void;
+  onJobCreated: (jobData: { scope: JobScope; videoUrl: string; thumbnailUrl: string }) => void;
   onCancel: () => void;
 }
 
@@ -39,6 +39,15 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
   const [jobScope, setJobScope] = useState<JobScope | null>(null);
   const [error, setError] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
+
+  // Cleanup blob URL on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (videoPreview) {
+        URL.revokeObjectURL(videoPreview);
+      }
+    };
+  }, [videoPreview]);
 
   const handleFileSelect = async (file: File) => {
     if (!file.type.startsWith('video/')) {
@@ -94,18 +103,27 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
       setError('Failed to analyze video. Please try again.');
       toast.error('Analysis failed');
       setCurrentStep('upload');
-      console.error(err);
+      // Only log errors in development
+      if (import.meta.env.DEV) {
+        console.error('Video analysis error:', err);
+      }
     }
   };
 
   const handleCreateJob = () => {
-    if (!jobScope || !videoFile) return;
-    
+    if (!jobScope || !videoFile || !extractedFrame) return;
+
+    // Convert base64 frame to data URL for use in image tags
+    const thumbnailDataUrl = extractedFrame.startsWith('data:')
+      ? extractedFrame
+      : `data:image/jpeg;base64,${extractedFrame}`;
+
     onJobCreated({
       scope: jobScope,
       videoUrl: videoPreview,
+      thumbnailUrl: thumbnailDataUrl,
     });
-    
+
     setCurrentStep('complete');
     toast.success('Job created successfully!');
   };
