@@ -169,8 +169,11 @@ Respond with valid JSON in this exact format:
         (!c.zipPrefix || c.zipPrefix === zipCode?.substring(0, 3))
       );
       if (corr && Math.abs(corr.adjustmentPct) > 5) {
-        mat.quantity = Math.round(mat.quantity * (1 + corr.adjustmentPct / 100));
-        mat.notes = `AI auto-adjusted ${corr.adjustmentPct > 0 ? '+' : ''}${corr.adjustmentPct.toFixed(0)}% (learned from ${corr.count} jobs)`;
+        return {
+          ...mat,
+          quantity: Math.round(mat.quantity * (1 + corr.adjustmentPct / 100)),
+          notes: `AI auto-adjusted ${corr.adjustmentPct > 0 ? '+' : ''}${corr.adjustmentPct.toFixed(0)}% (learned from ${corr.count} jobs)`
+        };
       }
       return mat;
     });
