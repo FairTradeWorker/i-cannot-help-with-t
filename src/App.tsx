@@ -514,7 +514,19 @@ function App() {
                   <Button
                     size="sm"
                     onClick={() => handleCreateJob()}
-                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-xs md:text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-full hover:bg-white/90 shadow-md font-semibold px-4 md:px-5 h-9 md:h-10 ml-2 md:ml-4 text-slate-50 bg-blue-800 border border-blue-700"
+                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-xs md:text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive font-bold ml-2 md:ml-4 text-white hover:scale-[1.02]"
+                    style={{ 
+                      backgroundColor: '#2563eb', 
+                      padding: '12px 24px', 
+                      borderRadius: '8px',
+                      border: 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#1d4ed8';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#2563eb';
+                    }}
                     aria-label="Post a new job"
                   >
                     <Plus className="w-4 h-4 mr-1.5 md:mr-2" weight="bold" />
@@ -822,9 +834,30 @@ function App() {
                                     </p>
                                   </div>
                                 </div>
-                                <Button size="sm" className="h-8 px-3 text-xs rounded-full">
-                                  Get Started
-                                </Button>
+                                <div className="flex flex-col items-center gap-1">
+                                  <Button 
+                                    size="sm" 
+                                    onClick={() => handleCreateJob()}
+                                    className="font-bold text-white hover:scale-[1.02] transition-transform"
+                                    style={{ 
+                                      backgroundColor: '#2563eb', 
+                                      padding: '12px 24px', 
+                                      borderRadius: '8px',
+                                      border: 'none'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.backgroundColor = '#1d4ed8';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.backgroundColor = '#2563eb';
+                                    }}
+                                  >
+                                    Get Started
+                                  </Button>
+                                  <p className="text-xs" style={{ color: '#6b7280' }}>
+                                    Free to post • No credit card required
+                                  </p>
+                                </div>
                               </div>
                               <div className="flex flex-wrap gap-4 text-sm md:text-base text-muted-foreground">
                                 <div className="flex items-center gap-2">
@@ -1094,7 +1127,24 @@ function App() {
                                 </div>
                               </div>
                             </div>
-                            <Button size="lg" className="mt-6" onClick={() => handleNavClick('contractor', 'dashboard')}>
+                            <Button 
+                              size="lg" 
+                              className="mt-6 transition-colors" 
+                              onClick={() => handleNavClick('contractor', 'dashboard')}
+                              style={{ 
+                                backgroundColor: 'transparent', 
+                                border: '1px solid #d1d5db',
+                                color: '#4b5563',
+                                padding: '12px 24px', 
+                                borderRadius: '8px'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                              }}
+                            >
                               Join as Contractor
                               <ArrowRight className="w-5 h-5 ml-2" />
                             </Button>
@@ -1202,7 +1252,19 @@ function App() {
                             <Button 
                               size="lg" 
                               onClick={() => handleCreateJob()}
-                              className="bg-blue-600 hover:bg-blue-700 text-white"
+                              className="font-bold text-white hover:scale-[1.02] transition-transform"
+                              style={{ 
+                                backgroundColor: '#2563eb', 
+                                padding: '12px 24px', 
+                                borderRadius: '8px',
+                                border: 'none'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#1d4ed8';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = '#2563eb';
+                              }}
                             >
                               Post Your First Job — It's Free
                             </Button>
