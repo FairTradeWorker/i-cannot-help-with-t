@@ -1,299 +1,389 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
+// Enhanced Job Details Screen
+// Full job details with bids, scope, messaging
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RouteProp } from '@react-navigation/native';
 import { 
+  ArrowLeft, 
   MapPin, 
   Clock, 
   DollarSign, 
-  Star, 
-  User, 
-  Phone, 
-  MessageCircle, 
-  ChevronRight,
+  Package, 
+  AlertTriangle, 
+  CheckCircle,
+  MessageSquare,
   Calendar,
-  Wrench,
-  FileText,
-  Shield,
-  CheckCircle
+  User
 } from 'lucide-react-native';
+import { BidCard } from '@/components/BidCard';
+import { dataStore } from '@fairtradeworker/shared';
+import type { Job, Bid, User as UserType, UrgencyLevel } from '@/types';
 
-interface JobDetails {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  urgency: 'normal' | 'urgent' | 'emergency';
-  status: 'posted' | 'bidding' | 'assigned' | 'in_progress' | 'completed';
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-  };
-  estimatedCost: { min: number; max: number };
-  laborHours: number;
-  materials: string[];
-  scope: string[];
-  photos: string[];
-  createdAt: Date;
-  scheduledDate?: Date;
-  homeowner: {
-    id: string;
-    name: string;
-    rating: number;
-    jobsPosted: number;
-  };
-  bids: {
-    id: string;
-    contractorName: string;
-    amount: number;
-    message: string;
-    createdAt: Date;
-  }[];
+interface RouteParams {
+  jobId: string;
 }
 
-// Mock data for demonstration
-const mockJob: JobDetails = {
-  id: '1',
-  title: 'Kitchen Faucet Replacement',
-  description: 'Need to replace old kitchen faucet with a new one. Water pressure is low and there\'s some rust around the base. Homeowner has already purchased a new Delta faucet.',
-  category: 'Plumbing',
-  urgency: 'normal',
-  status: 'bidding',
-  address: {
-    street: '123 Main St',
-    city: 'Austin',
-    state: 'TX',
-    zip: '78701',
-  },
-  estimatedCost: { min: 250, max: 400 },
-  laborHours: 2,
-  materials: ['Plumber\'s tape', 'Silicone sealant', 'Supply lines (if needed)'],
-  scope: [
-    'Remove existing faucet',
-    'Install new Delta faucet',
-    'Connect water supply lines',
-    'Test for leaks',
-    'Clean up work area',
-  ],
-  photos: [],
-  createdAt: new Date(),
-  homeowner: {
-    id: 'h1',
-    name: 'John D.',
-    rating: 4.8,
-    jobsPosted: 5,
-  },
-  bids: [
-    {
-      id: 'b1',
-      contractorName: 'Mike\'s Plumbing',
-      amount: 300,
-      message: 'I can do this job tomorrow morning. 10 years experience with faucet installations.',
-      createdAt: new Date(Date.now() - 3600000),
-    },
-    {
-      id: 'b2',
-      contractorName: 'QuickFix Contractors',
-      amount: 350,
-      message: 'Available this week. Will include 1-year workmanship warranty.',
-      createdAt: new Date(Date.now() - 7200000),
-    },
-  ],
-};
-
-const urgencyColors = {
-  normal: { bg: 'bg-green-100', text: 'text-green-700' },
-  urgent: { bg: 'bg-yellow-100', text: 'text-yellow-700' },
-  emergency: { bg: 'bg-red-100', text: 'text-red-700' },
-};
-
-const statusColors = {
-  posted: { bg: 'bg-blue-100', text: 'text-blue-700' },
-  bidding: { bg: 'bg-purple-100', text: 'text-purple-700' },
-  assigned: { bg: 'bg-yellow-100', text: 'text-yellow-700' },
-  in_progress: { bg: 'bg-orange-100', text: 'text-orange-700' },
-  completed: { bg: 'bg-green-100', text: 'text-green-700' },
+const urgencyColors: Record<UrgencyLevel, { bg: string; text: string }> = {
+  normal: { bg: '#dcfce7', text: '#16a34a' },
+  urgent: { bg: '#fef3c7', text: '#d97706' },
+  emergency: { bg: '#fee2e2', text: '#dc2626' },
 };
 
 export default function JobDetailsScreen() {
   const navigation = useNavigation();
-  const [showBidModal, setShowBidModal] = useState(false);
-  const [bidAmount, setBidAmount] = useState('');
-  const [bidMessage, setBidMessage] = useState('');
-  const job = mockJob; // In real app, fetch from API
+  const route = useRoute();
+  const { jobId } = (route.params as RouteParams) || { jobId: '' };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
+  const [job, setJob] = useState<Job | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submittingBid, setSubmittingBid] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, [jobId]);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [jobData, user] = await Promise.all([
+        dataStore.getJobById(jobId),
+        dataStore.getCurrentUser(),
+      ]);
+      
+      if (!jobData) {
+        Alert.alert('Error', 'Job not found');
+        navigation.goBack();
+        return;
+      }
+
+      setJob(jobData);
+      setCurrentUser(user);
+    } catch (error) {
+      console.error('Failed to load job details:', error);
+      Alert.alert('Error', 'Failed to load job details');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmitBid = () => {
-    if (!bidAmount || parseFloat(bidAmount) <= 0) {
-      Alert.alert('Error', 'Please enter a valid bid amount');
-      return;
-    }
+  const handleAcceptBid = async (bidId: string) => {
+    if (!job || !currentUser) return;
+
     Alert.alert(
-      'Bid Submitted!',
-      `Your bid of $${bidAmount} has been submitted. The homeowner will be notified.`,
-      [{ text: 'OK', onPress: () => setShowBidModal(false) }]
+      'Accept Bid',
+      'Are you sure you want to accept this bid? This will assign the job to this contractor.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Accept',
+          onPress: async () => {
+            try {
+              // Update job status and accept bid
+              job.contractorId = job.bids.find(b => b.id === bidId)?.contractorId;
+              job.status = 'assigned';
+              job.bids.forEach(bid => {
+                if (bid.id === bidId) {
+                  bid.status = 'accepted';
+                } else if (bid.status === 'pending') {
+                  bid.status = 'rejected';
+                }
+              });
+
+              await dataStore.saveJob(job);
+              setJob({ ...job });
+              
+              Alert.alert('Success', 'Bid accepted! The contractor has been notified.');
+            } catch (error) {
+              console.error('Failed to accept bid:', error);
+              Alert.alert('Error', 'Failed to accept bid. Please try again.');
+            }
+          },
+        },
+      ]
     );
   };
 
-  const handleContact = () => {
-    Alert.alert('Contact', 'This would open a chat with the homeowner.');
+  const handleRejectBid = async (bidId: string) => {
+    if (!job) return;
+
+    try {
+      job.bids.forEach(bid => {
+        if (bid.id === bidId) {
+          bid.status = 'rejected';
+        }
+      });
+
+      await dataStore.saveJob(job);
+      setJob({ ...job });
+    } catch (error) {
+      console.error('Failed to reject bid:', error);
+      Alert.alert('Error', 'Failed to reject bid. Please try again.');
+    }
   };
 
+  const canManageBids = currentUser && job && (
+    currentUser.id === job.homeownerId || 
+    currentUser.role === 'admin'
+  );
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+        <ActivityIndicator size="large" color="#0ea5e9" />
+        <Text className="text-gray-600 mt-4">Loading job details...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!job) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+        <Text className="text-gray-600">Job not found</Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="mt-4 bg-primary-500 px-6 py-3 rounded-full"
+        >
+          <Text className="text-white font-semibold">Go Back</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
+  const urgency = job.urgency || 'normal';
+  const colors = urgencyColors[urgency];
+  const acceptedBid = job.bids.find(b => b.status === 'accepted');
+  const pendingBids = job.bids.filter(b => b.status === 'pending');
+
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={['bottom']}>
+    <SafeAreaView className="flex-1 bg-gray-100" edges={['top']}>
+      {/* Header */}
+      <View className="bg-white border-b border-gray-200 px-4 py-3 flex-row items-center">
+        <TouchableOpacity onPress={() => navigation.goBack()} className="mr-4">
+          <ArrowLeft size={24} color="#111827" />
+        </TouchableOpacity>
+        <Text className="text-lg font-bold text-gray-900 flex-1">Job Details</Text>
+        <TouchableOpacity
+          onPress={() => {
+            // Navigate to messages
+            navigation.navigate('Messages' as never, { jobId: job.id } as never);
+          }}
+        >
+          <MessageSquare size={24} color="#0ea5e9" />
+        </TouchableOpacity>
+      </View>
+
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Header Card */}
-        <View className="bg-white p-4 border-b border-gray-100">
-          <View className="flex-row items-start justify-between mb-3">
-            <View className="flex-1">
-              <Text className="text-2xl font-bold text-gray-900 mb-1">{job.title}</Text>
-              <Text className="text-primary-500 font-medium">{job.category}</Text>
-            </View>
-            <View className="flex-row">
-              <View className={`px-3 py-1 rounded-full mr-2 ${urgencyColors[job.urgency].bg}`}>
-                <Text className={`text-sm font-medium ${urgencyColors[job.urgency].text}`}>
-                  {job.urgency.charAt(0).toUpperCase() + job.urgency.slice(1)}
-                </Text>
-              </View>
-              <View className={`px-3 py-1 rounded-full ${statusColors[job.status].bg}`}>
-                <Text className={`text-sm font-medium ${statusColors[job.status].text}`}>
-                  {job.status.replace('_', ' ').charAt(0).toUpperCase() + job.status.slice(1).replace('_', ' ')}
+        {/* Job Header */}
+        <View className="bg-white px-4 py-6 mb-4">
+          <View className="flex-row items-start justify-between mb-4">
+            <View className="flex-1 mr-4">
+              <Text className="text-2xl font-bold text-gray-900 mb-2">{job.title}</Text>
+              <View className="flex-row items-center mb-2">
+                <MapPin size={16} color="#6b7280" />
+                <Text className="text-gray-600 ml-2">
+                  {job.address.city}, {job.address.state} {job.address.zip}
                 </Text>
               </View>
             </View>
-          </View>
-
-          <View className="flex-row items-center">
-            <MapPin color="#6b7280" size={16} />
-            <Text className="text-gray-600 ml-2">
-              {job.address.city}, {job.address.state} {job.address.zip}
-            </Text>
-          </View>
-        </View>
-
-        {/* Pricing & Hours */}
-        <View className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
-          <Text className="text-lg font-bold text-gray-900 mb-3">Estimate Details</Text>
-          
-          <View className="flex-row">
-            <View className="flex-1 items-center p-3 bg-green-50 rounded-lg mr-2">
-              <DollarSign color="#22c55e" size={24} />
-              <Text className="text-gray-600 text-sm mt-1">Estimated Cost</Text>
-              <Text className="text-xl font-bold text-gray-900">
-                ${job.estimatedCost.min} - ${job.estimatedCost.max}
+            <View style={{ backgroundColor: colors.bg }} className="px-3 py-1 rounded-full">
+              <Text style={{ color: colors.text }} className="text-xs font-semibold uppercase">
+                {urgency}
               </Text>
             </View>
-            <View className="flex-1 items-center p-3 bg-blue-50 rounded-lg ml-2">
-              <Clock color="#0ea5e9" size={24} />
-              <Text className="text-gray-600 text-sm mt-1">Labor Hours</Text>
-              <Text className="text-xl font-bold text-gray-900">{job.laborHours}h</Text>
-            </View>
           </View>
+
+          <Text className="text-gray-700 text-base leading-6">{job.description}</Text>
         </View>
 
-        {/* Description */}
-        <View className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
-          <Text className="text-lg font-bold text-gray-900 mb-3">Description</Text>
-          <Text className="text-gray-700 leading-6">{job.description}</Text>
-        </View>
-
-        {/* Scope of Work */}
-        <View className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
-          <View className="flex-row items-center mb-3">
-            <FileText color="#0ea5e9" size={20} />
-            <Text className="text-lg font-bold text-gray-900 ml-2">Scope of Work</Text>
-          </View>
-          {job.scope.map((item, index) => (
-            <View key={index} className="flex-row items-start mb-2">
-              <CheckCircle color="#22c55e" size={18} />
-              <Text className="text-gray-700 ml-3 flex-1">{item}</Text>
+        {/* Status */}
+        <View className="bg-white px-4 py-4 mb-4 border-b border-gray-200">
+          <View className="flex-row items-center justify-between">
+            <View>
+              <Text className="text-sm text-gray-500 mb-1">Status</Text>
+              <Text className="text-lg font-semibold text-gray-900 capitalize">
+                {job.status.replace('_', ' ')}
+              </Text>
             </View>
-          ))}
-        </View>
-
-        {/* Materials Needed */}
-        <View className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
-          <View className="flex-row items-center mb-3">
-            <Wrench color="#0ea5e9" size={20} />
-            <Text className="text-lg font-bold text-gray-900 ml-2">Materials Needed</Text>
-          </View>
-          {job.materials.map((item, index) => (
-            <View key={index} className="flex-row items-start mb-2">
-              <View className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3" />
-              <Text className="text-gray-700 flex-1">{item}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Homeowner Info */}
-        <View className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
-          <Text className="text-lg font-bold text-gray-900 mb-3">Posted By</Text>
-          <View className="flex-row items-center">
-            <View className="w-12 h-12 bg-primary-100 rounded-full items-center justify-center mr-3">
-              <User color="#0ea5e9" size={24} />
-            </View>
-            <View className="flex-1">
-              <Text className="text-gray-900 font-bold">{job.homeowner.name}</Text>
-              <View className="flex-row items-center">
-                <Star color="#f59e0b" size={14} fill="#f59e0b" />
-                <Text className="text-gray-600 ml-1">{job.homeowner.rating} • {job.homeowner.jobsPosted} jobs posted</Text>
-              </View>
-            </View>
-            <TouchableOpacity 
-              onPress={handleContact}
-              className="bg-primary-50 p-3 rounded-full"
-            >
-              <MessageCircle color="#0ea5e9" size={20} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Current Bids */}
-        {job.bids.length > 0 && (
-          <View className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
-            <Text className="text-lg font-bold text-gray-900 mb-3">
-              Current Bids ({job.bids.length})
-            </Text>
-            {job.bids.map((bid) => (
-              <View 
-                key={bid.id} 
-                className="border border-gray-100 rounded-lg p-3 mb-2"
-              >
-                <View className="flex-row items-center justify-between mb-2">
-                  <Text className="text-gray-900 font-bold">{bid.contractorName}</Text>
-                  <Text className="text-green-600 font-bold text-lg">${bid.amount}</Text>
+            {job.scheduledStart && (
+              <View>
+                <Text className="text-sm text-gray-500 mb-1">Scheduled</Text>
+                <View className="flex-row items-center">
+                  <Calendar size={16} color="#6b7280" />
+                  <Text className="text-lg font-semibold text-gray-900 ml-2">
+                    {new Date(job.scheduledStart).toLocaleDateString()}
+                  </Text>
                 </View>
-                <Text className="text-gray-600 text-sm">{bid.message}</Text>
               </View>
-            ))}
+            )}
+          </View>
+        </View>
+
+        {/* Scope & Cost */}
+        {job.scope && (
+          <View className="bg-white px-4 py-4 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-4">AI-Generated Scope</Text>
+            
+            <View className="mb-4">
+              <View className="flex-row items-center mb-2">
+                <DollarSign size={20} color="#22c55e" />
+                <Text className="text-xl font-bold text-gray-900 ml-2">Estimated Cost</Text>
+              </View>
+              <Text className="text-3xl font-bold text-gray-900">
+                ${job.scope.estimatedCost.min.toLocaleString()} - ${job.scope.estimatedCost.max.toLocaleString()}
+              </Text>
+              {job.scope.confidenceScore && (
+                <Text className="text-sm text-gray-500 mt-1">
+                  {Math.round(job.scope.confidenceScore * 100)}% AI confidence
+                </Text>
+              )}
+            </View>
+
+            <View className="mb-4">
+              <View className="flex-row items-center mb-2">
+                <Clock size={20} color="#6b7280" />
+                <Text className="text-lg font-semibold text-gray-900 ml-2">Labor Hours</Text>
+              </View>
+              <Text className="text-2xl font-bold text-gray-900">
+                ~{job.scope.laborHours || job.laborHours || 0} hours
+              </Text>
+            </View>
+
+            {job.scope.materials && job.scope.materials.length > 0 && (
+              <View>
+                <View className="flex-row items-center mb-3">
+                  <Package size={20} color="#8b5cf6" />
+                  <Text className="text-lg font-semibold text-gray-900 ml-2">Materials</Text>
+                </View>
+                {job.scope.materials.map((material, index) => (
+                  <View
+                    key={index}
+                    className="flex-row justify-between py-2 border-b border-gray-100"
+                  >
+                    <Text className="text-gray-700 flex-1">
+                      {material.name} × {material.quantity} {material.unit}
+                    </Text>
+                    <Text className="text-gray-900 font-semibold">
+                      ${material.estimatedCost.toLocaleString()}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {job.scope.recommendations && job.scope.recommendations.length > 0 && (
+              <View className="mt-4">
+                <View className="flex-row items-center mb-3">
+                  <CheckCircle size={20} color="#22c55e" />
+                  <Text className="text-lg font-semibold text-gray-900 ml-2">Recommendations</Text>
+                </View>
+                {job.scope.recommendations.map((rec, index) => (
+                  <View key={index} className="flex-row items-start mb-2">
+                    <View className="w-5 h-5 bg-green-100 rounded-full items-center justify-center mr-3 mt-0.5">
+                      <CheckCircle size={12} color="#22c55e" />
+                    </View>
+                    <Text className="text-gray-700 flex-1">{rec}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {job.scope.warningsAndRisks && job.scope.warningsAndRisks.length > 0 && (
+              <View className="mt-4 bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                <View className="flex-row items-center mb-3">
+                  <AlertTriangle size={20} color="#f59e0b" />
+                  <Text className="text-lg font-semibold text-gray-900 ml-2">Warnings</Text>
+                </View>
+                {job.scope.warningsAndRisks.map((warning, index) => (
+                  <View key={index} className="flex-row items-start mb-2">
+                    <View className="w-5 h-5 bg-yellow-200 rounded-full items-center justify-center mr-3 mt-0.5">
+                      <AlertTriangle size={12} color="#f59e0b" />
+                    </View>
+                    <Text className="text-gray-700 flex-1">{warning}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         )}
 
-        {/* Spacer for bottom button */}
-        <View className="h-24" />
-      </ScrollView>
+        {/* Video/Thumbnail */}
+        {(job.videoUrl || job.thumbnailUrl) && (
+          <View className="bg-white px-4 py-4 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-3">Media</Text>
+            {job.thumbnailUrl && (
+              <Image
+                source={{ uri: job.thumbnailUrl }}
+                className="w-full h-48 rounded-lg"
+                resizeMode="cover"
+              />
+            )}
+          </View>
+        )}
 
-      {/* Submit Bid Button */}
-      <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4">
-        <TouchableOpacity
-          onPress={() => setShowBidModal(true)}
-          className="bg-primary-500 py-4 rounded-xl items-center flex-row justify-center"
-        >
-          <DollarSign color="#ffffff" size={20} />
-          <Text className="text-white font-bold text-lg ml-2">Submit Your Bid</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Bids Section */}
+        <View className="bg-white px-4 py-4 mb-4">
+          <View className="flex-row items-center justify-between mb-4">
+            <Text className="text-lg font-bold text-gray-900">
+              Bids ({job.bids?.length || 0})
+            </Text>
+            {acceptedBid && (
+              <View className="flex-row items-center bg-green-100 px-3 py-1 rounded-full">
+                <CheckCircle size={16} color="#22c55e" />
+                <Text className="text-green-700 font-semibold ml-2">Accepted</Text>
+              </View>
+            )}
+          </View>
+
+          {acceptedBid && (
+            <BidCard
+              bid={acceptedBid}
+              isAccepted={true}
+              isWinning={true}
+            />
+          )}
+
+          {pendingBids.length > 0 && (
+            <>
+              <Text className="text-sm font-semibold text-gray-700 mb-3 mt-4">
+                Pending Bids ({pendingBids.length})
+              </Text>
+              {pendingBids.map((bid) => (
+                <BidCard
+                  key={bid.id}
+                  bid={bid}
+                  canAccept={canManageBids && !acceptedBid}
+                  onAccept={() => handleAcceptBid(bid.id)}
+                  onReject={() => handleRejectBid(bid.id)}
+                />
+              ))}
+            </>
+          )}
+
+          {(!job.bids || job.bids.length === 0) && (
+            <View className="items-center py-8">
+              <Text className="text-gray-500">No bids yet</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Actions */}
+        {currentUser && currentUser.role === 'contractor' && job.status === 'posted' && (
+          <View className="px-4 pb-6">
+            <TouchableOpacity
+              className="bg-primary-500 py-4 rounded-xl items-center"
+              onPress={() => {
+                // Navigate to submit bid screen
+                navigation.navigate('SubmitBid' as never, { jobId: job.id } as never);
+              }}
+            >
+              <Text className="text-white font-bold text-lg">Submit a Bid</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
