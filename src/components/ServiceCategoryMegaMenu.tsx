@@ -113,7 +113,7 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[98vw] w-[98vw] max-h-[95vh] h-[95vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-[98vw] w-[98vw] sm:max-w-[98vw] md:max-w-[98vw] lg:max-w-[98vw] xl:max-w-[98vw] max-h-[95vh] h-[95vh] p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-5 border-b bg-gradient-to-r from-primary/5 to-transparent">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
