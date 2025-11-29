@@ -382,8 +382,6 @@ export async function recordPredictionOutcome(
   // Note: recordPredictionOutcome uses old interface, consider updating to use new learning-db format
   // For now, we'll skip saving to learning-db as it requires jobId which we don't have here
   console.log(`🎓 Learning: ${predictionType} accuracy = ${(accuracy * 100).toFixed(1)}%`);
-  
-  console.log(`🎓 Learning: ${predictionType} accuracy = ${(accuracy * 100).toFixed(1)}%`);
 }
 
 function calculateAccuracy(prediction: any, actual: any, type: string): number {
