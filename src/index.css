@@ -691,6 +691,14 @@ button.success-pulse {
   display: none;
 }
 
+/* Force small icon size in service category menu */
+.service-category-icon svg {
+  width: 12px !important;
+  height: 12px !important;
+  min-width: 12px !important;
+  min-height: 12px !important;
+}
+
 /* Tooltip arrow animation */
 .tooltip-animated {
   animation: tooltipFadeIn 0.15s ease-out;

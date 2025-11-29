@@ -172,11 +172,11 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
                               onClick={() => handleCategorySelect(category)}
                             >
                               <div className="flex flex-col items-center text-center space-y-3 h-full">
-                              <div className="p-1 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 flex-shrink-0 [&>svg]:!w-3 [&>svg]:!h-3 [&>svg]:min-w-[12px] [&>svg]:min-h-[12px]">
+                              <div className="p-1 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 flex-shrink-0 service-category-icon">
                                 <Icon 
                                   size={12} 
                                   className="text-primary" 
-                                  weight="duotone" 
+                                  weight="duotone"
                                 />
                               </div>
                                 <div className="flex-1 flex flex-col justify-center min-h-0">
