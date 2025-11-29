@@ -844,6 +844,14 @@ function App() {
                 {/* RIGHT SIDE NAVIGATION */}
                 <nav className="flex items-center gap-1.5 mr-4">
               <Button
+                variant={activeTab === 'learning' ? 'default' : 'ghost'}
+                onClick={() => handleNavClick('learning')}
+                className="button-interactive text-purple-400 hover:text-purple-300"
+                size="sm"
+              >
+                AI Learning Live
+              </Button>
+              <Button
                 variant={activeTab === 'partners' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('partners')}
                 className="button-interactive"
