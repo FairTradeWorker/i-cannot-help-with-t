@@ -26,6 +26,7 @@ import {
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { recordPredictionOutcome, recordLearningFeedback } from '@/lib/ai-service';
+import { learningDB } from '@/lib/learning-db';
 import type { Job, JobScope } from '@/lib/types';
 
 interface JobFeedbackModalProps {
@@ -84,6 +85,10 @@ export function JobFeedbackModal({
           job.id,
           { totalCost: actualCost, laborHours: actualLaborHours }
         );
+        
+        // Log learning context after recording feedback
+        const ctx = await learningDB.getContext();
+        console.log("AI is learning:", ctx);
       }
       
       await recordPredictionOutcome(
