@@ -60,12 +60,12 @@ export function ServiceCategoriesShowcase({
         </p>
         
         {/* Main headline */}
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2">
+        <h2 className="text-[24px] md:text-3xl lg:text-4xl font-bold text-foreground mb-2 text-center">
           Get Free Quotes from Local Pros — No Middleman Fees
         </h2>
         
         {/* Subheadline */}
-        <p className="text-sm md:text-base text-muted-foreground font-normal mb-6">
+        <p className="text-base md:text-base text-muted-foreground font-normal mb-6 text-center">
           Tap a category to start a job post.
         </p>
 
@@ -126,9 +126,8 @@ export function ServiceCategoriesShowcase({
               whileTap={{ scale: 0.98 }}
             >
               <Card 
-                className="bg-white border cursor-pointer text-center transition-all duration-200"
+                className="bg-white border cursor-pointer text-center transition-all duration-200 p-3 md:p-4"
                 style={{
-                  padding: '16px',
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                   boxShadow: 'none'
@@ -157,22 +156,20 @@ export function ServiceCategoriesShowcase({
                 <div className="flex flex-col items-center gap-2">
                   <div className="flex items-center justify-center">
                     <Icon 
-                      className="transition-transform duration-200" 
-                      style={{ width: '32px', height: '32px' }}
+                      className="transition-transform duration-200 w-7 h-7 md:w-8 md:h-8" 
                       weight="fill"
                     />
                   </div>
                   <div>
                     <h3 
-                      className="font-bold text-foreground line-clamp-2"
-                      style={{ fontSize: '14px' }}
+                      className="font-bold text-foreground line-clamp-2 text-[13px] md:text-sm"
                     >
                       {category.title}
                     </h3>
-                    {/* Show subtitle only on mobile */}
+                    {/* Show subtitle on mobile and tablet */}
                     <p 
-                      className="text-muted-foreground line-clamp-2 hidden sm:block lg:hidden"
-                      style={{ fontSize: '12px', color: '#6b7280' }}
+                      className="text-muted-foreground line-clamp-2 block sm:block lg:hidden text-xs"
+                      style={{ color: '#6b7280' }}
                     >
                       {category.description}
                     </p>

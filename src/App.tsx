@@ -38,6 +38,7 @@ import {
   Clock,
   Star,
   CheckCircle as CheckCircleIcon,
+  X,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -313,138 +314,208 @@ function App() {
           <div 
             className={`flex items-center py-2 max-w-[1800px] mx-auto gap-2 md:gap-4 transition-all duration-300 ease-in-out ${isScrolled ? 'h-16' : 'h-14 md:h-16'}`}
           >
-            {/* Mobile Hamburger Menu */}
-            {isMobile && (
-              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="md:hidden">
-                    <List className="w-6 h-6" weight="bold" />
+            {/* Mobile Layout: Logo on left, Hamburger + Post a Job on right */}
+            {isMobile ? (
+              <>
+                {/* Logo on left */}
+                <div 
+                  onClick={() => handleNavClick('home')}
+                  className="cursor-pointer flex-shrink-0"
+                >
+                  <span className="text-lg font-bold text-foreground">FairTradeWorker</span>
+                </div>
+                
+                <div className="flex-1" />
+                
+                {/* Post a Job button and Hamburger on right */}
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => handleCreateJob()}
+                    className="font-bold text-white hover:scale-[1.02] transition-transform text-xs px-3 py-2 h-[44px]"
+                    style={{ 
+                      backgroundColor: '#2563eb', 
+                      borderRadius: '8px',
+                      border: 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#1d4ed8';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#2563eb';
+                    }}
+                    aria-label="Post a new job"
+                  >
+                    <Plus className="w-4 h-4 mr-1" weight="bold" />
+                    <span className="hidden sm:inline">Post a Job</span>
                   </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
-                  <SheetHeader className="p-6 border-b">
-                    <SheetTitle>Navigation</SheetTitle>
-                  </SheetHeader>
-                  <nav className="flex flex-col p-4 gap-2">
-                    <Button
-                      variant={activeTab === 'home' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('home')}
-                      className="justify-start w-full h-12"
-                    >
-                      <House className="w-5 h-5 mr-3" />
-                      Home
-                    </Button>
-                    <Button
-                      variant={activeTab === 'territories' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('territories', 'overview')}
-                      className="justify-start w-full h-12"
-                    >
-                      <MapTrifold className="w-5 h-5 mr-3" />
-                      Territories
-                    </Button>
-                    <Button
-                      variant={activeTab === 'jobs' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('jobs')}
-                      className="justify-start w-full h-12"
-                    >
-                      <Briefcase className="w-5 h-5 mr-3" />
-                      Jobs
-                    </Button>
-                    
-                    <div className="border-t my-2" />
-                    
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
-                      Homeowners
-                    </div>
-                    <Button
-                      variant={activeTab === 'homeowner' && activeSubTab === 'profile' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('homeowner', 'profile')}
-                      className="justify-start w-full h-12 pl-8"
-                    >
-                      Profile
-                    </Button>
-                    <Button
-                      variant={activeTab === 'homeowner' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('homeowner', 'my-jobs')}
-                      className="justify-start w-full h-12 pl-8"
-                    >
-                      My Jobs
-                    </Button>
-                    
-                    <div className="border-t my-2" />
-                    
-                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
-                      For Pros
-                    </div>
-                    <Button
-                      variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('contractors-browse')}
-                      className="justify-start w-full h-12 pl-8"
-                    >
-                      Browse Contractors
-                    </Button>
-                    <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
-                      Contractor
-                    </div>
-                    <Button
-                      variant={activeTab === 'contractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('contractor', 'dashboard')}
-                      className="justify-start w-full h-12 pl-12"
-                    >
-                      Dashboard
-                    </Button>
-                    <Button
-                      variant={activeTab === 'contractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('contractor', 'my-jobs')}
-                      className="justify-start w-full h-12 pl-12"
-                    >
-                      My Estimates
-                    </Button>
-                    <Button
-                      variant={activeTab === 'contractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('contractor', 'route')}
-                      className="justify-start w-full h-12 pl-12"
-                    >
-                      Route Planner
-                    </Button>
-                    <Button
-                      variant={activeTab === 'dispatch' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('dispatch')}
-                      className="justify-start w-full h-12 pl-12"
-                    >
-                      Dispatch Map
-                    </Button>
-                    <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
-                      Subcontractor
-                    </div>
-                    <Button
-                      variant={activeTab === 'subcontractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('subcontractor', 'dashboard')}
-                      className="justify-start w-full h-12 pl-12"
-                    >
-                      Dashboard
-                    </Button>
-                    <Button
-                      variant={activeTab === 'subcontractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('subcontractor', 'my-jobs')}
-                      className="justify-start w-full h-12 pl-12"
-                    >
-                      My Estimates
-                    </Button>
-                    <Button
-                      variant={activeTab === 'subcontractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
-                      onClick={() => handleNavClick('subcontractor', 'route')}
-                      className="justify-start w-full h-12 pl-12"
-                    >
-                      Route Planner
-                    </Button>
-                  </nav>
-                </SheetContent>
-              </Sheet>
-            )}
-            
-            {/* LEFT SIDE NAVIGATION */}
-            <nav className="hidden md:flex items-center gap-1.5">
+                  
+                  <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-[44px] w-[44px]">
+                        <List className="w-6 h-6" weight="bold" />
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-full sm:w-[400px] p-0">
+                      <SheetHeader className="p-6 border-b flex flex-row items-center justify-between">
+                        <SheetTitle>Navigation</SheetTitle>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="h-10 w-10"
+                        >
+                          <X className="w-6 h-6" />
+                        </Button>
+                      </SheetHeader>
+                      <nav className="flex flex-col p-4 gap-2">
+                        <Button
+                          variant={activeTab === 'home' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('home')}
+                          className="justify-start w-full min-h-[44px] text-base"
+                        >
+                          <House className="w-5 h-5 mr-3" />
+                          Home
+                        </Button>
+                        <Button
+                          variant={activeTab === 'territories' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('territories', 'overview')}
+                          className="justify-start w-full min-h-[44px] text-base"
+                        >
+                          <MapTrifold className="w-5 h-5 mr-3" />
+                          Territories
+                        </Button>
+                        <Button
+                          variant={activeTab === 'jobs' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('jobs')}
+                          className="justify-start w-full min-h-[44px] text-base"
+                        >
+                          <Briefcase className="w-5 h-5 mr-3" />
+                          Jobs
+                        </Button>
+                        
+                        <div className="border-t my-2" />
+                        
+                        <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                          Homeowners
+                        </div>
+                        <Button
+                          variant={activeTab === 'homeowner' && activeSubTab === 'profile' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('homeowner', 'profile')}
+                          className="justify-start w-full min-h-[44px] text-base pl-8"
+                        >
+                          Profile
+                        </Button>
+                        <Button
+                          variant={activeTab === 'homeowner' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('homeowner', 'my-jobs')}
+                          className="justify-start w-full min-h-[44px] text-base pl-8"
+                        >
+                          My Jobs
+                        </Button>
+                        
+                        <div className="border-t my-2" />
+                        
+                        <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                          For Pros
+                        </div>
+                        <Button
+                          variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('contractors-browse')}
+                          className="justify-start w-full min-h-[44px] text-base pl-8"
+                        >
+                          Browse Contractors
+                        </Button>
+                        <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
+                          Contractor
+                        </div>
+                        <Button
+                          variant={activeTab === 'contractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('contractor', 'dashboard')}
+                          className="justify-start w-full min-h-[44px] text-base pl-12"
+                        >
+                          Dashboard
+                        </Button>
+                        <Button
+                          variant={activeTab === 'contractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('contractor', 'my-jobs')}
+                          className="justify-start w-full min-h-[44px] text-base pl-12"
+                        >
+                          My Estimates
+                        </Button>
+                        <Button
+                          variant={activeTab === 'contractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('contractor', 'route')}
+                          className="justify-start w-full min-h-[44px] text-base pl-12"
+                        >
+                          Route Planner
+                        </Button>
+                        <Button
+                          variant={activeTab === 'dispatch' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('dispatch')}
+                          className="justify-start w-full min-h-[44px] text-base pl-12"
+                        >
+                          Dispatch Map
+                        </Button>
+                        <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
+                          Subcontractor
+                        </div>
+                        <Button
+                          variant={activeTab === 'subcontractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('subcontractor', 'dashboard')}
+                          className="justify-start w-full min-h-[44px] text-base pl-12"
+                        >
+                          Dashboard
+                        </Button>
+                        <Button
+                          variant={activeTab === 'subcontractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('subcontractor', 'my-jobs')}
+                          className="justify-start w-full min-h-[44px] text-base pl-12"
+                        >
+                          My Estimates
+                        </Button>
+                        <Button
+                          variant={activeTab === 'subcontractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('subcontractor', 'route')}
+                          className="justify-start w-full min-h-[44px] text-base pl-12"
+                        >
+                          Route Planner
+                        </Button>
+                        
+                        <div className="border-t my-2" />
+                        
+                        <Button
+                          variant={activeTab === 'partners' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('partners')}
+                          className="justify-start w-full min-h-[44px] text-base"
+                        >
+                          Partners
+                        </Button>
+                        <Button
+                          variant={activeTab === 'warranty' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('warranty')}
+                          className="justify-start w-full min-h-[44px] text-base"
+                        >
+                          Warranty
+                        </Button>
+                        <Button
+                          variant={activeTab === 'messages' ? 'default' : 'ghost'}
+                          onClick={() => handleNavClick('messages')}
+                          className="justify-start w-full min-h-[44px] text-base"
+                        >
+                          <ChatCircle className="w-5 h-5 mr-3" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+                          Messages
+                        </Button>
+                      </nav>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Desktop Layout */}
+                {/* LEFT SIDE NAVIGATION */}
+                <nav className="hidden md:flex items-center gap-1.5">
               <Button
                 variant={activeTab === 'home' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('home')}
@@ -535,43 +606,43 @@ function App() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </nav>
+                </nav>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="sm"
-                    onClick={() => handleCreateJob()}
-                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-xs md:text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive font-bold ml-2 md:ml-4 text-white hover:scale-[1.02]"
-                    style={{ 
-                      backgroundColor: '#2563eb', 
-                      padding: '12px 24px', 
-                      borderRadius: '8px',
-                      border: 'none'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#1d4ed8';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#2563eb';
-                    }}
-                    aria-label="Post a new job"
-                  >
-                    <Plus className="w-4 h-4 mr-1.5 md:mr-2" weight="bold" />
-                    Post a Job
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Create a new job posting to connect with qualified contractors</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="sm"
+                        onClick={() => handleCreateJob()}
+                        className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-xs md:text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive font-bold ml-2 md:ml-4 text-white hover:scale-[1.02]"
+                        style={{ 
+                          backgroundColor: '#2563eb', 
+                          padding: '12px 24px', 
+                          borderRadius: '8px',
+                          border: 'none'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#1d4ed8';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#2563eb';
+                        }}
+                        aria-label="Post a new job"
+                      >
+                        <Plus className="w-4 h-4 mr-1.5 md:mr-2" weight="bold" />
+                        Post a Job
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Create a new job posting to connect with qualified contractors</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
 
-            <div className="flex-1" />
+                <div className="flex-1" />
 
-            {/* RIGHT SIDE NAVIGATION */}
-            <nav className="flex items-center gap-1.5 mr-4">
+                {/* RIGHT SIDE NAVIGATION */}
+                <nav className="flex items-center gap-1.5 mr-4">
               <Button
                 variant={activeTab === 'partners' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('partners')}
@@ -778,12 +849,14 @@ function App() {
                   </Button>
                 </div>
               )}
-            </div>
+              </div>
+              </>
+            )}
           </div>
         </div>
       </motion.header>
-      <main className="flex-1 py-8 px-4">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 py-8 px-4 md:px-4">
+        <div className="max-w-7xl mx-auto px-4 md:px-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={`${activeTab}-${activeSubTab}-${showAdminPanel}-${showProfile}-${showJobPost}`}
@@ -829,7 +902,7 @@ function App() {
                   }} />}
                   {activeTab === 'notifications' && <NotificationsPage />}
                   {activeTab === 'home' && (
-                    <div className="space-y-8">
+                    <div className="space-y-8 text-base">
                       {/* Service Categories at top */}
                       <ServiceCategoriesShowcase
                         onCategoryClick={(categoryId) => {
@@ -853,28 +926,29 @@ function App() {
                             onClick={() => handleCreateJob()}
                           >
                             <div className="flex flex-col gap-4">
-                              <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5">
-                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                                <div className="flex items-center gap-3 flex-1 min-w-0 w-full md:w-auto">
                                   <div className="p-2.5 rounded-xl bg-primary flex-shrink-0">
                                     <Plus className="w-5 h-5 text-white" weight="bold" />
                                   </div>
                                   <div className="min-w-0">
                                     <h3 className="text-base md:text-lg font-bold mb-0.5">Post a New Job</h3>
-                                    <p className="text-xs text-muted-foreground line-clamp-1">
+                                    <p className="text-sm md:text-xs text-muted-foreground line-clamp-1">
                                       Get estimates from qualified contractors in your area
                                     </p>
                                   </div>
                                 </div>
-                                <div className="flex flex-col items-center gap-1">
+                                <div className="flex flex-col items-center gap-1 w-full md:w-auto">
                                   <Button 
                                     size="sm" 
                                     onClick={() => handleCreateJob()}
-                                    className="font-bold text-white hover:scale-[1.02] transition-transform"
+                                    className="font-bold text-white hover:scale-[1.02] transition-transform w-full md:w-auto"
                                     style={{ 
                                       backgroundColor: '#2563eb', 
                                       padding: '12px 24px', 
                                       borderRadius: '8px',
-                                      border: 'none'
+                                      border: 'none',
+                                      minHeight: '44px'
                                     }}
                                     onMouseEnter={(e) => {
                                       e.currentTarget.style.backgroundColor = '#1d4ed8';
@@ -911,7 +985,7 @@ function App() {
                                   <Brain className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                                   How It Works
                                 </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                   <ScrollAnimatedSection staggerDelay={0}>
                                     <div className="flex items-start gap-3">
                                     <div className="p-2.5 rounded-lg bg-primary/10 flex-shrink-0 mt-0.5">
@@ -956,7 +1030,7 @@ function App() {
                                 </h4>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                   {/* Testimonial Card 1 */}
-                                  <div className="bg-white rounded-lg shadow-sm p-6">
+                                  <div className="bg-white rounded-lg shadow-sm p-6 w-full text-base mb-4 md:mb-0">
                                     <div className="flex gap-1 mb-3">
                                       {[1, 2, 3, 4, 5].map((i) => (
                                         <Star key={i} className="w-4 h-4" weight="fill" style={{ color: '#fbbf24' }} />
@@ -971,7 +1045,7 @@ function App() {
                                   </div>
 
                                   {/* Testimonial Card 2 */}
-                                  <div className="bg-white rounded-lg shadow-sm p-6">
+                                  <div className="bg-white rounded-lg shadow-sm p-6 w-full text-base mb-4 md:mb-0">
                                     <div className="flex gap-1 mb-3">
                                       {[1, 2, 3, 4, 5].map((i) => (
                                         <Star key={i} className="w-4 h-4" weight="fill" style={{ color: '#fbbf24' }} />
@@ -986,7 +1060,7 @@ function App() {
                                   </div>
 
                                   {/* Testimonial Card 3 */}
-                                  <div className="bg-white rounded-lg shadow-sm p-6">
+                                  <div className="bg-white rounded-lg shadow-sm p-6 w-full text-base mb-0">
                                     <div className="flex gap-1 mb-3">
                                       {[1, 2, 3, 4, 5].map((i) => (
                                         <Star key={i} className="w-4 h-4" weight="fill" style={{ color: '#fbbf24' }} />
@@ -1005,7 +1079,7 @@ function App() {
 
                               {/* Benefits & Stats */}
                               <ScrollAnimatedSection>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-3">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-3">
                                 <div className="text-center">
                                   <div className="flex items-center justify-center gap-2 mb-2">
                                     <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary" />
@@ -1236,7 +1310,7 @@ function App() {
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Left Column - Traditional Platforms */}
-                            <Card className="p-6 shadow-md rounded-lg" style={{ backgroundColor: '#fef2f2' }}>
+                            <Card className="p-6 shadow-md rounded-lg w-full" style={{ backgroundColor: '#fef2f2' }}>
                               <h4 className="text-xl font-bold mb-4">Traditional Platforms</h4>
                               <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
@@ -1263,7 +1337,7 @@ function App() {
                             </Card>
 
                             {/* Right Column - FairTradeWorker */}
-                            <Card className="p-6 shadow-md rounded-lg" style={{ backgroundColor: '#f0fdf4' }}>
+                            <Card className="p-6 shadow-md rounded-lg w-full" style={{ backgroundColor: '#f0fdf4' }}>
                               <h4 className="text-xl font-bold mb-4">FairTradeWorker</h4>
                               <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
@@ -1295,12 +1369,13 @@ function App() {
                             <Button 
                               size="lg" 
                               onClick={() => handleCreateJob()}
-                              className="font-bold text-white hover:scale-[1.02] transition-transform"
+                              className="font-bold text-white hover:scale-[1.02] transition-transform w-full md:w-auto"
                               style={{ 
                                 backgroundColor: '#2563eb', 
                                 padding: '12px 24px', 
                                 borderRadius: '8px',
-                                border: 'none'
+                                border: 'none',
+                                minHeight: '44px'
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = '#1d4ed8';
