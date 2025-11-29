@@ -773,21 +773,25 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
           }}
           onClick={onClick}
         >
-          {/* TOP ROW: Title + Video Badge */}
-          <div className="flex items-start justify-between mb-2 relative">
-            <h3 className="font-bold text-white flex-1 pr-2" style={{ fontSize: '18px' }}>
+          {/* ROW 1: Title + Video Badge */}
+          <div className="flex items-start justify-between mb-3" style={{ marginBottom: '12px' }}>
+            <h3 
+              className="font-bold text-white flex-1" 
+              style={{ 
+                fontSize: '18px',
+                paddingRight: job.videoUrl ? '80px' : '0px'
+              }}
+            >
               {job.title}
             </h3>
             {job.videoUrl && (
               <div 
-                className="absolute top-0 right-0 flex items-center gap-1 px-2 text-white"
+                className="flex items-center gap-1 px-2 text-white flex-shrink-0"
                 style={{
                   height: '24px',
                   backgroundColor: 'rgba(0, 0, 0, 0.5)',
                   borderRadius: '4px',
-                  fontSize: '11px',
-                  top: '0px',
-                  right: '0px'
+                  fontSize: '11px'
                 }}
               >
                 <Play className="w-3 h-3" weight="fill" />
@@ -796,7 +800,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
             )}
           </div>
 
-          {/* DESCRIPTION: 2 lines max */}
+          {/* ROW 2: Description (2 lines max) */}
           <p 
             className="text-white/80 mb-3" 
             style={{ 
@@ -808,48 +812,58 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
               textOverflow: 'ellipsis',
               display: '-webkit-box',
               WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical'
+              WebkitBoxOrient: 'vertical',
+              marginBottom: '12px'
             }}
           >
             {job.description}
           </p>
 
-          {/* META ROW: Location, Time, Bids - evenly spaced */}
-          <div className="flex items-center justify-between mb-3" style={{ fontSize: '12px' }}>
-            <div className="flex items-center gap-1 text-white/80">
+          {/* ROW 3: Location, Time, Bids - evenly spaced */}
+          <div 
+            className="flex items-center justify-between mb-3 flex-wrap gap-2" 
+            style={{ 
+              fontSize: '12px',
+              marginBottom: '12px'
+            }}
+          >
+            <div className="flex items-center gap-1 text-white/80 flex-shrink-0">
               <MapPin className="w-3 h-3" />
-              <span>{job.address.city}, {job.address.state}</span>
+              <span className="whitespace-nowrap">{job.address.city}, {job.address.state}</span>
             </div>
-            <div className="flex items-center gap-1 text-white/80">
+            <div className="flex items-center gap-1 text-white/80 flex-shrink-0">
               <Clock className="w-3 h-3" />
-              <span>{timeAgo}</span>
+              <span className="whitespace-nowrap">{timeAgo}</span>
             </div>
-            <div className="flex items-center gap-1 text-white/80">
+            <div className="flex items-center gap-1 text-white/80 flex-shrink-0">
               <Users className="w-3 h-3" />
-              <span>{job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}</span>
+              <span className="whitespace-nowrap">{job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}</span>
             </div>
           </div>
 
-          {/* BOTTOM ROW: Status Badge (left) + Budget (right, stacked) */}
-          <div className="flex items-center justify-between mb-3">
+          {/* ROW 4: Status Badge (left) + Budget (right) */}
+          <div 
+            className="flex items-center justify-between mb-3" 
+            style={{ marginBottom: '12px' }}
+          >
             {/* Left: Status badge */}
             <Badge 
-              className={`${statusColor} text-white border-0`}
+              className={`${statusColor} text-white border-0 flex-shrink-0`}
               style={{ fontSize: '12px', padding: '4px 8px' }}
             >
               {urgencyStatus}
             </Badge>
             
-            {/* Right: Budget stacked */}
-            <div className="text-right">
-              <div className="text-white/80" style={{ fontSize: '11px' }}>Budget</div>
-              <div className="text-white font-bold" style={{ fontSize: '18px' }}>
+            {/* Right: Budget */}
+            <div className="text-right flex-shrink-0">
+              <span className="text-white/80" style={{ fontSize: '12px' }}>Budget: </span>
+              <span className="text-white font-bold" style={{ fontSize: '16px' }}>
                 {formatBudget(job.estimatedCost)}
-              </div>
+              </span>
             </div>
           </div>
 
-          {/* BID BUTTON: Full width at bottom */}
+          {/* ROW 5: Bid Job Button */}
           <Button
             className="w-full bg-white text-primary hover:bg-white/90"
             style={{ fontSize: '14px', padding: '12px' }}
@@ -859,6 +873,7 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
             }}
           >
             Bid Job
+            <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </Card>
       </motion.div>
