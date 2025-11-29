@@ -38,6 +38,8 @@ import {
   Clock,
   Star,
   CheckCircle as CheckCircleIcon,
+  Lock,
+  ThumbsUp,
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -926,6 +928,51 @@ function App() {
                                     </p>
                                     <p className="text-sm text-gray-500">
                                       — Jennifer L., Phoenix AZ
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Trust Badges Section */}
+                              <div className="border-t border-border/50 pt-8 mt-8" style={{ backgroundColor: '#f9fafb' }}>
+                                <div className="grid grid-cols-2 md:grid-cols-5 gap-6 py-8">
+                                  {/* Badge 1: No Platform Fees */}
+                                  <div className="flex flex-col items-center text-center">
+                                    <CheckCircle className="w-6 h-6 mb-2" style={{ color: '#2563eb' }} weight="fill" />
+                                    <p className="text-sm" style={{ color: '#4b5563' }}>
+                                      No Platform Fees
+                                    </p>
+                                  </div>
+
+                                  {/* Badge 2: Verified Contractors */}
+                                  <div className="flex flex-col items-center text-center">
+                                    <Shield className="w-6 h-6 mb-2" style={{ color: '#2563eb' }} weight="fill" />
+                                    <p className="text-sm" style={{ color: '#4b5563' }}>
+                                      Verified Contractors
+                                    </p>
+                                  </div>
+
+                                  {/* Badge 3: 24hr Avg Response */}
+                                  <div className="flex flex-col items-center text-center">
+                                    <Clock className="w-6 h-6 mb-2" style={{ color: '#2563eb' }} weight="fill" />
+                                    <p className="text-sm" style={{ color: '#4b5563' }}>
+                                      24hr Avg Response
+                                    </p>
+                                  </div>
+
+                                  {/* Badge 4: Secure Payments */}
+                                  <div className="flex flex-col items-center text-center">
+                                    <Lock className="w-6 h-6 mb-2" style={{ color: '#2563eb' }} weight="fill" />
+                                    <p className="text-sm" style={{ color: '#4b5563' }}>
+                                      Secure Payments
+                                    </p>
+                                  </div>
+
+                                  {/* Badge 5: Satisfaction Guarantee */}
+                                  <div className="flex flex-col items-center text-center">
+                                    <ThumbsUp className="w-6 h-6 mb-2" style={{ color: '#2563eb' }} weight="fill" />
+                                    <p className="text-sm" style={{ color: '#4b5563' }}>
+                                      Satisfaction Guarantee
                                     </p>
                                   </div>
                                 </div>
