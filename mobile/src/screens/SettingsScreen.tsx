@@ -1,104 +1,41 @@
+// Enhanced Settings Screen
+// Complete app settings and preferences
+
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, Linking } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  Bell,
-  CreditCard,
-  Shield,
-  FileText,
-  HelpCircle,
-  LogOut,
-  ChevronRight,
-  Moon,
-  Globe,
-  Lock,
-  Smartphone,
-  Mail,
-  MessageSquare,
-  MapPin,
+import { 
+  Bell, Shield, CreditCard, User, Moon, Globe, 
+  HelpCircle, LogOut, ChevronRight, Trash2,
+  MapPin, Calendar, DollarSign
 } from 'lucide-react-native';
-import { COMPLIANCE_DOCUMENTS } from '@/lib/compliance';
-
-interface SettingItemProps {
-  icon: React.ReactNode;
-  title: string;
-  subtitle?: string;
-  onPress?: () => void;
-  rightElement?: React.ReactNode;
-  danger?: boolean;
-}
-
-function SettingItem({ icon, title, subtitle, onPress, rightElement, danger }: SettingItemProps) {
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      className={`flex-row items-center py-4 px-4 ${onPress ? 'active:bg-gray-50' : ''}`}
-    >
-      <View className={`w-10 h-10 rounded-full items-center justify-center mr-3 ${danger ? 'bg-red-100' : 'bg-gray-100'}`}>
-        {icon}
-      </View>
-      <View className="flex-1">
-        <Text className={`font-medium ${danger ? 'text-red-600' : 'text-gray-900'}`}>{title}</Text>
-        {subtitle && <Text className="text-gray-500 text-sm mt-0.5">{subtitle}</Text>}
-      </View>
-      {rightElement || (onPress && <ChevronRight color="#9ca3af" size={20} />)}
-    </TouchableOpacity>
-  );
-}
-
-function SettingSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <View className="mb-6">
-      <Text className="text-gray-500 text-sm font-medium mb-2 px-4">{title}</Text>
-      <View className="bg-white rounded-xl mx-4">{children}</View>
-    </View>
-  );
-}
+import { dataStore } from '@fairtradeworker/shared';
 
 export default function SettingsScreen() {
-  const [notifications, setNotifications] = useState({
-    push: true,
-    email: true,
-    sms: false,
-    marketing: false,
-  });
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(true);
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [locationTracking, setLocationTracking] = useState(true);
 
-  const [preferences, setPreferences] = useState({
-    darkMode: false,
-    locationSharing: true,
-  });
-
-  const handleNotificationToggle = (key: keyof typeof notifications) => {
-    setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handlePreferenceToggle = (key: keyof typeof preferences) => {
-    setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handlePaymentSettings = () => {
-    Alert.alert('Payment Settings', 'Payment configuration will be available soon.');
-  };
-
-  const handleLegalDocument = (doc: keyof typeof COMPLIANCE_DOCUMENTS) => {
-    const url = COMPLIANCE_DOCUMENTS[doc];
+  const handleSignOut = () => {
     Alert.alert(
-      'Legal Document',
-      `Opening ${doc.replace(/([A-Z])/g, ' $1').toLowerCase()}...`,
+      'Sign Out',
+      'Are you sure you want to sign out?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Open', onPress: () => console.log(`Opening ${url}`) },
-      ]
-    );
-  };
-
-  const handleLogout = () => {
-    Alert.alert(
-      'Log Out',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Log Out', style: 'destructive', onPress: () => console.log('Logging out...') },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await dataStore.setCurrentUser(null as any);
+              Alert.alert('Signed Out', 'You have been signed out successfully.');
+            } catch (error) {
+              console.error('Failed to sign out:', error);
+            }
+          },
+        },
       ]
     );
   };
@@ -113,196 +50,265 @@ export default function SettingsScreen() {
           text: 'Delete',
           style: 'destructive',
           onPress: () => {
-            Alert.alert('Confirmation Required', 'Please contact support to complete account deletion.');
+            Alert.alert('Account Deletion', 'Account deletion is not yet implemented.');
           },
         },
       ]
     );
   };
 
+  const SettingSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <View className="mb-6">
+      <Text className="text-sm font-semibold text-gray-500 uppercase mb-3 px-4">
+        {title}
+      </Text>
+      <View className="bg-white rounded-xl overflow-hidden">
+        {children}
+      </View>
+    </View>
+  );
+
+  const SettingItem = ({ 
+    icon, 
+    label, 
+    value, 
+    onPress, 
+    showChevron = true,
+    rightComponent
+  }: {
+    icon: React.ReactNode;
+    label: string;
+    value?: string;
+    onPress?: () => void;
+    showChevron?: boolean;
+    rightComponent?: React.ReactNode;
+  }) => (
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={!onPress}
+      className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0"
+      activeOpacity={0.7}
+    >
+      <View className="flex-row items-center flex-1">
+        <View className="w-10 h-10 bg-primary-100 rounded-lg items-center justify-center mr-3">
+          {icon}
+        </View>
+        <View className="flex-1">
+          <Text className="text-base text-gray-900 font-medium">{label}</Text>
+          {value && (
+            <Text className="text-sm text-gray-500 mt-0.5">{value}</Text>
+          )}
+        </View>
+      </View>
+      {rightComponent || (showChevron && onPress && (
+        <ChevronRight size={20} color="#9ca3af" />
+      ))}
+    </TouchableOpacity>
+  );
+
+  const SwitchItem = ({
+    icon,
+    label,
+    value,
+    onValueChange,
+    description
+  }: {
+    icon: React.ReactNode;
+    label: string;
+    value: boolean;
+    onValueChange: (value: boolean) => void;
+    description?: string;
+  }) => (
+    <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0">
+      <View className="flex-row items-center flex-1">
+        <View className="w-10 h-10 bg-primary-100 rounded-lg items-center justify-center mr-3">
+          {icon}
+        </View>
+        <View className="flex-1">
+          <Text className="text-base text-gray-900 font-medium">{label}</Text>
+          {description && (
+            <Text className="text-sm text-gray-500 mt-0.5">{description}</Text>
+          )}
+        </View>
+      </View>
+      <Switch
+        value={value}
+        onValueChange={onValueChange}
+        trackColor={{ false: '#d1d5db', true: '#0ea5e9' }}
+        thumbColor="#ffffff"
+      />
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Notifications */}
-        <SettingSection title="NOTIFICATIONS">
-          <SettingItem
-            icon={<Bell color="#0ea5e9" size={20} />}
-            title="Push Notifications"
-            subtitle="Receive alerts on your device"
-            rightElement={
-              <Switch
-                value={notifications.push}
-                onValueChange={() => handleNotificationToggle('push')}
-                trackColor={{ false: '#d1d5db', true: '#0ea5e9' }}
-                thumbColor="#ffffff"
-              />
-            }
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<Mail color="#22c55e" size={20} />}
-            title="Email Notifications"
-            subtitle="Get updates via email"
-            rightElement={
-              <Switch
-                value={notifications.email}
-                onValueChange={() => handleNotificationToggle('email')}
-                trackColor={{ false: '#d1d5db', true: '#22c55e' }}
-                thumbColor="#ffffff"
-              />
-            }
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<MessageSquare color="#8b5cf6" size={20} />}
-            title="SMS Notifications"
-            subtitle="Receive text messages"
-            rightElement={
-              <Switch
-                value={notifications.sms}
-                onValueChange={() => handleNotificationToggle('sms')}
-                trackColor={{ false: '#d1d5db', true: '#8b5cf6' }}
-                thumbColor="#ffffff"
-              />
-            }
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<Smartphone color="#f59e0b" size={20} />}
-            title="Marketing Communications"
-            subtitle="Promotions and updates"
-            rightElement={
-              <Switch
-                value={notifications.marketing}
-                onValueChange={() => handleNotificationToggle('marketing')}
-                trackColor={{ false: '#d1d5db', true: '#f59e0b' }}
-                thumbColor="#ffffff"
-              />
-            }
-          />
-        </SettingSection>
+        {/* Header */}
+        <View className="bg-white px-4 py-4 border-b border-gray-200">
+          <Text className="text-2xl font-bold text-gray-900">Settings</Text>
+        </View>
 
-        {/* Payments */}
-        <SettingSection title="PAYMENTS">
-          <SettingItem
-            icon={<CreditCard color="#22c55e" size={20} />}
-            title="Payment Methods"
-            subtitle="Manage your cards and bank accounts"
-            onPress={handlePaymentSettings}
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<Shield color="#0ea5e9" size={20} />}
-            title="Payment Security"
-            subtitle="Two-factor authentication"
-            onPress={handlePaymentSettings}
-          />
-        </SettingSection>
+        {/* Account Settings */}
+        <View className="px-4 pt-6">
+          <SettingSection title="Account">
+            <SettingItem
+              icon={<User size={20} color="#0ea5e9" />}
+              label="Profile"
+              value="Edit your profile information"
+              onPress={() => {
+                // Navigate to profile edit
+              }}
+            />
+            <SettingItem
+              icon={<Shield size={20} color="#0ea5e9" />}
+              label="Privacy & Security"
+              value="Manage your privacy settings"
+              onPress={() => {
+                // Navigate to privacy
+              }}
+            />
+            <SettingItem
+              icon={<MapPin size={20} color="#0ea5e9" />}
+              label="Location"
+              value="Manage location permissions"
+              onPress={() => {
+                // Navigate to location settings
+              }}
+            />
+          </SettingSection>
 
-        {/* Preferences */}
-        <SettingSection title="PREFERENCES">
-          <SettingItem
-            icon={<Moon color="#6b7280" size={20} />}
-            title="Dark Mode"
-            subtitle="Switch to dark theme"
-            rightElement={
-              <Switch
-                value={preferences.darkMode}
-                onValueChange={() => handlePreferenceToggle('darkMode')}
-                trackColor={{ false: '#d1d5db', true: '#6b7280' }}
-                thumbColor="#ffffff"
-              />
-            }
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<MapPin color="#ef4444" size={20} />}
-            title="Location Sharing"
-            subtitle="Share location for job matching"
-            rightElement={
-              <Switch
-                value={preferences.locationSharing}
-                onValueChange={() => handlePreferenceToggle('locationSharing')}
-                trackColor={{ false: '#d1d5db', true: '#ef4444' }}
-                thumbColor="#ffffff"
-              />
-            }
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<Globe color="#8b5cf6" size={20} />}
-            title="Language"
-            subtitle="English (US)"
-            onPress={() => Alert.alert('Language', 'Language selection coming soon.')}
-          />
-        </SettingSection>
+          {/* Notifications */}
+          <SettingSection title="Notifications">
+            <SwitchItem
+              icon={<Bell size={20} color="#0ea5e9" />}
+              label="Notifications"
+              value={notificationsEnabled}
+              onValueChange={setNotificationsEnabled}
+              description="Enable or disable all notifications"
+            />
+            {notificationsEnabled && (
+              <>
+                <SwitchItem
+                  icon={<Bell size={20} color="#0ea5e9" />}
+                  label="Push Notifications"
+                  value={pushNotifications}
+                  onValueChange={setPushNotifications}
+                  description="Receive push notifications on your device"
+                />
+                <SwitchItem
+                  icon={<Bell size={20} color="#0ea5e9" />}
+                  label="Email Notifications"
+                  value={emailNotifications}
+                  onValueChange={setEmailNotifications}
+                  description="Receive email notifications"
+                />
+              </>
+            )}
+          </SettingSection>
 
-        {/* Legal */}
-        <SettingSection title="LEGAL">
-          <SettingItem
-            icon={<FileText color="#6b7280" size={20} />}
-            title="Terms of Service"
-            onPress={() => handleLegalDocument('termsOfService')}
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<Lock color="#6b7280" size={20} />}
-            title="Privacy Policy"
-            onPress={() => handleLegalDocument('privacyPolicy')}
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<FileText color="#6b7280" size={20} />}
-            title="Contractor Agreement"
-            onPress={() => handleLegalDocument('contractorAgreement')}
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<Shield color="#6b7280" size={20} />}
-            title="Dispute Resolution"
-            onPress={() => handleLegalDocument('disputeResolution')}
-          />
-        </SettingSection>
+          {/* Preferences */}
+          <SettingSection title="Preferences">
+            <SwitchItem
+              icon={<Moon size={20} color="#0ea5e9" />}
+              label="Dark Mode"
+              value={darkMode}
+              onValueChange={setDarkMode}
+              description="Switch to dark theme"
+            />
+            <SettingItem
+              icon={<Globe size={20} color="#0ea5e9" />}
+              label="Language"
+              value="English (US)"
+              onPress={() => {
+                // Navigate to language settings
+              }}
+            />
+            <SwitchItem
+              icon={<MapPin size={20} color="#0ea5e9" />}
+              label="Location Tracking"
+              value={locationTracking}
+              onValueChange={setLocationTracking}
+              description="Allow location tracking for better job matching"
+            />
+          </SettingSection>
 
-        {/* Support */}
-        <SettingSection title="SUPPORT">
-          <SettingItem
-            icon={<HelpCircle color="#0ea5e9" size={20} />}
-            title="Help Center"
-            subtitle="FAQs and guides"
-            onPress={() => Alert.alert('Help Center', 'Opening help center...')}
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<MessageSquare color="#22c55e" size={20} />}
-            title="Contact Support"
-            subtitle="Get help from our team"
-            onPress={() => Alert.alert('Contact Support', 'support@fairtradeworker.com')}
-          />
-        </SettingSection>
+          {/* Payments */}
+          <SettingSection title="Payments">
+            <SettingItem
+              icon={<CreditCard size={20} color="#0ea5e9" />}
+              label="Payment Methods"
+              value="Manage your payment options"
+              onPress={() => {
+                // Navigate to payment methods
+              }}
+            />
+            <SettingItem
+              icon={<DollarSign size={20} color="#0ea5e9" />}
+              label="Billing History"
+              value="View past transactions"
+              onPress={() => {
+                // Navigate to billing
+              }}
+            />
+          </SettingSection>
 
-        {/* Account Actions */}
-        <SettingSection title="ACCOUNT">
-          <SettingItem
-            icon={<LogOut color="#ef4444" size={20} />}
-            title="Log Out"
-            onPress={handleLogout}
-            danger
-          />
-          <View className="h-px bg-gray-100 ml-16" />
-          <SettingItem
-            icon={<Shield color="#ef4444" size={20} />}
-            title="Delete Account"
-            subtitle="Permanently delete your account"
-            onPress={handleDeleteAccount}
-            danger
-          />
-        </SettingSection>
+          {/* Support */}
+          <SettingSection title="Support">
+            <SettingItem
+              icon={<HelpCircle size={20} color="#0ea5e9" />}
+              label="Help Center"
+              value="Get help and support"
+              onPress={() => {
+                // Open help center
+              }}
+            />
+            <SettingItem
+              icon={<HelpCircle size={20} color="#0ea5e9" />}
+              label="Contact Us"
+              value="Send us feedback"
+              onPress={() => {
+                // Open contact form
+              }}
+            />
+            <SettingItem
+              icon={<Globe size={20} color="#0ea5e9" />}
+              label="Terms of Service"
+              onPress={() => {
+                // Open terms
+              }}
+            />
+            <SettingItem
+              icon={<Shield size={20} color="#0ea5e9" />}
+              label="Privacy Policy"
+              onPress={() => {
+                // Open privacy policy
+              }}
+            />
+          </SettingSection>
 
-        {/* App Info */}
-        <View className="items-center py-6">
-          <Text className="text-gray-400 text-sm">FairTradeWorker Mobile v1.0.0</Text>
-          <Text className="text-gray-400 text-xs mt-1">© 2024 FairTradeWorker, Inc.</Text>
+          {/* Danger Zone */}
+          <SettingSection title="Account Actions">
+            <SettingItem
+              icon={<LogOut size={20} color="#ef4444" />}
+              label="Sign Out"
+              onPress={handleSignOut}
+            />
+            <SettingItem
+              icon={<Trash2 size={20} color="#ef4444" />}
+              label="Delete Account"
+              value="Permanently delete your account"
+              onPress={handleDeleteAccount}
+            />
+          </SettingSection>
+
+          {/* App Info */}
+          <View className="mt-6 mb-6 items-center">
+            <Text className="text-sm text-gray-500">FairTradeWorker</Text>
+            <Text className="text-xs text-gray-400 mt-1">Version 1.0.0</Text>
+            <Text className="text-xs text-gray-400 mt-1">
+              © 2024 FairTradeWorker. All rights reserved.
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
