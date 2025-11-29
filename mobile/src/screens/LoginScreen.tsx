@@ -7,13 +7,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Mail, Lock, Eye, EyeOff, User, Phone } from 'lucide-react-native';
 import { validateEmail, validateRequired } from '@/utils/validation';
-import { dataStore } from '@fairtradeworker/shared';
+import { useAuth } from '@/hooks/useAuth';
 import type { User as UserType } from '@/types';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const { login, signup, loading: authLoading } = useAuth();
   const [isSignup, setIsSignup] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -58,54 +58,32 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     if (!validateForm()) return;
 
-    setLoading(true);
-    try {
-      // TODO: Implement actual authentication API call
-      // For now, create mock user
-      const mockUser: UserType = {
-        id: `user-${Date.now()}`,
-        name: 'John Doe',
-        email: formData.email,
-        role: 'homeowner',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      await dataStore.setCurrentUser(mockUser);
+    const result = await login(formData.email, formData.password);
+    
+    if (result.success) {
       navigation.goBack();
       Alert.alert('Success', 'Logged in successfully!');
-    } catch (error) {
-      console.error('Login failed:', error);
-      Alert.alert('Error', 'Failed to log in. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      Alert.alert('Login Failed', result.error || 'Invalid email or password');
     }
   };
 
   const handleSignup = async () => {
     if (!validateForm()) return;
 
-    setLoading(true);
-    try {
-      // TODO: Implement actual signup API call
-      const mockUser: UserType = {
-        id: `user-${Date.now()}`,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || undefined,
-        role: 'homeowner',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+    const result = await signup({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone || undefined,
+      role: 'homeowner',
+    });
 
-      await dataStore.setCurrentUser(mockUser);
+    if (result.success) {
       navigation.goBack();
       Alert.alert('Success', 'Account created successfully!');
-    } catch (error) {
-      console.error('Signup failed:', error);
-      Alert.alert('Error', 'Failed to create account. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      Alert.alert('Signup Failed', result.error || 'Failed to create account');
     }
   };
 
@@ -233,12 +211,12 @@ export default function LoginScreen() {
           {/* Submit Button */}
           <TouchableOpacity
             onPress={isSignup ? handleSignup : handleLogin}
-            disabled={loading}
+            disabled={authLoading}
             className={`mt-8 py-4 rounded-xl items-center ${
-              loading ? 'bg-gray-300' : 'bg-primary-500'
+              authLoading ? 'bg-gray-300' : 'bg-primary-500'
             }`}
           >
-            {loading ? (
+            {authLoading ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
               <Text className="text-white font-bold text-lg">
