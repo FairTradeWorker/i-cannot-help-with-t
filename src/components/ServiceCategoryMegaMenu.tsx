@@ -113,7 +113,7 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-6xl max-h-[92vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-[95vw] w-full max-h-[92vh] p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-5 border-b bg-gradient-to-r from-primary/5 to-transparent">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -153,19 +153,20 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
                   className="w-full"
                 >
                   {/* Single horizontal row with smooth scrolling */}
-                  <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-2 px-2">
-                    {SERVICE_CATEGORIES.map((category, index) => {
-                      const Icon = iconMap[category.icon] || House;
-                      return (
-                        <motion.div
-                          key={category.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.05, duration: 0.3 }}
-                          whileHover={{ scale: 1.05, y: -8 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="flex-shrink-0 w-[260px] md:w-[300px] snap-start"
-                        >
+                  <div className="w-full overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+                    <div className="flex gap-4 min-w-max px-1">
+                      {SERVICE_CATEGORIES.map((category, index) => {
+                        const Icon = iconMap[category.icon] || House;
+                        return (
+                          <motion.div
+                            key={category.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05, duration: 0.3 }}
+                            whileHover={{ scale: 1.05, y: -8 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex-shrink-0 w-[280px] md:w-[320px] snap-start"
+                          >
                           <Card
                             className="h-full min-h-[280px] p-5 md:p-6 cursor-pointer border-2 hover:border-primary transition-all duration-300 bg-gradient-to-br from-card/90 to-card/70 hover:from-primary/10 hover:to-primary/5 shadow-lg hover:shadow-xl group"
                             onClick={() => handleCategorySelect(category)}
@@ -188,9 +189,10 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
                               </div>
                             </div>
                           </Card>
-                        </motion.div>
-                      );
-                    })}
+                          </motion.div>
+                        );
+                      })}
+                    </div>
                   </div>
                   
                   {/* Scroll indicator hint */}
