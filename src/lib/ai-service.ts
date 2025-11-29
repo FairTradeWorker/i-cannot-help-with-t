@@ -245,14 +245,15 @@ export async function recordLearningFeedback(
   actual: { totalCost: number; laborHours: number }
 ) {
   const pred = await window.spark.kv.get<any>(`prediction:${predictionId}`);
-  if (!pred) {
-    console.warn(`Prediction ${predictionId} not found`);
+  if (!pred || !pred.prediction) {
+    console.warn(`Prediction ${predictionId} not found or invalid`);
     return;
   }
 
-  const predictedAvg = (pred.scope.estimatedCost.min + pred.scope.estimatedCost.max) / 2;
+  const scope = pred.prediction;
+  const predictedAvg = (scope.estimatedCost.min + scope.estimatedCost.max) / 2;
   const costError = Math.abs(actual.totalCost - predictedAvg) / Math.max(predictedAvg, 1);
-  const laborError = Math.abs(actual.laborHours - pred.scope.laborHours) / Math.max(pred.scope.laborHours, 1);
+  const laborError = Math.abs(actual.laborHours - scope.laborHours) / Math.max(scope.laborHours, 1);
   const accuracy = Math.max(0.1, 1 - (costError * 0.6 + laborError * 0.4));
 
   await learningDB.save({
@@ -260,7 +261,7 @@ export async function recordLearningFeedback(
     jobId,
     timestamp: new Date(),
     predictionType: "scope",
-    prediction: pred.scope,
+    prediction: scope,
     actualOutcome: {
       materials: [], // Will be populated if available
       laborHours: actual.laborHours,
