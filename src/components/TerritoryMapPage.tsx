@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useKV } from '@github/spark/hooks';
 import { 
@@ -34,10 +34,188 @@ import {
 import { toast } from 'sonner';
 import { US_STATES, type StateData } from '@/lib/us-states-data';
 import { territoryZips, type TerritoryZip } from '@/lib/territory-data';
-import { USMap } from './USMap';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { validateTerritoryClaim, recordTerritoryOwnership, getOwnedTerritories, type EntityType } from '@/lib/territory-validation';
 import { dataStore } from '@/lib/store';
 import type { User } from '@/lib/types';
+
+// Fix for default marker icons in Leaflet with Vite
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
+
+interface TerritoryLeafletMapProps {
+  territories: Array<TerritoryZip & { status: string }>;
+  selectedTerritory: TerritoryZip | null;
+  onTerritoryClick: (territory: TerritoryZip) => void;
+  selectedState: StateData | null;
+}
+
+function MapBoundsFitter({ territories, selectedState }: { territories: Array<TerritoryZip & { status: string }>, selectedState: StateData | null }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    const validTerritories = territories.filter(t => t.latitude && t.longitude);
+    if (validTerritories.length > 0) {
+      const points = validTerritories.map(t => [t.latitude, t.longitude] as [number, number]);
+      const bounds = L.latLngBounds(points);
+      
+      // If a state is selected, zoom in more
+      const maxZoom = selectedState ? 7 : 10;
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom });
+    } else {
+      // Default to center of USA
+      map.setView([39.8283, -98.5795], 4);
+    }
+  }, [map, territories, selectedState]);
+  
+  return null;
+}
+
+function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick, selectedState }: TerritoryLeafletMapProps) {
+  // Create custom territory marker icon
+  const createTerritoryIcon = (territory: TerritoryZip & { status: string }, isSelected: boolean) => {
+    let color: string;
+    let iconText: string;
+    
+    if (territory.status === 'claimed') {
+      color = '#ef4444'; // red
+      iconText = '🔒';
+    } else if (territory.status === 'available') {
+      color = '#22c55e'; // green
+      iconText = '✓';
+    } else {
+      color = '#6b7280'; // gray
+      iconText = '○';
+    }
+    
+    const size = isSelected ? 32 : 24;
+    
+    return L.divIcon({
+      html: `
+        <div style="
+          width: ${size}px;
+          height: ${size}px;
+          border-radius: 50%;
+          background: ${color};
+          border: 3px solid white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: ${size * 0.6}px;
+          color: white;
+          font-weight: bold;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          ${isSelected ? 'transform: scale(1.3); border-color: #3b82f6;' : ''}
+          transition: transform 0.2s;
+          cursor: pointer;
+        ">${iconText}</div>
+      `,
+      className: 'territory-marker',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+    });
+  };
+
+  const validTerritories = territories.filter(t => t.latitude && t.longitude);
+
+  return (
+    <Card className="overflow-hidden">
+      <div className="relative h-[600px] w-full">
+        <MapContainer
+          center={[39.8283, -98.5795]} // Center of USA
+          zoom={4}
+          style={{ height: '100%', width: '100%' }}
+          zoomControl={true}
+        >
+          <MapBoundsFitter territories={territories} selectedState={selectedState} />
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          
+          {/* Territory Markers */}
+          {validTerritories.map(territory => {
+            const isSelected = selectedTerritory?.zip === territory.zip;
+            
+            return (
+              <Marker
+                key={territory.zip}
+                position={[territory.latitude, territory.longitude]}
+                icon={createTerritoryIcon(territory, isSelected)}
+                eventHandlers={{
+                  click: () => onTerritoryClick(territory),
+                }}
+              >
+                <Popup>
+                  <div className="p-2 min-w-[200px]">
+                    <h3 className="font-bold text-lg">{territory.city}, {territory.state}</h3>
+                    <p className="text-sm text-muted-foreground mb-2">{territory.zip} • {territory.county} County</p>
+                    <div className="space-y-1 mb-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Population:</span>
+                        <span className="font-semibold">{(territory.population / 1000).toFixed(1)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Median Income:</span>
+                        <span className="font-semibold">${(territory.medianIncome / 1000).toFixed(0)}K</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Price:</span>
+                        <span className="font-semibold text-primary">${territory.monthlyPrice}/mo</span>
+                      </div>
+                    </div>
+                    <Badge 
+                      variant={territory.status === 'available' ? 'default' : 'secondary'}
+                      className={`w-full justify-center ${
+                        territory.status === 'available' 
+                          ? 'bg-green-600 hover:bg-green-700' 
+                          : territory.status === 'claimed'
+                          ? 'bg-red-600 hover:bg-red-700'
+                          : ''
+                      }`}
+                    >
+                      {territory.status === 'available' ? (
+                        <CheckCircle className="w-3 h-3 mr-1" weight="fill" />
+                      ) : (
+                        <Lock className="w-3 h-3 mr-1" weight="fill" />
+                      )}
+                      {territory.status === 'available' ? 'Available' : territory.status === 'claimed' ? 'Claimed' : 'Unavailable'}
+                    </Badge>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
+        </MapContainer>
+        
+        {/* Legend */}
+        <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border">
+          <p className="text-xs font-semibold mb-2">Legend</p>
+          <div className="space-y-1.5 text-xs">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-green-600 border-2 border-white" />
+              <span>Available</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-red-600 border-2 border-white" />
+              <span>Claimed</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-gray-500 border-2 border-white" />
+              <span>Unavailable</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 export function TerritoryMapPage() {
   const [view, setView] = useState<'map' | 'list'>('map');
@@ -291,9 +469,11 @@ export function TerritoryMapPage() {
             exit={{ opacity: 0 }}
             className="space-y-4"
           >
-            <USMap
-              selectedState={selectedState?.abbreviation}
-              onStateClick={handleStateClick}
+            <TerritoryLeafletMap
+              territories={filteredTerritories}
+              selectedTerritory={selectedTerritory}
+              onTerritoryClick={handleClaimTerritory}
+              selectedState={selectedState}
             />
           </motion.div>
         ) : (

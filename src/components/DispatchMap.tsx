@@ -33,16 +33,21 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Fix for default marker icons in Leaflet with Vite
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
 
 // Configuration constants
-const MAP_PADDING = 60;
 const SIMULATION_INTERVAL_MS = 3000;
 const MOVEMENT_SPEED_FACTOR = 0.1;
-const PULSE_ANIMATION_SPEED = 200;
-const PULSE_AMPLITUDE = 5;
-const PULSE_BASE_OFFSET = 15;
-const ARROW_LENGTH = 15;
-const MARKER_HIT_RADIUS = 30;
 
 // Types for dispatch tracking
 interface Worker {
@@ -247,57 +252,6 @@ const jobStatusColors: Record<DispatchJob['status'], { bg: string; text: string 
   completed: { bg: 'bg-green-100', text: 'text-green-700' },
 };
 
-// Helper function to calculate coordinate transformation for map rendering
-interface MapBounds {
-  minLng: number;
-  maxLng: number;
-  minLat: number;
-  maxLat: number;
-  scale: number;
-  offsetX: number;
-  offsetY: number;
-  toCanvasX: (lng: number) => number;
-  toCanvasY: (lat: number) => number;
-}
-
-function calculateMapBounds(
-  points: Array<{ lat: number; lng: number }>,
-  canvasWidth: number,
-  canvasHeight: number
-): MapBounds | null {
-  if (points.length === 0) return null;
-
-  const lngs = points.map(p => p.lng);
-  const lats = points.map(p => p.lat);
-
-  const minLng = Math.min(...lngs) - 0.02;
-  const maxLng = Math.max(...lngs) + 0.02;
-  const minLat = Math.min(...lats) - 0.02;
-  const maxLat = Math.max(...lats) + 0.02;
-
-  const lngRange = maxLng - minLng || 0.1;
-  const latRange = maxLat - minLat || 0.1;
-
-  const scaleX = (canvasWidth - 2 * MAP_PADDING) / lngRange;
-  const scaleY = (canvasHeight - 2 * MAP_PADDING) / latRange;
-  const scale = Math.min(scaleX, scaleY);
-
-  const offsetX = (canvasWidth - lngRange * scale) / 2;
-  const offsetY = (canvasHeight - latRange * scale) / 2;
-
-  return {
-    minLng,
-    maxLng,
-    minLat,
-    maxLat,
-    scale,
-    offsetX,
-    offsetY,
-    toCanvasX: (lng: number) => (lng - minLng) * scale + offsetX,
-    toCanvasY: (lat: number) => canvasHeight - ((lat - minLat) * scale + offsetY),
-  };
-}
-
 export function DispatchMap() {
   const [workers, setWorkers] = useState<Worker[]>(mockWorkers);
   const [jobs, setJobs] = useState<DispatchJob[]>(mockJobs);
@@ -310,7 +264,6 @@ export function DispatchMap() {
   const [mapZoom, setMapZoom] = useState(12);
   const [mapCenter, setMapCenter] = useState({ lat: 30.3072, lng: -97.7331 });
   const [isLive, setIsLive] = useState(true);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Simulate live updates
   useEffect(() => {
@@ -342,289 +295,93 @@ export function DispatchMap() {
     return () => clearInterval(interval);
   }, [isLive, jobs]);
 
-  // Draw map canvas
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const width = canvas.width;
-    const height = canvas.height;
-
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
-
-    // Calculate bounds using helper function
-    const allPoints = [
-      ...workers.map(w => w.location),
-      ...jobs.map(j => j.location),
-    ];
-
-    const bounds = calculateMapBounds(allPoints, width, height);
-    if (!bounds) return;
-
-    const { toCanvasX, toCanvasY } = bounds;
-
-    // Draw grid
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.03)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 20; i++) {
-      ctx.beginPath();
-      ctx.moveTo(i * (width / 20), 0);
-      ctx.lineTo(i * (width / 20), height);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i * (height / 20));
-      ctx.lineTo(width, i * (height / 20));
-      ctx.stroke();
-    }
-
-    // Draw routes
-    routes.forEach(route => {
-      const worker = workers.find(w => w.id === route.workerId);
-      const job = jobs.find(j => j.id === route.jobId);
-      if (!worker || !job) return;
-
-      // Draw animated dashed route
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.7)';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([10, 5]);
-
-      ctx.beginPath();
-      route.polyline.forEach((coord, index) => {
-        const x = toCanvasX(coord[0]);
-        const y = toCanvasY(coord[1]);
-        if (index === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      });
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Draw direction arrow
-      if (route.polyline.length >= 2) {
-        const lastIdx = route.polyline.length - 1;
-        const x1 = toCanvasX(route.polyline[lastIdx - 1][0]);
-        const y1 = toCanvasY(route.polyline[lastIdx - 1][1]);
-        const x2 = toCanvasX(route.polyline[lastIdx][0]);
-        const y2 = toCanvasY(route.polyline[lastIdx][1]);
-
-        const angle = Math.atan2(y2 - y1, x2 - x1);
-
-        ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
-        ctx.beginPath();
-        ctx.moveTo(x2, y2);
-        ctx.lineTo(
-          x2 - ARROW_LENGTH * Math.cos(angle - Math.PI / 6),
-          y2 - ARROW_LENGTH * Math.sin(angle - Math.PI / 6)
-        );
-        ctx.lineTo(
-          x2 - ARROW_LENGTH * Math.cos(angle + Math.PI / 6),
-          y2 - ARROW_LENGTH * Math.sin(angle + Math.PI / 6)
-        );
-        ctx.closePath();
-        ctx.fill();
+  // Map bounds fitter component
+  function MapBoundsFitter() {
+    const map = useMap();
+    
+    useEffect(() => {
+      const allPoints = [
+        ...workers.map(w => [w.location.lat, w.location.lng] as [number, number]),
+        ...jobs.map(j => [j.location.lat, j.location.lng] as [number, number]),
+      ];
+      
+      if (allPoints.length > 0) {
+        const bounds = L.latLngBounds(allPoints);
+        map.fitBounds(bounds, { padding: [50, 50] });
       }
+    }, [map, workers, jobs]);
+    
+    return null;
+  }
+
+  // Create custom worker icon
+  const createWorkerIcon = (worker: Worker, isSelected: boolean, isHovered: boolean) => {
+    const statusColors: Record<Worker['status'], string> = {
+      available: '#10b981',
+      'on-route': '#3b82f6',
+      'on-job': '#f59e0b',
+      offline: '#9ca3af',
+    };
+    const color = statusColors[worker.status];
+    const size = isSelected || isHovered ? 32 : 24;
+    
+    return L.divIcon({
+      html: `
+        <div style="
+          width: ${size}px;
+          height: ${size}px;
+          border-radius: 50%;
+          background: white;
+          border: 4px solid ${color};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: ${size * 0.6}px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          ${isSelected || isHovered ? 'transform: scale(1.2);' : ''}
+          transition: transform 0.2s;
+        ">👷</div>
+      `,
+      className: 'worker-marker',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
     });
+  };
 
-    // Draw job markers
-    jobs.forEach(job => {
-      const x = toCanvasX(job.location.lng);
-      const y = toCanvasY(job.location.lat);
-      const isHovered = hoveredMarker === `job-${job.id}`;
-      const isSelected = selectedJob?.id === job.id;
-      const size = isHovered || isSelected ? 28 : 22;
-
-      // Draw pulse for emergency jobs
-      if (job.urgency === 'emergency') {
-        const pulseSize = size + PULSE_BASE_OFFSET + Math.sin(Date.now() / PULSE_ANIMATION_SPEED) * PULSE_AMPLITUDE;
-        ctx.beginPath();
-        ctx.arc(x, y, pulseSize, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
-        ctx.fill();
-      }
-
-      // Draw outer glow
-      if (isHovered || isSelected) {
-        ctx.beginPath();
-        ctx.arc(x, y, size + 8, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(99, 102, 241, 0.2)';
-        ctx.fill();
-      }
-
-      // Draw marker background
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      const colors = {
-        normal: '#6b7280',
-        urgent: '#f59e0b',
-        emergency: '#ef4444',
-      };
-      ctx.fillStyle = colors[job.urgency];
-      ctx.fill();
-
-      // Draw white border
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      // Draw house icon
-      ctx.fillStyle = '#ffffff';
-      ctx.font = `${isHovered || isSelected ? '16px' : '14px'} sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🏠', x, y);
+  // Create custom job icon
+  const createJobIcon = (job: DispatchJob, isSelected: boolean, isHovered: boolean) => {
+    const colors: Record<DispatchJob['urgency'], string> = {
+      normal: '#6b7280',
+      urgent: '#f59e0b',
+      emergency: '#ef4444',
+    };
+    const color = colors[job.urgency];
+    const size = isSelected || isHovered ? 32 : 24;
+    const isEmergency = job.urgency === 'emergency';
+    
+    return L.divIcon({
+      html: `
+        <div style="
+          width: ${size}px;
+          height: ${size}px;
+          border-radius: 50%;
+          background: ${color};
+          border: 3px solid white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: ${size * 0.6}px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          ${isSelected || isHovered ? 'transform: scale(1.2);' : ''}
+          ${isEmergency ? 'animation: pulse 2s infinite;' : ''}
+          transition: transform 0.2s;
+        ">🏠</div>
+      `,
+      className: 'job-marker',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
     });
-
-    // Draw worker markers
-    workers.forEach(worker => {
-      const x = toCanvasX(worker.location.lng);
-      const y = toCanvasY(worker.location.lat);
-      const isHovered = hoveredMarker === `worker-${worker.id}`;
-      const isSelected = selectedWorker?.id === worker.id;
-      const size = isHovered || isSelected ? 24 : 18;
-
-      // Draw outer glow for selected/hovered
-      if (isHovered || isSelected) {
-        ctx.beginPath();
-        ctx.arc(x, y, size + 10, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
-        ctx.fill();
-      }
-
-      // Draw status ring
-      ctx.beginPath();
-      ctx.arc(x, y, size + 4, 0, Math.PI * 2);
-      const statusColors = {
-        available: '#10b981',
-        'on-route': '#3b82f6',
-        'on-job': '#f59e0b',
-        offline: '#9ca3af',
-      };
-      ctx.strokeStyle = statusColors[worker.status];
-      ctx.lineWidth = 4;
-      ctx.stroke();
-
-      // Draw marker background
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-      ctx.strokeStyle = statusColors[worker.status];
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Draw worker icon
-      ctx.fillStyle = statusColors[worker.status];
-      ctx.font = `${isHovered || isSelected ? '14px' : '12px'} sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('👷', x, y);
-    });
-  }, [workers, jobs, routes, hoveredMarker, selectedWorker, selectedJob]);
-
-  // Handle canvas click
-  const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Calculate bounds using helper function
-    const allPoints = [
-      ...workers.map(w => w.location),
-      ...jobs.map(j => j.location),
-    ];
-
-    const bounds = calculateMapBounds(allPoints, canvas.width, canvas.height);
-    if (!bounds) return;
-
-    const { toCanvasX, toCanvasY } = bounds;
-
-    // Check if clicked on a worker
-    for (const worker of workers) {
-      const wx = toCanvasX(worker.location.lng);
-      const wy = toCanvasY(worker.location.lat);
-      const distance = Math.sqrt((x - wx) ** 2 + (y - wy) ** 2);
-      if (distance < MARKER_HIT_RADIUS) {
-        setSelectedWorker(worker);
-        setSelectedJob(null);
-        return;
-      }
-    }
-
-    // Check if clicked on a job
-    for (const job of jobs) {
-      const jx = toCanvasX(job.location.lng);
-      const jy = toCanvasY(job.location.lat);
-      const distance = Math.sqrt((x - jx) ** 2 + (y - jy) ** 2);
-      if (distance < MARKER_HIT_RADIUS) {
-        setSelectedJob(job);
-        setSelectedWorker(null);
-        return;
-      }
-    }
-
-    // Clicked on empty space - clear selection
-    setSelectedWorker(null);
-    setSelectedJob(null);
-  }, [workers, jobs]);
-
-  // Handle canvas mouse move for hover effects
-  const handleCanvasMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Calculate bounds using helper function
-    const allPoints = [
-      ...workers.map(w => w.location),
-      ...jobs.map(j => j.location),
-    ];
-
-    const bounds = calculateMapBounds(allPoints, canvas.width, canvas.height);
-    if (!bounds) return;
-
-    const { toCanvasX, toCanvasY } = bounds;
-
-    let newHovered: string | null = null;
-
-    // Check workers
-    for (const worker of workers) {
-      const wx = toCanvasX(worker.location.lng);
-      const wy = toCanvasY(worker.location.lat);
-      const distance = Math.sqrt((x - wx) ** 2 + (y - wy) ** 2);
-      if (distance < MARKER_HIT_RADIUS) {
-        newHovered = `worker-${worker.id}`;
-        break;
-      }
-    }
-
-    // Check jobs
-    if (!newHovered) {
-      for (const job of jobs) {
-        const jx = toCanvasX(job.location.lng);
-        const jy = toCanvasY(job.location.lat);
-        const distance = Math.sqrt((x - jx) ** 2 + (y - jy) ** 2);
-        if (distance < MARKER_HIT_RADIUS) {
-          newHovered = `job-${job.id}`;
-          break;
-        }
-      }
-    }
-
-    setHoveredMarker(newHovered);
-    canvas.style.cursor = newHovered ? 'pointer' : 'default';
-  }, [workers, jobs]);
+  };
 
   const handleAssignWorker = (workerId: string, jobId: string) => {
     setJobs(prev => prev.map(job => 
@@ -1041,17 +798,120 @@ export function DispatchMap() {
               </Card>
             </div>
 
-            {/* Map Canvas */}
-            <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 relative">
-              <canvas
-                ref={canvasRef}
-                width={1200}
-                height={800}
-                className="w-full h-full"
-                onClick={handleCanvasClick}
-                onMouseMove={handleCanvasMouseMove}
-                onMouseLeave={() => setHoveredMarker(null)}
-              />
+            {/* Real Map with Leaflet */}
+            <div className="w-full h-full relative z-0">
+              <style>{`
+                @keyframes pulse {
+                  0%, 100% { opacity: 1; transform: scale(1); }
+                  50% { opacity: 0.7; transform: scale(1.1); }
+                }
+                .leaflet-container {
+                  height: 100%;
+                  width: 100%;
+                  z-index: 0;
+                }
+              `}</style>
+              <MapContainer
+                center={[mapCenter.lat, mapCenter.lng]}
+                zoom={mapZoom}
+                style={{ height: '100%', width: '100%' }}
+                zoomControl={true}
+              >
+                <MapBoundsFitter />
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                
+                {/* Route Polylines */}
+                {routes.map(route => {
+                  const worker = workers.find(w => w.id === route.workerId);
+                  const job = jobs.find(j => j.id === route.jobId);
+                  if (!worker || !job) return null;
+                  
+                  const polylinePositions = route.polyline.map(([lng, lat]) => [lat, lng] as [number, number]);
+                  
+                  return (
+                    <Polyline
+                      key={`route-${route.workerId}-${route.jobId}`}
+                      positions={polylinePositions}
+                      pathOptions={{
+                        color: '#3b82f6',
+                        weight: 4,
+                        opacity: 0.7,
+                        dashArray: '10, 5',
+                      }}
+                    />
+                  );
+                })}
+                
+                {/* Worker Markers */}
+                {workers.map(worker => {
+                  const isSelected = selectedWorker?.id === worker.id;
+                  const isHovered = hoveredMarker === `worker-${worker.id}`;
+                  
+                  return (
+                    <Marker
+                      key={`worker-${worker.id}`}
+                      position={[worker.location.lat, worker.location.lng]}
+                      icon={createWorkerIcon(worker, isSelected, isHovered)}
+                      eventHandlers={{
+                        click: () => {
+                          setSelectedWorker(worker);
+                          setSelectedJob(null);
+                        },
+                        mouseover: () => setHoveredMarker(`worker-${worker.id}`),
+                        mouseout: () => setHoveredMarker(null),
+                      }}
+                    >
+                      <Popup>
+                        <div className="p-2">
+                          <p className="font-semibold">{worker.name}</p>
+                          <p className="text-sm text-muted-foreground">{worker.specialty}</p>
+                          <Badge className={`mt-1 ${workerStatusColors[worker.status].bg} text-white`}>
+                            {worker.status.replace('-', ' ')}
+                          </Badge>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+                
+                {/* Job Markers */}
+                {jobs.map(job => {
+                  const isSelected = selectedJob?.id === job.id;
+                  const isHovered = hoveredMarker === `job-${job.id}`;
+                  
+                  return (
+                    <Marker
+                      key={`job-${job.id}`}
+                      position={[job.location.lat, job.location.lng]}
+                      icon={createJobIcon(job, isSelected, isHovered)}
+                      eventHandlers={{
+                        click: () => {
+                          setSelectedJob(job);
+                          setSelectedWorker(null);
+                        },
+                        mouseover: () => setHoveredMarker(`job-${job.id}`),
+                        mouseout: () => setHoveredMarker(null),
+                      }}
+                    >
+                      <Popup>
+                        <div className="p-2">
+                          <p className="font-semibold">{job.title}</p>
+                          <p className="text-sm text-muted-foreground">{job.address}</p>
+                          <div className="flex gap-1 mt-1">
+                            <Badge className={jobUrgencyColors[job.urgency].bg}>
+                              {job.urgency}
+                            </Badge>
+                            <Badge variant="outline">{job.status}</Badge>
+                          </div>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+              </MapContainer>
 
               {/* Selection Detail Popover */}
               <AnimatePresence>
