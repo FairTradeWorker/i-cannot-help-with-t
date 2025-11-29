@@ -88,7 +88,7 @@ export function ServiceCategoriesShowcase({
                 whileTap={{ scale: 0.97 }}
               >
                 <Card 
-                  className="p-3 md:p-4 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-muted/40 cursor-pointer text-center rounded-xl transition-colors"
+                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-muted/40 cursor-pointer text-center rounded-xl transition-colors"
                   onClick={() => onCategoryClick?.(category.id)}
                 >
                   <div className="flex flex-col items-center gap-2">
@@ -140,7 +140,7 @@ export function ServiceCategoriesShowcase({
                 whileTap={{ scale: 0.97 }}
               >
                 <Card 
-                  className="p-3 md:p-4 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-muted/40 cursor-pointer text-center rounded-xl transition-colors"
+                  className="p-1.5 md:p-2 h-full border-0 bg-transparent hover:bg-muted/60 dark:hover:bg-muted/40 cursor-pointer text-center rounded-xl transition-colors"
                   onClick={() => onCategoryClick?.(category.id)}
                 >
                   <div className="flex flex-col items-center gap-2">
