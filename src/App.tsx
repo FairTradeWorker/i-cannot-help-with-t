@@ -1698,17 +1698,33 @@ function App() {
                     <WarrantySection onFileClaimClick={() => handleNavClick('warranty', 'file-claim')} />
                   )}
                   {activeTab === 'learning' && (
-                    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 -m-8 p-8">
-                      <div className="container mx-auto px-4 py-12">
+                    <div className="min-h-screen bg-background -m-8 p-8">
+                      <div className="container max-w-6xl mx-auto px-4 py-12">
                         <div className="text-center mb-12">
-                          <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
-                            The AI is Learning
+                          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            The AI Learns From Every Job
                           </h1>
-                          <p className="text-xl text-purple-200">
-                            Every completed job makes every future estimate more accurate.
+                          <p className="text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
+                            Every completed job — whether you upload an invoice or give feedback — makes every future estimate more accurate.
                           </p>
                         </div>
+
                         <LearningBrain />
+
+                        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <Card className="p-6 text-center">
+                            <div className="text-2xl font-semibold">Real Jobs Only</div>
+                            <p className="text-muted-foreground mt-2">No synthetic data. Only real outcomes from your jobs.</p>
+                          </Card>
+                          <Card className="p-6 text-center">
+                            <div className="text-2xl font-semibold">Zero Click Learning</div>
+                            <p className="text-muted-foreground mt-2">Just upload invoice photos — AI reads and learns automatically.</p>
+                          </Card>
+                          <Card className="p-6 text-center">
+                            <div className="text-2xl font-semibold">Exponential Growth</div>
+                            <p className="text-muted-foreground mt-2">Accuracy compounds. 10 jobs → smarter. 100 jobs → unbeatable.</p>
+                          </Card>
+                        </div>
                       </div>
                     </div>
                   )}
