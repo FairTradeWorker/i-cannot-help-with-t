@@ -21,6 +21,7 @@ import {
   CheckCircle,
   Users,
   Star,
+  Play,
 } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -609,53 +610,120 @@ interface JobCardProps {
 }
 
 function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, compact }: JobCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, delay: index * 0.03 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
     >
       <Card
-        className={`p-5 cursor-pointer transition-all hover:border-primary/50 hover:shadow-md ${
+        className={`overflow-hidden cursor-pointer transition-all hover:border-primary/50 hover:shadow-md ${
           urgent ? 'border-destructive/50 bg-destructive/5' : ''
         }`}
         onClick={onClick}
       >
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className={`font-bold truncate ${compact ? 'text-base' : 'text-lg'}`}>{job.title}</h3>
-              {(job.urgency === 'urgent' || job.urgency === 'emergency') && (
-                <Badge className={getUrgencyColor(job.urgency)} variant="default">
-                  {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
-                  {job.urgency}
-                </Badge>
-              )}
-            </div>
-            
-            {!compact && (
-              <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{job.description}</p>
+        {/* Video Thumbnail */}
+        {!compact && (
+          <div className="relative aspect-video bg-muted overflow-hidden">
+            {job.videoUrl ? (
+              <>
+                {/* Video thumbnail with play overlay */}
+                <img
+                  src={job.videoUrl}
+                  alt={job.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback if image fails to load
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className={`w-16 h-16 rounded-full ${getUrgencyColor(job.urgency)} flex items-center justify-center transition-transform ${isHovered ? 'scale-110' : 'scale-100'}`}>
+                    <Play className="w-8 h-8 text-white" weight="fill" />
+                  </div>
+                </div>
+                <div className="absolute bottom-2 left-2 right-2">
+                  <Badge className={getUrgencyColor(job.urgency)}>
+                    {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
+                    {job.urgency.toUpperCase()}
+                  </Badge>
+                </div>
+              </>
+            ) : (
+              /* Placeholder when no video */
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+                <div className="text-center">
+                  <div className={`w-16 h-16 rounded-full ${getUrgencyColor(job.urgency)} flex items-center justify-center mx-auto mb-2 transition-transform ${isHovered ? 'scale-110' : 'scale-100'}`}>
+                    <Play className="w-8 h-8 text-white" weight="fill" />
+                  </div>
+                  <Badge className={getUrgencyColor(job.urgency)}>
+                    {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
+                    {job.urgency.toUpperCase()}
+                  </Badge>
+                </div>
+              </div>
             )}
             
-            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4" />
-                <span>{job.address.city}, {job.address.state}</span>
+            {/* Hover Overlay */}
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/60 flex items-center justify-center"
+              >
+                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                  View Details
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </motion.div>
+            )}
+          </div>
+        )}
+
+        {/* Job Info */}
+        <div className={`${compact ? 'p-4' : 'p-5'}`}>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className={`font-bold truncate ${compact ? 'text-base' : 'text-lg'}`}>{job.title}</h3>
+                {compact && (job.urgency === 'urgent' || job.urgency === 'emergency') && (
+                  <Badge className={getUrgencyColor(job.urgency)} variant="default">
+                    {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
+                    {job.urgency}
+                  </Badge>
+                )}
               </div>
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                <span>{job.laborHours}h</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Users className="w-4 h-4" />
-                <span>{job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}</span>
+              
+              {!compact && (
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{job.description}</p>
+              )}
+              
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  <span>{job.address.city}, {job.address.state}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-4 h-4" />
+                  <span>{job.laborHours}h</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  <span>{job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}</span>
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div className="text-right flex-shrink-0">
-            <p className="text-xs text-muted-foreground mb-1">Budget</p>
-            <p className={`font-bold ${compact ? 'text-xl' : 'text-2xl'}`}>{formatBudget(job.estimatedCost)}</p>
+            
+            <div className="text-right flex-shrink-0">
+              <p className="text-xs text-muted-foreground mb-1">Budget</p>
+              <p className={`font-bold ${compact ? 'text-xl' : 'text-2xl'}`}>{formatBudget(job.estimatedCost)}</p>
+            </div>
           </div>
         </div>
       </Card>
