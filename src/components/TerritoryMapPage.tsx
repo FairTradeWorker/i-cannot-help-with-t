@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useKV } from '@github/spark/hooks';
 import { 
@@ -58,38 +58,44 @@ interface TerritoryLeafletMapProps {
 
 function MapBoundsFitter({ territories, selectedState }: { territories: Array<TerritoryZip & { status: string }>, selectedState: StateData | null }) {
   const map = useMap();
-  const initializedRef = useRef(false);
   
   useEffect(() => {
-    // Initialize on mount
-    const initTimer = setTimeout(() => {
-      map.invalidateSize();
-      initializedRef.current = true;
-    }, 50);
+    // Force map to invalidate size multiple times to ensure it renders
+    const timers: NodeJS.Timeout[] = [];
     
-    // Update bounds after initialization
-    const boundsTimer = setTimeout(() => {
-      if (!initializedRef.current) return;
-      
-      map.invalidateSize();
-      
-      const validTerritories = territories.filter(t => t.latitude && t.longitude);
-      if (validTerritories.length > 0) {
-        const points = validTerritories.map(t => [t.latitude, t.longitude] as [number, number]);
-        const bounds = L.latLngBounds(points);
-        
-        // If a state is selected, zoom in more
-        const maxZoom = selectedState ? 7 : 10;
-        map.fitBounds(bounds, { padding: [50, 50], maxZoom });
-      } else {
-        // Default to center of USA
-        map.setView([39.8283, -98.5795], 4);
-      }
-    }, 150);
+    // Multiple initialization attempts
+    [50, 150, 300, 500].forEach((delay, index) => {
+      const timer = setTimeout(() => {
+        try {
+          map.invalidateSize();
+          
+          if (index === 3) { // Final attempt - set bounds
+            const validTerritories = territories.filter(t => t.latitude && t.longitude);
+            if (validTerritories.length > 0) {
+              const points = validTerritories.map(t => [t.latitude, t.longitude] as [number, number]);
+              const bounds = L.latLngBounds(points);
+              
+              // If a state is selected, zoom in more and center on state
+              if (selectedState) {
+                map.setView([selectedState.coordinates.lat, selectedState.coordinates.lng], 7);
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 7 });
+              } else {
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 10 });
+              }
+            } else {
+              // Default to center of USA
+              map.setView([39.8283, -98.5795], 4);
+            }
+          }
+        } catch (error) {
+          console.error('Map initialization error:', error);
+        }
+      }, delay);
+      timers.push(timer);
+    });
     
     return () => {
-      clearTimeout(initTimer);
-      clearTimeout(boundsTimer);
+      timers.forEach(timer => clearTimeout(timer));
     };
   }, [map, territories, selectedState]);
   
@@ -97,6 +103,8 @@ function MapBoundsFitter({ territories, selectedState }: { territories: Array<Te
 }
 
 function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick, selectedState }: TerritoryLeafletMapProps) {
+  const mapKey = `map-${selectedState?.abbreviation || 'all'}-${territories.length}`;
+  
   // Create custom territory marker icon
   const createTerritoryIcon = (territory: TerritoryZip & { status: string }, isSelected: boolean) => {
     let color: string;
@@ -145,26 +153,44 @@ function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick,
 
   return (
     <Card className="overflow-hidden border-2">
-      <div className="relative w-full" style={{ height: '600px', minHeight: '600px' }}>
+      <div 
+        id="territory-map-container"
+        className="relative w-full" 
+        style={{ height: '600px', minHeight: '600px', position: 'relative', backgroundColor: '#f3f4f6' }}
+      >
         <style>{`
-          .leaflet-container {
+          #territory-map-container .leaflet-container {
             height: 600px !important;
             width: 100% !important;
             min-height: 600px !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
           }
-          .leaflet-container .leaflet-tile-container img {
+          #territory-map-container .leaflet-tile-container img {
             max-width: none !important;
           }
-          .leaflet-pane {
-            z-index: 400;
+          #territory-map-container .leaflet-pane {
+            z-index: 400 !important;
+          }
+          #territory-map-container .leaflet-top,
+          #territory-map-container .leaflet-bottom {
+            z-index: 1000 !important;
+          }
+          #territory-map-container .leaflet-map-pane {
+            z-index: 400 !important;
           }
         `}</style>
         <MapContainer
-          center={[39.8283, -98.5795]} // Center of USA
-          zoom={4}
-          style={{ height: '600px', width: '100%', minHeight: '600px' }}
+          key={mapKey}
+          center={selectedState?.coordinates ? [selectedState.coordinates.lat, selectedState.coordinates.lng] : [39.8283, -98.5795]}
+          zoom={selectedState ? 6 : 4}
+          style={{ height: '100%', width: '100%' }}
           zoomControl={true}
           scrollWheelZoom={true}
+          className="z-10"
         >
           <MapBoundsFitter territories={territories} selectedState={selectedState} />
           <TileLayer
@@ -430,8 +456,34 @@ export function TerritoryMapPage() {
   };
 
   const handleStateClick = (state: StateData) => {
-    setSelectedState(state.abbreviation === selectedState?.abbreviation ? null : state);
+    const newState = state.abbreviation === selectedState?.abbreviation ? null : state;
+    setSelectedState(newState);
+    // Scroll to top to see the map when state is selected
+    if (newState && view === 'map') {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
   };
+
+  // Get states with territories for state buttons
+  const statesWithTerritories = useMemo(() => {
+    const stateMap = new Map<string, { state: StateData; count: number }>();
+    territories.forEach(t => {
+      const state = US_STATES.find(s => s.abbreviation === t.state);
+      if (state) {
+        const existing = stateMap.get(t.state);
+        if (existing) {
+          existing.count++;
+        } else {
+          stateMap.set(t.state, { state, count: 1 });
+        }
+      }
+    });
+    return Array.from(stateMap.values())
+      .sort((a, b) => b.count - a.count)
+      .map(item => item.state);
+  }, [territories]);
 
   const stats = {
     totalTerritories: territories.length,
@@ -822,6 +874,47 @@ export function TerritoryMapPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* State Filter Buttons */}
+      <div className="mt-8 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Browse by State</h3>
+          {selectedState && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedState(null)}
+            >
+              <X className="w-4 h-4 mr-1" />
+              Clear Filter
+            </Button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {statesWithTerritories.map(state => {
+            const stateCount = territories.filter(t => t.state === state.abbreviation).length;
+            const isSelected = selectedState?.abbreviation === state.abbreviation;
+            
+            return (
+              <Button
+                key={state.abbreviation}
+                variant={isSelected ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handleStateClick(state)}
+                className={isSelected ? 'bg-primary text-primary-foreground' : ''}
+              >
+                {state.name}
+                <Badge 
+                  variant={isSelected ? 'secondary' : 'outline'} 
+                  className="ml-2 text-xs"
+                >
+                  {stateCount}
+                </Badge>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
