@@ -429,15 +429,25 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
                 <Geographies geography={geoJsonData}>
                   {({ geographies }) =>
                     geographies.map((geo) => {
-                      const zip = geo.properties?.ZCTA5CE10 || geo.properties?.ZIP || geo.properties?.GEOID || geo.properties?.ZCTA5CE20;
+                      // Try multiple property names for zip code
+                      const zip = geo.properties?.ZCTA5CE10 || 
+                                  geo.properties?.ZIP || 
+                                  geo.properties?.GEOID || 
+                                  geo.properties?.ZCTA5CE20 ||
+                                  geo.properties?.ZCTA5 ||
+                                  geo.properties?.ZIP_CODE ||
+                                  geo.properties?.zip;
                       if (!zip) return null;
+                      
+                      // Normalize zip to 5-digit string for matching
+                      const zipStr = String(zip).padStart(5, '0').substring(0, 5);
 
-                      const status = territoryStatuses.get(zip);
+                      const status = territoryStatuses.get(zipStr);
                       if (!status) {
                         // Default gray for territories not in our system
                         return (
                           <Geography
-                            key={zip}
+                            key={zipStr}
                             geography={geo}
                             fill="#E5E7EB"
                             stroke="#9CA3AF"
@@ -455,7 +465,7 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
                       const isYours = status.status === 'yours';
 
                       return (
-                        <TooltipProvider key={zip}>
+                        <TooltipProvider key={zipStr}>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Geography
@@ -474,12 +484,12 @@ export function RealTimeTerritoryMap({ currentUser, onClaimClick }: RealTimeTerr
                                   },
                                   pressed: { outline: 'none' }
                                 }}
-                                onClick={() => handleTerritoryClick(zip)}
+                                onClick={() => handleTerritoryClick(zipStr)}
                               />
                             </TooltipTrigger>
                             <TooltipContent>
                               <div className="space-y-1">
-                                <p className="font-semibold">Zip: {zip}</p>
+                                <p className="font-semibold">Zip: {zipStr}</p>
                                 <p className="text-sm">
                                   {status.status === 'available' && 'Available - Click to claim'}
                                   {status.status === 'taken' && `First Priority Taken${status.priorityStatus === 'first_priority' ? ' (First 300)' : ' (Paid)'}`}
