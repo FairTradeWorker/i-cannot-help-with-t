@@ -400,7 +400,7 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
               </Button>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredJobs.map((job, index) => (
                 <JobCard 
                   key={job.id} 
@@ -423,7 +423,7 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
                   <Badge variant="outline" className="text-lg px-3 py-1">{state}</Badge>
                   <span className="text-muted-foreground">{jobsByState[state].length} job{jobsByState[state].length !== 1 ? 's' : ''}</span>
                 </div>
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {jobsByState[state].map((job, index) => (
                     <JobCard 
                       key={job.id} 
@@ -449,7 +449,7 @@ export function JobsTab({ user, onPostJob, onJobSelect }: JobsTabProps) {
               <p className="text-muted-foreground">All jobs are standard priority right now</p>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {urgentJobs.map((job, index) => (
                 <JobCard 
                   key={job.id} 
@@ -669,46 +669,55 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
               </div>
             )}
 
-            {/* Text overlay on video */}
-            <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-3 pointer-events-none">
-              <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-bold text-white truncate drop-shadow-md">
-                  {job.title}
-                </h3>
-                <p className="mt-1 text-xs text-white/90 line-clamp-2 drop-shadow-md">
-                  {job.description}
-                </p>
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-white/90">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    <span className="truncate">
-                      {job.address.city}, {job.address.state}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    <span>{job.laborHours}h</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="w-3 h-3" />
-                    <span>
-                      {job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}
-                    </span>
+            {/* Text overlay on video - three column layout */}
+            <div className="absolute inset-x-0 bottom-0 p-4 pointer-events-none">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                {/* Column 1: Title + description */}
+                <div className="min-w-0">
+                  <h3 className="text-lg font-bold text-white truncate drop-shadow-md">
+                    {job.title}
+                  </h3>
+                  <p className="mt-1 text-xs text-white/90 line-clamp-2 drop-shadow-md">
+                    {job.description}
+                  </p>
+                </div>
+
+                {/* Column 2: Meta info */}
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-white/90">
+                    <div className="flex items-center gap-1 min-w-0">
+                      <MapPin className="w-3 h-3" />
+                      <span className="truncate">
+                        {job.address.city}, {job.address.state}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      <span>{job.laborHours}h</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      <span>
+                        {job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="text-right space-y-2 pointer-events-auto">
-                <p className="text-[11px] text-white/80">Budget</p>
-                <p className="text-xl font-bold text-white drop-shadow-md">
-                  {formatBudget(job.estimatedCost)}
-                </p>
-                <Button
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90 text-xs px-3 py-1 h-8"
-                >
-                  Bid Job
-                  <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
+
+                {/* Column 3: Budget + Bid button */}
+                <div className="text-right space-y-2 pointer-events-auto">
+                  <p className="text-[11px] text-white/80">Budget</p>
+                  <p className="text-xl font-bold text-white drop-shadow-md">
+                    {formatBudget(job.estimatedCost)}
+                  </p>
+                  <Button
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90 text-xs px-3 py-1 h-8"
+                  >
+                    Bid Job
+                    <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
+                </div>
               </div>
             </div>
             
@@ -729,46 +738,44 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
           </div>
         )}
 
-        {/* Job Info */}
-        <div className={`${compact ? 'p-4' : 'p-5'}`}>
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className={`font-bold truncate ${compact ? 'text-base' : 'text-lg'}`}>{job.title}</h3>
-                {compact && (job.urgency === 'urgent' || job.urgency === 'emergency') && (
-                  <Badge className={getUrgencyColor(job.urgency)} variant="default">
-                    {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
-                    {job.urgency}
-                  </Badge>
-                )}
-              </div>
-              
-              {!compact && (
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{job.description}</p>
-              )}
-              
-              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
-                  <span>{job.address.city}, {job.address.state}</span>
+        {/* Job Info (compact cards only) */}
+        {compact && (
+          <div className="p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="font-bold truncate text-base">{job.title}</h3>
+                  {(job.urgency === 'urgent' || job.urgency === 'emergency') && (
+                    <Badge className={getUrgencyColor(job.urgency)} variant="default">
+                      {job.urgency === 'emergency' && <Warning className="w-3 h-3 mr-1" />}
+                      {job.urgency}
+                    </Badge>
+                  )}
                 </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>{job.laborHours}h</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
-                  <span>{job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}</span>
+                
+                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <MapPin className="w-4 h-4" />
+                    <span>{job.address.city}, {job.address.state}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    <span>{job.laborHours}h</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    <span>{job.bids.length} bid{job.bids.length !== 1 ? 's' : ''}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="text-right flex-shrink-0">
-              <p className="text-xs text-muted-foreground mb-1">Budget</p>
-              <p className={`font-bold ${compact ? 'text-xl' : 'text-2xl'}`}>{formatBudget(job.estimatedCost)}</p>
+              
+              <div className="text-right flex-shrink-0">
+                <p className="text-xs text-muted-foreground mb-1">Budget</p>
+                <p className="font-bold text-xl">{formatBudget(job.estimatedCost)}</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </Card>
     </motion.div>
   );
