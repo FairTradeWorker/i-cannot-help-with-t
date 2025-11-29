@@ -40,7 +40,14 @@ export interface LearningFeedback {
   prediction: any;
   actualOutcome: any;
   userFeedback?: { rating: number; comments?: string; wasAccurate: boolean };
-  performanceMetrics: { accuracy?: number; errorMargin?: number };
+  performanceMetrics: { 
+    accuracy?: number; 
+    errorMargin?: number;
+    costError?: number;
+    laborError?: number;
+    costAccuracy?: number;
+    laborAccuracy?: number;
+  };
 }
 
 class LearningDatabase {
@@ -293,4 +300,74 @@ function calculateAccuracy(prediction: any, actual: any, type: string): number {
   }
   
   return 0.85;
+}
+
+export async function recordJobOutcome(
+  jobId: string,
+  actual: {
+    materials: Array<{ name: string; quantity: number; unit: string; estimatedCost: number }>;
+    laborHours: number;
+    totalCost: number;
+  }
+): Promise<void> {
+  const { dataStore } = await import('@/lib/store');
+  
+  // Get the job
+  const job = await dataStore.getJobById(jobId);
+  if (!job) {
+    throw new Error(`Job ${jobId} not found`);
+  }
+
+  // Get prediction from KV storage
+  if (!job.predictionId) {
+    throw new Error(`Job ${jobId} has no predictionId`);
+  }
+
+  const prediction = await window.spark.kv.get<{
+    type: string;
+    prediction: JobScope;
+    createdAt: string;
+    damageType?: string;
+    urgency?: string;
+  }>(`prediction:${job.predictionId}`);
+
+  if (!prediction || !prediction.prediction) {
+    throw new Error(`Prediction not found for job ${jobId}`);
+  }
+
+  const jobScope = prediction.prediction;
+  
+  // Calculate average predicted cost
+  const avgPredictedCost = (jobScope.estimatedCost.min + jobScope.estimatedCost.max) / 2;
+
+  // Calculate accuracy metrics
+  const costAccuracy = 1 - Math.abs(actual.totalCost - avgPredictedCost) / Math.max(avgPredictedCost, 1);
+  const laborAccuracy = 1 - Math.abs(actual.laborHours - jobScope.laborHours) / Math.max(jobScope.laborHours, 1);
+  
+  // Clamp accuracy values between 0 and 1
+  const clampedCostAccuracy = Math.max(0, Math.min(1, costAccuracy));
+  const clampedLaborAccuracy = Math.max(0, Math.min(1, laborAccuracy));
+  const overallAccuracy = (clampedCostAccuracy + clampedLaborAccuracy) / 2;
+
+  // Save to learning database
+  await learningDB.saveFeedback({
+    predictionId: job.predictionId,
+    timestamp: new Date(),
+    predictionType: 'scope',
+    prediction: jobScope,
+    actualOutcome: {
+      materials: actual.materials,
+      laborHours: actual.laborHours,
+      totalCost: actual.totalCost,
+    },
+    performanceMetrics: {
+      accuracy: overallAccuracy,
+      costError: Math.abs(actual.totalCost - avgPredictedCost),
+      laborError: Math.abs(actual.laborHours - jobScope.laborHours),
+      costAccuracy: clampedCostAccuracy,
+      laborAccuracy: clampedLaborAccuracy,
+    }
+  });
+
+  console.log(`📊 Job outcome recorded: Cost accuracy ${(clampedCostAccuracy * 100).toFixed(1)}%, Labor accuracy ${(clampedLaborAccuracy * 100).toFixed(1)}%`);
 }
