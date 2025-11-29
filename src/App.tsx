@@ -98,6 +98,7 @@ type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' 
 function App() {
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showStickyHeader, setShowStickyHeader] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
@@ -174,6 +175,17 @@ function App() {
 
   useEffect(() => {
     initialize();
+  }, []);
+
+  // Scroll listener for sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setShowStickyHeader(scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const initialize = async () => {
@@ -753,6 +765,58 @@ function App() {
           </div>
         </div>
       </motion.header>
+
+      {/* Sticky Header */}
+      <AnimatePresence>
+        {showStickyHeader && (
+          <motion.header
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -60, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="fixed top-0 left-0 right-0 z-[1000] bg-white"
+            style={{
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              height: '60px'
+            }}
+          >
+            <div className="w-full h-full px-4 md:px-6 flex items-center justify-between max-w-[1800px] mx-auto">
+              {/* Logo */}
+              <div 
+                onClick={() => handleNavClick('home')}
+                className="cursor-pointer"
+                style={{ width: '120px' }}
+              >
+                <span className="text-xl font-bold text-foreground">FairTradeWorker</span>
+              </div>
+
+              {/* Post a Job Button */}
+              <Button
+                size="sm"
+                onClick={() => handleCreateJob()}
+                className="font-bold text-white hover:scale-[1.02] transition-transform"
+                style={{ 
+                  backgroundColor: '#2563eb', 
+                  padding: '12px 24px', 
+                  borderRadius: '8px',
+                  border: 'none'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#1d4ed8';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#2563eb';
+                }}
+                aria-label="Post a new job"
+              >
+                <Plus className="w-4 h-4 mr-1.5 md:mr-2" weight="bold" />
+                Post a Job
+              </Button>
+            </div>
+          </motion.header>
+        )}
+      </AnimatePresence>
+
       <main className="flex-1 py-8 px-4">
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
