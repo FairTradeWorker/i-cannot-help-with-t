@@ -124,7 +124,9 @@ export interface Job {
   address: Address;
   urgency: UrgencyLevel;
   videoUrl?: string;
+  thumbnailUrl?: string;
   scope?: JobScope;
+  predictionId?: string;
   estimatedCost: { min: number; max: number };
   actualCost?: number;
   laborHours: number;

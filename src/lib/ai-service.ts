@@ -39,7 +39,13 @@ export interface LearningFeedback {
   predictionType: "scope" | "pricing" | "matching";
   prediction: any;
   actualOutcome: any;
-  userFeedback?: { rating: number; comments?: string; wasAccurate: boolean };
+  userFeedback?: { 
+    rating?: number; 
+    comments?: string; 
+    wasAccurate: boolean;
+    scopeAccurate?: boolean;
+    actualMaterialsUsed?: string;
+  };
   performanceMetrics: { 
     accuracy?: number; 
     errorMargin?: number;
