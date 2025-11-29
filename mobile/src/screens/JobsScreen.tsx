@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, FlatList, Modal, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, FlatList, Modal, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Search, Filter, MapPin, Clock, DollarSign, Star, ChevronRight, X, Send } from 'lucide-react-native';
+import { JobCard } from '@/components/JobCard';
+import { dataStore } from '@fairtradeworker/shared';
 import type { Job, Bid, UrgencyLevel } from '@/types';
 
 interface JobListItem {
@@ -75,16 +77,45 @@ const urgencyColors: Record<UrgencyLevel, { bg: string; text: string }> = {
 };
 
 export default function JobsScreen() {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedJob, setSelectedJob] = useState<JobListItem | null>(null);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [bidModalVisible, setBidModalVisible] = useState(false);
   const [bidAmount, setBidAmount] = useState('');
   const [bidMessage, setBidMessage] = useState('');
   const [filterUrgency, setFilterUrgency] = useState<UrgencyLevel | 'all'>('all');
 
-  const filteredJobs = mockJobs.filter(job => {
+  useEffect(() => {
+    loadJobs();
+  }, []);
+
+  const loadJobs = async () => {
+    try {
+      setLoading(true);
+      const allJobs = await dataStore.getAvailableJobs();
+      setJobs(allJobs);
+    } catch (error) {
+      console.error('Failed to load jobs:', error);
+      Alert.alert('Error', 'Failed to load jobs. Please try again.');
+      // Fallback to mock data if API fails
+      setJobs(mockJobs as any);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadJobs();
+    setRefreshing(false);
+  };
+
+  const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         job.description.toLowerCase().includes(searchQuery.toLowerCase());
+                         job.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         job.address.city.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesUrgency = filterUrgency === 'all' || job.urgency === filterUrgency;
     return matchesSearch && matchesUrgency;
   });
@@ -118,7 +149,23 @@ export default function JobsScreen() {
     return 'Just now';
   };
 
-  const renderJobCard = ({ item }: { item: JobListItem }) => (
+  const renderJobCard = ({ item }: { item: Job }) => (
+    <JobCard
+      job={item}
+      onPress={() => setSelectedJob(item)}
+    />
+  );
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+        <ActivityIndicator size="large" color="#0ea5e9" />
+        <Text className="text-gray-600 mt-4">Loading jobs...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const renderJobCardOld = ({ item }: { item: JobListItem }) => (
     <TouchableOpacity
       onPress={() => setSelectedJob(item)}
       className="bg-white rounded-xl p-4 mb-3 shadow-sm"
