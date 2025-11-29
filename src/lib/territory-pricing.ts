@@ -1,6 +1,8 @@
 // TERRITORY PRICING: New $500 + $20/mo model
+// SCALE: Rate limiting integrated for abuse protection
 import { getFirst300Count, isFirst300Complete, recordFirst300Claim, type First300Claim } from './first300';
 import { hashEntityIdentifier, type EntityType } from './territory-validation';
+import { checkClientRateLimit } from './rate-limiter';
 
 export interface TerritoryPricing {
   isFirst300: boolean;
@@ -63,7 +65,20 @@ export async function processTerritoryClaim(
   email: string,
   userId: string,
   taxId?: string
-): Promise<{ success: boolean; priorityStatus: 'first_priority' | 'second_priority'; requiresPayment: boolean }> {
+): Promise<{ success: boolean; priorityStatus: 'first_priority' | 'second_priority'; requiresPayment: boolean; error?: string }> {
+  // SCALE: Rate limit - 5 claims per hour per user (checked server-side in API route)
+  // Client-side check for immediate feedback
+  const rateLimit = await checkClientRateLimit('territory-claim', userId);
+  if (!rateLimit.allowed) {
+    const retryAfter = rateLimit.retryAfter || 3600;
+    return {
+      success: false,
+      priorityStatus: 'second_priority',
+      requiresPayment: true,
+      error: `Rate limit exceeded. Please try again in ${Math.ceil(retryAfter / 60)} minutes.`,
+    };
+  }
+
   const pricing = await getTerritoryPricing(entityType, email, userId, taxId);
   const isComplete = await isFirst300Complete();
   const count = await getFirst300Count();

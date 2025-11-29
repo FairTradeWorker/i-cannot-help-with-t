@@ -1,0 +1,13 @@
+# SCALE: Security.txt for responsible disclosure
+Contact: security@fairtradeworker.com
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://fairtradeworker.com/.well-known/security.txt
+Policy: https://fairtradeworker.com/security-policy
+
+# Acknowledgments
+Acknowledgments: https://fairtradeworker.com/security-acknowledgments
+
+# Hiring
+Hiring: https://fairtradeworker.com/careers
+

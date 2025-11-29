@@ -1,21 +1,20 @@
-# FairTradeWorker Robots.txt
-# https://fairtradeworker.com/robots.txt
-
-# Allow all crawlers
+# SCALE: Robots.txt for SEO and crawler control
 User-agent: *
 Allow: /
-
-# Disallow private/admin areas
-Disallow: /admin/
 Disallow: /api/
-Disallow: /dashboard/private/
-Disallow: /*.json$
+Disallow: /_spark/
+Disallow: /admin/
+Disallow: /admin/*
 
-# Allow specific JSON-LD structured data
-Allow: /manifest.json
-
-# Crawl delay (be nice to servers)
-Crawl-delay: 1
-
-# Sitemap location
+# Sitemap
 Sitemap: https://fairtradeworker.com/sitemap.xml
+
+# Crawl-delay for aggressive crawlers
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: DotBot
+Crawl-delay: 10

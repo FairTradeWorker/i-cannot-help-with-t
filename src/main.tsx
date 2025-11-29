@@ -5,6 +5,9 @@ import "@github/spark/spark"
 import App from './App.tsx'
 import { ErrorFallback } from './ErrorFallback.tsx'
 
+// SCALE: Initialize monitoring
+import './lib/monitoring';
+
 import "./main.css"
 import "./styles/theme.css"
 import "./index.css"

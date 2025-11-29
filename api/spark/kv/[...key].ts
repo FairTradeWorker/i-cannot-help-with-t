@@ -2,6 +2,7 @@
 // Mimics window.spark.kv API but uses Supabase tables
 // Vercel serverless function format
 import { createClient } from '@supabase/supabase-js';
+import { publicApiLimiter, getClientIP, checkRateLimit, createRateLimitResponse } from '../lib/rate-limiter';
 
 // Vercel provides env vars without VITE_ prefix in serverless functions
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 
@@ -29,6 +30,13 @@ function getTableName(namespace: string): string {
 }
 
 export async function GET(request: Request): Promise<Response> {
+  // SCALE: Rate limiting
+  const clientIP = getClientIP(request);
+  const rateLimit = await checkRateLimit(publicApiLimiter, clientIP);
+  if (!rateLimit.allowed) {
+    return createRateLimitResponse(rateLimit.retryAfter || 900);
+  }
+
   try {
     const url = new URL(request.url);
     const key = url.pathname.replace('/api/spark/kv/', '').replace(/%2F/g, '/');
@@ -84,6 +92,13 @@ export async function GET(request: Request): Promise<Response> {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  // SCALE: Rate limiting
+  const clientIP = getClientIP(request);
+  const rateLimit = await checkRateLimit(publicApiLimiter, clientIP);
+  if (!rateLimit.allowed) {
+    return createRateLimitResponse(rateLimit.retryAfter || 900);
+  }
+
   try {
     const url = new URL(request.url);
     const key = url.pathname.replace('/api/spark/kv/', '').replace(/%2F/g, '/');
@@ -142,11 +157,25 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 export async function PUT(request: Request): Promise<Response> {
+  // SCALE: Rate limiting
+  const clientIP = getClientIP(request);
+  const rateLimit = await checkRateLimit(publicApiLimiter, clientIP);
+  if (!rateLimit.allowed) {
+    return createRateLimitResponse(rateLimit.retryAfter || 900);
+  }
+  
   // PUT is same as POST (upsert)
   return POST(request);
 }
 
 export async function DELETE(request: Request): Promise<Response> {
+  // SCALE: Rate limiting
+  const clientIP = getClientIP(request);
+  const rateLimit = await checkRateLimit(publicApiLimiter, clientIP);
+  if (!rateLimit.allowed) {
+    return createRateLimitResponse(rateLimit.retryAfter || 900);
+  }
+
   try {
     const url = new URL(request.url);
     const key = url.pathname.replace('/api/spark/kv/', '').replace(/%2F/g, '/');
