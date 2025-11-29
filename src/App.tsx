@@ -7,6 +7,7 @@ import {
   Handshake,
   Gift,
   CaretDown,
+  CaretRight,
   UserCircle,
   ShoppingBag,
   Package,
@@ -56,7 +57,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LegalFooter } from '@/components/LegalFooter';
 import { LoginModal } from '@/components/LoginModal';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
@@ -100,6 +100,8 @@ type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' 
 function App() {
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [homeownersExpanded, setHomeownersExpanded] = useState(false);
+  const [forProsExpanded, setForProsExpanded] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [jobsSearchQuery, setJobsSearchQuery] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
@@ -239,6 +241,8 @@ function App() {
     setShowJobPost(false);
     if (isMobile) {
       setMobileMenuOpen(false); // Close mobile menu after navigation
+      setHomeownersExpanded(false);
+      setForProsExpanded(false);
     }
   };
 
@@ -350,165 +354,294 @@ function App() {
                     <span className="hidden sm:inline">Post a Job</span>
                   </Button>
                   
-                  <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                    <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-[44px] w-[44px]">
-                        <List className="w-6 h-6" weight="bold" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-full sm:w-[400px] p-0">
-                      <SheetHeader className="p-6 border-b flex flex-row items-center justify-between">
-                        <SheetTitle>Navigation</SheetTitle>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
+                  {/* Hamburger Menu Button */}
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-[44px] w-[44px] p-0"
+                    onClick={() => setMobileMenuOpen(true)}
+                    aria-label="Open menu"
+                  >
+                    <svg 
+                      width="24" 
+                      height="24" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ color: '#374151' }}
+                    >
+                      <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                  </Button>
+                  
+                  {/* Mobile Menu Overlay */}
+                  <AnimatePresence>
+                    {mobileMenuOpen && (
+                      <>
+                        {/* Backdrop */}
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="fixed inset-0 bg-black/50 z-[1999]"
                           onClick={() => setMobileMenuOpen(false)}
-                          className="h-10 w-10"
-                        >
-                          <X className="w-6 h-6" />
-                        </Button>
-                      </SheetHeader>
-                      <nav className="flex flex-col p-4 gap-2">
-                        <Button
-                          variant={activeTab === 'home' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('home')}
-                          className="justify-start w-full min-h-[44px] text-base"
-                        >
-                          <House className="w-5 h-5 mr-3" />
-                          Home
-                        </Button>
-                        <Button
-                          variant={activeTab === 'territories' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('territories', 'overview')}
-                          className="justify-start w-full min-h-[44px] text-base"
-                        >
-                          <MapTrifold className="w-5 h-5 mr-3" />
-                          Territories
-                        </Button>
-                        <Button
-                          variant={activeTab === 'jobs' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('jobs')}
-                          className="justify-start w-full min-h-[44px] text-base"
-                        >
-                          <Briefcase className="w-5 h-5 mr-3" />
-                          Jobs
-                        </Button>
+                        />
                         
-                        <div className="border-t my-2" />
-                        
-                        <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
-                          Homeowners
-                        </div>
-                        <Button
-                          variant={activeTab === 'homeowner' && activeSubTab === 'profile' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('homeowner', 'profile')}
-                          className="justify-start w-full min-h-[44px] text-base pl-8"
+                        {/* Menu Panel */}
+                        <motion.div
+                          initial={{ x: '100%' }}
+                          animate={{ x: 0 }}
+                          exit={{ x: '100%' }}
+                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          className="fixed top-0 right-0 w-full h-screen bg-white z-[2000] overflow-y-auto"
                         >
-                          Profile
-                        </Button>
-                        <Button
-                          variant={activeTab === 'homeowner' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('homeowner', 'my-jobs')}
-                          className="justify-start w-full min-h-[44px] text-base pl-8"
-                        >
-                          My Jobs
-                        </Button>
-                        
-                        <div className="border-t my-2" />
-                        
-                        <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
-                          For Pros
-                        </div>
-                        <Button
-                          variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('contractors-browse')}
-                          className="justify-start w-full min-h-[44px] text-base pl-8"
-                        >
-                          Browse Contractors
-                        </Button>
-                        <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
-                          Contractor
-                        </div>
-                        <Button
-                          variant={activeTab === 'contractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('contractor', 'dashboard')}
-                          className="justify-start w-full min-h-[44px] text-base pl-12"
-                        >
-                          Dashboard
-                        </Button>
-                        <Button
-                          variant={activeTab === 'contractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('contractor', 'my-jobs')}
-                          className="justify-start w-full min-h-[44px] text-base pl-12"
-                        >
-                          My Estimates
-                        </Button>
-                        <Button
-                          variant={activeTab === 'contractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('contractor', 'route')}
-                          className="justify-start w-full min-h-[44px] text-base pl-12"
-                        >
-                          Route Planner
-                        </Button>
-                        <Button
-                          variant={activeTab === 'dispatch' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('dispatch')}
-                          className="justify-start w-full min-h-[44px] text-base pl-12"
-                        >
-                          Dispatch Map
-                        </Button>
-                        <div className="px-3 py-2 text-xs text-muted-foreground pl-8">
-                          Subcontractor
-                        </div>
-                        <Button
-                          variant={activeTab === 'subcontractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('subcontractor', 'dashboard')}
-                          className="justify-start w-full min-h-[44px] text-base pl-12"
-                        >
-                          Dashboard
-                        </Button>
-                        <Button
-                          variant={activeTab === 'subcontractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('subcontractor', 'my-jobs')}
-                          className="justify-start w-full min-h-[44px] text-base pl-12"
-                        >
-                          My Estimates
-                        </Button>
-                        <Button
-                          variant={activeTab === 'subcontractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('subcontractor', 'route')}
-                          className="justify-start w-full min-h-[44px] text-base pl-12"
-                        >
-                          Route Planner
-                        </Button>
-                        
-                        <div className="border-t my-2" />
-                        
-                        <Button
-                          variant={activeTab === 'partners' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('partners')}
-                          className="justify-start w-full min-h-[44px] text-base"
-                        >
-                          Partners
-                        </Button>
-                        <Button
-                          variant={activeTab === 'warranty' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('warranty')}
-                          className="justify-start w-full min-h-[44px] text-base"
-                        >
-                          Warranty
-                        </Button>
-                        <Button
-                          variant={activeTab === 'messages' ? 'default' : 'ghost'}
-                          onClick={() => handleNavClick('messages')}
-                          className="justify-start w-full min-h-[44px] text-base"
-                        >
-                          <ChatCircle className="w-5 h-5 mr-3" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
-                          Messages
-                        </Button>
-                      </nav>
-                    </SheetContent>
-                  </Sheet>
+                          <div className="flex flex-col h-full">
+                            {/* Header with X button */}
+                            <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: '#e5e7eb' }}>
+                              <div 
+                                onClick={() => handleNavClick('home')}
+                                className="cursor-pointer"
+                              >
+                                <span className="text-lg font-bold text-foreground">FairTradeWorker</span>
+                              </div>
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="h-10 w-10"
+                                aria-label="Close menu"
+                              >
+                                <X className="w-6 h-6" style={{ color: '#6b7280' }} />
+                              </Button>
+                            </div>
+                            
+                            {/* Menu Content */}
+                            <nav className="flex-1 px-6 py-6">
+                              {/* Spacer */}
+                              <div className="h-6" />
+                              
+                              {/* Home */}
+                              <button
+                                onClick={() => handleNavClick('home')}
+                                className="w-full text-left py-4 text-lg border-b"
+                                style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                              >
+                                Home
+                              </button>
+                              
+                              {/* Territories */}
+                              <button
+                                onClick={() => handleNavClick('territories', 'overview')}
+                                className="w-full text-left py-4 text-lg border-b"
+                                style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                              >
+                                Territories
+                              </button>
+                              
+                              {/* Jobs */}
+                              <button
+                                onClick={() => handleNavClick('jobs')}
+                                className="w-full text-left py-4 text-lg border-b"
+                                style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                              >
+                                Jobs
+                              </button>
+                              
+                              {/* Homeowners (Expandable) */}
+                              <div>
+                                <button
+                                  onClick={() => setHomeownersExpanded(!homeownersExpanded)}
+                                  className="w-full text-left py-4 text-lg border-b flex items-center justify-between"
+                                  style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                >
+                                  <span>Homeowners</span>
+                                  <CaretRight 
+                                    className="w-5 h-5 transition-transform duration-200"
+                                    style={{ 
+                                      transform: homeownersExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                                      color: '#6b7280'
+                                    }}
+                                  />
+                                </button>
+                                {homeownersExpanded && (
+                                  <div className="pl-4">
+                                    <button
+                                      onClick={() => handleNavClick('homeowner', 'profile')}
+                                      className="w-full text-left py-4 text-lg border-b"
+                                      style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                    >
+                                      Profile
+                                    </button>
+                                    <button
+                                      onClick={() => handleNavClick('homeowner', 'my-jobs')}
+                                      className="w-full text-left py-4 text-lg border-b"
+                                      style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                    >
+                                      My Jobs
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {/* For Pros (Expandable) */}
+                              <div>
+                                <button
+                                  onClick={() => setForProsExpanded(!forProsExpanded)}
+                                  className="w-full text-left py-4 text-lg border-b flex items-center justify-between"
+                                  style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                >
+                                  <span>For Pros</span>
+                                  <CaretRight 
+                                    className="w-5 h-5 transition-transform duration-200"
+                                    style={{ 
+                                      transform: forProsExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                                      color: '#6b7280'
+                                    }}
+                                  />
+                                </button>
+                                {forProsExpanded && (
+                                  <div className="pl-4">
+                                    <button
+                                      onClick={() => handleNavClick('contractors-browse')}
+                                      className="w-full text-left py-4 text-lg border-b"
+                                      style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                    >
+                                      Browse Contractors
+                                    </button>
+                                    <div className="pl-4">
+                                      <div className="text-sm text-gray-500 py-2">Contractor</div>
+                                      <button
+                                        onClick={() => handleNavClick('contractor', 'dashboard')}
+                                        className="w-full text-left py-4 text-lg border-b"
+                                        style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                      >
+                                        Dashboard
+                                      </button>
+                                      <button
+                                        onClick={() => handleNavClick('contractor', 'my-jobs')}
+                                        className="w-full text-left py-4 text-lg border-b"
+                                        style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                      >
+                                        My Estimates
+                                      </button>
+                                      <button
+                                        onClick={() => handleNavClick('contractor', 'route')}
+                                        className="w-full text-left py-4 text-lg border-b"
+                                        style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                      >
+                                        Route Planner
+                                      </button>
+                                    </div>
+                                    <div className="pl-4">
+                                      <div className="text-sm text-gray-500 py-2">Subcontractor</div>
+                                      <button
+                                        onClick={() => handleNavClick('subcontractor', 'dashboard')}
+                                        className="w-full text-left py-4 text-lg border-b"
+                                        style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                      >
+                                        Dashboard
+                                      </button>
+                                      <button
+                                        onClick={() => handleNavClick('subcontractor', 'my-jobs')}
+                                        className="w-full text-left py-4 text-lg border-b"
+                                        style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                      >
+                                        My Estimates
+                                      </button>
+                                      <button
+                                        onClick={() => handleNavClick('subcontractor', 'route')}
+                                        className="w-full text-left py-4 text-lg border-b"
+                                        style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                      >
+                                        Route Planner
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {/* Partners */}
+                              <button
+                                onClick={() => handleNavClick('partners')}
+                                className="w-full text-left py-4 text-lg border-b"
+                                style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                              >
+                                Partners
+                              </button>
+                              
+                              {/* Warranty */}
+                              <button
+                                onClick={() => handleNavClick('warranty')}
+                                className="w-full text-left py-4 text-lg border-b"
+                                style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                              >
+                                Warranty
+                              </button>
+                              
+                              {/* Spacer */}
+                              <div className="h-6" />
+                              
+                              {/* Sign In Link */}
+                              {!currentUser && (
+                                <button
+                                  onClick={() => {
+                                    setLoginModalMode('login');
+                                    setShowLogin(true);
+                                    setMobileMenuOpen(false);
+                                  }}
+                                  className="w-full text-left py-4 text-lg border-b text-blue-600"
+                                  style={{ fontSize: '18px', padding: '16px 0', borderColor: '#e5e7eb' }}
+                                >
+                                  Sign In
+                                </button>
+                              )}
+                              
+                              {/* Sign Up Button */}
+                              {!currentUser && (
+                                <Button
+                                  onClick={() => {
+                                    setLoginModalMode('signup');
+                                    setShowLogin(true);
+                                    setMobileMenuOpen(false);
+                                  }}
+                                  className="w-full mt-4 mb-4 text-white"
+                                  style={{ 
+                                    backgroundColor: '#2563eb',
+                                    fontSize: '18px',
+                                    padding: '16px 0',
+                                    borderRadius: '8px'
+                                  }}
+                                >
+                                  Sign Up
+                                </Button>
+                              )}
+                              
+                              {/* Post a Job Button */}
+                              <Button
+                                onClick={() => {
+                                  handleCreateJob();
+                                  setMobileMenuOpen(false);
+                                }}
+                                variant="outline"
+                                className="w-full text-blue-600 border-blue-600"
+                                style={{ 
+                                  fontSize: '18px',
+                                  padding: '16px 0',
+                                  borderRadius: '8px',
+                                  borderWidth: '2px'
+                                }}
+                              >
+                                Post a Job
+                              </Button>
+                            </nav>
+                          </div>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
                 </div>
               </>
             ) : (
