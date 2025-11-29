@@ -522,11 +522,11 @@ function App() {
             </nav>
 
             <Button
-              size="lg"
+              size="sm"
               onClick={handleCreateJob}
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-md has-[>svg]:px-4 hover:bg-white/90 shadow-lg font-black uppercase px-6 h-12 border-2 ml-4 text-slate-50 bg-blue-800 border-blue-700"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-xs md:text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-full hover:bg-white/90 shadow-md font-semibold px-4 md:px-5 h-9 md:h-10 ml-2 md:ml-4 text-slate-50 bg-blue-800 border border-blue-700"
             >
-              <Plus className="w-5 h-5 mr-2" weight="bold" />
+              <Plus className="w-4 h-4 mr-1.5 md:mr-2" weight="bold" />
               Post a Job
             </Button>
 
@@ -800,6 +800,20 @@ function App() {
                   {activeTab === 'notifications' && <NotificationsPage />}
                   {activeTab === 'home' && (
                     <div className="space-y-8">
+                      {/* Service Categories at top */}
+                      <ServiceCategoriesShowcase
+                        onCategoryClick={(categoryId) => {
+                          // Open service selector focused on this category,
+                          // then launch Post a Job with the chosen service.
+                          setPreselectedCategoryId(categoryId);
+                          setShowServiceMenu(true);
+                        }}
+                        onServiceSelect={() => {
+                          setPreselectedCategoryId(null);
+                          setShowServiceMenu(true);
+                        }}
+                      />
+
                       {/* Top section with Post Job and Mini Map */}
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                           <Card 
@@ -917,20 +931,6 @@ function App() {
                       </div>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
-                      
-                      {/* Service Categories Showcase */}
-                      <ServiceCategoriesShowcase
-                        onCategoryClick={(categoryId) => {
-                          // Open service selector focused on this category,
-                          // then launch Post a Job with the chosen service.
-                          setPreselectedCategoryId(categoryId);
-                          setShowServiceMenu(true);
-                        }}
-                        onServiceSelect={() => {
-                          setPreselectedCategoryId(null);
-                          setShowServiceMenu(true);
-                        }}
-                      />
 
                         <Card className="glass-card p-8 border-0 bg-transparent">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
