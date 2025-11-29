@@ -132,7 +132,7 @@ export default function HomeScreen() {
             {userRole === 'homeowner' && (
               <>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('JobPost' as never)}
+                  onPress={() => navigation.navigate('VideoJobCreation' as never)}
                   className="w-1/2 p-2"
                 >
                   <View className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 items-center">
