@@ -98,6 +98,7 @@ type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' 
 function App() {
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
@@ -174,6 +175,17 @@ function App() {
 
   useEffect(() => {
     initialize();
+  }, []);
+
+  // Scroll listener for sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const initialize = async () => {
@@ -280,10 +292,16 @@ function App() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-        className="sticky top-0 z-50 glass-card border-b border-border/50"
+        className="sticky top-0 z-[1000] border-b border-border/50 transition-all duration-300 ease-in-out"
+        style={{
+          backgroundColor: isScrolled ? 'white' : 'transparent',
+          boxShadow: isScrolled ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+        }}
       >
         <div className="w-full px-4 md:px-6">
-          <div className="flex items-center h-14 md:h-16 py-2 max-w-[1800px] mx-auto gap-2 md:gap-4">
+          <div 
+            className={`flex items-center py-2 max-w-[1800px] mx-auto gap-2 md:gap-4 transition-all duration-300 ease-in-out ${isScrolled ? 'h-16' : 'h-14 md:h-16'}`}
+          >
             {/* Mobile Hamburger Menu */}
             {isMobile && (
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
