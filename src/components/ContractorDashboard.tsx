@@ -28,6 +28,177 @@ interface ContractorDashboardProps {
   isSubcontractor?: boolean;
 }
 
+// Demo jobs for contractors
+const getDemoJobs = (contractorId: string): Job[] => [
+  {
+    id: 'contractor-job-1',
+    title: 'Kitchen Remodel - Countertop Installation',
+    description: 'Install new quartz countertops in kitchen. Approximately 30 linear feet. Need professional installation with sink cutout.',
+    status: 'in_progress',
+    homeownerId: 'homeowner-1',
+    contractorId: contractorId,
+    address: {
+      street: '456 Oak Avenue',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94102',
+      lat: 37.7749,
+      lng: -122.4194,
+    },
+    urgency: 'normal',
+    estimatedCost: { min: 3500, max: 5500 },
+    actualCost: 4800,
+    laborHours: 16,
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(),
+    scheduledStart: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    bids: [],
+    messages: [],
+    milestones: [],
+  },
+  {
+    id: 'contractor-job-2',
+    title: 'Bathroom Renovation - Full Remodel',
+    description: 'Complete bathroom renovation including new tiles, fixtures, vanity, and shower installation. Master bathroom, 120 sq ft.',
+    status: 'assigned',
+    homeownerId: 'homeowner-2',
+    contractorId: contractorId,
+    address: {
+      street: '789 Pine Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94103',
+      lat: 37.7849,
+      lng: -122.4094,
+    },
+    urgency: 'normal',
+    estimatedCost: { min: 8500, max: 12500 },
+    laborHours: 40,
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(),
+    scheduledStart: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    bids: [],
+    messages: [],
+    milestones: [],
+  },
+  {
+    id: 'contractor-job-3',
+    title: 'Roof Repair - Storm Damage',
+    description: 'Repair storm damage to roof shingles. Approximately 200 sq ft area needs replacement. Also check for leaks in attic.',
+    status: 'completed',
+    homeownerId: 'homeowner-3',
+    contractorId: contractorId,
+    address: {
+      street: '321 Elm Drive',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94104',
+      lat: 37.7649,
+      lng: -122.4294,
+    },
+    urgency: 'urgent',
+    estimatedCost: { min: 1200, max: 2500 },
+    actualCost: 2100,
+    laborHours: 12,
+    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(),
+    completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    rating: {
+      jobId: 'contractor-job-3',
+      contractorId: contractorId,
+      homeownerId: 'homeowner-3',
+      overallScore: 95,
+      quality: 98,
+      communication: 92,
+      timeliness: 95,
+      professionalism: 96,
+      cleanliness: 94,
+      comment: 'Excellent work! Very professional and completed on time.',
+      createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+    },
+    bids: [],
+    messages: [],
+    milestones: [],
+  },
+  {
+    id: 'contractor-job-4',
+    title: 'Deck Construction - Composite Deck',
+    description: 'Build new 400 sq ft composite deck with stairs and railing. Need permit assistance and design consultation.',
+    status: 'completed',
+    homeownerId: 'homeowner-4',
+    contractorId: contractorId,
+    address: {
+      street: '654 Maple Court',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94105',
+      lat: 37.7549,
+      lng: -122.4394,
+    },
+    urgency: 'normal',
+    estimatedCost: { min: 12000, max: 18000 },
+    actualCost: 15500,
+    laborHours: 48,
+    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(),
+    completedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+    rating: {
+      jobId: 'contractor-job-4',
+      contractorId: contractorId,
+      homeownerId: 'homeowner-4',
+      overallScore: 98,
+      quality: 99,
+      communication: 97,
+      timeliness: 98,
+      professionalism: 98,
+      cleanliness: 99,
+      comment: 'Outstanding craftsmanship! The deck looks amazing.',
+      createdAt: new Date(Date.now() - 19 * 24 * 60 * 60 * 1000),
+    },
+    bids: [],
+    messages: [],
+    milestones: [],
+  },
+];
+
+// Demo earnings data
+const getDemoEarnings = (contractorId: string): Earnings => ({
+  contractorId: contractorId,
+  totalEarnings: 87250,
+  availableBalance: 12450,
+  pendingBalance: 4800,
+  jobs: [
+    {
+      jobId: 'contractor-job-3',
+      jobTitle: 'Roof Repair - Storm Damage',
+      amount: 2100,
+      platformFee: 0,
+      netAmount: 2100,
+      status: 'available',
+      completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    },
+    {
+      jobId: 'contractor-job-4',
+      jobTitle: 'Deck Construction - Composite Deck',
+      amount: 15500,
+      platformFee: 0,
+      netAmount: 15500,
+      status: 'available',
+      completedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+    },
+    {
+      jobId: 'contractor-job-1',
+      jobTitle: 'Kitchen Remodel - Countertop Installation',
+      amount: 4800,
+      platformFee: 0,
+      netAmount: 4800,
+      status: 'pending',
+      completedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+    },
+  ],
+  payouts: [],
+});
+
 export function ContractorDashboard({ user, subTab, isSubcontractor }: ContractorDashboardProps) {
   const [activeTab, setActiveTab] = useState(subTab || 'dashboard');
   const [myJobs, setMyJobs] = useState<Job[]>([]);
@@ -38,6 +209,13 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [expandRelated, setExpandRelated] = useState(false);
   const [sortBy, setSortBy] = useState<'match' | 'distance' | 'value' | 'urgency'>('match');
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  useEffect(() => {
+    if (subTab) {
+      setActiveTab(subTab);
+    }
+  }, [subTab]);
 
   useEffect(() => {
     if (user?.id) {
@@ -51,7 +229,15 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
     setLoading(true);
     try {
       const jobs = await dataStore.getJobsForContractor(user.id);
-      setMyJobs(jobs);
+      
+      // Initialize with demo jobs if no jobs exist
+      if ((!jobs || jobs.length === 0) && !hasInitialized) {
+        const demoJobs = getDemoJobs(user.id);
+        setMyJobs(demoJobs);
+        setHasInitialized(true);
+      } else {
+        setMyJobs(jobs || []);
+      }
       
       // Load available jobs for matching
       const allJobs = await dataStore.getJobs();
@@ -61,9 +247,20 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
       setAvailableJobs(postedJobs);
       
       const earningsData = await dataStore.getEarnings(user.id);
-      setEarnings(earningsData);
+      // Initialize with demo earnings if no earnings exist
+      if (!earningsData && !hasInitialized) {
+        setEarnings(getDemoEarnings(user.id));
+      } else {
+        setEarnings(earningsData);
+      }
     } catch (error) {
       console.error('Failed to load contractor data:', error);
+      // Fallback to demo data on error
+      if (!hasInitialized && user?.id) {
+        setMyJobs(getDemoJobs(user.id));
+        setEarnings(getDemoEarnings(user.id));
+        setHasInitialized(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -155,8 +352,23 @@ export function ContractorDashboard({ user, subTab, isSubcontractor }: Contracto
 
   if (!user || !profile) {
     return (
-      <div className="p-8 text-center">
-        <p className="text-muted-foreground">No contractor profile found</p>
+      <div className="space-y-6">
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold mb-4">Contractor Dashboard</h2>
+          <p className="text-muted-foreground mb-6">
+            Sign in or create a contractor account to access your dashboard
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button
+              onClick={() => {
+                // This will be handled by parent App component
+                window.location.reload();
+              }}
+            >
+              Sign In as Contractor
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }

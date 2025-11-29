@@ -1166,7 +1166,41 @@ function App() {
                     />
                   )}
                   {activeTab === 'territories' && activeSubTab !== 'overview' && <TerritoryMapPage />}
-                  {activeTab === 'contractor' && <ContractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
+                  {activeTab === 'contractor' && (
+                    currentUser ? (
+                      <ContractorDashboard user={currentUser} subTab={activeSubTab} />
+                    ) : (
+                      <div className="space-y-6">
+                        <div className="text-center py-12">
+                          <h2 className="text-2xl font-bold mb-4">Contractor Dashboard</h2>
+                          <p className="text-muted-foreground mb-6">
+                            Sign in or create a contractor account to access your dashboard
+                          </p>
+                          <div className="flex gap-4 justify-center">
+                            <Button
+                              onClick={() => {
+                                setLoginModalMode('login');
+                                setShowLogin(true);
+                              }}
+                            >
+                              <SignIn className="w-4 h-4 mr-2" />
+                              Sign In
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setLoginModalMode('signup');
+                                setShowLogin(true);
+                              }}
+                            >
+                              <UserPlus className="w-4 h-4 mr-2" />
+                              Sign Up
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
                   {activeTab === 'subcontractor' && <SubcontractorDashboard user={currentUser || undefined} subTab={activeSubTab} />}
                   {activeTab === 'dispatch' && <DispatchMap />}
                   {activeTab === 'messages' && <MessagesView userId={currentUser?.id || ''} />}
