@@ -48,6 +48,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LegalFooter } from '@/components/LegalFooter';
 import { LoginModal } from '@/components/LoginModal';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { MarketplaceBrowse } from '@/components/MarketplaceBrowse';
 import { UserProfile } from '@/components/UserProfile';
 import { MessagesView } from '@/components/MessagesView';
@@ -89,6 +91,8 @@ type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeown
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
 
 function App() {
+  const isMobile = useIsMobile();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
@@ -211,6 +215,9 @@ function App() {
     setShowAdminPanel(false);
     setShowProfile(false);
     setShowJobPost(false);
+    if (isMobile) {
+      setMobileMenuOpen(false); // Close mobile menu after navigation
+    }
   };
 
   const handleCreateJob = () => {
@@ -262,9 +269,140 @@ function App() {
         transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
         className="sticky top-0 z-50 glass-card border-b border-border/50"
       >
-        <div className="w-full px-6">
-          <div className="flex items-center h-16 py-2 max-w-[1800px] mx-auto gap-4">
-            <nav className="flex items-center gap-1.5">
+        <div className="w-full px-4 md:px-6">
+          <div className="flex items-center h-14 md:h-16 py-2 max-w-[1800px] mx-auto gap-2 md:gap-4">
+            {/* Mobile Hamburger Menu */}
+            {isMobile && (
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden">
+                    <List className="w-6 h-6" weight="bold" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
+                  <SheetHeader className="p-6 border-b">
+                    <SheetTitle>Navigation</SheetTitle>
+                  </SheetHeader>
+                  <nav className="flex flex-col p-4 gap-2">
+                    <Button
+                      variant={activeTab === 'home' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('home')}
+                      className="justify-start w-full h-12"
+                    >
+                      <House className="w-5 h-5 mr-3" />
+                      Home
+                    </Button>
+                    <Button
+                      variant={activeTab === 'territories' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('territories', 'overview')}
+                      className="justify-start w-full h-12"
+                    >
+                      <MapTrifold className="w-5 h-5 mr-3" />
+                      Territories
+                    </Button>
+                    <Button
+                      variant={activeTab === 'jobs' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('jobs')}
+                      className="justify-start w-full h-12"
+                    >
+                      <Briefcase className="w-5 h-5 mr-3" />
+                      Jobs
+                    </Button>
+                    <Button
+                      variant={activeTab === 'contractors-browse' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('contractors-browse')}
+                      className="justify-start w-full h-12"
+                    >
+                      <Hammer className="w-5 h-5 mr-3" />
+                      Contractors
+                    </Button>
+                    
+                    <div className="border-t my-2" />
+                    
+                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                      Homeowner
+                    </div>
+                    <Button
+                      variant={activeTab === 'homeowner' && activeSubTab === 'profile' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('homeowner', 'profile')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      Profile
+                    </Button>
+                    <Button
+                      variant={activeTab === 'homeowner' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('homeowner', 'my-jobs')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      My Jobs
+                    </Button>
+                    
+                    <div className="border-t my-2" />
+                    
+                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                      Contractor
+                    </div>
+                    <Button
+                      variant={activeTab === 'contractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('contractor', 'dashboard')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      Dashboard
+                    </Button>
+                    <Button
+                      variant={activeTab === 'contractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('contractor', 'my-jobs')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      My Estimates
+                    </Button>
+                    <Button
+                      variant={activeTab === 'contractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('contractor', 'route')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      Route Planner
+                    </Button>
+                    <Button
+                      variant={activeTab === 'dispatch' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('dispatch')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      Dispatch Map
+                    </Button>
+                    
+                    <div className="border-t my-2" />
+                    
+                    <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase">
+                      Subcontractor
+                    </div>
+                    <Button
+                      variant={activeTab === 'subcontractor' && activeSubTab === 'dashboard' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('subcontractor', 'dashboard')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      Dashboard
+                    </Button>
+                    <Button
+                      variant={activeTab === 'subcontractor' && activeSubTab === 'my-jobs' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('subcontractor', 'my-jobs')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      My Estimates
+                    </Button>
+                    <Button
+                      variant={activeTab === 'subcontractor' && activeSubTab === 'route' ? 'default' : 'ghost'}
+                      onClick={() => handleNavClick('subcontractor', 'route')}
+                      className="justify-start w-full h-12 pl-8"
+                    >
+                      Route Planner
+                    </Button>
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            )}
+            
+            <nav className="hidden md:flex items-center gap-1.5 flex-1">
               <Button
                 variant={activeTab === 'home' ? 'default' : 'ghost'}
                 onClick={() => handleNavClick('home')}
@@ -932,6 +1070,62 @@ function App() {
           initialMode={loginModalMode}
         />
       )}
+      
+      {/* Mobile Bottom Navigation */}
+      {isMobile && (
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border md:hidden">
+          <div className="flex items-center justify-around h-16">
+            <Button
+              variant={activeTab === 'home' ? 'default' : 'ghost'}
+              onClick={() => handleNavClick('home')}
+              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
+              size="sm"
+            >
+              <House className="w-5 h-5" weight={activeTab === 'home' ? 'fill' : 'regular'} />
+              <span className="text-xs">Home</span>
+            </Button>
+            <Button
+              variant={activeTab === 'territories' ? 'default' : 'ghost'}
+              onClick={() => handleNavClick('territories', 'overview')}
+              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
+              size="sm"
+            >
+              <MapTrifold className="w-5 h-5" weight={activeTab === 'territories' ? 'fill' : 'regular'} />
+              <span className="text-xs">Territories</span>
+            </Button>
+            <Button
+              variant={activeTab === 'jobs' ? 'default' : 'ghost'}
+              onClick={() => handleNavClick('jobs')}
+              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
+              size="sm"
+            >
+              <Briefcase className="w-5 h-5" weight={activeTab === 'jobs' ? 'fill' : 'regular'} />
+              <span className="text-xs">Jobs</span>
+            </Button>
+            <Button
+              variant={activeTab === 'messages' ? 'default' : 'ghost'}
+              onClick={() => handleNavClick('messages')}
+              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
+              size="sm"
+            >
+              <ChatCircle className="w-5 h-5" weight={activeTab === 'messages' ? 'fill' : 'regular'} />
+              <span className="text-xs">Messages</span>
+            </Button>
+            <Button
+              variant={activeTab === 'notifications' ? 'default' : 'ghost'}
+              onClick={() => handleNavClick('notifications')}
+              className="flex flex-col items-center gap-1 h-full w-full rounded-none"
+              size="sm"
+            >
+              <BellRinging className="w-5 h-5" weight={activeTab === 'notifications' ? 'fill' : 'regular'} />
+              <span className="text-xs">Alerts</span>
+            </Button>
+          </div>
+        </nav>
+      )}
+      
+      {/* Add padding to main content on mobile to account for bottom nav */}
+      {isMobile && <div className="h-16" />}
     </div>
   );
 }
