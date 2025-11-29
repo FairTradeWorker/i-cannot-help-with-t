@@ -1,111 +1,148 @@
-// Mobile Video Recorder Component
-// Records 60-second videos for job creation
+// Enhanced Video Recorder Component
+// 60-second video recording with preview
 
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { Camera, CameraType, CameraView, useCameraPermissions } from 'expo-camera';
-import { Video } from 'expo-av';
-import { Record, Stop, RotateCcw, CheckCircle, X } from 'lucide-react-native';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { Video, X, CheckCircle, AlertCircle } from 'lucide-react-native';
 
 interface VideoRecorderProps {
-  maxDuration?: number; // in seconds, default 60
-  onRecordingComplete: (uri: string) => void;
-  onCancel: () => void;
+  onRecordingComplete: (videoUri: string, thumbnailUri: string) => void;
+  maxDuration?: number; // seconds
+  onCancel?: () => void;
 }
 
-export function VideoRecorder({ 
-  maxDuration = 60, 
-  onRecordingComplete, 
-  onCancel 
+export function VideoRecorder({
+  onRecordingComplete,
+  maxDuration = 60,
+  onCancel,
 }: VideoRecorderProps) {
+  const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [recording, setRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const [videoUri, setVideoUri] = useState<string | null>(null);
-  const [cameraType, setCameraType] = useState<CameraType>('back');
-  const cameraRef = useRef<CameraView>(null);
+  const [recordedUri, setRecordedUri] = useState<string | null>(null);
+  const [duration, setDuration] = useState(0);
+  const [processing, setProcessing] = useState(false);
+  const cameraRef = useRef<any>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const durationRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (recording) {
-      timerRef.current = setInterval(() => {
-        setRecordingTime((prev) => {
-          const newTime = prev + 1;
-          if (newTime >= maxDuration) {
-            stopRecording();
-            return maxDuration;
-          }
-          return newTime;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    }
-
     return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (durationRef.current) clearInterval(durationRef.current);
     };
-  }, [recording, maxDuration]);
+  }, []);
+
+  if (!permission) {
+    return (
+      <View className="flex-1 items-center justify-center bg-black">
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+  if (!permission.granted) {
+    return (
+      <View className="flex-1 items-center justify-center bg-black px-6">
+        <AlertCircle size={64} color="#ffffff" />
+        <Text className="text-white text-xl font-bold mt-6 mb-4 text-center">
+          Camera Permission Required
+        </Text>
+        <Text className="text-white/80 text-center mb-8">
+          We need access to your camera to record job videos. Please grant permission in settings.
+        </Text>
+        <TouchableOpacity
+          onPress={requestPermission}
+          className="bg-primary-500 px-8 py-3 rounded-full"
+        >
+          <Text className="text-white font-semibold">Grant Permission</Text>
+        </TouchableOpacity>
+        {onCancel && (
+          <TouchableOpacity
+            onPress={onCancel}
+            className="mt-4"
+          >
+            <Text className="text-white/60">Cancel</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
 
   const startRecording = async () => {
-    if (!permission?.granted) {
-      const result = await requestPermission();
-      if (!result.granted) {
-        Alert.alert('Permission Required', 'Camera permission is required to record videos.');
-        return;
-      }
-    }
+    if (!cameraRef.current) return;
 
     try {
       setRecording(true);
-      setRecordingTime(0);
-      setVideoUri(null);
+      setDuration(0);
 
-      if (cameraRef.current) {
-        const video = await cameraRef.current.recordAsync({
-          maxDuration,
-          quality: '720p',
+      // Start duration timer
+      durationRef.current = setInterval(() => {
+        setDuration(prev => {
+          const newDuration = prev + 1;
+          if (newDuration >= maxDuration) {
+            stopRecording();
+            return maxDuration;
+          }
+          return newDuration;
         });
-        
-        setVideoUri(video.uri);
-        setRecording(false);
+      }, 1000);
+
+      const video = await cameraRef.current.recordAsync({
+        maxDuration,
+        quality: '720p',
+      });
+
+      setRecordedUri(video.uri);
+      setRecording(false);
+      
+      if (durationRef.current) {
+        clearInterval(durationRef.current);
       }
     } catch (error) {
       console.error('Failed to start recording:', error);
       Alert.alert('Error', 'Failed to start recording. Please try again.');
       setRecording(false);
-    }
-  };
-
-  const stopRecording = async () => {
-    try {
-      if (cameraRef.current && recording) {
-        cameraRef.current.stopRecording();
-        setRecording(false);
+      if (durationRef.current) {
+        clearInterval(durationRef.current);
       }
+    }
+  };
+
+  const stopRecording = () => {
+    if (cameraRef.current && recording) {
+      cameraRef.current.stopRecording();
+      setRecording(false);
+      if (durationRef.current) {
+        clearInterval(durationRef.current);
+      }
+    }
+  };
+
+  const handleConfirm = async () => {
+    if (!recordedUri) return;
+
+    setProcessing(true);
+    try {
+      // Generate thumbnail (mock for now)
+      const thumbnailUri = recordedUri; // TODO: Generate actual thumbnail
+      
+      onRecordingComplete(recordedUri, thumbnailUri);
     } catch (error) {
-      console.error('Failed to stop recording:', error);
+      console.error('Failed to process video:', error);
+      Alert.alert('Error', 'Failed to process video. Please try again.');
+      setProcessing(false);
     }
   };
 
-  const retakeVideo = () => {
-    setVideoUri(null);
-    setRecordingTime(0);
+  const handleRetake = () => {
+    setRecordedUri(null);
+    setDuration(0);
   };
 
-  const toggleCameraType = () => {
-    setCameraType(current => (current === 'back' ? 'front' : 'back'));
-  };
-
-  const handleConfirm = () => {
-    if (videoUri) {
-      onRecordingComplete(videoUri);
-    }
+  const toggleCameraFacing = () => {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
   };
 
   const formatTime = (seconds: number) => {
@@ -114,130 +151,103 @@ export function VideoRecorder({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  if (!permission) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
-      </View>
-    );
-  }
-
-  if (!permission.granted) {
-    return (
-      <View style={styles.container}>
-        <Text className="text-lg font-semibold text-gray-900 mb-4 text-center">
-          Camera Permission Required
-        </Text>
-        <Text className="text-sm text-gray-600 mb-6 text-center px-4">
-          We need access to your camera to record job videos for AI analysis.
-        </Text>
-        <TouchableOpacity
-          style={styles.permissionButton}
-          onPress={requestPermission}
-        >
-          <Text className="text-white font-semibold">Grant Permission</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.permissionButton, styles.cancelButton]}
-          onPress={onCancel}
-        >
-          <Text className="text-gray-700 font-semibold">Cancel</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  if (videoUri) {
-    return (
-      <View style={styles.container}>
-        <Video
-          source={{ uri: videoUri }}
-          style={styles.videoPreview}
-          useNativeControls
-          resizeMode="contain"
-        />
-        <View style={styles.controls}>
-          <TouchableOpacity
-            style={[styles.button, styles.retakeButton]}
-            onPress={retakeVideo}
-          >
-            <RotateCcw size={24} color="#ffffff" />
-            <Text className="text-white font-semibold ml-2">Retake</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.confirmButton]}
-            onPress={handleConfirm}
-          >
-            <CheckCircle size={24} color="#ffffff" />
-            <Text className="text-white font-semibold ml-2">Use This Video</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      <CameraView
-        ref={cameraRef}
-        style={styles.camera}
-        facing={cameraType}
-      >
-        <View style={styles.overlay}>
-          {/* Timer */}
-          <View style={styles.timerContainer}>
-            <View style={[styles.timer, recording && styles.timerRecording]}>
-              <Text style={styles.timerText}>
-                {formatTime(recordingTime)} / {formatTime(maxDuration)}
-              </Text>
-            </View>
-          </View>
-
-          {/* Controls */}
-          <View style={styles.controls}>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={onCancel}
-            >
-              <X size={24} color="#ffffff" />
-            </TouchableOpacity>
-
-            <View style={styles.recordControls}>
-              <TouchableOpacity
-                style={styles.flipButton}
-                onPress={toggleCameraType}
-              >
-                <RotateCcw size={24} color="#ffffff" />
-              </TouchableOpacity>
-
-              {!recording ? (
+      {!recordedUri ? (
+        <>
+          <CameraView
+            ref={cameraRef}
+            style={styles.camera}
+            facing={facing}
+          >
+            {/* Top Controls */}
+            <View style={styles.topControls}>
+              {onCancel && (
                 <TouchableOpacity
-                  style={styles.recordButton}
-                  onPress={startRecording}
+                  onPress={onCancel}
+                  style={styles.closeButton}
                 >
-                  <Record size={48} color="#ffffff" weight="fill" />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[styles.recordButton, styles.stopButton]}
-                  onPress={stopRecording}
-                >
-                  <Stop size={48} color="#ffffff" weight="fill" />
+                  <X size={24} color="#ffffff" />
                 </TouchableOpacity>
               )}
+              <View style={styles.durationContainer}>
+                <Text style={styles.durationText}>
+                  {formatTime(duration)} / {formatTime(maxDuration)}
+                </Text>
+                {recording && (
+                  <View style={styles.recordingIndicator} />
+                )}
+              </View>
             </View>
+
+            {/* Bottom Controls */}
+            <View style={styles.bottomControls}>
+              <TouchableOpacity
+                onPress={toggleCameraFacing}
+                style={styles.flipButton}
+              >
+                <Text style={styles.flipButtonText}>Flip</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={recording ? stopRecording : startRecording}
+                style={[styles.recordButton, recording && styles.recordButtonActive]}
+              >
+                <View style={styles.recordButtonInner} />
+              </TouchableOpacity>
+
+              <View style={styles.placeholder} />
+            </View>
+          </CameraView>
+
+          {/* Instructions */}
+          <View style={styles.instructions}>
+            <Text style={styles.instructionsText}>
+              {recording
+                ? 'Recording... Tap to stop'
+                : 'Tap the record button to start. Show the damage or work needed clearly.'}
+            </Text>
+          </View>
+        </>
+      ) : (
+        <View style={styles.previewContainer}>
+          <View style={styles.previewHeader}>
+            <Text style={styles.previewTitle}>Video Preview</Text>
+            <Text style={styles.previewDuration}>
+              {formatTime(duration)}
+            </Text>
+          </View>
+
+          <View style={styles.previewVideo}>
+            <Video size={64} color="#ffffff" />
+            <Text style={styles.previewText}>Video recorded successfully</Text>
+          </View>
+
+          <View style={styles.previewActions}>
+            <TouchableOpacity
+              onPress={handleRetake}
+              style={styles.retakeButton}
+            >
+              <Text style={styles.retakeButtonText}>Retake</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleConfirm}
+              disabled={processing}
+              style={[styles.confirmButton, processing && styles.confirmButtonDisabled]}
+            >
+              {processing ? (
+                <ActivityIndicator color="#ffffff" />
+              ) : (
+                <>
+                  <CheckCircle size={20} color="#ffffff" />
+                  <Text style={styles.confirmButtonText}>Use This Video</Text>
+                </>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
-      </CameraView>
-
-      <View style={styles.instructions}>
-        <Text className="text-white text-center font-semibold mb-1">
-          Record up to {maxDuration} seconds
-        </Text>
-        <Text className="text-white/80 text-center text-sm">
-          Show the damage or issue clearly for AI analysis
-        </Text>
-      </View>
+      )}
     </View>
   );
 }
@@ -245,120 +255,163 @@ export function VideoRecorder({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
   camera: {
     flex: 1,
   },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    justifyContent: 'space-between',
-  },
-  timerContainer: {
-    alignItems: 'center',
-    paddingTop: 50,
-  },
-  timer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  timerRecording: {
-    backgroundColor: 'rgba(239, 68, 68, 0.8)',
-  },
-  timerText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  controls: {
+  topControls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
+    paddingTop: 60,
   },
   closeButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  recordControls: {
-    flex: 1,
+  durationContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    gap: 40,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  durationText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginRight: 8,
+  },
+  recordingIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#ef4444',
+  },
+  bottomControls: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 30,
+    paddingBottom: 50,
   },
   flipButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 20,
+  },
+  flipButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
   },
   recordButton: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#ef4444',
+    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
-    borderColor: '#ffffff',
-  },
-  stopButton: {
-    backgroundColor: '#ef4444',
-    borderRadius: 12,
-    width: 80,
-    height: 80,
-  },
-  videoPreview: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  retakeButton: {
-    backgroundColor: '#6b7280',
-    flex: 1,
-    marginRight: 8,
-  },
-  confirmButton: {
-    backgroundColor: '#10b981',
-    flex: 1,
-    marginLeft: 8,
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-  },
-  permissionButton: {
-    backgroundColor: '#0ea5e9',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  cancelButton: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
     borderColor: '#e5e7eb',
   },
+  recordButtonActive: {
+    backgroundColor: '#ef4444',
+    borderColor: '#ffffff',
+  },
+  recordButtonInner: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#ef4444',
+  },
+  placeholder: {
+    width: 80,
+  },
   instructions: {
-    position: 'absolute',
-    bottom: 100,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
+    padding: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  instructionsText: {
+    color: '#ffffff',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  previewContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+    padding: 20,
+  },
+  previewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 60,
+    marginBottom: 20,
+  },
+  previewTitle: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  previewDuration: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  previewVideo: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  previewText: {
+    color: '#ffffff',
+    fontSize: 16,
+    marginTop: 12,
+  },
+  previewActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  retakeButton: {
+    flex: 1,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  retakeButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  confirmButton: {
+    flex: 1,
+    paddingVertical: 16,
+    backgroundColor: '#22c55e',
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  confirmButtonDisabled: {
+    backgroundColor: '#6b7280',
+  },
+  confirmButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
-
