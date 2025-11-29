@@ -273,7 +273,7 @@ export function LoginModal({ onLogin, onSignUp, onClose, initialMode = 'login' }
                         className="pl-10"
                         required
                         aria-describedby="email-help"
-                        aria-invalid={email && !email.includes('@')}
+                        aria-invalid={email ? !email.includes('@') : undefined}
                       />
                     </div>
                     {email && !email.includes('@') && (
@@ -312,7 +312,7 @@ export function LoginModal({ onLogin, onSignUp, onClose, initialMode = 'login' }
                         className="pl-10 pr-10"
                         required
                         aria-describedby="password-help"
-                        aria-invalid={password && password.length < 8}
+                        aria-invalid={password ? password.length < 8 : undefined}
                         minLength={8}
                       />
                       <button
