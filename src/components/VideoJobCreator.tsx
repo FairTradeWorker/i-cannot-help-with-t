@@ -390,7 +390,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
                   </div>
                 </div>
 
-                {jobScope.recommendations.length > 0 && (
+                {jobScope.recommendations && jobScope.recommendations.length > 0 && (
                   <>
                     <Separator />
                     <div>
@@ -399,7 +399,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
                         Recommendations
                       </h4>
                       <ul className="space-y-2">
-                        {jobScope.recommendations.map((rec, index) => (
+                        {(jobScope.recommendations || []).map((rec, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" weight="fill" />
                             <span className="text-sm">{rec}</span>
@@ -410,7 +410,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
                   </>
                 )}
 
-                {jobScope.warningsAndRisks.length > 0 && (
+                {jobScope.warningsAndRisks && jobScope.warningsAndRisks.length > 0 && (
                   <>
                     <Separator />
                     <div>
@@ -419,7 +419,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
                         Warnings & Risks
                       </h4>
                       <ul className="space-y-2">
-                        {jobScope.warningsAndRisks.map((warning, index) => (
+                        {(jobScope.warningsAndRisks || []).map((warning, index) => (
                           <li key={index} className="flex items-start gap-2">
                             <Warning className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" weight="fill" />
                             <span className="text-sm">{warning}</span>

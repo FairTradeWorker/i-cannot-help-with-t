@@ -207,7 +207,7 @@ export function JobBrowser({ user, onJobSelect, onJobUpdated }: JobBrowserProps)
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="border-2 border-black p-4">
                     <p className="text-xs font-bold uppercase mb-1">Budget</p>
-                    <p className="text-2xl font-black">${selectedJob.estimatedCost.max.toLocaleString()}</p>
+                    <p className="text-2xl font-black">${(selectedJob.estimatedCost?.max || 0).toLocaleString()}</p>
                   </div>
                   <div className="border-2 border-black p-4">
                     <p className="text-xs font-bold uppercase mb-1">Bids</p>
@@ -282,7 +282,7 @@ function JobCard({ job, onClick, urgent }: { job: Job; onClick: () => void; urge
           
           <div className="text-right flex-shrink-0">
             <p className="text-xs font-bold uppercase mb-1">Budget</p>
-            <p className="text-3xl font-black">${(job.estimatedCost.max / 1000).toFixed(1)}k</p>
+            <p className="text-3xl font-black">${((job.estimatedCost?.max || 0) / 1000).toFixed(1)}k</p>
           </div>
         </div>
       </Card>

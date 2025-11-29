@@ -74,8 +74,8 @@ export function OperatorDashboard({ operatorProfile, territories }: OperatorDash
         }
 
         stats[categoryId].jobs++;
-        stats[categoryId].revenue += job.estimatedCost.max;
-        stats[categoryId].totalJobValue += job.estimatedCost.max;
+        stats[categoryId].revenue += job.estimatedCost?.max || 0;
+        stats[categoryId].totalJobValue += job.estimatedCost?.max || 0;
         if (job.contractorId) {
           stats[categoryId].contractors.add(job.contractorId);
         }

@@ -410,7 +410,7 @@ function JobCard({
             <div>
               <p className="text-xs text-muted-foreground">Budget</p>
               <p className="text-xl font-bold text-primary">
-                ${(job.estimatedCost.max / 1000).toFixed(1)}k
+                ${((job.estimatedCost?.max || 0) / 1000).toFixed(1)}k
               </p>
             </div>
             <Badge variant="secondary">{job.bids.length} bids</Badge>
