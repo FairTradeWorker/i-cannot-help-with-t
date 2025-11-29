@@ -191,6 +191,8 @@ npm run build
 - **100% Take-Home** - Keep every dollar you earn (zero platform fees)
 - **Instant Payouts** - Get paid immediately after job approval
 - **Referral Program** - Earn rewards for bringing in new contractors
+- **Zero-Click Feedback** - Upload invoice photos, AI learns automatically (no forms!)
+- **Job Completion Feedback** - Optional detailed feedback form for scope accuracy
 
 #### 🗺️ For Territory Operators
 - **Territory Map** - Interactive US map with 850+ available territories
