@@ -38,21 +38,21 @@ export function ServiceCategoriesShowcase({
 
   return (
     <div className="space-y-4 rounded-2xl border border-border/60 bg-white px-4 py-3 md:px-6 md:py-4 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h2 className="text-base md:text-lg font-semibold text-foreground">What do you need done?</h2>
-          <p className="text-xs md:text-sm text-muted-foreground">
-            Tap a category to start a job post.
-          </p>
-        </div>
-        <Button 
-          variant="outline" 
-          size="icon"
-          onClick={onServiceSelect}
-          className="hidden sm:inline-flex h-8 w-8"
-        >
-          <ArrowRight className="w-4 h-4" />
-        </Button>
+      <div className="text-center">
+        {/* Trust line */}
+        <p className="text-sm mb-3" style={{ fontSize: '14px', color: '#6b7280' }}>
+          Trusted by 3,500+ contractors nationwide
+        </p>
+        
+        {/* Main headline */}
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2">
+          Get Free Quotes from Local Pros — No Middleman Fees
+        </h2>
+        
+        {/* Subheadline */}
+        <p className="text-sm md:text-base text-muted-foreground font-normal">
+          Tap a category to start a job post.
+        </p>
       </div>
 
       {/* Core home categories */}
