@@ -22,6 +22,7 @@ import {
   Users,
   Star,
   Play,
+  VideoCamera,
 } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -711,6 +712,7 @@ interface JobCardProps {
 
 function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, compact }: JobCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const isMobile = useIsMobile();
 
   // Helper function to format time ago
@@ -779,17 +781,32 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
               className="relative w-full overflow-hidden"
               style={{
                 height: '160px',
-                borderRadius: '12px 12px 0 0'
+                borderRadius: '12px 12px 0 0',
+                backgroundColor: `rgba(0, 0, 0, 0.2)`
               }}
             >
-              <img
-                src={job.videoUrl}
-                alt={job.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+              {!imageError ? (
+                <img
+                  src={job.videoUrl}
+                  alt={job.title}
+                  className="w-full h-full object-cover"
+                  onError={() => {
+                    setImageError(true);
+                  }}
+                />
+              ) : (
+                /* Placeholder when thumbnail fails to load */
+                <div 
+                  className="w-full h-full flex flex-col items-center justify-center"
+                  style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)'
+                  }}
+                >
+                  <VideoCamera className="w-8 h-8 text-white mb-2" weight="fill" />
+                  <span className="text-white" style={{ fontSize: '12px' }}>Video Available</span>
+                </div>
+              )}
+              
               {/* Play button overlay centered */}
               <div 
                 className="absolute inset-0 flex items-center justify-center"
