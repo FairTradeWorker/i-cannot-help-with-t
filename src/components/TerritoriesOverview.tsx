@@ -241,8 +241,8 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6" style={{ gap: '16px' }}>
+          <Card className="p-6 h-full">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-primary">
                 <MapTrifold className="w-6 h-6 text-white" weight="fill" />
@@ -254,7 +254,7 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
             </div>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 h-full">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-secondary">
                 <Lightning className="w-6 h-6 text-white" weight="fill" />
@@ -266,7 +266,7 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
             </div>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 h-full">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-accent">
                 <CurrencyDollar className="w-6 h-6 text-white" weight="fill" />
@@ -278,7 +278,7 @@ export function TerritoriesOverview({ onNavigateToDetail }: TerritoriesOverviewP
             </div>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 h-full">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-destructive">
                 <TrendUp className="w-6 h-6 text-white" weight="fill" />
