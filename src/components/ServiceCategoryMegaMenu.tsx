@@ -153,7 +153,7 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
                   className="w-full"
                 >
                   {/* Single horizontal row with smooth scrolling */}
-                  <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+                  <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-2 px-2">
                     {SERVICE_CATEGORIES.map((category, index) => {
                       const Icon = iconMap[category.icon] || House;
                       return (
@@ -164,26 +164,26 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
                           transition={{ delay: index * 0.05, duration: 0.3 }}
                           whileHover={{ scale: 1.05, y: -8 }}
                           whileTap={{ scale: 0.95 }}
-                          className="flex-shrink-0 w-[280px] md:w-[320px] snap-center"
+                          className="flex-shrink-0 w-[260px] md:w-[300px] snap-start"
                         >
                           <Card
-                            className="h-full p-6 cursor-pointer border-2 hover:border-primary transition-all duration-300 bg-gradient-to-br from-card/90 to-card/70 hover:from-primary/10 hover:to-primary/5 shadow-lg hover:shadow-xl group"
+                            className="h-full min-h-[280px] p-5 md:p-6 cursor-pointer border-2 hover:border-primary transition-all duration-300 bg-gradient-to-br from-card/90 to-card/70 hover:from-primary/10 hover:to-primary/5 shadow-lg hover:shadow-xl group"
                             onClick={() => handleCategorySelect(category)}
                           >
-                            <div className="flex flex-col items-center text-center space-y-4 h-full">
-                              <div className="p-4 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
-                                <Icon className="w-12 h-12 text-primary" weight="duotone" />
+                            <div className="flex flex-col items-center text-center space-y-3 h-full">
+                              <div className="p-4 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 flex-shrink-0">
+                                <Icon className="w-10 h-10 md:w-12 md:h-12 text-primary" weight="duotone" />
                               </div>
-                              <div className="flex-1 flex flex-col justify-center">
-                                <h3 className="font-bold text-lg md:text-xl mb-2 group-hover:text-primary transition-colors">
+                              <div className="flex-1 flex flex-col justify-center min-h-0">
+                                <h3 className="font-bold text-base md:text-lg mb-2 group-hover:text-primary transition-colors">
                                   {category.title}
                                 </h3>
-                                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
                                   {category.description}
                                 </p>
-                                <div className="flex items-center justify-center gap-2 text-sm font-semibold text-primary/80 group-hover:text-primary transition-colors">
+                                <div className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold text-primary/80 group-hover:text-primary transition-colors flex-shrink-0">
                                   <span>{category.subcategories.length} subcategories</span>
-                                  <CaretRight className="w-4 h-4" />
+                                  <CaretRight className="w-3 h-3 md:w-4 md:h-4" />
                                 </div>
                               </div>
                             </div>
