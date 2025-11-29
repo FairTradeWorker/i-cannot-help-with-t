@@ -238,6 +238,45 @@ Respond with valid JSON in this exact format:
   }
 }
 
+// Record real outcome so AI learns
+export async function recordLearningFeedback(
+  predictionId: string,
+  jobId: string,
+  actual: { totalCost: number; laborHours: number }
+) {
+  const pred = await window.spark.kv.get<any>(`prediction:${predictionId}`);
+  if (!pred) {
+    console.warn(`Prediction ${predictionId} not found`);
+    return;
+  }
+
+  const predictedAvg = (pred.scope.estimatedCost.min + pred.scope.estimatedCost.max) / 2;
+  const costError = Math.abs(actual.totalCost - predictedAvg) / Math.max(predictedAvg, 1);
+  const laborError = Math.abs(actual.laborHours - pred.scope.laborHours) / Math.max(pred.scope.laborHours, 1);
+  const accuracy = Math.max(0.1, 1 - (costError * 0.6 + laborError * 0.4));
+
+  await learningDB.save({
+    predictionId,
+    jobId,
+    timestamp: new Date(),
+    predictionType: "scope",
+    prediction: pred.scope,
+    actualOutcome: {
+      materials: [], // Will be populated if available
+      laborHours: actual.laborHours,
+      totalCost: actual.totalCost
+    },
+    performanceMetrics: {
+      accuracy,
+      costAccuracy: Math.max(0, 1 - costError),
+      laborAccuracy: Math.max(0, 1 - laborError),
+      errorMargin: costError
+    }
+  });
+
+  console.log("Learning saved | Accuracy:", (accuracy * 100).toFixed(1) + "%");
+}
+
 export async function suggestOptimalPricing(
   jobScope: JobScope,
   marketData: { avgRate: number; competitorMin: number; competitorMax: number; demandScore: number },
