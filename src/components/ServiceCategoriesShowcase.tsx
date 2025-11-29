@@ -37,7 +37,7 @@ export function ServiceCategoriesShowcase({
   const secondRow = SERVICE_CATEGORIES.slice(3);
 
   return (
-    <div className="space-y-2 rounded-2xl border border-border/60 bg-white dark:bg-slate-950/80 px-3 py-2 md:px-4 md:py-2 shadow-sm">
+    <div className="space-y-2 rounded-2xl border border-border/60 bg-white px-3 py-2 md:px-4 md:py-2 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div>
           <h2 className="text-xs md:text-sm font-semibold text-foreground">What do you need done?</h2>
