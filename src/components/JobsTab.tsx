@@ -767,38 +767,64 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
         <Card
           className="overflow-hidden cursor-pointer transition-all border-0"
           style={{
-            borderRadius: '12px',
-            padding: '16px',
+            borderRadius: job.videoUrl ? '0px' : '12px',
+            padding: '0px',
             background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`
           }}
           onClick={onClick}
         >
-          {/* ROW 1: Title + Video Badge */}
-          <div className="flex items-start justify-between mb-3" style={{ marginBottom: '12px' }}>
-            <h3 
-              className="font-bold text-white flex-1" 
-              style={{ 
-                fontSize: '18px',
-                paddingRight: job.videoUrl ? '80px' : '0px'
+          {/* VIDEO THUMBNAIL (only if video exists) */}
+          {job.videoUrl && (
+            <div 
+              className="relative w-full overflow-hidden"
+              style={{
+                height: '160px',
+                borderRadius: '12px 12px 0 0'
               }}
             >
-              {job.title}
-            </h3>
-            {job.videoUrl && (
-              <div 
-                className="flex items-center gap-1 px-2 text-white flex-shrink-0"
-                style={{
-                  height: '24px',
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                  borderRadius: '4px',
-                  fontSize: '11px'
+              <img
+                src={job.videoUrl}
+                alt={job.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
                 }}
+              />
+              {/* Play button overlay centered */}
+              <div 
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ pointerEvents: 'none' }}
               >
-                <Play className="w-3 h-3" weight="fill" />
-                <span>Video</span>
+                <div 
+                  className="rounded-full flex items-center justify-center"
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)'
+                  }}
+                >
+                  <Play className="w-4 h-4 text-white" weight="fill" />
+                </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* CARD CONTENT */}
+          <div 
+            style={{ 
+              padding: '16px',
+              borderRadius: job.videoUrl ? '0 0 12px 12px' : '12px'
+            }}
+          >
+            {/* ROW 1: Title */}
+            <div className="mb-3" style={{ marginBottom: '12px' }}>
+              <h3 
+                className="font-bold text-white" 
+                style={{ fontSize: '18px' }}
+              >
+                {job.title}
+              </h3>
+            </div>
 
           {/* ROW 2: Description (2 lines max) */}
           <p 
@@ -863,18 +889,19 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
             </div>
           </div>
 
-          {/* ROW 5: Bid Job Button */}
-          <Button
-            className="w-full bg-white text-primary hover:bg-white/90"
-            style={{ fontSize: '14px', padding: '12px' }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick();
-            }}
-          >
-            Bid Job
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+            {/* ROW 5: Bid Job Button */}
+            <Button
+              className="w-full bg-white text-primary hover:bg-white/90"
+              style={{ fontSize: '14px', padding: '12px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+              }}
+            >
+              Bid Job
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
         </Card>
       </motion.div>
     );
@@ -1060,3 +1087,4 @@ function JobCard({ job, onClick, index, formatBudget, getUrgencyColor, urgent, c
     </motion.div>
   );
 }
+
