@@ -58,10 +58,19 @@ interface TerritoryLeafletMapProps {
 
 function MapBoundsFitter({ territories, selectedState }: { territories: Array<TerritoryZip & { status: string }>, selectedState: StateData | null }) {
   const map = useMap();
+  const initializedRef = useRef(false);
   
   useEffect(() => {
-    // Delay to ensure map container is fully rendered
-    const timer = setTimeout(() => {
+    // Initialize on mount
+    const initTimer = setTimeout(() => {
+      map.invalidateSize();
+      initializedRef.current = true;
+    }, 50);
+    
+    // Update bounds after initialization
+    const boundsTimer = setTimeout(() => {
+      if (!initializedRef.current) return;
+      
       map.invalidateSize();
       
       const validTerritories = territories.filter(t => t.latitude && t.longitude);
@@ -76,9 +85,12 @@ function MapBoundsFitter({ territories, selectedState }: { territories: Array<Te
         // Default to center of USA
         map.setView([39.8283, -98.5795], 4);
       }
-    }, 100);
+    }, 150);
     
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(initTimer);
+      clearTimeout(boundsTimer);
+    };
   }, [map, territories, selectedState]);
   
   return null;
@@ -132,25 +144,27 @@ function TerritoryLeafletMap({ territories, selectedTerritory, onTerritoryClick,
   const validTerritories = territories.filter(t => t.latitude && t.longitude);
 
   return (
-    <Card className="overflow-hidden">
-      <div className="relative h-[600px] w-full">
+    <Card className="overflow-hidden border-2">
+      <div className="relative w-full" style={{ height: '600px', minHeight: '600px' }}>
         <style>{`
           .leaflet-container {
-            height: 100% !important;
+            height: 600px !important;
             width: 100% !important;
+            min-height: 600px !important;
           }
           .leaflet-container .leaflet-tile-container img {
             max-width: none !important;
+          }
+          .leaflet-pane {
+            z-index: 400;
           }
         `}</style>
         <MapContainer
           center={[39.8283, -98.5795]} // Center of USA
           zoom={4}
-          style={{ height: '100%', width: '100%', minHeight: '600px' }}
+          style={{ height: '600px', width: '100%', minHeight: '600px' }}
           zoomControl={true}
-          whenReady={() => {
-            // Map is ready, bounds fitter will handle the rest
-          }}
+          scrollWheelZoom={true}
         >
           <MapBoundsFitter territories={territories} selectedState={selectedState} />
           <TileLayer

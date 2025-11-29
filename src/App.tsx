@@ -73,6 +73,7 @@ import { UnifiedJobPost } from '@/components/UnifiedJobPost';
 import { NotificationsPage } from '@/components/NotificationsPage';
 import { DispatchMap } from '@/components/DispatchMap';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
+import { PriorityLeadsMap } from '@/components/PriorityLeadsMap';
 import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
 import { ServiceCategoriesShowcase } from '@/components/ServiceCategoriesShowcase';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
@@ -665,8 +666,8 @@ function App() {
                             </div>
                           </Card>
                         
-                        {/* Mini Dispatch/Territory Map - positioned top right */}
-                        <TerritoryMiniMap onExplore={() => handleNavClick('territories', 'overview')} />
+                        {/* Priority Leads Map - Real interactive map */}
+                        <PriorityLeadsMap onExplore={() => handleNavClick('territories', 'overview')} />
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
