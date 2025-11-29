@@ -84,8 +84,8 @@
   
   --radius: 0.875rem;
   
-  --glass-bg: oklch(0.98 0.001 264 / 0.72);
-  --glass-border: oklch(0.88 0.003 264 / 0.18);
+  --glass-bg: oklch(0.98 0.001 264 / 0.85);
+  --glass-border: oklch(0.88 0.003 264 / 0.25);
   
   --press-duration: 110ms;
   --hover-duration: 280ms;
@@ -146,8 +146,8 @@
   --input: oklch(0.20 0.005 264);
   --ring: oklch(0.55 0.12 240);
   
-  --glass-bg: oklch(0.15 0.005 264 / 0.80);
-  --glass-border: oklch(0.25 0.005 264 / 0.3);
+  --glass-bg: oklch(0.28 0.005 264 / 0.90);
+  --glass-border: oklch(0.35 0.005 264 / 0.45);
   
   /* Industrial gradient backgrounds */
   --gradient-accent: linear-gradient(135deg, oklch(0.55 0.12 240) 0%, oklch(0.50 0.10 220) 100%);
@@ -275,8 +275,8 @@
   position: relative;
   background: linear-gradient(
     var(--light-angle, 135deg),
-    var(--glass-tint, rgba(255,255,255,0.25)),
-    rgba(255,255,255,0.15)
+    var(--glass-tint, rgba(255,255,255,0.95)),
+    rgba(255,255,255,0.95)
   );
   backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
@@ -303,25 +303,25 @@
 .dark .glass-surface {
   background: linear-gradient(
     var(--light-angle, 135deg),
-    var(--glass-tint, oklch(0.20 0.005 264 / 0.85)),
-    oklch(0.18 0.005 264 / 0.75)
+    var(--glass-tint, oklch(0.30 0.005 264 / 0.95)),
+    oklch(0.30 0.005 264 / 0.95)
   );
-  border-color: var(--glass-border-color, oklch(0.30 0.005 264 / 0.5));
+  border-color: var(--glass-border-color, oklch(0.40 0.005 264 / 0.55));
   box-shadow: 
     0 8px 32px oklch(0 0 0 / 0.4),
-    inset 0 1px 0 oklch(0.55 0.12 240 / 0.15);
+    inset 0 1px 0 oklch(0.55 0.12 240 / 0.20);
   opacity: var(--glass-opacity, 0.95);
 }
 
 /* Depth-based glass layers */
 .glass-surface[data-glass-depth="0"] {
   --glass-blur: 4px;
-  --glass-opacity: 0.85;
+  --glass-opacity: 0.95;
 }
 
 .glass-surface[data-glass-depth="1"] {
   --glass-blur: 8px;
-  --glass-opacity: 0.9;
+  --glass-opacity: 0.95;
 }
 
 .glass-surface[data-glass-depth="2"] {
@@ -441,7 +441,7 @@
 
 /* Phase glass - confidence-based transparency */
 .glass-surface[data-confidence="low"] {
-  --glass-opacity: 0.85;
+  --glass-opacity: 0.95;
   --glass-blur: 20px;
   animation: uncertainty-pulse 2s ease-in-out infinite;
 }
@@ -453,10 +453,10 @@
 
 @keyframes uncertainty-pulse {
   0%, 100% {
-    opacity: 0.85;
+    opacity: 0.95;
   }
   50% {
-    opacity: 0.9;
+    opacity: 0.96;
   }
 }
 
@@ -650,7 +650,7 @@
 
 .glass-surface[data-state="paid"] {
   --state-tint: rgba(34,197,94,0.1);
-  opacity: 0.85;
+  opacity: 0.95;
 }
 
 @keyframes gentle-float {
@@ -673,10 +673,10 @@
 
 @keyframes fade-back {
   0% {
-    opacity: 0.75;
+    opacity: 0.95;
   }
   100% {
-    opacity: 0.4;
+    opacity: 0.95;
   }
 }
 
