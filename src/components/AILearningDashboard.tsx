@@ -20,7 +20,7 @@ import {
   Sparkle,
   Robot,
 } from '@phosphor-icons/react';
-import { learningDB, type LearningFeedback } from '@/lib/ai-service';
+import { learningDB, type LearningFeedback } from '@/lib/learning-db';
 
 interface AILearningDashboardProps {
   contractorId?: string;
@@ -38,7 +38,7 @@ export function AILearningDashboard({ contractorId }: AILearningDashboardProps) 
   const loadFeedback = async () => {
     setLoading(true);
     try {
-      const allFeedback = await learningDB.getAllFeedback();
+      const allFeedback = await learningDB.getAll();
       setFeedback(allFeedback);
     } catch (error) {
       console.error('Failed to load feedback:', error);

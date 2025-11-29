@@ -3,7 +3,7 @@ import { TrendUp, CheckCircle, XCircle, Clock } from '@phosphor-icons/react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { learningDB, type LearningFeedback } from '@/lib/ai-service';
+import { learningDB, type LearningFeedback } from '@/lib/learning-db';
 
 export function LearningDashboard() {
   const [feedback, setFeedback] = useState<LearningFeedback[]>([]);
@@ -15,7 +15,7 @@ export function LearningDashboard() {
 
   const loadFeedback = async () => {
     try {
-      const data = await learningDB.getAllFeedback();
+      const data = await learningDB.getAll();
       setFeedback(data);
     } catch (error) {
       console.error('Failed to load feedback:', error);
