@@ -81,7 +81,6 @@ import { UnifiedJobPost } from '@/components/UnifiedJobPost';
 import { NotificationsPage } from '@/components/NotificationsPage';
 import { DispatchMap } from '@/components/DispatchMap';
 import { TerritoryMiniMap } from '@/components/TerritoryMiniMap';
-import { PriorityLeadsMap } from '@/components/PriorityLeadsMap';
 import { SubcontractorDashboard } from '@/components/SubcontractorDashboard';
 import { ServiceCategoriesShowcase } from '@/components/ServiceCategoriesShowcase';
 import { ServiceCategoryMegaMenu } from '@/components/ServiceCategoryMegaMenu';
@@ -804,10 +803,10 @@ function App() {
                         }}
                       />
 
-                      {/* Top section with Post Job and Mini Map */}
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      {/* Top section with Post Job */}
+                      <div>
                           <Card 
-                            className="glass-card p-4 md:p-5 border-0 bg-transparent hover:bg-transparent cursor-pointer lg:col-span-2 order-1"
+                            className="glass-card p-4 md:p-5 border-0 bg-transparent hover:bg-transparent cursor-pointer"
                             onClick={() => handleCreateJob()}
                           >
                             <div className="flex flex-col gap-4">
@@ -912,11 +911,6 @@ function App() {
                               </div>
                             </div>
                           </Card>
-                        
-                        {/* Priority Leads Map - Real interactive map */}
-                        <div className="order-2 lg:order-2">
-                          <PriorityLeadsMap onExplore={() => handleNavClick('territories', 'overview')} />
-                        </div>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
