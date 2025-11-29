@@ -875,46 +875,60 @@ export function TerritoryMapPage() {
         </DialogContent>
       </Dialog>
 
-      {/* State Filter Buttons */}
-      <div className="mt-8 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Browse by State</h3>
-          {selectedState && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSelectedState(null)}
-            >
-              <X className="w-4 h-4 mr-1" />
-              Clear Filter
-            </Button>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {statesWithTerritories.map(state => {
-            const stateCount = territories.filter(t => t.state === state.abbreviation).length;
-            const isSelected = selectedState?.abbreviation === state.abbreviation;
-            
-            return (
+      {/* State Filter Buttons - Always visible */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mt-8 mb-8 space-y-4"
+      >
+        <Card className="p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+            <div>
+              <h3 className="text-lg md:text-xl font-semibold mb-1">Browse by State</h3>
+              <p className="text-sm text-muted-foreground">Click a state to filter territories</p>
+            </div>
+            {selectedState && (
               <Button
-                key={state.abbreviation}
-                variant={isSelected ? 'default' : 'outline'}
+                variant="outline"
                 size="sm"
-                onClick={() => handleStateClick(state)}
-                className={isSelected ? 'bg-primary text-primary-foreground' : ''}
+                onClick={() => setSelectedState(null)}
               >
-                {state.name}
-                <Badge 
-                  variant={isSelected ? 'secondary' : 'outline'} 
-                  className="ml-2 text-xs"
-                >
-                  {stateCount}
-                </Badge>
+                <X className="w-4 h-4 mr-1" />
+                Clear Filter
               </Button>
-            );
-          })}
-        </div>
-      </div>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {statesWithTerritories.length > 0 ? (
+              statesWithTerritories.map(state => {
+                const stateCount = territories.filter(t => t.state === state.abbreviation).length;
+                const availableCount = territories.filter(t => t.state === state.abbreviation && t.status === 'available').length;
+                const isSelected = selectedState?.abbreviation === state.abbreviation;
+                
+                return (
+                  <Button
+                    key={state.abbreviation}
+                    variant={isSelected ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleStateClick(state)}
+                    className={isSelected ? 'bg-primary text-primary-foreground' : ''}
+                  >
+                    {state.name}
+                    <Badge 
+                      variant={isSelected ? 'secondary' : availableCount > 0 ? 'default' : 'outline'} 
+                      className="ml-2 text-xs"
+                    >
+                      {availableCount > 0 ? `${availableCount}` : stateCount}
+                    </Badge>
+                  </Button>
+                );
+              })
+            ) : (
+              <p className="text-sm text-muted-foreground">Loading states...</p>
+            )}
+          </div>
+        </Card>
+      </motion.div>
     </div>
   );
 }
