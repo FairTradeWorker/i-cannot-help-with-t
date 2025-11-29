@@ -8,6 +8,7 @@ import { Home, Briefcase, MapPin, MessageSquare, User, Settings, Navigation, Cam
 import HomeScreen from '@/screens/HomeScreen';
 import JobPostScreen from '@/screens/JobPostScreen';
 import JobDetailsScreen from '@/screens/JobDetailsScreen';
+import SubmitBidScreen from '@/screens/SubmitBidScreen';
 import TerritoriesScreen from '@/screens/TerritoriesScreen';
 import JobsScreen from '@/screens/JobsScreen';
 import MessagesScreen from '@/screens/MessagesScreen';
@@ -145,9 +146,9 @@ export default function AppNavigator() {
         />
         <Stack.Screen
           name="SubmitBid"
-          component={JobPostScreen} // TODO: Create SubmitBidScreen
+          component={SubmitBidScreen}
           options={{ 
-            headerTitle: 'Submit Bid',
+            headerShown: false,
             presentation: 'modal',
           }}
         />
