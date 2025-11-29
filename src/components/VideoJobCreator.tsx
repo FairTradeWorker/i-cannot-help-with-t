@@ -19,12 +19,12 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { extractVideoFrame, analyzeVideoFrames, analyzeJobFromVideo } from '@/lib/ai-service';
+import { extractVideoFrame, analyzeVideoFrames, analyzeJobFromVideo, type VideoAnalysis } from '@/lib/ai-service';
 import type { JobScope } from '@/lib/types';
 import { toast } from 'sonner';
 
 interface VideoJobCreatorProps {
-  onJobCreated: (jobData: { scope: JobScope; videoUrl: string }) => void;
+  onJobCreated: (jobData: { scope: JobScope; videoUrl: string; thumbnailUrl?: string; predictionId?: string }) => void;
   onCancel: () => void;
 }
 
@@ -37,6 +37,7 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
   const [extractedFrame, setExtractedFrame] = useState<string>('');
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [jobScope, setJobScope] = useState<JobScope | null>(null);
+  const [videoAnalysis, setVideoAnalysis] = useState<VideoAnalysis | null>(null);
   const [error, setError] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
 
@@ -80,11 +81,12 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
       setAnalysisProgress(40);
       
       toast.info('Analyzing damage...');
-      const videoAnalysis = await analyzeVideoFrames(frameBase64);
+      const analysis = await analyzeVideoFrames(frameBase64);
+      setVideoAnalysis(analysis);
       setAnalysisProgress(70);
       
       toast.info('Generating job scope...');
-      const scope = await analyzeJobFromVideo(videoAnalysis);
+      const scope = await analyzeJobFromVideo(analysis);
       setJobScope(scope);
       setAnalysisProgress(100);
       
@@ -98,13 +100,36 @@ export function VideoJobCreator({ onJobCreated, onCancel }: VideoJobCreatorProps
     }
   };
 
-  const handleCreateJob = () => {
-    if (!jobScope || !videoFile) return;
+  const handleCreateJob = async () => {
+    if (!jobScope || !videoFile || !videoAnalysis) return;
     
+    // Generate prediction ID
+    const predictionId = `pred-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Use extracted frame as thumbnail
+    const thumbnailDataUrl = extractedFrame;
+    
+    // Call onJobCreated with all data
     onJobCreated({
       scope: jobScope,
       videoUrl: videoPreview,
+      thumbnailUrl: thumbnailDataUrl,
+      predictionId: predictionId
     });
+    
+    // Store prediction in KV
+    try {
+      await window.spark.kv.set(`prediction:${predictionId}`, {
+        type: 'scope',
+        prediction: jobScope,
+        createdAt: new Date().toISOString(),
+        damageType: videoAnalysis.damageType,
+        urgency: videoAnalysis.urgencyLevel
+      });
+    } catch (err) {
+      console.error('Failed to store prediction:', err);
+      // Don't block job creation if storage fails
+    }
     
     setCurrentStep('complete');
     toast.success('Job created successfully!');
