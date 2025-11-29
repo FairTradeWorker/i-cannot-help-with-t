@@ -5,11 +5,32 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/_spark/kv/:path*",
+      "destination": "/api/spark/kv/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/api/spark/kv/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,POST,PUT,DELETE,OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [
