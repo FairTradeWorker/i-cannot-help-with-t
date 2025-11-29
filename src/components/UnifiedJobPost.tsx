@@ -626,6 +626,7 @@ export function UnifiedJobPost({ onJobCreated, onCancel, serviceSelection: initi
         onClose={() => setShowServiceMenu(false)}
         onSelect={handleServiceSelect}
         title="Select a Service"
+        initialCategoryId={serviceSelection?.categoryId || null}
       />
     </motion.div>
   );

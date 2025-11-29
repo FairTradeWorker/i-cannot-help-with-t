@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   House,
@@ -23,6 +23,7 @@ interface ServiceCategoryMegaMenuProps {
   onClose: () => void;
   onSelect: (selection: ServiceSelection) => void;
   title?: string;
+  initialCategoryId?: string | null;
 }
 
 // Icon mapping for dynamic icon rendering
@@ -37,10 +38,28 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 
 type ViewState = 'categories' | 'subcategories' | 'services';
 
-export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Select a Service' }: ServiceCategoryMegaMenuProps) {
+export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Select a Service', initialCategoryId }: ServiceCategoryMegaMenuProps) {
   const [view, setView] = useState<ViewState>('categories');
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<ServiceSubcategory | null>(null);
+
+  // When opened with an initial category, jump straight into its subcategories view
+  useEffect(() => {
+    if (!open) return;
+    if (initialCategoryId) {
+      const category = SERVICE_CATEGORIES.find(cat => cat.id === initialCategoryId);
+      if (category) {
+        setSelectedCategory(category);
+        setSelectedSubcategory(null);
+        setView('subcategories');
+        return;
+      }
+    }
+    // Default to top-level categories
+    setView('categories');
+    setSelectedCategory(null);
+    setSelectedSubcategory(null);
+  }, [open, initialCategoryId]);
 
   const handleCategorySelect = (category: ServiceCategory) => {
     setSelectedCategory(category);
@@ -78,9 +97,6 @@ export function ServiceCategoryMegaMenu({ open, onClose, onSelect, title = 'Sele
   };
 
   const handleClose = () => {
-    setView('categories');
-    setSelectedCategory(null);
-    setSelectedSubcategory(null);
     onClose();
   };
 

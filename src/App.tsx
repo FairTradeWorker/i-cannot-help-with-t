@@ -103,9 +103,11 @@ function App() {
   const [showProfile, setShowProfile] = useState(false);
   const [showJobPost, setShowJobPost] = useState(false);
   const [showServiceMenu, setShowServiceMenu] = useState(false);
+  const [preselectedCategoryId, setPreselectedCategoryId] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentJobData, setPaymentJobData] = useState<{ title: string; amount: number } | null>(null);
   const [loginModalMode, setLoginModalMode] = useState<'login' | 'signup'>('login');
+  const [pendingServiceSelection, setPendingServiceSelection] = useState<ServiceSelection | null>(null);
 
   const mockReferrals: Referral[] = [
     {
@@ -221,12 +223,18 @@ function App() {
     }
   };
 
-  const handleCreateJob = () => {
+  const handleCreateJob = (selection?: ServiceSelection) => {
     // Require authentication to post a job
     if (!currentUser) {
       setLoginModalMode('signup');
       setShowLogin(true);
+      if (selection) {
+        setPendingServiceSelection(selection);
+      }
       return;
+    }
+    if (selection) {
+      setPendingServiceSelection(selection);
     }
     setShowJobPost(true);
   };
@@ -760,19 +768,28 @@ function App() {
                   onJobCreated={(jobData) => {
                     toast.success('Job created successfully!');
                     setShowJobPost(false);
+                    setPendingServiceSelection(null);
                     setActiveTab('homeowner');
                     setActiveSubTab('my-jobs');
                   }}
-                  onCancel={() => setShowJobPost(false)}
+                  onCancel={() => {
+                    setShowJobPost(false);
+                    setPendingServiceSelection(null);
+                  }}
+                  serviceSelection={pendingServiceSelection || undefined}
                 />
               )}
               <ServiceCategoryMegaMenu
                 open={showServiceMenu}
-                onClose={() => setShowServiceMenu(false)}
+                onClose={() => {
+                  setShowServiceMenu(false);
+                  setPreselectedCategoryId(null);
+                }}
                 onSelect={(selection: ServiceSelection) => {
                   setShowServiceMenu(false);
-                  handleCreateJob();
+                  handleCreateJob(selection);
                 }}
+                initialCategoryId={preselectedCategoryId}
               />
               {!showProfile && !showJobPost && (
                 <>
@@ -904,10 +921,15 @@ function App() {
                       {/* Service Categories Showcase */}
                       <ServiceCategoriesShowcase
                         onCategoryClick={(categoryId) => {
-                          handleCreateJob();
-                          // Pre-select category when creating job
+                          // Open service selector focused on this category,
+                          // then launch Post a Job with the chosen service.
+                          setPreselectedCategoryId(categoryId);
+                          setShowServiceMenu(true);
                         }}
-                        onServiceSelect={() => setShowServiceMenu(true)}
+                        onServiceSelect={() => {
+                          setPreselectedCategoryId(null);
+                          setShowServiceMenu(true);
+                        }}
                       />
 
                         <Card className="glass-card p-8 border-0 bg-transparent">
