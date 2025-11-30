@@ -1,13 +1,16 @@
-// Submit Bid Screen
-// Contractors submit bids on jobs
+// Submit Bid Screen - Enhanced with API Integration
+// Contractors can submit bids on jobs
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { DollarSign, Clock, Package, Send, X, AlertCircle } from 'lucide-react-native';
-import { dataStore } from '@fairtradeworker/shared';
-import type { Job, Bid, User as UserType } from '@/types';
+import { ArrowLeft, DollarSign, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react-native';
+import { jobsService } from '@/services/jobs.service';
+import { useAuth } from '@/hooks/useAuth';
+import { useJobs } from '@/hooks/useJobs';
+import { isPositiveNumber } from '@/utils/validation';
+import { formatCurrency } from '@/utils/formatters';
 
 interface RouteParams {
   jobId: string;
@@ -16,103 +19,90 @@ interface RouteParams {
 export default function SubmitBidScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { jobId } = (route.params as RouteParams) || { jobId: '' };
+  const { jobId } = (route.params as RouteParams) || {};
+  const { user } = useAuth();
+  const { addBidToJob } = useJobs();
 
-  const [job, setJob] = useState<Job | null>(null);
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-
   const [bidAmount, setBidAmount] = useState('');
-  const [laborHours, setLaborHours] = useState('');
-  const [materialsCost, setMaterialsCost] = useState('');
-  const [message, setMessage] = useState('');
-  const [timelineStart, setTimelineStart] = useState('');
-  const [timelineEnd, setTimelineEnd] = useState('');
+  const [bidMessage, setBidMessage] = useState('');
+  const [errors, setErrors] = useState<{ amount?: string; message?: string }>({});
 
   useEffect(() => {
-    loadData();
+    loadJob();
   }, [jobId]);
 
-  const loadData = async () => {
+  const loadJob = async () => {
+    if (!jobId) return;
+
     try {
       setLoading(true);
-      const [jobData, user] = await Promise.all([
-        dataStore.getJobById(jobId),
-        dataStore.getCurrentUser(),
-      ]);
-
-      if (!jobData) {
-        Alert.alert('Error', 'Job not found');
-        navigation.goBack();
-        return;
-      }
-
+      const jobData = await jobsService.getJobById(jobId);
       setJob(jobData);
-      setCurrentUser(user);
     } catch (error) {
       console.error('Failed to load job:', error);
-      Alert.alert('Error', 'Failed to load job details');
+      Alert.alert('Error', 'Failed to load job. Please try again.');
+      navigation.goBack();
     } finally {
       setLoading(false);
     }
   };
 
-  const calculateTotal = () => {
-    const labor = parseFloat(laborHours) || 0;
-    const materials = parseFloat(materialsCost) || 0;
-    const total = labor + materials;
-    return total;
+  const validateForm = (): boolean => {
+    const newErrors: { amount?: string; message?: string } = {};
+
+    if (!bidAmount.trim()) {
+      newErrors.amount = 'Bid amount is required';
+    } else {
+      const amount = parseFloat(bidAmount.replace(/[^0-9.]/g, ''));
+      if (isNaN(amount) || amount <= 0) {
+        newErrors.amount = 'Please enter a valid amount';
+      }
+      if (amount < 10) {
+        newErrors.amount = 'Minimum bid amount is $10';
+      }
+    }
+
+    if (bidMessage.trim().length > 500) {
+      newErrors.message = 'Message must be less than 500 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmitBid = async () => {
-    if (!job || !currentUser) {
-      Alert.alert('Error', 'Please log in to submit a bid');
+  const handleSubmit = async () => {
+    if (!validateForm()) {
       return;
     }
 
-    const amount = parseFloat(bidAmount) || calculateTotal();
-    if (amount <= 0) {
-      Alert.alert('Error', 'Please enter a valid bid amount');
+    if (!user) {
+      Alert.alert('Error', 'You must be logged in to submit a bid');
+      navigation.navigate('Login' as never);
       return;
     }
 
-    if (!message.trim()) {
-      Alert.alert('Error', 'Please add a message to your bid');
+    if (user.role !== 'contractor') {
+      Alert.alert('Error', 'Only contractors can submit bids');
+      navigation.goBack();
       return;
     }
 
     setSubmitting(true);
-    try {
-      const newBid: Bid = {
-        id: `bid-${Date.now()}`,
-        jobId: job.id,
-        contractorId: currentUser.id,
-        contractor: {
-          id: currentUser.id,
-          name: currentUser.name,
-          rating: currentUser.contractorProfile?.rating || 0,
-          completedJobs: currentUser.contractorProfile?.completedJobs || 0,
-        },
-        amount,
-        message: message.trim(),
-        status: 'pending',
-        createdAt: new Date(),
-        timeline: {
-          start: timelineStart ? new Date(timelineStart) : new Date(),
-          end: timelineEnd ? new Date(timelineEnd) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        },
-        breakdown: {
-          materials: parseFloat(materialsCost) || 0,
-          labor: parseFloat(laborHours) || amount,
-          overhead: 0,
-        },
-      };
 
-      await dataStore.addBidToJob(job.id, newBid);
+    try {
+      const amount = parseFloat(bidAmount.replace(/[^0-9.]/g, ''));
+      
+      await addBidToJob(jobId, {
+        amount,
+        message: bidMessage.trim() || undefined,
+      });
+
       Alert.alert(
         'Bid Submitted!',
-        'Your bid has been submitted successfully. The homeowner will be notified.',
+        `Your bid of ${formatCurrency(amount)} has been submitted successfully.`,
         [
           {
             text: 'OK',
@@ -122,7 +112,10 @@ export default function SubmitBidScreen() {
       );
     } catch (error) {
       console.error('Failed to submit bid:', error);
-      Alert.alert('Error', 'Failed to submit bid. Please try again.');
+      Alert.alert(
+        'Error',
+        error instanceof Error ? error.message : 'Failed to submit bid. Please try again.'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -130,24 +123,21 @@ export default function SubmitBidScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center" edges={['bottom']}>
         <ActivityIndicator size="large" color="#0ea5e9" />
-        <Text className="text-gray-600 mt-4">Loading job details...</Text>
+        <Text className="text-gray-600 mt-4">Loading job...</Text>
       </SafeAreaView>
     );
   }
 
   if (!job) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center px-6">
+      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center" edges={['bottom']}>
         <AlertCircle size={64} color="#ef4444" />
-        <Text className="text-xl font-bold text-gray-900 mt-4 mb-2">Job Not Found</Text>
-        <Text className="text-gray-600 text-center mb-6">
-          This job may have been removed or you don't have access to it.
-        </Text>
+        <Text className="text-xl font-bold text-gray-900 mt-6 mb-2">Job Not Found</Text>
         <TouchableOpacity
-          className="bg-primary-500 px-8 py-3 rounded-full"
           onPress={() => navigation.goBack()}
+          className="bg-primary-500 px-6 py-3 rounded-full mt-4"
         >
           <Text className="text-white font-semibold">Go Back</Text>
         </TouchableOpacity>
@@ -155,159 +145,137 @@ export default function SubmitBidScreen() {
     );
   }
 
-  const total = calculateTotal();
-  const suggestedAmount = job.scope?.estimatedCost
-    ? (job.scope.estimatedCost.min + job.scope.estimatedCost.max) / 2
-    : null;
+  const estimatedCost = job.scope?.estimatedCost;
+  const suggestedMin = estimatedCost ? estimatedCost.min * 0.9 : 0;
+  const suggestedMax = estimatedCost ? estimatedCost.max * 1.1 : 0;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
       {/* Header */}
       <View className="bg-white px-4 py-3 border-b border-gray-200 flex-row items-center">
         <TouchableOpacity onPress={() => navigation.goBack()} className="mr-4">
-          <X size={24} color="#111827" />
+          <ArrowLeft size={24} color="#111827" />
         </TouchableOpacity>
         <Text className="text-lg font-bold text-gray-900 flex-1">Submit Bid</Text>
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Job Summary */}
-        <View className="bg-white px-4 py-4 mb-4 mt-4">
-          <Text className="text-sm text-gray-500 mb-2">Bidding on</Text>
-          <Text className="text-lg font-bold text-gray-900 mb-1">{job.title}</Text>
+        {/* Job Info Card */}
+        <View className="bg-white mx-4 mt-4 rounded-xl p-4 border border-gray-200">
+          <Text className="text-lg font-bold text-gray-900 mb-2">{job.title}</Text>
           <Text className="text-sm text-gray-600">{job.address.city}, {job.address.state}</Text>
-          {suggestedAmount && (
-            <View className="mt-3 bg-blue-50 rounded-lg p-3">
-              <Text className="text-xs text-blue-700 font-semibold mb-1">
-                Suggested Bid Range
-              </Text>
-              <Text className="text-base text-blue-900">
-                ${job.scope?.estimatedCost.min.toLocaleString()} - ${job.scope?.estimatedCost.max.toLocaleString()}
+          {estimatedCost && (
+            <View className="mt-3 pt-3 border-t border-gray-200">
+              <Text className="text-xs text-gray-500 mb-1">Estimated Cost Range</Text>
+              <Text className="text-base font-semibold text-gray-900">
+                ${estimatedCost.min.toLocaleString()} - ${estimatedCost.max.toLocaleString()}
               </Text>
             </View>
           )}
         </View>
 
-        {/* Bid Amount */}
-        <View className="bg-white px-4 py-4 mb-4">
-          <Text className="text-lg font-bold text-gray-900 mb-4">Bid Amount</Text>
-          
+        {/* Bid Form */}
+        <View className="bg-white mx-4 mt-4 rounded-xl p-4 border border-gray-200">
+          <Text className="text-lg font-bold text-gray-900 mb-4">Your Bid</Text>
+
+          {/* Amount Input */}
           <View className="mb-4">
-            <View className="flex-row items-center mb-2">
+            <Text className="text-sm font-semibold text-gray-700 mb-2">
+              Bid Amount <Text className="text-red-500">*</Text>
+            </Text>
+            <View className="flex-row items-center bg-gray-100 rounded-lg px-4 py-3 border border-gray-300">
               <DollarSign size={20} color="#6b7280" />
-              <Text className="text-sm text-gray-700 ml-2">Total Bid Amount</Text>
+              <TextInput
+                className="flex-1 ml-2 text-lg font-semibold text-gray-900"
+                placeholder="0.00"
+                value={bidAmount}
+                onChangeText={(text) => {
+                  setBidAmount(text);
+                  if (errors.amount) {
+                    setErrors({ ...errors, amount: undefined });
+                  }
+                }}
+                keyboardType="decimal-pad"
+                autoFocus
+              />
             </View>
-            <TextInput
-              className="bg-gray-100 rounded-lg px-4 py-3 text-lg font-bold text-gray-900"
-              placeholder="0.00"
-              value={bidAmount}
-              onChangeText={setBidAmount}
-              keyboardType="decimal-pad"
-            />
-            {total > 0 && parseFloat(bidAmount) !== total && (
+            {errors.amount && (
+              <Text className="text-xs text-red-500 mt-1">{errors.amount}</Text>
+            )}
+            {suggestedMin > 0 && suggestedMax > 0 && (
               <Text className="text-xs text-gray-500 mt-1">
-                Calculated total: ${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                Suggested range: ${suggestedMin.toLocaleString()} - ${suggestedMax.toLocaleString()}
               </Text>
             )}
           </View>
 
-          {/* Breakdown */}
-          <View className="border-t border-gray-100 pt-4">
-            <Text className="text-sm font-semibold text-gray-700 mb-3">Breakdown (Optional)</Text>
-            
-            <View className="mb-3">
-              <View className="flex-row items-center mb-2">
-                <Package size={16} color="#6b7280" />
-                <Text className="text-sm text-gray-700 ml-2">Materials Cost</Text>
-              </View>
+          {/* Message Input */}
+          <View className="mb-4">
+            <Text className="text-sm font-semibold text-gray-700 mb-2">
+              Message (Optional)
+            </Text>
+            <View className="bg-gray-100 rounded-lg px-4 py-3 border border-gray-300">
               <TextInput
-                className="bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-900"
-                placeholder="0.00"
-                value={materialsCost}
-                onChangeText={setMaterialsCost}
-                keyboardType="decimal-pad"
+                className="text-base text-gray-900"
+                placeholder="Add a message to explain your bid..."
+                value={bidMessage}
+                onChangeText={(text) => {
+                  setBidMessage(text);
+                  if (errors.message) {
+                    setErrors({ ...errors, message: undefined });
+                  }
+                }}
+                multiline
+                numberOfLines={4}
+                maxLength={500}
+                style={{ minHeight: 100, textAlignVertical: 'top' }}
               />
             </View>
+            <Text className="text-xs text-gray-500 mt-1 text-right">
+              {bidMessage.length}/500
+            </Text>
+            {errors.message && (
+              <Text className="text-xs text-red-500 mt-1">{errors.message}</Text>
+            )}
+          </View>
 
-            <View className="mb-3">
-              <View className="flex-row items-center mb-2">
-                <Clock size={16} color="#6b7280" />
-                <Text className="text-sm text-gray-700 ml-2">Labor Hours × Rate</Text>
+          {/* Tips */}
+          <View className="bg-blue-50 rounded-lg p-3 mt-4">
+            <View className="flex-row items-start">
+              <AlertCircle size={18} color="#0ea5e9" className="mt-0.5" />
+              <View className="flex-1 ml-2">
+                <Text className="text-sm font-semibold text-blue-900 mb-1">Tips for a Great Bid</Text>
+                <Text className="text-xs text-blue-700">
+                  • Be competitive but fair{'\n'}
+                  • Highlight your relevant experience{'\n'}
+                  • Mention your availability{'\n'}
+                  • Include any special offers
+                </Text>
               </View>
-              <TextInput
-                className="bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-900"
-                placeholder="0.00"
-                value={laborHours}
-                onChangeText={setLaborHours}
-                keyboardType="decimal-pad"
-              />
             </View>
           </View>
-        </View>
-
-        {/* Timeline */}
-        <View className="bg-white px-4 py-4 mb-4">
-          <Text className="text-lg font-bold text-gray-900 mb-4">Timeline</Text>
-          
-          <View className="mb-3">
-            <Text className="text-sm text-gray-700 mb-2">Start Date (Optional)</Text>
-            <TextInput
-              className="bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-900"
-              placeholder="YYYY-MM-DD"
-              value={timelineStart}
-              onChangeText={setTimelineStart}
-            />
-          </View>
-
-          <View>
-            <Text className="text-sm text-gray-700 mb-2">Expected Completion (Optional)</Text>
-            <TextInput
-              className="bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-900"
-              placeholder="YYYY-MM-DD"
-              value={timelineEnd}
-              onChangeText={setTimelineEnd}
-            />
-          </View>
-        </View>
-
-        {/* Message */}
-        <View className="bg-white px-4 py-4 mb-4">
-          <Text className="text-lg font-bold text-gray-900 mb-3">Message to Homeowner</Text>
-          <TextInput
-            className="bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-900 min-h-[120px]"
-            placeholder="Tell the homeowner about your experience, availability, and why you're the right fit for this job..."
-            value={message}
-            onChangeText={setMessage}
-            multiline
-            numberOfLines={6}
-            textAlignVertical="top"
-          />
-          <Text className="text-xs text-gray-500 mt-2">
-            {message.length}/500 characters
-          </Text>
         </View>
       </ScrollView>
 
       {/* Submit Button */}
       <View className="bg-white border-t border-gray-200 px-4 py-4">
         <TouchableOpacity
-          onPress={handleSubmitBid}
-          disabled={submitting || !message.trim() || (!bidAmount && total === 0)}
+          onPress={handleSubmit}
+          disabled={submitting || !bidAmount.trim()}
           className={`py-4 rounded-xl items-center flex-row justify-center ${
-            submitting || !message.trim() || (!bidAmount && total === 0)
+            submitting || !bidAmount.trim()
               ? 'bg-gray-300'
               : 'bg-primary-500'
           }`}
         >
           {submitting ? (
-            <>
-              <ActivityIndicator color="#ffffff" size="small" />
-              <Text className="text-white font-bold text-lg ml-2">Submitting...</Text>
-            </>
+            <ActivityIndicator color="#ffffff" />
           ) : (
             <>
-              <Send size={20} color="#ffffff" />
-              <Text className="text-white font-bold text-lg ml-2">Submit Bid</Text>
+              <CheckCircle size={20} color="#ffffff" />
+              <Text className="text-white font-bold text-lg ml-2">
+                Submit Bid
+              </Text>
             </>
           )}
         </TouchableOpacity>
@@ -315,4 +283,3 @@ export default function SubmitBidScreen() {
     </SafeAreaView>
   );
 }
-

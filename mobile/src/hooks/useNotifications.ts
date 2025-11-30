@@ -1,103 +1,94 @@
-// Custom hook for notifications
-// Real-time notification management
+// Notifications Hook
+// Manages notification data and push notifications
 
 import { useState, useEffect, useCallback } from 'react';
-import { dataStore } from '@fairtradeworker/shared';
-import type { Notification, User as UserType } from '@/types';
+import { notificationService } from '@/services/notifications.service';
+import type { Notification } from '@/types';
 
-export function useNotifications(userId?: string) {
+interface UseNotificationsOptions {
+  unreadOnly?: boolean;
+  autoRefresh?: boolean;
+  refreshInterval?: number;
+}
+
+export function useNotifications(options: UseNotificationsOptions = {}) {
+  const { unreadOnly = false, autoRefresh = false, refreshInterval = 30000 } = options;
+  
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  useEffect(() => {
-    if (currentUser) {
-      loadNotifications();
-      // Poll for new notifications every 5 seconds
-      const interval = setInterval(loadNotifications, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [currentUser]);
-
-  const loadUser = async () => {
-    try {
-      const user = await dataStore.getCurrentUser();
-      setCurrentUser(user);
-      if (!user && userId) {
-        // If userId provided but no current user, use the provided one
-        // This allows using the hook with a specific userId
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to load user'));
-    }
-  };
-
-  const loadNotifications = useCallback(async () => {
-    const userIdToUse = currentUser?.id || userId;
-    if (!userIdToUse) {
-      setLoading(false);
-      return;
-    }
-
+  const fetchNotifications = useCallback(async () => {
     try {
       setLoading(true);
-      const userNotifications = await dataStore.getNotifications(userIdToUse);
-      const sorted = userNotifications.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      setNotifications(sorted);
       setError(null);
+      
+      const fetched = await notificationService.getNotifications({
+        unreadOnly,
+        limit: 50,
+      });
+      
+      setNotifications(fetched);
+      setUnreadCount(fetched.filter(n => !n.read).length);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to load notifications'));
+      const error = err instanceof Error ? err : new Error('Failed to fetch notifications');
+      setError(error);
+      console.error('Failed to fetch notifications:', error);
     } finally {
       setLoading(false);
     }
-  }, [currentUser, userId]);
+  }, [unreadOnly]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  // Auto refresh
+  useEffect(() => {
+    if (!autoRefresh) return;
+
+    const interval = setInterval(() => {
+      fetchNotifications();
+    }, refreshInterval);
+
+    return () => clearInterval(interval);
+  }, [autoRefresh, refreshInterval, fetchNotifications]);
 
   const markAsRead = useCallback(async (notificationId: string) => {
-    const userIdToUse = currentUser?.id || userId;
-    if (!userIdToUse) return;
-
     try {
-      await dataStore.markNotificationRead(userIdToUse, notificationId);
+      await notificationService.markAsRead(notificationId);
+      // Update local state
       setNotifications(prev =>
-        prev.map(n => (n.id === notificationId ? { ...n, read: true } : n))
+        prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
       );
+      setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (err) {
       console.error('Failed to mark notification as read:', err);
+      throw err;
     }
-  }, [currentUser, userId]);
+  }, []);
 
   const markAllAsRead = useCallback(async () => {
-    const userIdToUse = currentUser?.id || userId;
-    if (!userIdToUse) return;
-
     try {
       const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
-      await Promise.all(
-        unreadIds.map(id => dataStore.markNotificationRead(userIdToUse, id))
-      );
+      await Promise.all(unreadIds.map(id => notificationService.markAsRead(id)));
+      
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setUnreadCount(0);
     } catch (err) {
       console.error('Failed to mark all as read:', err);
+      throw err;
     }
-  }, [currentUser, userId, notifications]);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
+  }, [notifications]);
 
   return {
     notifications,
+    unreadCount,
     loading,
     error,
-    unreadCount,
-    refresh: loadNotifications,
     markAsRead,
     markAllAsRead,
+    refresh: fetchNotifications,
   };
 }
-
