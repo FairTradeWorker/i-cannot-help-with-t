@@ -42,15 +42,15 @@ export function ActionCard({
             ? 'border-[#008bf8] shadow-[0_4px_18px_0_rgba(0,0,0,0.25)] dark:shadow-[0_4px_18px_0_rgba(0,0,0,0.5)]'
             : 'border-[#c3c6ce] dark:border-[#444]'
           }
-          bg-[#f5f5f5] dark:bg-[#2a2a2a]
+          bg-white dark:bg-[#2a2a2a]
         `}
       >
         {/* Icon */}
         <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-          style={{ backgroundColor: iconColor }}
+          className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 bg-white dark:bg-gray-700"
+          style={{ border: '1px solid #e5e7eb' }}
         >
-          <Icon className="w-7 h-7 text-white" weight="bold" />
+          <Icon className="w-7 h-7 dark:text-gray-300" weight="bold" style={{ color: iconColor }} />
         </div>
 
         {/* Content */}
