@@ -47,10 +47,10 @@ export function ActionCard({
       >
         {/* Icon */}
         <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-          style={{ backgroundColor: iconColor }}
+          className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 bg-white dark:bg-gray-700"
+          style={{ border: '1px solid #e5e7eb' }}
         >
-          <Icon className="w-7 h-7 text-white" weight="bold" />
+          <Icon className="w-7 h-7 dark:text-gray-300" weight="bold" style={{ color: iconColor }} />
         </div>
 
         {/* Content */}

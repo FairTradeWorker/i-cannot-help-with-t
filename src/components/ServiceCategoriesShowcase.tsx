@@ -146,12 +146,13 @@ export function ServiceCategoriesShowcase({
               >
                 <div className="flex flex-col items-center gap-2">
                   <div
-                    className="flex items-center justify-center rounded-xl w-12 h-12 md:w-14 md:h-14 mb-1"
-                    style={{ backgroundColor: iconColor }}
+                    className="flex items-center justify-center rounded-xl w-12 h-12 md:w-14 md:h-14 mb-1 bg-white dark:bg-gray-700"
+                    style={{ border: '1px solid #e5e7eb' }}
                   >
                     <Icon
-                      className="w-6 h-6 md:w-7 md:h-7 text-white"
+                      className="w-6 h-6 md:w-7 md:h-7 dark:text-gray-300"
                       weight="fill"
+                      style={{ color: iconColor }}
                     />
                   </div>
                   <div>
