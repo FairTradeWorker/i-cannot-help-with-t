@@ -114,7 +114,7 @@ function MainTabs() {
   );
 }
 
-export default function AppNavigator() {
+function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
