@@ -17,14 +17,14 @@ import { Input } from '@/components/ui/input';
 import { SERVICE_CATEGORIES } from '@/types/service-categories';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 
-// Icon mapping
-const iconMap: Record<string, React.ComponentType<any>> = {
-  House,
-  Wrench,
-  Lightning,
-  Tree,
-  Hammer,
-  Broom,
+// Icon mapping with colors
+const iconMap: Record<string, { icon: React.ComponentType<any>; color: string }> = {
+  House: { icon: House, color: '#3b82f6' },      // Blue
+  Wrench: { icon: Wrench, color: '#22c55e' },    // Green
+  Lightning: { icon: Lightning, color: '#f59e0b' }, // Amber
+  Tree: { icon: Tree, color: '#10b981' },        // Emerald
+  Hammer: { icon: Hammer, color: '#8b5cf6' },    // Purple
+  Broom: { icon: Broom, color: '#06b6d4' },      // Cyan
 };
 
 interface ServiceCategoriesShowcaseProps {
@@ -52,10 +52,10 @@ export function ServiceCategoriesShowcase({
   };
 
   return (
-    <div className="space-y-4 rounded-2xl border border-border/60 bg-white px-4 py-3 md:px-6 md:py-4 shadow-sm">
+    <div className="space-y-4 rounded-2xl border border-border/60 bg-white dark:bg-gray-800 px-4 py-3 md:px-6 md:py-4 shadow-sm">
       <div className="text-center">
         {/* Trust line */}
-        <p className="text-sm mb-3" style={{ fontSize: '14px', color: '#6b7280' }}>
+        <p className="text-sm mb-3 text-muted-foreground" style={{ fontSize: '14px' }}>
           Trusted by 3,500+ contractors nationwide
         </p>
         
@@ -110,66 +110,59 @@ export function ServiceCategoriesShowcase({
         className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 animate-on-scroll ${categoryCardsVisible ? 'visible' : ''}`}
       >
         {SERVICE_CATEGORIES.map((category, index) => {
-          const Icon = iconMap[category.icon] || House;
+          const iconConfig = iconMap[category.icon] || { icon: House, color: '#3b82f6' };
+          const Icon = iconConfig.icon;
+          const iconColor = iconConfig.color;
 
           return (
             <motion.div
               key={category.id}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.35, 
+              transition={{
+                duration: 0.35,
                 delay: index * 0.05,
                 ease: [0.4, 0, 0.2, 1]
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Card 
-                className="bg-white border cursor-pointer text-center transition-all duration-200 p-3 md:p-4"
+              <Card
+                className="bg-white dark:bg-gray-800 border cursor-pointer text-center transition-all duration-200 p-3 md:p-4"
                 style={{
                   border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   boxShadow: 'none'
                 }}
                 onClick={() => onCategoryClick?.(category.id)}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#eff6ff';
-                  e.currentTarget.style.borderColor = '#bfdbfe';
-                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-                  const iconElement = e.currentTarget.querySelector('svg');
-                  if (iconElement) {
-                    iconElement.style.transform = 'scale(1.1)';
-                    iconElement.style.transition = 'transform 0.2s ease';
-                  }
+                  e.currentTarget.style.borderColor = iconColor;
+                  e.currentTarget.style.boxShadow = `0 4px 12px ${iconColor}20`;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
                   e.currentTarget.style.borderColor = '#e5e7eb';
                   e.currentTarget.style.boxShadow = 'none';
-                  const iconElement = e.currentTarget.querySelector('svg');
-                  if (iconElement) {
-                    iconElement.style.transform = 'scale(1)';
-                  }
                 }}
               >
                 <div className="flex flex-col items-center gap-2">
-                  <div className="flex items-center justify-center">
-                    <Icon 
-                      className="transition-transform duration-200 w-7 h-7 md:w-8 md:h-8" 
+                  <div
+                    className="flex items-center justify-center rounded-xl w-12 h-12 md:w-14 md:h-14 mb-1"
+                    style={{ backgroundColor: iconColor }}
+                  >
+                    <Icon
+                      className="w-6 h-6 md:w-7 md:h-7 text-white"
                       weight="fill"
                     />
                   </div>
                   <div>
-                    <h3 
-                      className="font-bold text-foreground line-clamp-2 text-[13px] md:text-sm"
+                    <h3
+                      className="font-bold text-foreground dark:text-white line-clamp-2 text-[13px] md:text-sm"
                     >
                       {category.title}
                     </h3>
                     {/* Show subtitle on mobile and tablet */}
-                    <p 
-                      className="text-muted-foreground line-clamp-2 block sm:block lg:hidden text-xs"
-                      style={{ color: '#6b7280' }}
+                    <p
+                      className="text-muted-foreground dark:text-gray-400 line-clamp-2 block sm:block lg:hidden text-xs"
                     >
                       {category.description}
                     </p>
