@@ -7,6 +7,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Send, ArrowLeft, Phone, MoreVertical, Image as ImageIcon, Search } from 'lucide-react-native';
 import { MessageBubble } from '@/components/MessageBubble';
+import { useMessages } from '@/hooks/useMessages';
+import { useAuth } from '@/hooks/useAuth';
+import { jobsService } from '@/services/jobs.service';
 import { dataStore } from '@fairtradeworker/shared';
 import type { Message, Job, User as UserType } from '@/types';
 
@@ -19,65 +22,69 @@ export default function MessagesScreen() {
   const route = useRoute();
   const { jobId } = (route.params as RouteParams) || {};
 
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const { user: currentUser } = useAuth();
   const [job, setJob] = useState<Job | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [inputMessage, setInputMessage] = useState('');
   const flatListRef = useRef<FlatList>(null);
 
+  // Use messages hook for API integration
+  const { messages, sendMessage: apiSendMessage, loading: messagesLoading } = useMessages({
+    jobId: jobId || null,
+    autoRefresh: true,
+    refreshInterval: 3000,
+  });
+
   useEffect(() => {
-    loadData();
-    const interval = setInterval(loadMessages, 2000); // Poll every 2 seconds
-    return () => clearInterval(interval);
+    loadJobData();
   }, [jobId]);
 
-  const loadData = async () => {
+  const loadJobData = async () => {
+    if (!jobId) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
-      const [user, jobData] = await Promise.all([
-        dataStore.getCurrentUser(),
-        jobId ? dataStore.getJobById(jobId) : Promise.resolve(null),
-      ]);
-      
-      setCurrentUser(user);
-      setJob(jobData || null);
-      
-      if (jobId) {
-        await loadMessages();
-      }
+      const jobData = await jobsService.getJobById(jobId);
+      setJob(jobData);
     } catch (error) {
-      console.error('Failed to load data:', error);
+      console.error('Failed to load job:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const loadMessages = async () => {
-    if (!jobId) return;
-    
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || !currentUser || !jobId || !job) return;
+
+    const messageText = inputMessage.trim();
+    setInputMessage(''); // Clear input immediately for better UX
+
     try {
-      const jobMessages = await dataStore.getMessages(jobId);
-      setMessages(jobMessages);
+      // Determine recipient (other party in the conversation)
+      const recipientId = job.homeownerId === currentUser.id 
+        ? job.contractorId 
+        : job.homeownerId;
+
+      if (!recipientId) {
+        Alert.alert('Error', 'Cannot determine message recipient');
+        return;
+      }
+
+      await apiSendMessage(recipientId, messageText);
       
-      // Auto-scroll to bottom
+      // Auto-scroll to bottom after sending
       setTimeout(() => {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     } catch (error) {
-      console.error('Failed to load messages:', error);
+      console.error('Failed to send message:', error);
+      Alert.alert('Error', 'Failed to send message. Please try again.');
+      setInputMessage(messageText); // Restore message on error
     }
   };
-
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim() || !currentUser || !jobId) return;
-
-    const newMessage: Message = {
-      id: `msg-${Date.now()}`,
-      jobId,
-      senderId: currentUser.id,
-      senderName: currentUser.name,
-      senderRole: currentUser.role,
       content: inputMessage.trim(),
       timestamp: new Date(),
       read: false,
@@ -105,7 +112,7 @@ export default function MessagesScreen() {
     return minutes > 0 ? `${minutes}m ago` : 'Just now';
   };
 
-  if (loading) {
+  if (loading || messagesLoading) {
     return (
       <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
         <ActivityIndicator size="large" color="#0ea5e9" />
