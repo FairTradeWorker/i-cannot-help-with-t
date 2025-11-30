@@ -2,24 +2,37 @@
 // Consistent loading states across the app
 
 import React from 'react';
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import { AnimatedLoader } from './AnimatedLoader';
 
 interface LoadingSpinnerProps {
   message?: string;
-  size?: 'small' | 'large';
+  size?: 'small' | 'medium' | 'large';
   fullScreen?: boolean;
 }
 
 export function LoadingSpinner({
   message,
-  size = 'large',
+  size = 'medium',
   fullScreen = false
 }: LoadingSpinnerProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   const content = (
-    <View style={[styles.container, fullScreen && styles.fullScreen]}>
-      <ActivityIndicator size={size} color="#0ea5e9" />
+    <View style={[
+      styles.container,
+      fullScreen && styles.fullScreen,
+      fullScreen && (isDark ? styles.fullScreenDark : styles.fullScreenLight)
+    ]}>
+      <AnimatedLoader size={size} />
       {message && (
-        <Text style={styles.message}>{message}</Text>
+        <Text style={[
+          styles.message,
+          isDark ? styles.messageDark : styles.messageLight
+        ]}>
+          {message}
+        </Text>
       )}
     </View>
   );
@@ -35,13 +48,23 @@ const styles = StyleSheet.create({
   },
   fullScreen: {
     flex: 1,
+  },
+  fullScreenLight: {
     backgroundColor: '#f3f4f6',
   },
+  fullScreenDark: {
+    backgroundColor: '#111827',
+  },
   message: {
-    marginTop: 16,
+    marginTop: 24,
     fontSize: 16,
-    color: '#6b7280',
     textAlign: 'center',
+  },
+  messageLight: {
+    color: '#6b7280',
+  },
+  messageDark: {
+    color: '#d1d5db',
   },
 });
 

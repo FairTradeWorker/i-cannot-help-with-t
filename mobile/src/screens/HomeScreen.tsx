@@ -2,15 +2,18 @@
 // Dashboard for all user types
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { 
+import {
   Video, Briefcase, MapPin, TrendingUp, Shield, DollarSign, Users, Zap,
   Plus, ArrowRight, CheckCircle, AlertCircle
 } from 'lucide-react-native';
 import { dataStore } from '@fairtradeworker/shared';
 import type { User as UserType, Job } from '@/types';
+import { AnimatedLoader } from '../components/AnimatedLoader';
+import { ActionCard } from '../components/ActionCard';
+import { PushableButton } from '../components/PushableButton';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -22,14 +25,17 @@ interface StatCardProps {
 }
 
 function StatCard({ icon, title, value, subtitle, color, onPress }: StatCardProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   const content = (
-    <View className="bg-white rounded-xl p-4 shadow-sm flex-1 min-w-[45%] m-1">
+    <View className={`rounded-xl p-4 shadow-sm flex-1 min-w-[45%] m-1 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
       <View className={`w-10 h-10 rounded-lg items-center justify-center mb-3`} style={{ backgroundColor: color }}>
         {icon}
       </View>
-      <Text className="text-gray-600 text-xs mb-1">{title}</Text>
-      <Text className="text-2xl font-bold text-gray-900">{value}</Text>
-      <Text className="text-gray-500 text-xs mt-1">{subtitle}</Text>
+      <Text className={`text-xs mb-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{title}</Text>
+      <Text className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{value}</Text>
+      <Text className={`text-xs mt-1 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>{subtitle}</Text>
     </View>
   );
 
@@ -46,6 +52,8 @@ function StatCard({ icon, title, value, subtitle, color, onPress }: StatCardProp
 
 export default function HomeScreen() {
   const navigation = useNavigation();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,9 +100,11 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
-        <ActivityIndicator size="large" color="#0ea5e9" />
-        <Text className="text-gray-600 mt-4">Loading dashboard...</Text>
+      <SafeAreaView className={`flex-1 items-center justify-center ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}>
+        <AnimatedLoader size="large" />
+        <Text className={`mt-8 text-base ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+          Loading dashboard...
+        </Text>
       </SafeAreaView>
     );
   }
@@ -103,7 +113,7 @@ export default function HomeScreen() {
   const recentJobs = jobs.slice(0, 3);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`} edges={['bottom']}>
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
@@ -112,11 +122,11 @@ export default function HomeScreen() {
         }
       >
         {/* Header */}
-        <View className="bg-white px-4 py-6 border-b border-gray-200">
-          <Text className="text-2xl font-bold text-gray-900 mb-1">
+        <View className={`px-4 py-6 border-b ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+          <Text className={`text-2xl font-bold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             {currentUser ? `Welcome back, ${currentUser.name.split(' ')[0]}!` : 'Welcome to FairTradeWorker'}
           </Text>
-          <Text className="text-gray-600">
+          <Text className={isDark ? 'text-gray-400' : 'text-gray-600'}>
             {userRole === 'homeowner' && 'Post jobs and find contractors'}
             {userRole === 'contractor' && 'Find jobs and grow your business'}
             {userRole === 'operator' && 'Manage your territories'}
@@ -126,77 +136,68 @@ export default function HomeScreen() {
 
         {/* Quick Actions */}
         <View className="px-4 py-6">
-          <Text className="text-lg font-bold text-gray-900 mb-4">Quick Actions</Text>
-          
-          <View className="flex-row flex-wrap -m-2">
-            {userRole === 'homeowner' && (
-              <>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('VideoJobCreation' as never)}
-                  className="w-1/2 p-2"
-                >
-                  <View className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 items-center">
-                    <Video size={32} color="#ffffff" />
-                    <Text className="text-white font-semibold mt-2 text-center">Post a Job</Text>
-                  </View>
-                </TouchableOpacity>
+          <Text className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Quick Actions</Text>
 
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Jobs' as never)}
-                  className="w-1/2 p-2"
-                >
-                  <View className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 items-center">
-                    <Briefcase size={32} color="#ffffff" />
-                    <Text className="text-white font-semibold mt-2 text-center">My Jobs</Text>
-                  </View>
-                </TouchableOpacity>
-              </>
-            )}
+          {userRole === 'homeowner' && (
+            <>
+              <ActionCard
+                icon={Video}
+                title="Post a Job"
+                description="Record a video or take photos to quickly create a job posting and connect with local contractors."
+                onPress={() => navigation.navigate('VideoJobCreation' as never)}
+                buttonText="Create Job"
+                iconColor="#008bf8"
+              />
 
-            {userRole === 'contractor' && (
-              <>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Jobs' as never)}
-                  className="w-1/2 p-2"
-                >
-                  <View className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 items-center">
-                    <Briefcase size={32} color="#ffffff" />
-                    <Text className="text-white font-semibold mt-2 text-center">Browse Jobs</Text>
-                  </View>
-                </TouchableOpacity>
+              <ActionCard
+                icon={Briefcase}
+                title="My Jobs"
+                description="View and manage all your posted jobs, track progress, and communicate with contractors."
+                onPress={() => navigation.navigate('Jobs' as never)}
+                buttonText="View Jobs"
+                iconColor="#22c55e"
+              />
+            </>
+          )}
 
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Route' as never)}
-                  className="w-1/2 p-2"
-                >
-                  <View className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 items-center">
-                    <MapPin size={32} color="#ffffff" />
-                    <Text className="text-white font-semibold mt-2 text-center">Plan Route</Text>
-                  </View>
-                </TouchableOpacity>
-              </>
-            )}
+          {userRole === 'contractor' && (
+            <>
+              <ActionCard
+                icon={Briefcase}
+                title="Browse Jobs"
+                description="Discover new job opportunities in your area and submit competitive bids."
+                onPress={() => navigation.navigate('Jobs' as never)}
+                buttonText="Browse"
+                iconColor="#008bf8"
+              />
 
-            {userRole === 'operator' && (
-              <>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Territories' as never)}
-                  className="w-1/2 p-2"
-                >
-                  <View className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 items-center">
-                    <MapPin size={32} color="#ffffff" />
-                    <Text className="text-white font-semibold mt-2 text-center">My Territories</Text>
-                  </View>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
+              <ActionCard
+                icon={MapPin}
+                title="Plan Route"
+                description="Optimize your daily route to visit multiple job sites efficiently and save time."
+                onPress={() => navigation.navigate('Route' as never)}
+                buttonText="Plan Now"
+                iconColor="#a855f7"
+              />
+            </>
+          )}
+
+          {userRole === 'operator' && (
+            <ActionCard
+              icon={MapPin}
+              title="My Territories"
+              description="Manage your service territories and claim exclusive priority in your areas."
+              onPress={() => navigation.navigate('Territories' as never)}
+              buttonText="Manage"
+              iconColor="#008bf8"
+            />
+          )}
         </View>
 
         {/* Stats */}
         {currentUser && (
           <View className="px-4 py-2">
-            <Text className="text-lg font-bold text-gray-900 mb-4">Overview</Text>
+            <Text className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Overview</Text>
             
             <View className="flex-row flex-wrap -m-1">
               {userRole === 'contractor' && (
@@ -246,7 +247,7 @@ export default function HomeScreen() {
         {recentJobs.length > 0 && (
           <View className="px-4 py-6">
             <View className="flex-row items-center justify-between mb-4">
-              <Text className="text-lg font-bold text-gray-900">
+              <Text className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 {userRole === 'homeowner' ? 'My Recent Jobs' : 'Recent Jobs'}
               </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Jobs' as never)}>
@@ -258,26 +259,26 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={job.id}
                 onPress={() => navigation.navigate('JobDetails' as never, { jobId: job.id } as never)}
-                className="bg-white rounded-xl p-4 mb-3 shadow-sm"
+                className={`rounded-xl p-4 mb-3 shadow-sm ${isDark ? 'bg-gray-800' : 'bg-white'}`}
               >
                 <View className="flex-row items-start justify-between mb-2">
                   <View className="flex-1">
-                    <Text className="text-base font-bold text-gray-900" numberOfLines={1}>
+                    <Text className={`text-base font-bold ${isDark ? 'text-white' : 'text-gray-900'}`} numberOfLines={1}>
                       {job.title}
                     </Text>
-                    <Text className="text-sm text-gray-500 mt-1">
+                    <Text className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                       {job.address.city}, {job.address.state}
                     </Text>
                   </View>
                   <View className={`px-2 py-1 rounded ${
-                    job.status === 'completed' ? 'bg-green-100' :
-                    job.status === 'in_progress' ? 'bg-blue-100' :
-                    'bg-yellow-100'
+                    job.status === 'completed' ? (isDark ? 'bg-green-900/30' : 'bg-green-100') :
+                    job.status === 'in_progress' ? (isDark ? 'bg-blue-900/30' : 'bg-blue-100') :
+                    (isDark ? 'bg-yellow-900/30' : 'bg-yellow-100')
                   }`}>
                     <Text className={`text-xs font-medium ${
-                      job.status === 'completed' ? 'text-green-700' :
-                      job.status === 'in_progress' ? 'text-blue-700' :
-                      'text-yellow-700'
+                      job.status === 'completed' ? (isDark ? 'text-green-400' : 'text-green-700') :
+                      job.status === 'in_progress' ? (isDark ? 'text-blue-400' : 'text-blue-700') :
+                      (isDark ? 'text-yellow-400' : 'text-yellow-700')
                     }`}>
                       {job.status.replace('_', ' ')}
                     </Text>
@@ -290,7 +291,7 @@ export default function HomeScreen() {
 
         {/* First 300 Teaser */}
         {userRole === 'operator' && (
-          <View className="mx-4 mb-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6">
+          <View className="mx-4 mb-6" style={{ backgroundColor: '#008bf8', borderRadius: 20, padding: 24 }}>
             <View className="flex-row items-center mb-3">
               <Zap size={24} color="#ffffff" />
               <Text className="text-white font-bold text-lg ml-2">First 300 Launch</Text>
@@ -298,31 +299,35 @@ export default function HomeScreen() {
             <Text className="text-white/90 mb-4">
               Claim First Priority forever - FREE! Only {300 - (jobs.length || 0)} spots left.
             </Text>
-            <TouchableOpacity
+            <PushableButton
               onPress={() => navigation.navigate('Territories' as never)}
-              className="bg-white rounded-lg py-3 px-4 flex-row items-center justify-center"
+              color="#ffffff"
+              fullWidth
             >
-              <Text className="text-primary-600 font-bold mr-2">Claim Now</Text>
-              <ArrowRight size={20} color="#0ea5e9" />
-            </TouchableOpacity>
+              <View className="flex-row items-center justify-center">
+                <Text className="text-primary-600 font-bold mr-2">Claim Now</Text>
+                <ArrowRight size={20} color="#0ea5e9" />
+              </View>
+            </PushableButton>
           </View>
         )}
 
         {/* Sign In Prompt */}
         {!currentUser && (
-          <View className="mx-4 mb-6 bg-white rounded-xl p-6">
-            <Text className="text-lg font-bold text-gray-900 mb-2">Get Started</Text>
-            <Text className="text-gray-600 mb-4">
+          <View className={`mx-4 mb-6 rounded-xl p-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
+            <Text className={`text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Get Started</Text>
+            <Text className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
               Sign in or create an account to post jobs, find contractors, and manage your projects.
             </Text>
-            <TouchableOpacity
-              className="bg-primary-500 rounded-lg py-3 px-4 items-center"
+            <PushableButton
               onPress={() => {
                 // Navigate to login/signup
               }}
+              color="#008bf8"
+              fullWidth
             >
-              <Text className="text-white font-bold">Sign In</Text>
-            </TouchableOpacity>
+              Sign In
+            </PushableButton>
           </View>
         )}
       </ScrollView>
