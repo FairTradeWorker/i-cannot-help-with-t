@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NativeWindStyleSheet } from 'nativewind';
-import { AppNavigator } from './navigation/AppNavigator';
+import AppNavigator from './navigation/AppNavigator';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { authService } from './services/auth.service';
 

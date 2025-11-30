@@ -33,17 +33,18 @@ export default function TerritoriesScreen() {
       return;
     }
 
-    if (!selectedTerritory.zipCode) {
+    if (!selectedTerritory.zipCodes || selectedTerritory.zipCodes.length === 0) {
       Alert.alert('Error', 'Invalid territory selected');
       return;
     }
 
+    const zipCode = selectedTerritory.zipCodes[0]; // Use first zip code
     setClaiming(true);
     try {
-      await claimTerritory(selectedTerritory.zipCode);
+      await claimTerritory(zipCode);
       Alert.alert(
         'Success!',
-        `You've successfully claimed territory ${selectedTerritory.zipCode}!`,
+        `You've successfully claimed territory ${zipCode}!`,
         [{ text: 'OK', onPress: () => setShowClaimModal(false) }]
       );
     } catch (error) {

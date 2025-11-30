@@ -201,3 +201,5 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
+
+export default AppNavigator;
