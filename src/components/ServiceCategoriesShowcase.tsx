@@ -52,7 +52,7 @@ export function ServiceCategoriesShowcase({
   };
 
   return (
-    <div className="space-y-4 rounded-2xl border border-border/60 bg-white dark:bg-gray-800 px-4 py-3 md:px-6 md:py-4 shadow-sm">
+    <div className="space-y-4 rounded-2xl border border-border/60 bg-white dark:bg-white px-4 py-3 md:px-6 md:py-4 shadow-sm">
       <div className="text-center">
         {/* Trust line */}
         <p className="text-sm mb-3 text-muted-foreground" style={{ fontSize: '14px' }}>
@@ -119,16 +119,16 @@ export function ServiceCategoriesShowcase({
               key={category.id}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.35,
+              transition={{ 
+                duration: 0.35, 
                 delay: index * 0.05,
                 ease: [0.4, 0, 0.2, 1]
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Card
-                className="bg-white dark:bg-gray-800 border cursor-pointer text-center transition-all duration-200 p-3 md:p-4"
+              <Card 
+                className="bg-white dark:bg-white border cursor-pointer text-center transition-all duration-200 p-3 md:p-4"
                 style={{
                   border: '1px solid #e5e7eb',
                   borderRadius: '12px',
@@ -145,21 +145,21 @@ export function ServiceCategoriesShowcase({
                 }}
               >
                 <div className="flex flex-col items-center gap-2">
-                  <div className="flex items-center justify-center rounded-xl w-12 h-12 md:w-14 md:h-14 mb-1 bg-white dark:bg-gray-700">
-                    <Icon
-                      className="w-6 h-6 md:w-7 md:h-7 dark:text-gray-300"
+                  <div className="flex items-center justify-center rounded-xl w-12 h-12 md:w-14 md:h-14 mb-1 bg-white dark:bg-white">
+                    <Icon 
+                      className="transition-transform duration-200 w-6 h-6 md:w-7 md:h-7" 
                       weight="fill"
                       style={{ color: iconColor }}
                     />
                   </div>
                   <div>
-                    <h3
+                    <h3 
                       className="font-bold text-foreground dark:text-white line-clamp-2 text-[13px] md:text-sm"
                     >
                       {category.title}
                     </h3>
                     {/* Show subtitle on mobile and tablet */}
-                    <p
+                    <p 
                       className="text-muted-foreground dark:text-gray-400 line-clamp-2 block sm:block lg:hidden text-xs"
                     >
                       {category.description}
