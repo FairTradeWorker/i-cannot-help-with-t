@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     overflow: 'visible',
   },
   cardLight: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
   },
   cardDark: {
     backgroundColor: '#2a2a2a',

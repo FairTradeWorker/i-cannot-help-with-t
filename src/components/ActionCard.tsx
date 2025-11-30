@@ -42,7 +42,7 @@ export function ActionCard({
             ? 'border-[#008bf8] shadow-[0_4px_18px_0_rgba(0,0,0,0.25)] dark:shadow-[0_4px_18px_0_rgba(0,0,0,0.5)]'
             : 'border-[#c3c6ce] dark:border-[#444]'
           }
-          bg-[#f5f5f5] dark:bg-[#2a2a2a]
+          bg-white dark:bg-[#2a2a2a]
         `}
       >
         {/* Icon */}
