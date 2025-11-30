@@ -95,6 +95,9 @@ import { toast } from 'sonner';
 import type { User as UserType, Referral, Analytics } from '@/lib/types';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { getAvailableTerritoryCount, getStateStats } from '@/lib/territory-data';
+import { ActionCard } from '@/components/ActionCard';
+import { PushableButton } from '@/components/PushableButton';
+import { AnimatedLoader } from '@/components/AnimatedLoader';
 
 type MainTab = 'home' | 'territories' | 'jobs' | 'contractors-browse' | 'homeowner' | 'contractor' | 'subcontractor' | 'api' | 'warranty' | 'partners' | 'messages' | 'payment' | 'notifications' | 'dispatch' | 'learning' | 'first300';
 type SubTab = 'overview' | 'file-claim' | 'materials' | 'insurance' | 'my-jobs' | 'post-job' | 'profile' | 'dashboard' | 'route';
@@ -1156,26 +1159,14 @@ function App() {
                                   </div>
                                 </div>
                                 <div className="flex flex-col items-center gap-1 w-full md:w-auto">
-                                  <Button 
-                                    size="sm" 
+                                  <PushableButton
                                     onClick={() => handleCreateJob()}
-                                    className="font-bold text-white hover:scale-[1.02] transition-transform w-full md:w-auto"
-                                    style={{ 
-                                      backgroundColor: '#2563eb', 
-                                      padding: '12px 24px', 
-                                      borderRadius: '8px',
-                                      border: 'none',
-                                      minHeight: '44px'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.backgroundColor = '#1d4ed8';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.backgroundColor = '#2563eb';
-                                    }}
+                                    color="#2563eb"
+                                    fullWidth
+                                    className="w-full md:w-auto"
                                   >
                                     Get Started
-                                  </Button>
+                                  </PushableButton>
                                   <p className="text-xs" style={{ color: '#6b7280' }}>
                                     Free to post • No credit card required
                                   </p>
@@ -1332,93 +1323,46 @@ function App() {
                         </div>
                       </ScrollAnimatedSection>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                          <Card 
-                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
-                            onClick={() => handleNavClick('territories', 'overview')}
-                          >
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-primary">
-                                <MapTrifold className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Available</p>
-                                <p className="text-2xl font-bold">{getAvailableTerritoryCount().toLocaleString()}+</p>
-                              </div>
-                            </div>
-                            <p className="text-sm font-semibold mb-1">Territories</p>
-                            <p className="text-xs text-muted-foreground mb-2">First 300: FREE Forever • First Priority on every lead</p>
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              <Badge variant="outline" className="text-[10px]">TX</Badge>
-                              <Badge variant="outline" className="text-[10px]">AZ</Badge>
-                              <Badge variant="outline" className="text-[10px]">GA</Badge>
-                              <Badge variant="outline" className="text-[10px]">+{getStateStats().length - 3} states</Badge>
-                            </div>
-                          </Card>
-                          <Card 
-                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
-                            onClick={() => handleNavClick('jobs')}
-                          >
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-accent">
-                                <Briefcase className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Active</p>
-                                <p className="text-2xl font-bold">2.8K+</p>
-                              </div>
-                            </div>
-                            <p className="text-sm font-semibold mb-1">Jobs Available</p>
-                            <p className="text-xs text-muted-foreground mb-2">Browse and bid on opportunities</p>
-                            <div className="flex items-center gap-2 mt-2">
-                              <Badge variant="secondary" className="text-[10px]">Roofing</Badge>
-                              <Badge variant="secondary" className="text-[10px]">HVAC</Badge>
-                              <Badge variant="secondary" className="text-[10px]">+12</Badge>
-                            </div>
-                          </Card>
+                      <ScrollAnimatedSection>
+                        <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <ActionCard
+                            icon={MapTrifold}
+                            title="Claim Your Territory"
+                            description={`Join the first 300 to get FREE forever access with First Priority on every lead in your area. ${getAvailableTerritoryCount().toLocaleString()}+ territories available across ${getStateStats().length} states.`}
+                            onPress={() => handleNavClick('territories', 'overview')}
+                            buttonText="Explore Territories"
+                            iconColor="#008bf8"
+                          />
 
-                          <Card 
-                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
-                            onClick={() => handleNavClick('contractors-browse')}
-                          >
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-secondary">
-                                <Hammer className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Network</p>
-                                <p className="text-2xl font-bold">3.5K+</p>
-                              </div>
-                            </div>
-                            <p className="text-sm font-semibold mb-1">Verified Contractors</p>
-                            <p className="text-xs text-muted-foreground mb-2">Browse professional profiles</p>
-                            <div className="flex items-center gap-1 mt-2 text-xs">
-                              <CheckCircle className="w-3 h-3 text-secondary" weight="fill" />
-                              <span className="text-muted-foreground">View ratings & reviews</span>
-                            </div>
-                          </Card>
+                          <ActionCard
+                            icon={Briefcase}
+                            title="Browse Jobs"
+                            description="Discover 2,800+ active job opportunities across all trades. Find roofing, HVAC, plumbing, electrical work, and more in your local area."
+                            onPress={() => handleNavClick('jobs')}
+                            buttonText="View Jobs"
+                            iconColor="#22c55e"
+                          />
 
-                          <Card 
-                            className="glass-card p-6 h-full border-0 bg-transparent hover:bg-transparent cursor-pointer h-full"
-                            onClick={() => handleNavClick('api')}
-                          >
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="p-3 rounded-xl bg-primary">
-                                <CurrencyDollar className="w-7 h-7 text-white" weight="fill" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Starting at</p>
-                                <p className="text-2xl font-bold">$99</p>
-                              </div>
-                            </div>
-                            <p className="text-sm font-semibold mb-1">API Access</p>
-                            <p className="text-xs text-muted-foreground mb-2">Intelligence & pricing endpoints</p>
-                            <div className="flex items-center gap-1 mt-2 text-xs">
-                              <Lightning className="w-3 h-3 text-primary" weight="fill" />
-                              <span className="text-muted-foreground">Real-time data</span>
-                            </div>
-                          </Card>
-                      </div>
+                          <ActionCard
+                            icon={Hammer}
+                            title="Find Contractors"
+                            description="Connect with 3,500+ verified professional contractors. View detailed profiles, ratings, reviews, and portfolios to find the perfect match for your project."
+                            onPress={() => handleNavClick('contractors-browse')}
+                            buttonText="Browse Pros"
+                            iconColor="#a855f7"
+                          />
+
+                          <ActionCard
+                            icon={CurrencyDollar}
+                            title="API Integration"
+                            description="Access our intelligence and pricing endpoints starting at just $99. Get real-time market data, contractor insights, and automated job matching for your platform."
+                            onPress={() => handleNavClick('api')}
+                            buttonText="Learn More"
+                            iconColor="#008bf8"
+                          />
+                        </div>
+                      </ScrollAnimatedSection>
 
                       <TerritoryTeaser onExplore={() => handleNavClick('territories', 'overview')} />
 
