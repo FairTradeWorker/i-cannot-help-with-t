@@ -30,14 +30,28 @@ export function useJobs(options: UseJobsOptions = {}) {
   const fetchJobs = useCallback(async () => {
     try {
       setError(null);
-      const allJobs = await dataStore.getJobs();
-      setJobs(allJobs);
+      // Try API first, fallback to DataStore
+      try {
+        const apiJobs = await jobsService.getJobs({
+          status: filters.status,
+          urgency: filters.urgency,
+        });
+        setJobs(apiJobs);
+        // Also cache in DataStore
+        for (const job of apiJobs) {
+          await dataStore.saveJob(job);
+        }
+      } catch (apiError) {
+        console.warn('API fetch failed, using local storage:', apiError);
+        const localJobs = await dataStore.getJobs();
+        setJobs(localJobs);
+      }
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Failed to fetch jobs');
       setError(error);
       console.error('Failed to fetch jobs:', error);
     }
-  }, []);
+  }, [filters]);
 
   // Initial load
   useEffect(() => {
@@ -175,40 +189,88 @@ export function useJobs(options: UseJobsOptions = {}) {
     setRefreshing(false);
   }, [fetchJobs]);
 
-  const addJob = useCallback(async (job: Job) => {
+  const addJob = useCallback(async (jobData: any) => {
     try {
-      await dataStore.saveJob(job);
-      setJobs(prev => {
-        const exists = prev.find(j => j.id === job.id);
-        if (exists) {
-          return prev.map(j => j.id === job.id ? job : j);
-        }
-        return [...prev, job];
-      });
+      // Try API first
+      try {
+        const newJob = await jobsService.createJob(jobData);
+        await dataStore.saveJob(newJob);
+        setJobs(prev => {
+          const exists = prev.find(j => j.id === newJob.id);
+          if (exists) {
+            return prev.map(j => j.id === newJob.id ? newJob : j);
+          }
+          return [...prev, newJob];
+        });
+        return newJob;
+      } catch (apiError) {
+        console.warn('API create failed, saving locally:', apiError);
+        // Fallback: create job locally
+        const localJob: Job = {
+          ...jobData,
+          id: jobData.id || `job-${Date.now()}`,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        await dataStore.saveJob(localJob);
+        setJobs(prev => [...prev, localJob]);
+        return localJob;
+      }
     } catch (err) {
       console.error('Failed to add job:', err);
+      throw err;
     }
   }, []);
 
   const updateJob = useCallback(async (jobId: string, updates: Partial<Job>) => {
     try {
-      const job = await dataStore.getJobById(jobId);
-      if (job) {
-        const updatedJob = { ...job, ...updates };
+      // Try API first
+      try {
+        const updatedJob = await jobsService.updateJob(jobId, updates);
         await dataStore.saveJob(updatedJob);
         setJobs(prev => prev.map(j => j.id === jobId ? updatedJob : j));
+        return updatedJob;
+      } catch (apiError) {
+        console.warn('API update failed, updating locally:', apiError);
+        // Fallback: update locally
+        const job = await dataStore.getJobById(jobId);
+        if (job) {
+          const updatedJob = { ...job, ...updates, updatedAt: new Date() };
+          await dataStore.saveJob(updatedJob);
+          setJobs(prev => prev.map(j => j.id === jobId ? updatedJob : j));
+          return updatedJob;
+        }
       }
     } catch (err) {
       console.error('Failed to update job:', err);
+      throw err;
     }
   }, []);
 
-  const addBidToJob = useCallback(async (jobId: string, bid: any) => {
+  const addBidToJob = useCallback(async (jobId: string, bidData: { amount: number; message?: string }) => {
     try {
-      await dataStore.addBidToJob(jobId, bid);
-      await refresh();
+      // Try API first
+      try {
+        const bid = await jobsService.createBid(jobId, bidData);
+        await refresh();
+        return bid;
+      } catch (apiError) {
+        console.warn('API bid creation failed, saving locally:', apiError);
+        // Fallback: save locally
+        const bid = {
+          ...bidData,
+          id: `bid-${Date.now()}`,
+          jobId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        await dataStore.addBidToJob(jobId, bid);
+        await refresh();
+        return bid;
+      }
     } catch (err) {
       console.error('Failed to add bid:', err);
+      throw err;
     }
   }, [refresh]);
 

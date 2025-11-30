@@ -1,156 +1,99 @@
-// Push Notifications Service
-// Expo notifications integration
+// Notifications Service (Mobile)
+// Handles push notifications and in-app notifications
 
+import { apiClient } from '@fairtradeworker/shared';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
+import type { Notification } from '@/types';
 
-// Configure notification handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+export interface GetNotificationsOptions {
+  unreadOnly?: boolean;
+  limit?: number;
+  offset?: number;
+}
 
 export class NotificationService {
   /**
-   * Request notification permissions
+   * Get user notifications from API
    */
-  async requestPermissions(): Promise<boolean> {
-    if (!Device.isDevice) {
-      console.warn('Must use physical device for Push Notifications');
-      return false;
+  async getNotifications(options?: GetNotificationsOptions): Promise<Notification[]> {
+    try {
+      const params = new URLSearchParams();
+      if (options?.unreadOnly) params.append('unreadOnly', 'true');
+      if (options?.limit) params.append('limit', options.limit.toString());
+      if (options?.offset) params.append('offset', options.offset.toString());
+
+      const queryString = params.toString();
+      const endpoint = queryString ? `/notifications?${queryString}` : '/notifications';
+      
+      return await apiClient.get<Notification[]>(endpoint);
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+      throw error;
     }
-
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-
-    if (finalStatus !== 'granted') {
-      console.warn('Failed to get push token for push notification!');
-      return false;
-    }
-
-    // Get push token
-    const token = await this.getPushToken();
-    if (token) {
-      // TODO: Send token to backend
-      console.log('Push token:', token);
-    }
-
-    return finalStatus === 'granted';
   }
 
   /**
-   * Get Expo push token
+   * Mark notification as read
    */
-  async getPushToken(): Promise<string | null> {
+  async markAsRead(notificationId: string): Promise<Notification> {
     try {
-      if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-          name: 'default',
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#0ea5e9',
-        });
+      return await apiClient.patch<Notification>(`/notifications/${notificationId}`, {
+        read: true,
+      });
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Register for push notifications
+   */
+  async registerForPushNotificationsAsync(): Promise<string | null> {
+    try {
+      if (!Device.isDevice) {
+        console.warn('Must use physical device for Push Notifications');
+        return null;
       }
 
-      const { data: token } = await Notifications.getExpoPushTokenAsync({
-        projectId: 'your-project-id', // TODO: Replace with actual project ID
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+
+      if (finalStatus !== 'granted') {
+        console.warn('Failed to get push token for push notification!');
+        return null;
+      }
+
+      const tokenData = await Notifications.getExpoPushTokenAsync({
+        projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
       });
 
-      return token;
+      return tokenData.data;
     } catch (error) {
-      console.error('Failed to get push token:', error);
+      console.error('Failed to register for push notifications:', error);
       return null;
     }
   }
 
   /**
-   * Schedule local notification
+   * Configure notification handler
    */
-  async scheduleLocalNotification(
-    title: string,
-    body: string,
-    trigger?: Notifications.NotificationTriggerInput
-  ): Promise<string> {
-    return await Notifications.scheduleNotificationAsync({
-      content: {
-        title,
-        body,
-        sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
-      },
-      trigger: trigger || { seconds: 1 },
+  configureNotifications() {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
     });
-  }
-
-  /**
-   * Cancel notification
-   */
-  async cancelNotification(notificationId: string): Promise<void> {
-    await Notifications.cancelScheduledNotificationAsync(notificationId);
-  }
-
-  /**
-   * Cancel all notifications
-   */
-  async cancelAllNotifications(): Promise<void> {
-    await Notifications.cancelAllScheduledNotificationsAsync();
-  }
-
-  /**
-   * Set up notification listeners
-   */
-  setupListeners(
-    onNotificationReceived: (notification: Notifications.Notification) => void,
-    onNotificationTapped: (response: Notifications.NotificationResponse) => void
-  ) {
-    // Listener for notifications received while app is foregrounded
-    const receivedListener = Notifications.addNotificationReceivedListener(
-      onNotificationReceived
-    );
-
-    // Listener for when user taps notification
-    const responseListener = Notifications.addNotificationResponseReceivedListener(
-      onNotificationTapped
-    );
-
-    return {
-      remove: () => {
-        receivedListener.remove();
-        responseListener.remove();
-      },
-    };
-  }
-
-  /**
-   * Get badge count
-   */
-  async getBadgeCount(): Promise<number> {
-    return await Notifications.getBadgeCountAsync();
-  }
-
-  /**
-   * Set badge count
-   */
-  async setBadgeCount(count: number): Promise<void> {
-    await Notifications.setBadgeCountAsync(count);
-  }
-
-  /**
-   * Clear badge
-   */
-  async clearBadge(): Promise<void> {
-    await Notifications.setBadgeCountAsync(0);
   }
 }
 
 export const notificationService = new NotificationService();
-
