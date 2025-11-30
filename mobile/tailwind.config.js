@@ -4,6 +4,7 @@ module.exports = {
     "./App.{js,jsx,ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}"
   ],
+  darkMode: 'media', // Enable dark mode based on system preferences
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
