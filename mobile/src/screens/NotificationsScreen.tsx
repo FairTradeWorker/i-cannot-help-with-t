@@ -1,147 +1,168 @@
-// Enhanced Notifications Screen
+// Enhanced Notifications Screen - Full API Integration
 // Real-time notification management
 
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { Bell, Check, Trash2, Filter } from 'lucide-react-native';
 import { NotificationCard } from '@/components/NotificationCard';
-import { dataStore } from '@fairtradeworker/shared';
-import type { Notification, User as UserType } from '@/types';
+import { EmptyState } from '@/components/EmptyState';
+import { useNotifications } from '@/hooks/useNotifications';
 
 export default function NotificationsScreen() {
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+  const [filterUnread, setFilterUnread] = useState(false);
+  
+  const {
+    notifications,
+    unreadCount,
+    loading,
+    markAsRead,
+    markAllAsRead,
+    refresh,
+  } = useNotifications({
+    unreadOnly: filterUnread,
+    autoRefresh: true,
+    refreshInterval: 10000, // Refresh every 10 seconds
+  });
+
   const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    loadData();
-    // Poll for new notifications every 5 seconds
-    const interval = setInterval(loadNotifications, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const user = await dataStore.getCurrentUser();
-      setCurrentUser(user);
-      if (user) {
-        await loadNotifications();
-      }
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  const loadNotifications = async () => {
-    if (!currentUser) return;
-
-    try {
-      const userNotifications = await dataStore.getNotifications(currentUser.id);
-      // Sort by date (newest first)
-      const sorted = userNotifications.sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      setNotifications(sorted);
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
-    }
-  };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadData();
+    await refresh();
+    setRefreshing(false);
   };
 
-  const handleNotificationPress = async (notification: Notification) => {
-    if (!currentUser) return;
+  const handleNotificationPress = (notification: any) => {
+    // Mark as read when opened
+    if (!notification.read) {
+      markAsRead(notification.id);
+    }
 
-    try {
-      // Mark as read
-      if (!notification.read) {
-        await dataStore.markNotificationRead(currentUser.id, notification.id);
-        await loadNotifications();
-      }
-
-      // Navigate based on notification type
-      if (notification.link) {
-        // Handle navigation to link
-        console.log('Navigate to:', notification.link);
-      }
-    } catch (error) {
-      console.error('Failed to handle notification:', error);
+    // Navigate based on notification type
+    if (notification.data?.jobId) {
+      navigation.navigate('JobDetails' as never, { jobId: notification.data.jobId } as never);
+    } else if (notification.data?.messageId) {
+      navigation.navigate('Messages' as never, { jobId: notification.data.jobId } as never);
     }
   };
 
   const handleDismiss = async (notificationId: string) => {
-    // TODO: Implement dismiss/delete notification
-    console.log('Dismiss notification:', notificationId);
+    // Mark as read (dismiss)
+    await markAsRead(notificationId);
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const handleMarkAllRead = async () => {
+    if (unreadCount === 0) {
+      Alert.alert('Info', 'All notifications are already read');
+      return;
+    }
 
-  if (loading) {
-    return (
-      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
-        <ActivityIndicator size="large" color="#0ea5e9" />
-        <Text className="text-gray-600 mt-4">Loading notifications...</Text>
-      </SafeAreaView>
+    Alert.alert(
+      'Mark All Read',
+      `Mark all ${unreadCount} unread notifications as read?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Mark All Read',
+          onPress: async () => {
+            await markAllAsRead();
+          },
+        },
+      ]
     );
-  }
+  };
 
-  if (!currentUser) {
-    return (
-      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center px-6">
-        <Text className="text-gray-600 text-lg text-center">
-          Please sign in to view notifications
-        </Text>
-      </SafeAreaView>
-    );
-  }
+  const displayedNotifications = notifications;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100" edges={['bottom']}>
       {/* Header */}
-      <View className="bg-white px-4 py-4 border-b border-gray-200 flex-row items-center justify-between">
-        <Text className="text-xl font-bold text-gray-900">Notifications</Text>
-        {unreadCount > 0 && (
-          <View className="bg-primary-500 px-3 py-1 rounded-full">
-            <Text className="text-white text-xs font-semibold">
-              {unreadCount} new
-            </Text>
+      <View className="bg-white px-4 py-3 border-b border-gray-200">
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center">
+            <Bell size={24} color="#111827" />
+            <Text className="text-xl font-bold text-gray-900 ml-2">Notifications</Text>
+            {unreadCount > 0 && (
+              <View className="bg-primary-500 px-3 py-1 rounded-full ml-3">
+                <Text className="text-white text-xs font-semibold">
+                  {unreadCount} new
+                </Text>
+              </View>
+            )}
           </View>
-        )}
+          {unreadCount > 0 && (
+            <TouchableOpacity
+              onPress={handleMarkAllRead}
+              className="flex-row items-center"
+            >
+              <Check size={20} color="#0ea5e9" />
+              <Text className="text-primary-500 font-semibold ml-1">Mark All</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Filter Tabs */}
+        <View className="flex-row mt-3 gap-2">
+          <TouchableOpacity
+            onPress={() => setFilterUnread(false)}
+            className={`px-4 py-2 rounded-full ${
+              !filterUnread ? 'bg-primary-500' : 'bg-gray-200'
+            }`}
+          >
+            <Text className={`text-sm font-semibold ${!filterUnread ? 'text-white' : 'text-gray-700'}`}>
+              All
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setFilterUnread(true)}
+            className={`px-4 py-2 rounded-full ${
+              filterUnread ? 'bg-primary-500' : 'bg-gray-200'
+            }`}
+          >
+            <Text className={`text-sm font-semibold ${filterUnread ? 'text-white' : 'text-gray-700'}`}>
+              Unread
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Notifications List */}
-      <FlatList
-        data={notifications}
-        renderItem={({ item }) => (
-          <NotificationCard
-            notification={item}
-            onPress={() => handleNotificationPress(item)}
-            onDismiss={() => handleDismiss(item.id)}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16 }}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListEmptyComponent={
-          <View className="items-center py-12 px-6">
-            <Text className="text-gray-500 text-lg mb-2">No notifications</Text>
-            <Text className="text-gray-400 text-sm text-center">
-              You're all caught up! New notifications will appear here.
-            </Text>
-          </View>
-        }
-      />
+      {loading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#0ea5e9" />
+          <Text className="text-gray-600 mt-4">Loading notifications...</Text>
+        </View>
+      ) : displayedNotifications.length === 0 ? (
+        <EmptyState
+          type="notifications"
+          title={filterUnread ? 'No Unread Notifications' : 'No Notifications'}
+          message={
+            filterUnread
+              ? "You're all caught up! No unread notifications."
+              : 'You have no notifications yet. New notifications will appear here.'
+          }
+        />
+      ) : (
+        <FlatList
+          data={displayedNotifications}
+          renderItem={({ item }) => (
+            <NotificationCard
+              notification={item}
+              onPress={() => handleNotificationPress(item)}
+              onDismiss={() => handleDismiss(item.id)}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 16 }}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }

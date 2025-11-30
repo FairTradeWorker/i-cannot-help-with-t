@@ -7,39 +7,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Search, MapPin, CheckCircle, Lock, X, AlertCircle } from 'lucide-react-native';
 import { TerritoryMap } from '@/components/TerritoryMap';
-import { dataStore } from '@fairtradeworker/shared';
-import type { Territory, User as UserType } from '@/types';
+import { useTerritories } from '@/hooks/useTerritories';
+import { useAuth } from '@/hooks/useAuth';
+import type { Territory } from '@/types';
 
 export default function TerritoriesScreen() {
   const navigation = useNavigation();
-  const [territories, setTerritories] = useState<Territory[]>([]);
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const { user: currentUser } = useAuth();
+  const { territories, loading, claimTerritory } = useTerritories({
+    autoRefresh: false,
+  });
   const [selectedTerritory, setSelectedTerritory] = useState<Territory | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [claiming, setClaiming] = useState(false);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [territoriesData, user] = await Promise.all([
-        dataStore.getTerritories(),
-        dataStore.getCurrentUser(),
-      ]);
-      
-      setTerritories(territoriesData);
-      setCurrentUser(user);
-    } catch (error) {
-      console.error('Failed to load territories:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleTerritorySelect = (territory: Territory) => {
     setSelectedTerritory(territory);
@@ -48,21 +29,27 @@ export default function TerritoriesScreen() {
   const handleClaimTerritory = async () => {
     if (!selectedTerritory || !currentUser) {
       Alert.alert('Error', 'Please log in to claim a territory');
+      navigation.navigate('Login' as never);
+      return;
+    }
+
+    if (!selectedTerritory.zipCode) {
+      Alert.alert('Error', 'Invalid territory selected');
       return;
     }
 
     setClaiming(true);
     try {
-      // TODO: Integrate with territory claiming logic
-      // This would call processTerritoryClaim from shared package
+      await claimTerritory(selectedTerritory.zipCode);
       Alert.alert(
-        'Claim Started',
-        'Territory claiming will be available after payment integration is complete.',
+        'Success!',
+        `You've successfully claimed territory ${selectedTerritory.zipCode}!`,
         [{ text: 'OK', onPress: () => setShowClaimModal(false) }]
       );
     } catch (error) {
       console.error('Failed to claim territory:', error);
-      Alert.alert('Error', 'Failed to claim territory. Please try again.');
+      const message = error instanceof Error ? error.message : 'Failed to claim territory. Please try again.';
+      Alert.alert('Error', message);
     } finally {
       setClaiming(false);
     }

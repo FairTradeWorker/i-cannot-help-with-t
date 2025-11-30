@@ -4,62 +4,60 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { 
   User, Edit2, Camera, Shield, CreditCard, Bell, LogOut, 
   CheckCircle, MapPin, Phone, Mail, Briefcase, Star
 } from 'lucide-react-native';
-import { dataStore } from '@fairtradeworker/shared';
+import { useAuth } from '@/hooks/useAuth';
+import { apiClient } from '@fairtradeworker/shared';
 import type { User as UserType } from '@/types';
 
 export default function ProfileScreen() {
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+  const { user: currentUser, refresh } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [editedName, setEditedName] = useState('');
-  const [editedPhone, setEditedPhone] = useState('');
+  const [editedName, setEditedName] = useState(currentUser?.name || '');
+  const [editedPhone, setEditedPhone] = useState(currentUser?.phone || '');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      setLoading(true);
-      const user = await dataStore.getCurrentUser();
-      setCurrentUser(user);
-      if (user) {
-        setEditedName(user.name);
-        setEditedPhone(user.phone || '');
-      }
-    } catch (error) {
-      console.error('Failed to load user:', error);
-    } finally {
-      setLoading(false);
+    if (currentUser) {
+      setEditedName(currentUser.name);
+      setEditedPhone(currentUser.phone || '');
     }
-  };
+  }, [currentUser]);
 
   const handleSave = async () => {
     if (!currentUser) return;
 
-    try {
-      const updatedUser: UserType = {
-        ...currentUser,
-        name: editedName,
-        phone: editedPhone || undefined,
-      };
+    if (!editedName.trim()) {
+      Alert.alert('Error', 'Name is required');
+      return;
+    }
 
-      await dataStore.saveUser(updatedUser);
-      await dataStore.setCurrentUser(updatedUser);
-      setCurrentUser(updatedUser);
+    setSaving(true);
+    try {
+      const updatedUser = await apiClient.put<UserType>(`/users/${currentUser.id}`, {
+        name: editedName.trim(),
+        phone: editedPhone.trim() || undefined,
+      });
+
+      // Refresh user data
+      await refresh();
       setEditing(false);
       Alert.alert('Success', 'Profile updated successfully');
     } catch (error) {
       console.error('Failed to save profile:', error);
-      Alert.alert('Error', 'Failed to update profile. Please try again.');
+      const message = error instanceof Error ? error.message : 'Failed to update profile. Please try again.';
+      Alert.alert('Error', message);
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     Alert.alert(
       'Sign Out',
       'Are you sure you want to sign out?',
@@ -70,11 +68,16 @@ export default function ProfileScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await dataStore.setCurrentUser(null as any);
+              const { authService } = await import('@/services/auth.service');
+              await authService.logout();
               // Navigate to login screen
-              Alert.alert('Signed Out', 'You have been signed out successfully.');
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' as never }],
+              });
             } catch (error) {
               console.error('Failed to sign out:', error);
+              Alert.alert('Error', 'Failed to sign out. Please try again.');
             }
           },
         },
@@ -82,14 +85,7 @@ export default function ProfileScreen() {
     );
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView className="flex-1 bg-gray-100 items-center justify-center">
-        <ActivityIndicator size="large" color="#0ea5e9" />
-        <Text className="text-gray-600 mt-4">Loading profile...</Text>
-      </SafeAreaView>
-    );
-  }
+  // No loading state needed - useAuth handles it
 
   if (!currentUser) {
     return (
